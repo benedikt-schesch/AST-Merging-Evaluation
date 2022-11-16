@@ -10,5 +10,7 @@ find $basedir -name "*.java" -or -name "**/*.java"|while read basename; do
     leftname=$leftdir$suffix
     rightname=$rightdir$suffix
     outputname=$outputdir$suffix
+    mkdir -p $(dirname $outputname)
+    touch $outputname
     java -jar $SPORK -o=$outputname $leftname $basename $rightname
 done
