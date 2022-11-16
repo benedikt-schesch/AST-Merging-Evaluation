@@ -5,7 +5,7 @@ basedir=$1/base
 rightdir=$1/right
 outputdir=$2
 
-find $basedir -name "*.java" -or -name "**/*.java"|while read basename; do
+find $basedir -type f|while read basename; do
     # construct paths
     suffix=${basename#"$basedir"}
     leftname=$leftdir$suffix
