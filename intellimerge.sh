@@ -1,4 +1,6 @@
-# usage: ./intellmerge.sh <repo> <branch1> <branch2> <outputdir>
+#!/bin/bash
+
+# usage: ./intellmerge.sh <merge-dir> <output-dir>
 INTELLIMERGE=./jars/IntelliMerge-1.0.9-all.jar
 repo=$1
 branch1=$2
