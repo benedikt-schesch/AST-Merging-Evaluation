@@ -5,13 +5,10 @@ basedir=$1/base
 rightdir=$1/right
 outputdir=$2
 
-echo $basedir
-for basename in $basedir/**/*; do
-    echo $basename
-    suffix=${fullname#"$basedir"}
+find $basedir -name "*.java" -or -name "**/*.java"|while read basename; do
+    suffix=${basename#"$basedir"}
     leftname=$leftdir$suffix
     rightname=$rightdir$suffix
     outputname=$outputdir$suffix
-    echo $suffix
-    java -jar $SPORK -o=$outputname $leftname $basename $rightname 
+    java -jar $SPORK -o=$outputname $leftname $basename $rightname
 done

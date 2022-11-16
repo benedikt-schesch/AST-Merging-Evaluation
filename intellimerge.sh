@@ -6,3 +6,10 @@ rightdir=$1/right
 outputdir=$2
 
 java -jar $INTELLIMERGE -d $leftdir $basedir $rightdir -o $outputdir
+
+currentdir=$(pwd)
+mkdir temp
+mv output/$currentdir/* temp
+rm -r output/*/
+mv temp/* output
+rmdir temp
