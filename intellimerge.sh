@@ -9,8 +9,10 @@ outputdir=$4
 java -jar $INTELLIMERGE -r $repo -b $branch1 $branch2 -o $outputdir
 
 # report conflicts
+grep -rq -m 1 "<<<<<<<" $outputdir
 retVal=$?
-if [ $retVal -ne 0 ]; then
+if [ $retVal -eq 0 ]; then
     echo "Conflict"
-    exit $retVal
+    exit 1
 fi
+exit 0
