@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# This scripts find the merge commits from a given list of valid repositories
-# Output the list of merge commit hashes, as well the two parents commit hashes
+# This scripts find the merge commits from a given
+# list of valid repositories
+# Output the list of merge commit hashes, two parents 
+# commit hashes, and base commit of the two parents
 
 # Recieve list of repo names from valid_repos.csv
 repos=( $(sed 1d valid_repos.csv | cut -d ',' -f3) )
 
 # make merges directory if does not exists
+rm -rf merges/
 mkdir -p ./merges
 
 # For each repo in list of repo names:
@@ -21,6 +24,7 @@ for repo in ${repos[@]}
 do
   repo_name="$(cut -d '/' -f2 <<< "$repo")"
   rm -rf ./$repo_name
+
   git clone https://github.com/$repo.git
   cd $repo_name
   merge_commits=$(git log --merges --pretty=format:"%H")
@@ -33,5 +37,3 @@ do
   cd ..
   rm -rf $repo_name/
 done
-
-
