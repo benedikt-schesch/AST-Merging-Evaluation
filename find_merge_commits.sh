@@ -12,15 +12,24 @@ mkdir -p ./merges
 # For each repo in list of repo names:
 #   - clone the repo,
 #   - cd into each repo
-#   - find merge commits (merge, parents) hashes in all branches
-#       - git log --merges --prety=format:"%H, %P"
-#       - output: save into "[repo_name]_merge_commits.csv"
+#   - find merge commit hashes in all branches
+#   - for each merge commit:
+#       - get parents commits
+#       - get base commit of parents
+#       - output (merge,parent1,parent2,  ) "/merges/[repo_name].csv"
 for repo in ${repos[@]} 
 do
-  git clone https://github.com/$repo.git
   repo_name="$(cut -d '/' -f2 <<< "$repo")"
+  rm -rf ./$repo_name
+  git clone https://github.com/$repo.git
   cd $repo_name
-  git log --merges --pretty=format:"%H, %P" > ../merges/$repo_name.csv
+  merge_commits=$(git log --merges --pretty=format:"%H")
+  for merge_commit in ${merge_commits[@]}
+  do
+    merge_parents_commits=( $(git log --pretty=%P -n 1 $merge_commit) )
+    merge_base_commit=$(git merge-base ${merge_parents_commits[0]} ${merge_parents_commits[1]})
+    echo "$merge_commit,${merge_parents_commits[0]},${merge_parents_commits[1]},$merge_base_commit" >> ../merges/$repo_name.csv
+  done
   cd ..
   rm -rf $repo_name/
 done
