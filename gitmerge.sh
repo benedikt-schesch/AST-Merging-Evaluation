@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # usage: ./gitmerge.sh <merge-dir> <output-dir>
 leftdir=$1/left
 basedir=$1/base

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # usage: ./spork.sh <merge-dir> <output-dir>
 SPORK=./jars/spork.jar
 leftdir=$1/left

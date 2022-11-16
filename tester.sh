@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 cd $1
 if [ -f "gradlew" ]
 then
