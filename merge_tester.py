@@ -49,9 +49,6 @@ if __name__ == '__main__':
             #Git Merge
             a = time.time()
             for i in ["left","right","base"]:
-                print(i)
-                print(repo_name)
-                print(idx2,idx)
                 repo.checkout(row2[i])
                 if os.path.isdir("merge_repo/"+i):
                     shutil.rmtree("merge_repo/"+i)
@@ -81,11 +78,11 @@ if __name__ == '__main__':
             if os.path.isdir("merge_repo/intellimerge"):
                 shutil.rmtree("merge_repo/intellimerge")
             shutil.copytree(repo_dir, "merge_repo/intellimerge")
-            repo = git.Git("merge_repo/intellimerge")
-            repo.checkout(row2["left"])
-            repo.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ1')
-            repo.checkout(row2["right"])
-            repo.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ2')
+            repo_intelli = git.Git("merge_repo/intellimerge")
+            repo_intelli.checkout(row2["left"])
+            repo_intelli.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ1')
+            repo_intelli.checkout(row2["right"])
+            repo_intelli.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ2')
             print("IntelliMerge:",time.time()-a)
 
 
