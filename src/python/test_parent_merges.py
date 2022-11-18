@@ -40,10 +40,12 @@ def pass_test(args):
         test = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy]).returncode
         with open(cache_file,"w") as f:
             f.write(str(test))
+        shutil.rmtree(repo_dir_copy)
         return test
     except Exception:
         with open(cache_file,"w") as f:
             f.write(str(1))
+        shutil.rmtree(repo_dir_copy)
         return 1
 
 
@@ -89,12 +91,10 @@ if __name__ == '__main__':
 
         for idx2, row2 in merges.iterrows():
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                merges.append([repo_name,row2["left"]])
-                merges.append([repo_name,row2["right"]])
-            test1 = pass_test((repo_name,row2["left"],".workdir/","cache/commit_test_result/"))
-            test2 = pass_test((repo_name,row2["right"],".workdir/","cache/commit_test_result/"))
-            if test1 == 0 and test2 == 0:
-                merges["parent test"][idx2] = 0
+                test1 = pass_test((repo_name,row2["left"],".workdir/","cache/commit_test_result/"))
+                test2 = pass_test((repo_name,row2["right"],".workdir/","cache/commit_test_result/"))
+                if test1 == 0 and test2 == 0:
+                    merges.loc[idx2, "parent test"] = 0
         outout_file = output_dir+repo_name.split("/")[1]+".csv"
         merges.to_csv(outout_file)
 
