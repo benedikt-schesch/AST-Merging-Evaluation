@@ -1,3 +1,7 @@
+cache/
+.workdir/
+merges_small/
+merges_small_valid/
 repos/
 output/
 merge_repo/
