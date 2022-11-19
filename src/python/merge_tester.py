@@ -123,13 +123,13 @@ def test_merge(args):
                 +str(intelli_merge)+" "+str(int(intelli_runtime))
         with open(cache_file,"w") as f:
             f.write(out)
-        #shutil.rmtree(repo_dir_copy)
+        shutil.rmtree(repo_dir_copy)
         return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
     except Exception:
         with open(cache_file,"w") as f:
             out = "-1 -1 -1 -1 -1 -1"
             f.write(out)
-        #shutil.rmtree(repo_dir_copy)
+        shutil.rmtree(repo_dir_copy)
         return -1,-1,-1,-1,-1,-1
 
 
