@@ -6,6 +6,12 @@ import os
 import time
 import multiprocessing
 
+SCRATCH_DIR = "scratch/" 
+STORE_SCRATCH = False
+WORKDIR = ".workdir/"
+CACHE = "cache/merge_test_results/"
+
+
 def get_repo(repo_name):
     repo_dir = "repos/"+repo_name
     if not os.path.isdir(repo_dir):
@@ -18,8 +24,8 @@ def get_repo(repo_name):
 
 
 def test_merge(args):
-    repo_name,left,right,base,working_dir,cache = args
-    cache_file = cache+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base
+    repo_name,left,right,base = args
+    cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
@@ -31,14 +37,8 @@ def test_merge(args):
 
     repo_dir = "repos/"+repo_name
     pwd = os.getcwd()
-    repo_dir_copy = pwd+working_dir+pid
+    repo_dir_copy = WORKDIR+pid
     
-
-    # if os.path.isdir(repo_dir_copy):
-    #     shutil.rmtree(repo_dir_copy)
-    # shutil.copytree(repo_dir, repo_dir_copy)
-    # repo = git.Git(repo_dir_copy)
-    # repo.fetch()
     try:
         shutil.copytree(repo_dir, repo_dir_copy+"/git")
         repo_git = git.Git(repo_dir_copy+"/git")
@@ -101,34 +101,39 @@ def test_merge(args):
                                 repo_dir_copy+"/intellimerge",
                                 "AOFKMAFNASFKJNRFQJXNFHJ1",
                                 "AOFKMAFNASFKJNRFQJXNFHJ2",
-                                repo_dir_copy+"/intellimerge"]).returncode
+                                repo_dir_copy+"/intellimerge2"]).returncode
             intelli_runtime = time.time()-start
         except Exception:
             intelli_merge = 6
             intelli_runtime = -1
         try:
             if intelli_merge == 0:
-                intelli_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/intellimerge"]).returncode+2
+                intelli_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/intellimerge2"]).returncode+2
         except Exception:
             intelli_merge = 5
+
+        if STORE_SCRATCH:
+            for i in ["git","spork","intellimerge"]:
+                if os.path.isdir(repo_dir_copy+"/"+i):
+                    dst_name = SCRATCH_DIR+repo_name+"_"+left+"_"+right+"_"+base+"_"+i
+                    shutil.copytree(repo_dir_copy+"/"+i,dst_name)
 
         out = str(git_merge)+" "+str(int(git_runtime))+" "\
                 +str(spork_merge)+" "+str(int(spork_runtime))+" "\
                 +str(intelli_merge)+" "+str(int(intelli_runtime))
         with open(cache_file,"w") as f:
             f.write(out)
-        # shutil.rmtree(repo_dir_copy)
+        #shutil.rmtree(repo_dir_copy)
         return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
     except Exception:
         with open(cache_file,"w") as f:
             out = "-1 -1 -1 -1 -1 -1"
             f.write(out)
-        # shutil.rmtree(repo_dir_copy)
+        #shutil.rmtree(repo_dir_copy)
         return -1,-1,-1,-1,-1,-1
 
 
 if __name__ == '__main__':
-    pwd = os.getcwd()
     df = pd.read_csv("data/valid_repos.csv")
     merge_dir = "merges_small_valid/"
 
@@ -153,14 +158,10 @@ if __name__ == '__main__':
         if not os.path.isfile(merge_list_file):
             continue
         
-
-        
-        #repo.remote().fetch()
-        
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            args.append((repo_name,row2["left"],row2["right"],row2["base"],"/.workdir/","cache/merge_test_results/"))
+            args.append((repo_name,row2["left"],row2["right"],row2["base"]))
 
     pool = multiprocessing.Pool(os.cpu_count())
     pool.map(test_merge,args)
@@ -175,7 +176,8 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime = test_merge((repo_name,row2["left"],row2["right"],row2["base"],"/.workdir/","cache/merge_test_results/"))
+            ret = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
+            git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime = ret
             result = pd.concat([result,pd.DataFrame({"project name":repo_name,
                             "left":row2["left"],
                             "right":row2["right"],
