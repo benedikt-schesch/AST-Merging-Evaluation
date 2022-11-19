@@ -6,6 +6,7 @@ import os
 import multiprocessing
 import time
 from pebble import ProcessPool
+from merge_tester import get_repo
 
 def pass_test(args):
     repo_name,commit,working_dir,cache = args
@@ -22,13 +23,7 @@ def pass_test(args):
     pwd = os.getcwd()
     repo_dir_copy = pwd+working_dir+pid
     
-    if not os.path.isdir(repo_dir):
-        git_url = "https://github.com/"+repo_name+".git"
-        repo = git.Repo.clone_from(git_url, repo_dir)
-    else:
-        repo = git.Git(repo_dir)
-    repo.fetch()
-    
+    repo = get_repo(repo_name)
 
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
