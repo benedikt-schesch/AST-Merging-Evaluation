@@ -6,6 +6,17 @@ import os
 import time
 import multiprocessing
 
+def get_repo(repo_name):
+    repo_dir = "repos/"+repo_name
+    if not os.path.isdir(repo_dir):
+        git_url = "https://github.com/"+repo_name+".git"
+        repo = git.Repo.clone_from(git_url, repo_dir)
+        repo.remote().fetch()
+    else:
+        repo = git.Git(repo_dir)
+    return repo
+
+
 def test_merge(args):
     repo_name,left,right,base,working_dir,cache = args
     cache_file = cache+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base
@@ -29,6 +40,30 @@ def test_merge(args):
     # repo = git.Git(repo_dir_copy)
     # repo.fetch()
     try:
+        shutil.copytree(repo_dir, repo_dir_copy+"/git")
+        repo_git = git.Git(repo_dir_copy+"/git")
+        repo_git.fetch()
+        repo_git.checkout(left)
+        repo_git.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ1')
+        repo_git.checkout(right)
+        repo_git.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ2')
+        try:
+            start = time.time()
+            git_merge = int(subprocess.run([pwd+"/src/scripts/merge_tools/gitmerge.sh",repo_dir_copy+"/git","AOFKMAFNASFKJNRFQJXNFHJ1","AOFKMAFNASFKJNRFQJXNFHJ2"]).returncode != 0)
+            git_runtime = time.time()-start
+        except Exception:
+            git_merge = 6
+            git_runtime = -1
+        print(git_merge)
+        try:
+            if git_merge == 0:
+                git_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/git"]).returncode+2
+        except Exception:
+            git_merge = 5
+        git_merge = 0
+        git_runtime = 0
+
+        #Spork Merge
         shutil.copytree(repo_dir, repo_dir_copy+"/left")
         shutil.copytree(repo_dir, repo_dir_copy+"/right")
         shutil.copytree(repo_dir, repo_dir_copy+"/base")
@@ -41,21 +76,7 @@ def test_merge(args):
         repo_git.checkout(base)
         try:
             start = time.time()
-            git_merge = int(subprocess.run([pwd+"/src/scripts/merge_tools/gitmerge.sh",repo_dir_copy,repo_dir_copy+"/git"]).returncode != 0)
-            git_runtime = time.time()-start
-        except Exception:
-            git_merge = 6
-            git_runtime = -1
-        try:
-            if git_merge == 0:
-                git_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/git"]).returncode+2
-        except Exception:
-            git_merge = 5
-
-        #Spork Merge
-        try:
-            start = time.time()
-            spork_merge = subprocess.run([pwd+"/spork.sh",repo_dir_copy,repo_dir_copy+"/spork"]).returncode
+            spork_merge = subprocess.run([pwd+"/src/scripts/merge_tools/spork.sh",repo_dir_copy,repo_dir_copy+"/spork"]).returncode
             spork_runtime = time.time()-start
         except Exception:
             spork_merge = 6
@@ -74,11 +95,10 @@ def test_merge(args):
         repo_intelli.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ1')
         repo_intelli.checkout(right)
         repo_intelli.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ2')
-        print("TEST")
         try:
             start = time.time()
-            intelli_merge = subprocess.run([pwd+"/intellimerge.sh",
-                                "merge_repo/intellimerge",
+            intelli_merge = subprocess.run([pwd+"/src/scripts/merge_tools/intellimerge.sh",
+                                repo_dir_copy+"/intellimerge",
                                 "AOFKMAFNASFKJNRFQJXNFHJ1",
                                 "AOFKMAFNASFKJNRFQJXNFHJ2",
                                 repo_dir_copy+"/intellimerge"]).returncode
@@ -97,13 +117,13 @@ def test_merge(args):
                 +str(intelli_merge)+" "+str(int(intelli_runtime))
         with open(cache_file,"w") as f:
             f.write(out)
-        shutil.rmtree(repo_dir_copy)
+        # shutil.rmtree(repo_dir_copy)
         return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
     except Exception:
         with open(cache_file,"w") as f:
             out = "-1 -1 -1 -1 -1 -1"
             f.write(out)
-        shutil.rmtree(repo_dir_copy)
+        # shutil.rmtree(repo_dir_copy)
         return -1,-1,-1,-1,-1,-1
 
 
@@ -133,13 +153,7 @@ if __name__ == '__main__':
         if not os.path.isfile(merge_list_file):
             continue
         
-        repo_dir = "repos/"+repo_name
-        if not os.path.isdir(repo_dir):
-            git_url = "https://github.com/"+repo_name+".git"
-            repo = git.Repo.clone_from(git_url, repo_dir)
-            repo.remote().fetch()
-        else:
-            repo = git.Git(repo_dir)
+
         
         #repo.remote().fetch()
         
