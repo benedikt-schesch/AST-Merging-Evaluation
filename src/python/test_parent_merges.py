@@ -4,13 +4,16 @@ import subprocess
 import shutil
 import os
 import multiprocessing
-import time
-from pebble import ProcessPool
 from merge_tester import get_repo
 
+CACHE = "cache/commit_test_result/"
+MERGE_DIR = "merges_small/"
+OUTPUT_DIR = "merges_small_valid/"
+WORKDIR = ".workdir/"
+
 def pass_test(args):
-    repo_name,commit,working_dir,cache = args
-    cache_file = cache+repo_name.split("/")[1]+"_"+commit
+    repo_name,commit = args
+    cache_file = CACHE+repo_name.split("/")[1]+"_"+commit
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
@@ -21,7 +24,7 @@ def pass_test(args):
 
     repo_dir = "repos/"+repo_name
     pwd = os.getcwd()
-    repo_dir_copy = pwd+working_dir+pid
+    repo_dir_copy = WORKDIR+pid
     
     repo = get_repo(repo_name)
 
@@ -42,9 +45,6 @@ def pass_test(args):
             f.write(str(1))
         shutil.rmtree(repo_dir_copy)
         return 1
-
-
-
     
     
     
@@ -52,14 +52,12 @@ def pass_test(args):
 if __name__ == '__main__':
     pwd = os.getcwd()
     df = pd.read_csv("data/valid_repos.csv")
-    merge_dir = "merges_small/"
-    output_dir = "merges_small_valid/"
     
 
     commits = set()
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        merge_list_file = merge_dir+repo_name.split("/")[1]+".csv"
+        merge_list_file = MERGE_DIR+repo_name.split("/")[1]+".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -73,11 +71,11 @@ if __name__ == '__main__':
     commits = list(commits)
 
     pool = multiprocessing.Pool(os.cpu_count())
-    pool.map(pass_test,[(repo_name,commit,".workdir/","cache/commit_test_result/") for repo_name, commit in commits])
+    pool.map(pass_test,commits)
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        merge_list_file = merge_dir+repo_name.split("/")[1]+".csv"
+        merge_list_file = MERGE_DIR+repo_name.split("/")[1]+".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -86,10 +84,10 @@ if __name__ == '__main__':
 
         for idx2, row2 in merges.iterrows():
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                test1 = pass_test((repo_name,row2["left"],".workdir/","cache/commit_test_result/"))
-                test2 = pass_test((repo_name,row2["right"],".workdir/","cache/commit_test_result/"))
+                test1 = pass_test((repo_name,row2["left"]))
+                test2 = pass_test((repo_name,row2["right"]))
                 if test1 == 0 and test2 == 0:
                     merges.loc[idx2, "parent test"] = 0
-        outout_file = output_dir+repo_name.split("/")[1]+".csv"
+        outout_file = OUTPUT_DIR+repo_name.split("/")[1]+".csv"
         merges.to_csv(outout_file)
 
