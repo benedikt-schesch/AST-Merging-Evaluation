@@ -1,29 +1,26 @@
 #!/bin/bash
 
-# usage: ./gitmerge.sh <merge-dir> <output-dir>
-leftdir=$1/left
-basedir=$1/base
-rightdir=$1/right
-outputdir=$2
+# usage: ./gitmerge.sh <merge-dir> <branch-1> <branch-2>
+# merges branch2 into branch1
+# outputs result in-place to merge-dir
+repo=$1
+branch1=$2
+branch2=$3
+wd=$(pwd)
 
-find $basedir -type f|while read basename; do
-    # construct paths
-    suffix=${basename#"$basedir"}
-    leftname=$leftdir$suffix
-    rightname=$rightdir$suffix
-    outputname=$outputdir$suffix
+# perform merge
+cd $repo
+git checkout $branch1
+git merge --no-edit $branch2
 
-    # create output location
-    mkdir -p $(dirname $outputname)
-    touch $outputname
+# report conflicts
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Conflict"
+    git merge --abort
+    cd $wd
+    exit $retVal
+fi
 
-    # run git merge
-    git merge-file -p $leftname $basename $rightname > $outputname
-    
-    # report conflicts
-    retVal=$?
-    if [ $retVal -ne 0 ]; then
-        echo "Conflict"
-        exit $retVal
-    fi
-done
+# go back to wd
+cd $wd
