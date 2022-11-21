@@ -1,30 +1,35 @@
 #!/bin/bash
 
-# usage: ./spork.sh <merge-dir> <output-dir>
+# usage: ./spork.sh <merge-dir> <branch-1> <branch-2>
+# merges branch2 into branch1
+# outputs result in-place to merge-dir
 SPORK=./jars/spork.jar
-leftdir=$1/left
-basedir=$1/base
-rightdir=$1/right
-outputdir=$2
+repo=$1
+branch1=$2
+branch2=$3
+wd=$(pwd)
+sporkfullpath=$(realpath $SPORK)
+cd $repo
 
-find $basedir -type f|while read basename; do
-    # construct paths
-    suffix=${basename#"$basedir"}
-    leftname=$leftdir$suffix
-    rightname=$rightdir$suffix
-    outputname=$outputdir$suffix
+# set up spork driver
+echo "[merge \"spork\"]" >> .git/config
+    echo "    name = spork" >> .git/config
+    echo "    driver = java -jar $sporkfullpath --git-mode %A %O %B -o %A" >> .git/config
+echo "*.java merge=spork" >> .gitattributes
 
-    # create output location
-    mkdir -p $(dirname $outputname)
-    touch $outputname
+# perform merge
+git checkout $branch1
+git merge --no-edit $branch2
 
-    # run spork
-    java -jar $SPORK -o=$outputname $leftname $basename $rightname
+# report conflicts
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Conflict"
+    git merge --abort
+    cd $wd
+    exit $retVal
+fi
 
-    # report conflicts
-    retVal=$?
-    if [ $retVal -ne 0 ]; then
-        echo "Conflict"
-        exit $retVal
-    fi
-done
+# go back to wd
+cd $wd
+exit 0
