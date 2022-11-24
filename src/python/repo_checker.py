@@ -7,6 +7,7 @@ import multiprocessing
 from pebble import ProcessPool
 from merge_tester import get_repo
 import argparse
+from tqdm import tqdm
 
 def check_repo(arg):
     idx,row = arg
@@ -40,7 +41,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
-    for idx,row in df.iterrows():
+    for idx,row in tqdm(df.iterrows()):
         repo_name = row["repository"]
         repo = get_repo(repo_name)
 
