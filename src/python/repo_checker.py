@@ -41,7 +41,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
-    for idx,row in tqdm(df.iterrows()):
+    for idx,row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
         repo = get_repo(repo_name)
 
