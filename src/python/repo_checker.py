@@ -6,6 +6,7 @@ import os
 import multiprocessing
 from pebble import ProcessPool
 from merge_tester import get_repo
+import argparse
 
 def check_repo(arg):
     idx,row = arg
@@ -33,7 +34,11 @@ def check_repo(arg):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv("data/repos_small.csv")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repos_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--output_path",type=str, help="Path to CSV file with all repos")
+    args = parser.parse_args()
+    df = pd.read_csv(args.repos_path)
 
     with ProcessPool() as pool:
         future = pool.map(check_repo, df.iterrows(), timeout=10*60)
@@ -57,4 +62,4 @@ if __name__ == '__main__':
                 if int(next(fp)) == 0:
                     out.append(row)
     out = pd.DataFrame(out)
-    out.to_csv("data/valid_repos.csv")
+    out.to_csv(args.output_path)

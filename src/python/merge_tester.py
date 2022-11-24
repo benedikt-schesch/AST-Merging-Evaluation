@@ -6,6 +6,7 @@ import os
 import time
 import multiprocessing
 import pandas as pd
+import argparse
 
 SCRATCH_DIR = "scratch/" 
 STORE_SCRATCH = False
@@ -147,8 +148,13 @@ def test_merge(args):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv("data/valid_repos.csv")
-    merge_dir = "merges_small_valid/"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repos_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--merges_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--output_file",type=str, help="Path to CSV file with all repos")
+    args = parser.parse_args()
+    df = pd.read_csv(args.repos_path)
+    merge_dir = args.merges_path
 
     result = pd.DataFrame(columns = ["project name",
                                         "left",
@@ -161,7 +167,7 @@ if __name__ == '__main__':
                                         "runtime spork",
                                         "runtime intellimerge"])
 
-    args = []
+    args_merges = []
     for idx,row in df.iterrows():
         repo_name = row["repository"]
 
@@ -172,10 +178,10 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            args.append((repo_name,row2["left"],row2["right"],row2["base"]))
+            args_merges.append((repo_name,row2["left"],row2["right"],row2["base"]))
 
     pool = multiprocessing.Pool(os.cpu_count())
-    pool.map(test_merge,args)
+    pool.map(test_merge,args_merges)
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
@@ -190,4 +196,4 @@ if __name__ == '__main__':
             res = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
             res.columns = result.columns
             result = pd.concat([result,res],axis=0,ignore_index=True)
-            result.to_csv("data/result.csv")
+            result.to_csv(args.output_file)

@@ -1,16 +1,18 @@
 #!/bin/bash
 
+# usage: ./spork.sh <repo-list> <output-dir>
+
 # This scripts find the merge commits from a given
 # list of valid repositories
 # Output the list of merge commit hashes, two parents 
 # commit hashes, and base commit of the two parents
 
 # Recieve list of repo names from valid_repos.csv
-repos=( $(sed 1d valid_repos.csv | cut -d ',' -f3) )
+repos=( $(sed 1d $1 | cut -d ',' -f3) )
 
 # make merges directory if does not exists
-rm -rf merges/
-mkdir -p ./merges
+rm -rf $2
+mkdir -p $2
 
 # For each repo in list of repo names:
 #   - clone the repo,
@@ -32,7 +34,7 @@ do
   do
     merge_parents_commits=( $(git log --pretty=%P -n 1 $merge_commit) )
     merge_base_commit=$(git merge-base ${merge_parents_commits[0]} ${merge_parents_commits[1]})
-    echo "$merge_commit,${merge_parents_commits[0]},${merge_parents_commits[1]},$merge_base_commit" >> ../merges/$repo_name.csv
+    echo "$merge_commit,${merge_parents_commits[0]},${merge_parents_commits[1]},$merge_base_commit" >> ../$2/$repo_name.csv
   done
   cd ..
   rm -rf $repo_name/
