@@ -5,6 +5,7 @@ import shutil
 import os
 import multiprocessing
 from pebble import ProcessPool
+from merge_tester import get_repo
 
 def check_repo(arg):
     idx,row = arg
@@ -14,19 +15,21 @@ def check_repo(arg):
     target_file = "cache/result/"+repo_name.replace("/","_")+".txt"
 
     if os.path.isfile(target_file):
-        return
+       return
 
     with open(target_file,'a') as fp:
         fp.write(str(1))
+    
+    try:
+        repo = get_repo(repo_name)
 
-    if not os.path.isdir(repo_dir):
-        git_url = "https://github.com/"+repo_name+".git"
-        Repo.clone_from(git_url, repo_dir)
-    pwd = os.getcwd()
-    rc = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir])
+        pwd = os.getcwd()
+        rc = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir])
 
-    with open(target_file,'a') as fp:
-        fp.write(str(rc.returncode))
+        with open(target_file,'a') as fp:
+            fp.write(str(rc.returncode))
+    except Exception:
+        pass
 
 
 if __name__ == '__main__':

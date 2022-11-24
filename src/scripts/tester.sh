@@ -15,7 +15,7 @@ then
     exit 0
   fi
 
-else
+if [ -f "pom.xml" ]
   mvn test
   rc=$?
   if [ $rc -ne 0 ] ; then
@@ -27,3 +27,5 @@ else
     exit 0
   fi
 fi
+
+exit 1
