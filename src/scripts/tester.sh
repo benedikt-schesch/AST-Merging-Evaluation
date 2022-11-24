@@ -1,9 +1,7 @@
 #!/bin/bash
 
 cd $1
-if [ -f "gradlew" ]
-then
-
+if [ -f "gradlew" ] ; then
   ./gradlew test
   rc=$?
   if [ $rc -ne 0 ] ; then
@@ -14,8 +12,9 @@ then
     echo Gradle Test Success
     exit 0
   fi
+fi
 
-if [ -f "pom.xml" ]
+if [ -f "pom.xml" ] ; then
   mvn test
   rc=$?
   if [ $rc -ne 0 ] ; then

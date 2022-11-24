@@ -5,6 +5,7 @@ import shutil
 import os
 import time
 import multiprocessing
+import pandas as pd
 
 SCRATCH_DIR = "scratch/" 
 STORE_SCRATCH = False
@@ -26,12 +27,11 @@ def get_repo(repo_name):
 
 def test_merge(args):
     repo_name,left,right,base = args
-    cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base
+    cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base+".csv"
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
-            git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime = [int(x) for x in next(f).split()]
-            return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
+            return pd.read_csv("cache_file")
     
     process = multiprocessing.current_process()
     pid = str(process.pid)
@@ -41,6 +41,7 @@ def test_merge(args):
     repo_dir_copy = WORKDIR+pid
     
     try:
+        #Git Merge
         shutil.copytree(repo_dir, repo_dir_copy+"/git")
         repo_git = git.Git(repo_dir_copy+"/git")
         repo_git.fetch()
@@ -65,19 +66,19 @@ def test_merge(args):
         git_runtime = 0
 
         #Spork Merge
-        shutil.copytree(repo_dir, repo_dir_copy+"/left")
-        shutil.copytree(repo_dir, repo_dir_copy+"/right")
-        shutil.copytree(repo_dir, repo_dir_copy+"/base")
-        print(repo_dir,left)
-        repo_git = git.Git(repo_dir_copy+"/left")
+        shutil.copytree(repo_dir, repo_dir_copy+"/spork")
+        repo_git = git.Git(repo_dir_copy+"/spork")
+        repo_git.fetch()
         repo_git.checkout(left)
-        repo_git = git.Git(repo_dir_copy+"/right")
+        repo_git.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ1')
         repo_git.checkout(right)
-        repo_git = git.Git(repo_dir_copy+"/base")
-        repo_git.checkout(base)
+        repo_git.checkout('-b','AOFKMAFNASFKJNRFQJXNFHJ2')
         try:
             start = time.time()
-            spork_merge = subprocess.run([pwd+"/src/scripts/merge_tools/spork.sh",repo_dir_copy,repo_dir_copy+"/spork"]).returncode
+            spork_merge = subprocess.run([pwd+"/src/scripts/merge_tools/spork.sh",
+                                repo_dir_copy+"/spork",
+                                "AOFKMAFNASFKJNRFQJXNFHJ1",
+                                "AOFKMAFNASFKJNRFQJXNFHJ2"]).returncode
             spork_runtime = time.time()-start
         except Exception:
             spork_merge = 6
@@ -101,15 +102,14 @@ def test_merge(args):
             intelli_merge = subprocess.run([pwd+"/src/scripts/merge_tools/intellimerge.sh",
                                 repo_dir_copy+"/intellimerge",
                                 "AOFKMAFNASFKJNRFQJXNFHJ1",
-                                "AOFKMAFNASFKJNRFQJXNFHJ2",
-                                repo_dir_copy+"/intellimerge2"]).returncode
+                                "AOFKMAFNASFKJNRFQJXNFHJ2"]).returncode
             intelli_runtime = time.time()-start
         except Exception:
             intelli_merge = 6
             intelli_runtime = -1
         try:
             if intelli_merge == 0:
-                intelli_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/intellimerge2"]).returncode+2
+                intelli_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/intellimerge"]).returncode+2
         except Exception:
             intelli_merge = 5
 
@@ -119,11 +119,17 @@ def test_merge(args):
                     dst_name = SCRATCH_DIR+repo_name+"_"+left+"_"+right+"_"+base+"_"+i
                     shutil.copytree(repo_dir_copy+"/"+i,dst_name)
 
-        out = str(git_merge)+" "+str(int(git_runtime))+" "\
-                +str(spork_merge)+" "+str(int(spork_runtime))+" "\
-                +str(intelli_merge)+" "+str(int(intelli_runtime))
-        with open(cache_file,"w") as f:
-            f.write(out)
+        out = pd.DataFrame([[repo_name,
+                                left,
+                                right,
+                                base,
+                                git_merge,
+                                spork_merge,
+                                intelli_merge,
+                                git_runtime,
+                                spork_runtime,
+                                intelli_runtime]])
+        out.to_csv(cache_file)
         if DELETE_WORKDIR:
             shutil.rmtree(repo_dir_copy)
         return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
@@ -168,7 +174,7 @@ if __name__ == '__main__':
 
     pool = multiprocessing.Pool(os.cpu_count())
     pool.map(test_merge,args)
-
+    exit(0)
     for idx,row in df.iterrows():
         repo_name = row["repository"]
 

@@ -33,7 +33,7 @@ def check_repo(arg):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv("data/repos.csv")
+    df = pd.read_csv("data/repos_small.csv")
 
     with ProcessPool() as pool:
         future = pool.map(check_repo, df.iterrows(), timeout=10*60)
