@@ -5,10 +5,9 @@ import shutil
 import os
 import multiprocessing
 from merge_tester import get_repo
+import argparse
 
 CACHE = "cache/commit_test_result/"
-MERGE_DIR = "merges_small/"
-OUTPUT_DIR = "merges_small_valid/"
 WORKDIR = ".workdir/"
 
 def pass_test(args):
@@ -32,6 +31,7 @@ def pass_test(args):
         shutil.rmtree(repo_dir_copy)
     shutil.copytree(repo_dir, repo_dir_copy)
     repo = git.Git(repo_dir_copy)
+    #repo.remote().fetch()
     repo.fetch()
     repo.checkout(commit)
     try:
@@ -51,13 +51,20 @@ def pass_test(args):
 
 if __name__ == '__main__':
     pwd = os.getcwd()
-    df = pd.read_csv("data/valid_repos.csv")
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repos_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--merges_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--output_dir",type=str, help="Path to CSV file with all repos")
+    args = parser.parse_args()
+    df = pd.read_csv(args.repos_path)
+    if os.path.isdir(args.output_dir):
+        shutil.rmtree(args.output_dir)
+    os.mkdir(args.output_dir)
 
     commits = set()
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        merge_list_file = MERGE_DIR+repo_name.split("/")[1]+".csv"
+        merge_list_file = args.merges_path+repo_name.split("/")[1]+".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -75,7 +82,7 @@ if __name__ == '__main__':
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        merge_list_file = MERGE_DIR+repo_name.split("/")[1]+".csv"
+        merge_list_file = args.merges_path+repo_name.split("/")[1]+".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -88,6 +95,6 @@ if __name__ == '__main__':
                 test2 = pass_test((repo_name,row2["right"]))
                 if test1 == 0 and test2 == 0:
                     merges.loc[idx2, "parent test"] = 0
-        outout_file = OUTPUT_DIR+repo_name.split("/")[1]+".csv"
+        outout_file = args.output_dir+repo_name.split("/")[1]+".csv"
         merges.to_csv(outout_file)
 
