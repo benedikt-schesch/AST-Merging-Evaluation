@@ -52,9 +52,9 @@ def pass_test(args):
 if __name__ == '__main__':
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path",type=str, help="Path to CSV file with all repos")
-    parser.add_argument("--merges_path",type=str, help="Path to CSV file with all repos")
-    parser.add_argument("--output_dir",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--repos_path",type=str)
+    parser.add_argument("--merges_path",type=str)
+    parser.add_argument("--output_dir",type=str)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     if os.path.isdir(args.output_dir):

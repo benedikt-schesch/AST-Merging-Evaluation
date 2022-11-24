@@ -35,8 +35,8 @@ def check_repo(arg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path",type=str, help="Path to CSV file with all repos")
-    parser.add_argument("--output_path",type=str, help="Path to CSV file with all repos")
+    parser.add_argument("--repos_path",type=str)
+    parser.add_argument("--output_path",type=str)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
