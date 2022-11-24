@@ -40,6 +40,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
+    for idx,row in df.iterrows():
+        repo_name = row["repository"]
+        repo = get_repo(repo_name)
+
     with ProcessPool() as pool:
         future = pool.map(check_repo, df.iterrows(), timeout=10*60)
 
