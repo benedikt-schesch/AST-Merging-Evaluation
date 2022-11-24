@@ -17,7 +17,7 @@ def check_repo(arg):
     if os.path.isfile(target_file):
        return
 
-    with open(target_file,'a') as fp:
+    with open(target_file,'w') as fp:
         fp.write(str(1))
     
     try:
@@ -26,7 +26,7 @@ def check_repo(arg):
         pwd = os.getcwd()
         rc = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir])
 
-        with open(target_file,'a') as fp:
+        with open(target_file,'w') as fp:
             fp.write(str(rc.returncode))
     except Exception:
         pass
