@@ -30,8 +30,7 @@ def test_merge(args):
     cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base+".csv"
 
     if os.path.isfile(cache_file):
-        with open(cache_file) as f:
-            return pd.read_csv("cache_file")
+        return pd.read_csv(cache_file,index_col=0)
     
     process = multiprocessing.current_process()
     pid = str(process.pid)
@@ -56,14 +55,11 @@ def test_merge(args):
         except Exception:
             git_merge = 6
             git_runtime = -1
-        print(git_merge)
         try:
             if git_merge == 0:
                 git_merge = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir_copy+"/git"]).returncode+2
         except Exception:
             git_merge = 5
-        git_merge = 0
-        git_runtime = 0
 
         #Spork Merge
         shutil.copytree(repo_dir, repo_dir_copy+"/spork")
@@ -132,14 +128,22 @@ def test_merge(args):
         out.to_csv(cache_file)
         if DELETE_WORKDIR:
             shutil.rmtree(repo_dir_copy)
-        return git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime
+        return out
     except Exception:
-        with open(cache_file,"w") as f:
-            out = "-1 -1 -1 -1 -1 -1"
-            f.write(out)
+        out = pd.DataFrame([[repo_name,
+                                left,
+                                right,
+                                base,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1]])
+        out.to_csv(cache_file)
         if DELETE_WORKDIR:
             shutil.rmtree(repo_dir_copy)
-        return -1,-1,-1,-1,-1,-1
+        return out
 
 
 if __name__ == '__main__':
@@ -147,17 +151,15 @@ if __name__ == '__main__':
     merge_dir = "merges_small_valid/"
 
     result = pd.DataFrame(columns = ["project name",
-                                        "merge",
                                         "left",
                                         "right",
                                         "base",
-                                        "parent test",
                                         "git merge",
-                                        "intellimerge",
                                         "spork",
+                                        "intellimerge",
                                         "runtime git",
-                                        "runtime intellimerge",
-                                        "runtime spork"])
+                                        "runtime spork",
+                                        "runtime intellimerge"])
 
     args = []
     for idx,row in df.iterrows():
@@ -174,7 +176,7 @@ if __name__ == '__main__':
 
     pool = multiprocessing.Pool(os.cpu_count())
     pool.map(test_merge,args)
-    exit(0)
+
     for idx,row in df.iterrows():
         repo_name = row["repository"]
 
@@ -185,19 +187,7 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            ret = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
-            git_merge,git_runtime,spork_merge,spork_runtime,intelli_merge,intelli_runtime = ret
-            result = pd.concat([result,pd.DataFrame({"project name":repo_name,
-                            "left":row2["left"],
-                            "right":row2["right"],
-                            "merge":row2["merge"],
-                            "base":row2["base"],
-                            "parent test":row2["parent test"],
-                            "git merge":git_merge,
-                            "spork merge":spork_merge,
-                            "intellimerge":intelli_merge,
-                            "git runtime":git_runtime,
-                            "intellimerge runtime":intelli_runtime,
-                            "spork runtime":spork_runtime},
-                            index=[0])])
+            res = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
+            res.columns = result.columns
+            result = pd.concat([result,res],axis=0,ignore_index=True)
             result.to_csv("data/result.csv")
