@@ -195,7 +195,7 @@ if __name__ == '__main__':
             args_merges.append((repo_name,row2["left"],row2["right"],row2["base"]))
 
     
-    with ProcessPool(os.cpu_count()) as pool:
+    with ProcessPool(max_workers=os.cpu_count()-10) as pool:
         pool.map(test_merge,args_merges,timeout=TIMEOUT_SECONDS)
 
     # pool = multiprocessing.Pool(os.cpu_count())
