@@ -17,7 +17,7 @@ if __name__ == "__main__":
     for file in os.listdir(args.merges_path):
         df = pd.read_csv(args.merges_path+file)
         if len(df) > args.max_merges:
-            df = df.sample(n=args.max_merges)
+            df = df.sample(n=args.max_merges,random_state=42)
         df.to_csv(args.output_dir+file)
 
 
