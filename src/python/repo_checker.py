@@ -45,7 +45,7 @@ if __name__ == '__main__':
         repo_name = row["repository"]
         repo = get_repo(repo_name)
 
-    with ProcessPool() as pool:
+    with ProcessPool(max_workers=os.cpu_count()-10) as pool:
         future = pool.map(check_repo, df.iterrows(), timeout=10*60)
 
         iterator = future.result()
