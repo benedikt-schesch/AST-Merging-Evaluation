@@ -5,10 +5,12 @@ import shutil
 import os
 import multiprocessing
 from merge_tester import get_repo
+from pebble import ProcessPool
 import argparse
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
+TIMEOUT_SECONDS = 60*10
 
 def pass_test(args):
     repo_name,commit = args
@@ -17,6 +19,10 @@ def pass_test(args):
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
             return int(next(f))
+
+    # Flag in case process timeouts
+    with open(cache_file,"w") as f:
+        f.write(str(-1))
     
     process = multiprocessing.current_process()
     pid = str(process.pid)
@@ -77,8 +83,11 @@ if __name__ == '__main__':
     
     commits = list(commits)
 
-    pool = multiprocessing.Pool(os.cpu_count())
-    pool.map(pass_test,commits)
+    with ProcessPool(os.cpu_count()) as pool:
+        pool.map(pass_test,commits,timeout=TIMEOUT_SECONDS)
+
+    # pool = multiprocessing.Pool(os.cpu_count())
+    # pool.map(pass_test,commits)
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
