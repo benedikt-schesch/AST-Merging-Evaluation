@@ -7,12 +7,14 @@ import time
 import multiprocessing
 import pandas as pd
 import argparse
+from pebble import ProcessPool
 
 SCRATCH_DIR = "scratch/" 
 STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
+TIMEOUT_SECONDS = 60*60
 
 
 def get_repo(repo_name):
@@ -32,6 +34,18 @@ def test_merge(args):
 
     if os.path.isfile(cache_file):
         return pd.read_csv(cache_file,index_col=0)
+    
+    out = pd.DataFrame([[repo_name,
+                                left,
+                                right,
+                                base,
+                                -2,
+                                -2,
+                                -2,
+                                -2,
+                                -2,
+                                -2]])
+    out.to_csv(cache_file)
     
     process = multiprocessing.current_process()
     pid = str(process.pid)
@@ -180,8 +194,12 @@ if __name__ == '__main__':
         for idx2, row2 in merges.iterrows():
             args_merges.append((repo_name,row2["left"],row2["right"],row2["base"]))
 
-    pool = multiprocessing.Pool(os.cpu_count())
-    pool.map(test_merge,args_merges)
+    
+    with ProcessPool(os.cpu_count()) as pool:
+        pool.map(test_merge,args_merges,timeout=TIMEOUT_SECONDS)
+
+    # pool = multiprocessing.Pool(os.cpu_count())
+    # pool.map(test_merge,args_merges)
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]

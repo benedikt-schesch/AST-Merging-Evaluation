@@ -6,6 +6,6 @@ sh src/scripts/find_merge_commits.sh data/valid_repos.csv merges
 
 python3 src/python/test_parent_merges.py --repos_path data/valid_repos.csv --merges_path merges/ --output_dir merges_valid/
 
-python3 src/python/reduce_merges.py --merges_path merges_valid/ --output_dir merges_valid_subsamples/ --max_size 10
+python3 src/python/reduce_merges.py --merges_path merges_valid/ --output_dir merges_valid_subsamples/ --max_merges 20
 
 python3 src/python/merge_tester.py --repos_path data/valid_repos.csv --merges_path merges_valid_subsamples/ --output_file data/result.csv
