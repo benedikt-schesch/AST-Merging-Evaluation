@@ -4,7 +4,9 @@ python3 src/python/repo_checker.py --repos_path data/repos.csv --output_path dat
 
 sh src/scripts/find_merge_commits.sh data/valid_repos.csv merges
 
-python3 src/python/test_parent_merges.py --repos_path data/valid_repos.csv --merges_path merges/ --output_dir merges_valid/
+python3 src/python/reduce_merges.py --merges_path merges/ --output_dir merges_subsampled/ --max_merges 300
+
+python3 src/python/test_parent_merges.py --repos_path data/valid_repos.csv --merges_path merges_subsampled/ --output_dir merges_valid/
 
 python3 src/python/reduce_merges.py --merges_path merges_valid/ --output_dir merges_valid_subsamples/ --max_merges 20
 
