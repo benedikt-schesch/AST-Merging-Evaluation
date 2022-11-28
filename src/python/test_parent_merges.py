@@ -83,7 +83,7 @@ if __name__ == '__main__':
     
     commits = list(commits)
 
-    with ProcessPool(os.cpu_count()) as pool:
+    with ProcessPool(max_workers=os.cpu_count()-10) as pool:
         pool.map(pass_test,commits,timeout=TIMEOUT_SECONDS)
 
     # pool = multiprocessing.Pool(os.cpu_count())
