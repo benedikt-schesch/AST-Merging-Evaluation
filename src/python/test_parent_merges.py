@@ -17,8 +17,11 @@ def pass_test(args):
     cache_file = CACHE+repo_name.split("/")[1]+"_"+commit
 
     if os.path.isfile(cache_file):
-        with open(cache_file) as f:
-            return int(next(f))
+        try:
+            with open(cache_file) as f:
+                return int(next(f))
+        except Exception:
+            return 1
 
     # Flag in case process timeouts
     with open(cache_file,"w") as f:
