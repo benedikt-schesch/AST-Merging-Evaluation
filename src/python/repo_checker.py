@@ -9,12 +9,14 @@ from merge_tester import get_repo
 import argparse
 from tqdm import tqdm
 
+CACHE = "cache/repos_result/"
+
 def check_repo(arg):
     idx,row = arg
     repo_name = row["repository"]
 
     repo_dir = "repos/"+repo_name
-    target_file = "cache/result/"+repo_name.replace("/","_")+".txt"
+    target_file = CACHE+repo_name.replace("/","_")+".txt"
 
     if os.path.isfile(target_file):
        return
@@ -61,7 +63,7 @@ if __name__ == '__main__':
     for idx,row in df.iterrows():
         repo_name = row["repository"]
         repo_dir = "repos/"+repo_name
-        target_file = "cache/result/"+repo_name.replace("/","_")+".txt"
+        target_file = CACHE+repo_name.replace("/","_")+".txt"
         if os.path.isfile(target_file):
             with open(target_file) as fp:
                 if int(next(fp)) == 0:
