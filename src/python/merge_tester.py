@@ -8,6 +8,7 @@ import multiprocessing
 import pandas as pd
 import argparse
 from pebble import ProcessPool
+import math
 
 SCRATCH_DIR = "scratch/" 
 STORE_SCRATCH = False
@@ -211,6 +212,8 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
+            if type(row2["left"]) != str or type(row2["right"]) != str or type(row2["base"]) != str:
+                continue
             res = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
             res.columns = result.columns
             result = pd.concat([result,res],axis=0,ignore_index=True)
