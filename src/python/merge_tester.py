@@ -82,7 +82,7 @@ def test_merge(merging_method,repo_name,left,right,base):
 
 
 def test_merge(args):
-    repo_name,left,right,base = args
+    repo_name,left,right,base,merge_test = args
     cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base+".csv"
 
     if os.path.isfile(cache_file):
@@ -97,7 +97,8 @@ def test_merge(args):
                                 -2,
                                 -2,
                                 -2,
-                                -2]])
+                                -2,
+                                merge_test]])
     out.to_csv(cache_file)
     
     #Git Merge
@@ -118,7 +119,8 @@ def test_merge(args):
                             intelli_merge,
                             git_runtime,
                             spork_runtime,
-                            intelli_runtime]])
+                            intelli_runtime,
+                            merge_test]])
     out.to_csv(cache_file)
     return out
 
@@ -141,7 +143,8 @@ if __name__ == '__main__':
                                         "intellimerge",
                                         "runtime git",
                                         "runtime spork",
-                                        "runtime intellimerge"])
+                                        "runtime intellimerge",
+                                        "merge test"])
 
     args_merges = []
     for idx,row in df.iterrows():
@@ -154,7 +157,7 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            args_merges.append((repo_name,row2["left"],row2["right"],row2["base"]))
+            args_merges.append((repo_name,row2["left"],row2["right"],row2["base"],row2["merge test"]))
 
     
     # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
