@@ -81,8 +81,8 @@ def test_merge(merging_method,repo_name,left,right,base):
     return merge, runtime
 
 
-def test_merge(args):
-    repo_name,left,right,base,merge_test = args
+def test_merges(args):
+    repo_name,left,right,base,merge,merge_test = args
     cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base+".csv"
 
     if os.path.isfile(cache_file):
@@ -92,6 +92,7 @@ def test_merge(args):
                                 left,
                                 right,
                                 base,
+                                merge,
                                 -2,
                                 -2,
                                 -2,
@@ -135,6 +136,7 @@ if __name__ == '__main__':
     merge_dir = args.merges_path
 
     result = pd.DataFrame(columns = ["project name",
+                                        "merge",
                                         "left",
                                         "right",
                                         "base",
@@ -157,14 +159,19 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
-            args_merges.append((repo_name,row2["left"],row2["right"],row2["base"],row2["merge test"]))
+            args_merges.append((repo_name,
+                                row2["left"],
+                                row2["right"],
+                                row2["base"],
+                                row2["merge"],
+                                row2["merge test"]))
 
     
     # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
     #     pool.map(test_merge,args_merges,timeout=TIMEOUT_SECONDS)
 
     pool = multiprocessing.Pool(os.cpu_count()-10)
-    pool.map(test_merge,args_merges)
+    pool.map(test_merges,args_merges)
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
@@ -178,7 +185,12 @@ if __name__ == '__main__':
         for idx2, row2 in merges.iterrows():
             if type(row2["left"]) != str or type(row2["right"]) != str or type(row2["base"]) != str:
                 continue
-            res = test_merge((repo_name,row2["left"],row2["right"],row2["base"]))
+            res = test_merges((repo_name,
+                                row2["left"],
+                                row2["right"],
+                                row2["base"],
+                                row2["merge"],
+                                row2["merge test"]))
             res.columns = result.columns
             result = pd.concat([result,res],axis=0,ignore_index=True)
             result.to_csv(args.output_file)
