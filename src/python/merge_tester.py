@@ -160,7 +160,7 @@ if __name__ == '__main__':
     # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
     #     pool.map(test_merge,args_merges,timeout=TIMEOUT_SECONDS)
 
-    pool = multiprocessing.Pool(os.cpu_count())
+    pool = multiprocessing.Pool(os.cpu_count()-10)
     pool.map(test_merge,args_merges)
 
     for idx,row in df.iterrows():
