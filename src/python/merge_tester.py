@@ -16,7 +16,7 @@ WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
 TIMEOUT_MERGE = 15*60 #15 Minutes
-TIMEOUT_TESTING = 30*60 #15 Minutes
+TIMEOUT_TESTING = 30*60 #30 Minutes
 
 
 def get_repo(repo_name):
@@ -52,7 +52,7 @@ def test_merge(merging_method,repo_name,left,right,base):
         try:
             start = time.time()
             merge = subprocess.run([command_timeout,
-                                        TIMEOUT_MERGE+"s",
+                                        str(TIMEOUT_MERGE)+"s",
                                         "src/scripts/merge_tools/"+merging_method+".sh",
                                         repo_dir_copy+"/"+merging_method,
                                         "AOFKMAFNASFKJNRFQJXNFHJ1",
@@ -64,7 +64,7 @@ def test_merge(merging_method,repo_name,left,right,base):
         try:
             if merge == 0:
                 merge = subprocess.run([command_timeout,
-                                        TIMEOUT_TESTING+"s",
+                                        str(TIMEOUT_TESTING)+"s",
                                         "src/scripts/tester.sh",
                                         repo_dir_copy+"/"+merging_method])
         except Exception:
