@@ -94,9 +94,11 @@ if __name__ == '__main__':
 
     # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
     #     pool.map(pass_test,commits,timeout=TIMEOUT_SECONDS)
-
+    print("Number of tested commits:",len(commits))
+    print("Started Testing")
     pool = multiprocessing.Pool(os.cpu_count()-10)
     pool.map(pass_test,commits)
+    print("Finished Testing")
 
     for idx,row in df.iterrows():
         repo_name = row["repository"]
