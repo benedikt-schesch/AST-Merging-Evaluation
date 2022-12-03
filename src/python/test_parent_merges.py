@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
     #     pool.map(pass_test,commits,timeout=TIMEOUT_SECONDS)
 
-    pool = multiprocessing.Pool(os.cpu_count())
+    pool = multiprocessing.Pool(os.cpu_count()-10)
     pool.map(pass_test,commits)
 
     for idx,row in df.iterrows():
