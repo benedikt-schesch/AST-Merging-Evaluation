@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("/Users/benediktschesch/Downloads/AST-Merging-Evaluation2/AST-Merging-Evaluation/data/result.csv")
+df = pd.read_csv("data/result.csv")
 
 
 for i in ["git merge","spork","intellimerge"]:
