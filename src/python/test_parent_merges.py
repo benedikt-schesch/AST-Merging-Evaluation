@@ -47,12 +47,11 @@ def pass_test(args):
     repo = git.Git(repo_dir_copy)
     repo.fetch()
     repo.checkout(commit)
-    pwd = os.getcwd()
 
     try:
         test = subprocess.run([command_timeout,
-                                TIMEOUT_SECONDS+"s",
-                                pwd+"/src/scripts/tester.sh",
+                                str(TIMEOUT_SECONDS)+"s",
+                                "src/scripts/tester.sh",
                                 repo_dir_copy]).returncode
     except Exception:
         test = 2
