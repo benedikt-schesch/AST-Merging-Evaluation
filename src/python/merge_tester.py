@@ -56,7 +56,7 @@ def test_merge(merging_method,repo_name,left,right,base):
                                         "src/scripts/merge_tools/"+merging_method+".sh",
                                         repo_dir_copy+"/"+merging_method,
                                         "AOFKMAFNASFKJNRFQJXNFHJ1",
-                                        "AOFKMAFNASFKJNRFQJXNFHJ2"])
+                                        "AOFKMAFNASFKJNRFQJXNFHJ2"]).returncode
             runtime = time.time()-start
         except Exception:
             merge = 6
@@ -66,7 +66,7 @@ def test_merge(merging_method,repo_name,left,right,base):
                 merge = subprocess.run([command_timeout,
                                         str(TIMEOUT_TESTING)+"s",
                                         "src/scripts/tester.sh",
-                                        repo_dir_copy+"/"+merging_method])
+                                        repo_dir_copy+"/"+merging_method]).returncode
         except Exception:
             merge = 5
     except Exception:
@@ -83,6 +83,8 @@ def test_merge(merging_method,repo_name,left,right,base):
 
 def test_merges(args):
     repo_name,left,right,base,merge,merge_test = args
+    if type(right) != str or type(left) != str or type(base) != str or type(base) != str:
+        return pd.DataFrame()
     cache_file = CACHE+repo_name.split("/")[1]+"_"+left+"_"+right+"_"+base+".csv"
 
     if os.path.isfile(cache_file):
@@ -136,7 +138,6 @@ if __name__ == '__main__':
     merge_dir = args.merges_path
 
     result = pd.DataFrame(columns = ["project name",
-                                        "merge",
                                         "left",
                                         "right",
                                         "base",
