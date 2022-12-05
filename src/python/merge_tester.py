@@ -66,7 +66,7 @@ def test_merge(merging_method,repo_name,left,right,base):
                 merge = subprocess.run([command_timeout,
                                         str(TIMEOUT_TESTING)+"s",
                                         "src/scripts/tester.sh",
-                                        repo_dir_copy+"/"+merging_method]).returncode
+                                        repo_dir_copy+"/"+merging_method]).returncode+2
         except Exception:
             merge = 5
     except Exception:
@@ -117,6 +117,7 @@ def test_merges(args):
                             left,
                             right,
                             base,
+                            merge,
                             git_merge,
                             spork_merge,
                             intelli_merge,
@@ -141,6 +142,7 @@ if __name__ == '__main__':
                                         "left",
                                         "right",
                                         "base",
+                                        "merge",
                                         "git merge",
                                         "spork",
                                         "intellimerge",
