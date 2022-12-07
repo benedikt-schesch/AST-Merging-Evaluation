@@ -29,7 +29,7 @@ def check_repo(arg):
         df = pd.read_csv(target_file)
         return df["test"].iloc[0]
 
-    df = pd.DataFrame({"test":[0]})
+    df = pd.DataFrame({"test":[1]})
     df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR+pid
