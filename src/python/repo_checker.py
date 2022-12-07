@@ -27,9 +27,6 @@ def check_repo(arg):
 
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
-        print(df)
-        print(df.iloc[0])
-        print(df.iloc[0]["test"])
         return df.iloc[0]["test"]
 
     df = pd.DataFrame({"test":[1]})
