@@ -4,6 +4,6 @@ df = pd.read_csv("data/result.csv")
 
 
 for i in ["git merge","spork","intellimerge"]:
-    for j in [-2,-1,1,2,3,5,6]:
+    for j in df[i].unique():
         instances = sum(df[i] == j)
         print(i,j,instances)

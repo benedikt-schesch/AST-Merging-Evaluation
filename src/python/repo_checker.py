@@ -4,36 +4,51 @@ import subprocess
 import shutil
 import os
 import multiprocessing
-from pebble import ProcessPool
 from merge_tester import get_repo
 import argparse
 from tqdm import tqdm
+import platform
 
 CACHE = "cache/repos_result/"
+WORKDIR = ".workdir/"
+TIMEOUT_MERGE = 20*60
 
 def check_repo(arg):
     idx,row = arg
     repo_name = row["repository"]
 
+    if platform.system() == "Linux": #Linux
+        command_timeout = "timeout"
+    else: #MacOS
+        command_timeout = "gtimeout"
+
     repo_dir = "repos/"+repo_name
-    target_file = CACHE+repo_name.replace("/","_")+".txt"
+    target_file = CACHE+repo_name.replace("/","_")+".csv"
 
     if os.path.isfile(target_file):
-       return
+        df = pd.read_csv(target_file)
+        return df["test"].iloc[0]
 
-    with open(target_file,'w') as fp:
-        fp.write(str(1))
-    
+    df = pd.DataFrame({"test":[0]})
+    df.to_csv(target_file)
+    pid = str(multiprocessing.current_process().pid)
+    repo_dir_copy = WORKDIR+pid
     try:
         repo = get_repo(repo_name)
+        shutil.copytree(repo_dir, repo_dir_copy)
 
         pwd = os.getcwd()
-        rc = subprocess.run([pwd+"/src/scripts/tester.sh",repo_dir])
+        rc = subprocess.run([command_timeout,
+                                str(TIMEOUT_MERGE)+"s",
+                                pwd+"/src/scripts/tester.sh",
+                                repo_dir_copy]).returncode
 
-        with open(target_file,'w') as fp:
-            fp.write(str(rc.returncode))
+        df = pd.DataFrame({"test":[rc]})
+        df.to_csv(target_file)
     except Exception:
         pass
+    shutil.rmtree(repo_dir_copy)
+    return df["test"].iloc[0]
 
 
 if __name__ == '__main__':
@@ -47,26 +62,16 @@ if __name__ == '__main__':
         repo_name = row["repository"]
         repo = get_repo(repo_name)
 
-    with ProcessPool(max_workers=os.cpu_count()-10) as pool:
-        future = pool.map(check_repo, df.iterrows(), timeout=10*60)
-
-        iterator = future.result()
-        while True:
-            try:
-                result = next(iterator)
-            except StopIteration:
-                break
-            except TimeoutError as error:
-                print("function took longer than %d seconds" % error.args[1])
+    print("Start processing")
+    pool = multiprocessing.Pool(processes=os.cpu_count())
+    pool.map(check_repo, df.iterrows())
+    print("End processing")
     
     out = []
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        repo_dir = "repos/"+repo_name
-        target_file = CACHE+repo_name.replace("/","_")+".txt"
-        if os.path.isfile(target_file):
-            with open(target_file) as fp:
-                if int(next(fp)) == 0:
-                    out.append(row)
+        repo = get_repo(repo_name)
+        if repo:
+            out.append(row)
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
