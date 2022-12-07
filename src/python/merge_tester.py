@@ -7,7 +7,6 @@ import time
 import multiprocessing
 import pandas as pd
 import argparse
-from pebble import ProcessPool
 import platform
 
 SCRATCH_DIR = "scratch/" 
@@ -15,8 +14,8 @@ STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
-TIMEOUT_MERGE = 15*60 #15 Minutes
-TIMEOUT_TESTING = 30*60 #30 Minutes
+TIMEOUT_MERGE = 15*60 # 15 Minutes
+TIMEOUT_TESTING = 30*60 # 30 Minutes
 
 
 def get_repo(repo_name):
@@ -169,9 +168,6 @@ if __name__ == '__main__':
                                 row2["merge"],
                                 row2["merge test"]))
 
-    
-    # with ProcessPool(max_workers=os.cpu_count()-10) as pool:
-    #     pool.map(test_merge,args_merges,timeout=TIMEOUT_SECONDS)
 
     pool = multiprocessing.Pool(os.cpu_count()-10)
     pool.map(test_merges,args_merges)
