@@ -63,7 +63,7 @@ if __name__ == '__main__':
         repo = get_repo(repo_name)
 
     print("Start processing")
-    pool = multiprocessing.Pool(processes=os.cpu_count())
+    pool = multiprocessing.Pool(processes=os.cpu_count()-10)
     pool.map(check_repo, df.iterrows())
     print("End processing")
     
