@@ -27,7 +27,10 @@ def check_repo(arg):
 
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
-        return df["test"].iloc[0]
+        print(df)
+        print(df.iloc[0])
+        print(df.iloc[0]["test"])
+        return df.iloc[0]["test"]
 
     df = pd.DataFrame({"test":[1]})
     df.to_csv(target_file)
@@ -48,7 +51,7 @@ def check_repo(arg):
     except Exception:
         pass
     shutil.rmtree(repo_dir_copy)
-    return df["test"].iloc[0]
+    return df.iloc[0]["test"]
 
 
 if __name__ == '__main__':
@@ -70,8 +73,8 @@ if __name__ == '__main__':
     out = []
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-        repo = get_repo(repo_name)
-        if repo:
+        repo = check_repo((idx,row))
+        if repo == 0:
             out.append(row)
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
