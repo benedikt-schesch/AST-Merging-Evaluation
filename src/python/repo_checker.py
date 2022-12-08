@@ -13,6 +13,12 @@ CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_MERGE = 10*60
 
+if platform.system() == "Linux": #Linux
+    CPU = 40
+else: #MacOS
+    CPU = 5
+
+
 def test_repo(repo_dir_copy,timeout):
     if platform.system() == "Linux": #Linux
         command_timeout = "timeout"
@@ -70,7 +76,7 @@ if __name__ == '__main__':
         repo = get_repo(repo_name)
 
     print("Start processing")
-    pool = multiprocessing.Pool(processes=os.cpu_count()-10)
+    pool = multiprocessing.Pool(processes=CPU)
     pool.map(check_repo, df.iterrows())
     print("End processing")
     
