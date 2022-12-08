@@ -4,7 +4,7 @@ import subprocess
 import shutil
 import os
 import multiprocessing
-from merge_tester import get_repo
+import git
 import argparse
 from tqdm import tqdm
 import platform
@@ -18,6 +18,15 @@ if platform.system() == "Linux": #Linux
 else: #MacOS
     CPU = 5
 
+def get_repo(repo_name):
+    repo_dir = "repos/"+repo_name
+    if not os.path.isdir(repo_dir):
+        git_url = "https://github.com/"+repo_name+".git"
+        repo = git.Repo.clone_from(git_url, repo_dir)
+        repo.remote().fetch()
+    else:
+        repo = git.Git(repo_dir)
+    return repo
 
 def test_repo(repo_dir_copy,timeout):
     if platform.system() == "Linux": #Linux
