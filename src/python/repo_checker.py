@@ -11,16 +11,25 @@ import platform
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 20*60
+TIMEOUT_MERGE = 10*60
 
-def check_repo(arg):
-    idx,row = arg
-    repo_name = row["repository"]
-
+def test_repo(repo_dir_copy,timeout):
     if platform.system() == "Linux": #Linux
         command_timeout = "timeout"
     else: #MacOS
         command_timeout = "gtimeout"
+    for i in range(3):
+        rc = subprocess.run([command_timeout,
+                                    str(timeout)+"s",
+                                    "src/scripts/tester.sh",
+                                    repo_dir_copy]).returncode
+        if rc == 0:
+            return 0
+    return 1
+
+def check_repo(arg):
+    idx,row = arg
+    repo_name = row["repository"]
 
     repo_dir = "repos/"+repo_name
     target_file = CACHE+repo_name.replace("/","_")+".csv"
@@ -37,11 +46,7 @@ def check_repo(arg):
         repo = get_repo(repo_name)
         shutil.copytree(repo_dir, repo_dir_copy)
 
-        pwd = os.getcwd()
-        rc = subprocess.run([command_timeout,
-                                str(TIMEOUT_MERGE)+"s",
-                                pwd+"/src/scripts/tester.sh",
-                                repo_dir_copy]).returncode
+        rc = test_repo(repo_dir_copy,TIMEOUT_MERGE)
 
         df = pd.DataFrame({"test":[rc]})
         df.to_csv(target_file)
