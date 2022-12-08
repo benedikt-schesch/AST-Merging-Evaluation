@@ -22,7 +22,7 @@ def test_repo(repo_dir_copy,timeout):
         rc = subprocess.run([command_timeout,
                                     str(timeout)+"s",
                                     "src/scripts/tester.sh",
-                                    repo_dir_copy]).returncode
+                                    repo_dir_copy], stdout=subprocess.DEVNULL).returncode
         if rc == 0:
             return 0
         if rc == 124:
