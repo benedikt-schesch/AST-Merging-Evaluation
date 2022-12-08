@@ -25,6 +25,8 @@ def test_repo(repo_dir_copy,timeout):
                                     repo_dir_copy]).returncode
         if rc == 0:
             return 0
+        if rc == 124:
+            return 124
     return 1
 
 def check_repo(arg):
