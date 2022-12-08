@@ -8,10 +8,11 @@ from merge_tester import get_repo
 from pebble import ProcessPool
 import argparse
 import platform
+from repo_checker import test_repo
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 60*10
+TIMEOUT_SECONDS = 10*60
 
 def pass_test(args):
     repo_name,commit = args
@@ -49,10 +50,7 @@ def pass_test(args):
     repo.checkout(commit)
 
     try:
-        test = subprocess.run([command_timeout,
-                                str(TIMEOUT_SECONDS)+"s",
-                                "src/scripts/tester.sh",
-                                repo_dir_copy]).returncode
+        test = test_repo(repo_dir_copy,TIMEOUT_SECONDS)
     except Exception:
         test = 2
     
