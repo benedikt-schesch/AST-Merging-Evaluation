@@ -8,14 +8,16 @@ import multiprocessing
 import pandas as pd
 import argparse
 import platform
+from repo_checker import test_repo
+
 
 SCRATCH_DIR = "scratch/" 
-STORE_SCRATCH = False
+STORE_SCRATCH = True
 WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
 TIMEOUT_MERGE = 15*60 # 15 Minutes
-TIMEOUT_TESTING = 30*60 # 30 Minutes
+TIMEOUT_TESTING = 10*60 # 30 Minutes
 
 
 def get_repo(repo_name):
@@ -62,10 +64,7 @@ def test_merge(merging_method,repo_name,left,right,base):
             runtime = -1
         try:
             if merge == 0:
-                merge = subprocess.run([command_timeout,
-                                        str(TIMEOUT_TESTING)+"s",
-                                        "src/scripts/tester.sh",
-                                        repo_dir_copy+"/"+merging_method]).returncode+2
+                merge = test_repo(repo_dir_copy+"/"+merging_method,TIMEOUT_TESTING)+2
         except Exception:
             merge = 5
     except Exception:
