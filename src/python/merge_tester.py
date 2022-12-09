@@ -17,7 +17,7 @@ WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
 TIMEOUT_MERGE = 15*60 # 15 Minutes
-TIMEOUT_TESTING = 10*60 # 30 Minutes
+TIMEOUT_TESTING = 10*60 # 10 Minutes
 
 
 def get_repo(repo_name):
@@ -169,8 +169,8 @@ if __name__ == '__main__':
                                 row2["merge"],
                                 row2["merge test"]))
 
-
-    pool = multiprocessing.Pool(os.cpu_count()-10)
+    print("Number of merges:",len(args_merges))
+    pool = multiprocessing.Pool(os.cpu_count()-20)
     pool.map(test_merges,args_merges)
 
     for idx,row in df.iterrows():
