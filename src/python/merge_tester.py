@@ -70,14 +70,14 @@ def test_merge(merging_method,repo_name,left,right,base):
     except Exception:
         merge = -1
         runtime = -1
-    if DELETE_WORKDIR:
-        shutil.rmtree(repo_dir_copy)
     if STORE_SCRATCH:
         dst_name = SCRATCH_DIR+repo_name+"_"+left+"_"+right+"_"+base+"_"+merging_method
         if os.path.isdir(dst_name):
             shutil.rmtree(dst_name)
         if os.path.isdir(repo_dir_copy+"/"+merging_method):
             shutil.copytree(repo_dir_copy+"/"+merging_method,dst_name)
+    if DELETE_WORKDIR:
+        shutil.rmtree(repo_dir_copy)
     return merge, runtime
 
 
