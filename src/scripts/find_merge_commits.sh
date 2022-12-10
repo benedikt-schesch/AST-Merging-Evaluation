@@ -50,7 +50,7 @@ do
                 | grep -vE '^[[:space:]]*$|HEAD' | sort -u)
     
     # Feature branches often diverge from mainline branch (master)
-    # and carry redudant merge commit tuple (merge,parents,base) 
+    # and carry redundant merge commit tuple (merge,parents,base) 
     # contained in mainline branch
     # We want to eliminate redundant merge commit tuple, 
     # so we will retrieve merge commit tuple of mainline 
@@ -58,8 +58,8 @@ do
     # and only retrieve new merge commit tuple.
     # Get merge commits
     
+    DEFAULT_BRANCH=$(git branch --show-current)
     {
-        CURR_BRANCH=$(git branch --show-current)
         MERGE_COMMITS="$(git log --merges --pretty=format:"%H")"
         for MERGE_COMMIT in ${MERGE_COMMITS[@]}
         do
@@ -67,14 +67,14 @@ do
             MERGE_BASE=$(git merge-base \
                         ${MERGE_PARENTS[0]} ${MERGE_PARENTS[1]})
             
-            echo "$CURR_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> ../$2/$REPO_NAME.csv
+            echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> ../$2/$REPO_NAME.csv
         done
     }
 
     for BRANCH in ${BRANCHES[@]}
     do
         # ignore master branch, commits already retrieved
-        if [[ $BRANCH != 'master' ]]
+        if [[ $BRANCH != $DEFAULT_BRANCH ]]
         then
             git checkout -B $BRANCH origin/$BRANCH
 
