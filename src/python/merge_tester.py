@@ -175,7 +175,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(os.cpu_count()-20)
     pool.map(test_merges,args_merges)
 
-    for idx,row in tqdm(df.iterrows()):
+    for idx,row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
 
         merge_list_file = merge_dir+repo_name.split("/")[1]+".csv"
