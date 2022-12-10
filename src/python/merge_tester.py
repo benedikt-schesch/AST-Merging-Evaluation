@@ -155,7 +155,6 @@ if __name__ == '__main__':
     args_merges = []
     for idx,row in df.iterrows():
         repo_name = row["repository"]
-
         merge_list_file = merge_dir+repo_name.split("/")[1]+".csv"
         if not os.path.isfile(merge_list_file):
             continue
@@ -163,6 +162,8 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
+            if row2["parent test"] != 0:
+                continue
             args_merges.append((repo_name,
                                 row2["left"],
                                 row2["right"],
@@ -184,6 +185,8 @@ if __name__ == '__main__':
         merges = pd.read_csv(merge_list_file)
 
         for idx2, row2 in merges.iterrows():
+            if row2["parent test"] != 0:
+                continue
             if type(row2["left"]) != str or type(row2["right"]) != str or type(row2["base"]) != str:
                 continue
             if len(row2["left"]) != 40 or len(row2["right"]) != 40 or len(row2["base"]) != 40:
