@@ -9,6 +9,7 @@ import pandas as pd
 import argparse
 import platform
 from repo_checker import test_repo
+from tqdm import tqdm
 
 
 SCRATCH_DIR = "scratch/" 
@@ -173,7 +174,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(os.cpu_count()-20)
     pool.map(test_merges,args_merges)
 
-    for idx,row in df.iterrows():
+    for idx,row in tqdm(df.iterrows()):
         repo_name = row["repository"]
 
         merge_list_file = merge_dir+repo_name.split("/")[1]+".csv"
@@ -184,6 +185,8 @@ if __name__ == '__main__':
 
         for idx2, row2 in merges.iterrows():
             if type(row2["left"]) != str or type(row2["right"]) != str or type(row2["base"]) != str:
+                continue
+            if len(row2["left"]) != 40 or len(row2["right"]) != 40 or len(row2["base"]) != 40:
                 continue
             res = test_merges((repo_name,
                                 row2["left"],
