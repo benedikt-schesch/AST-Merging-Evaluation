@@ -1,6 +1,8 @@
 # ASTMerging
 Ensure all bash scripts have execute permissions
 
+src/ -> contains the following scripts:
+
 merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
 
 tester.sh -> Runs the tests in a specific repo
