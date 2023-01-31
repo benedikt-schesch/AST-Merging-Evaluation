@@ -1,6 +1,13 @@
 # ASTMerging
 Ensure all bash scripts have execute permissions
 
+Requirements:
+ * Python packages:  git, pandas, tqdm, pebble
+   # On Ubuntu:
+   sudo apt install -y python3-pandas python3-git python3-tqdm python3-pebble
+   # Alternative; drop `sudo` if you do not have superuser privileges.
+   sudo pip3 install --upgrade pandas python-git tqdm
+
 src/ -> contains the following scripts:
 
 merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
