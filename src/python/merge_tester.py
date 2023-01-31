@@ -174,7 +174,12 @@ if __name__ == '__main__':
                                 row2["merge test"]))
 
     print("Number of merges:",len(args_merges))
-    pool = multiprocessing.Pool(os.cpu_count()-20)
+    num_processes = os.cpu_count()-20
+    if (num_processes <= 0):
+        num_processes = os.cpu_count()//2
+    if (num_processes <= 0):
+        num_processes = os.cpu_count()
+    pool = multiprocessing.Pool(num_processes)
     pool.map(test_merges,args_merges)
 
     for idx,row in tqdm(df.iterrows(),total=len(df)):
