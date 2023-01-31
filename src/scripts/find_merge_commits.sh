@@ -13,7 +13,7 @@
 VALID_REPOS=$(sed 1d $1 | cut -d ',' -f3)
 
 # Get the commits of a repo's (arg #1) pull request (arg #2)
-function GET_COMMITS_FROM_PR() {
+GET_COMMITS_FROM_PR() {
     gh api \
         -H "Accept: application/vnd.github+json" \
         --method GET \
