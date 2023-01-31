@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 
 labels = ['IntelliMerge', 'Spork', 'Git Merge', 'Commit History']
