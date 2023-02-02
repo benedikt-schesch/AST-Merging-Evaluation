@@ -6,11 +6,10 @@ import subprocess
 import shutil
 import os
 import multiprocessing
-from merge_tester import get_repo
 from pebble import ProcessPool
 import argparse
 import platform
-from repo_checker import test_repo
+from repo_checker import test_repo, get_repo
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
@@ -49,12 +48,15 @@ def pass_test(args):
     shutil.copytree(repo_dir, repo_dir_copy)
     repo = git.Git(repo_dir_copy)
     repo.fetch()
-    repo.checkout(commit)
 
     try:
-        test = test_repo(repo_dir_copy,TIMEOUT_SECONDS)
+        repo.checkout(commit)
+        try:
+            test = test_repo(repo_dir_copy,TIMEOUT_SECONDS)
+        except Exception:
+            test = 2
     except Exception:
-        test = 2
+        test = 3
     
     with open(cache_file,"w") as f:
         f.write(str(test))
@@ -69,6 +71,7 @@ if __name__ == '__main__':
     parser.add_argument("--repos_path",type=str)
     parser.add_argument("--merges_path",type=str)
     parser.add_argument("--output_dir",type=str)
+    parser.add_argument("--num_cpu",type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     if os.path.isdir(args.output_dir):
@@ -96,7 +99,7 @@ if __name__ == '__main__':
     #     pool.map(pass_test,commits,timeout=TIMEOUT_SECONDS)
     print("Number of tested commits:",len(commits))
     print("Started Testing")
-    pool = multiprocessing.Pool(os.cpu_count()-10)
+    pool = multiprocessing.Pool(args.num_cpu)
     pool.map(pass_test,commits)
     print("Finished Testing")
 

@@ -18,6 +18,17 @@ pip install -r requirements.txt
 
 To delete all cached results:
   rm -rf cache/
+## Ubuntu
+
+```
+apt-get install -y jq
+```
+
+## MacOS
+
+```
+brew install jq
+```
 
 # Structure
 
