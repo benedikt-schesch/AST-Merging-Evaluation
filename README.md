@@ -19,6 +19,8 @@ pip install -r requirements.txt
 To delete all cached results:
   rm -rf cache/
 
+# Structure
+
 src/ -> contains the following scripts:
 
 merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
