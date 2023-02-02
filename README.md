@@ -2,11 +2,15 @@
 Ensure all bash scripts have execute permissions
 
 Requirements:
+ * Use JDK 11
  * Python packages:  git, pandas, tqdm, pebble
    # On Ubuntu:
    sudo apt install -y python3-pandas python3-git python3-tqdm python3-pebble
    # Alternative; drop `sudo` if you do not have superuser privileges.
    sudo pip3 install --upgrade pandas python-git tqdm
+
+To delete all cached results:
+  rm -rf cache/
 
 src/ -> contains the following scripts:
 
