@@ -3,6 +3,7 @@
 venv
 
 repos/*
+results/*
 cache/repos_result/*
 cache/commit_test_result/*
 cache/merge_test_results/*
