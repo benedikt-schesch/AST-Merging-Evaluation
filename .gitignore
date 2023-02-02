@@ -1,4 +1,6 @@
 .DS_Store
+.vscode
+venv
 
 merges_small/
 merges_small_valid/
