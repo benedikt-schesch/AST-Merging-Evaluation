@@ -1,13 +1,20 @@
 # ASTMerging
 Ensure all bash scripts have execute permissions
 
-Requirements:
- * Use JDK 11
- * Python packages:  git, pandas, tqdm, pebble
-   # On Ubuntu:
-   sudo apt install -y python3-pandas python3-git python3-tqdm python3-pebble
-   # Alternative; drop `sudo` if you do not have superuser privileges.
-   sudo pip3 install --upgrade pandas python-git tqdm
+IMPORTANT: Use JDK 8
+# Optional for the requirements
+If you don't want to mess with your local python installation you can easily create a python virtual environment to install all dependencies witht he following commands:
+```
+pip3 install virtualenv
+python3 -m venv venv
+source venv/bin/activate
+```
+If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
+# Requirements:
+To install all the python requirements:
+```
+pip install -r requirements.txt
+```
 
 To delete all cached results:
   rm -rf cache/
