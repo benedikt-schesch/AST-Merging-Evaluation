@@ -2,13 +2,6 @@
 .vscode
 venv
 
-repos/*
-results/*
-cache/repos_result/*
-cache/commit_test_result/*
-cache/merge_test_results/*
-small/*
-
 output/
 merge_repo/
 data/result.csv
