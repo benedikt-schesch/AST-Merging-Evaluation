@@ -10,7 +10,7 @@ import multiprocessing
 import pandas as pd
 import argparse
 import platform
-from repo_checker import test_repo
+from repo_checker import test_repo, get_repo
 from tqdm import tqdm
 
 
@@ -22,16 +22,6 @@ DELETE_WORKDIR = True
 TIMEOUT_MERGE = 15*60 # 15 Minutes
 TIMEOUT_TESTING = 10*60 # 10 Minutes
 
-
-def get_repo(repo_name):
-    repo_dir = "repos/"+repo_name
-    if not os.path.isdir(repo_dir):
-        git_url = "https://github.com/"+repo_name+".git"
-        repo = git.Repo.clone_from(git_url, repo_dir)
-        repo.remote().fetch()
-    else:
-        repo = git.Git(repo_dir)
-    return repo
 
 def test_merge(merging_method,repo_name,left,right,base):
     try:
@@ -137,6 +127,7 @@ if __name__ == '__main__':
     parser.add_argument("--repos_path",type=str)
     parser.add_argument("--merges_path",type=str)
     parser.add_argument("--output_file",type=str)
+    parser.add_argument("--num_cpu",type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     merge_dir = args.merges_path
@@ -174,12 +165,7 @@ if __name__ == '__main__':
                                 row2["merge test"]))
 
     print("Number of merges:",len(args_merges))
-    num_processes = os.cpu_count()-20
-    if (num_processes <= 0):
-        num_processes = os.cpu_count()//2
-    if (num_processes <= 0):
-        num_processes = os.cpu_count()
-    pool = multiprocessing.Pool(num_processes)
+    pool = multiprocessing.Pool(args.num_cpu)
     pool.map(test_merges,args_merges)
 
     for idx,row in tqdm(df.iterrows(),total=len(df)):

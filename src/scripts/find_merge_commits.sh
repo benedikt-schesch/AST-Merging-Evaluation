@@ -21,6 +21,11 @@ GET_COMMITS_FROM_PR() {
         /repos/$1/pulls/$2/commits
 }
 
+
+if [ ! -d $2 ]; then
+    mkdir $2
+fi
+
 for REPO in ${VALID_REPOS[@]} 
 do
     # Getting merge commits of mainline and feature branches
@@ -37,6 +42,13 @@ do
 
     REPO_NAME=$(cut -d '/' -f2 <<< "$REPO")
     rm -rf ./$REPO_NAME
+    
+    # Skip repos that have already been analyzed
+    FILE=$2/$REPO_NAME.csv
+    echo $FILE
+    if test -f "$FILE"; then
+        continue
+    fi
     
     # Header for $REPO_NAME.csv
     echo "branch_name,merge_commit,parent_1,parent_2,base_commit" \

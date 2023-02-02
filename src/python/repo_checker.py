@@ -15,19 +15,21 @@ CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_MERGE = 10*60
 
-if platform.system() == "Linux": #Linux
-    CPU = 40
-else: #MacOS
-    CPU = 5
-
 def get_repo(repo_name):
     repo_dir = "repos/"+repo_name
     if not os.path.isdir(repo_dir):
         git_url = "https://github.com/"+repo_name+".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
-        repo.remote().fetch()
     else:
         repo = git.Git(repo_dir)
+    try:
+        repo.remote.fetch()
+    except Exception:
+        pass
+    try:
+        repo.remote().fetch()
+    except Exception:
+        pass
     return repo
 
 def test_repo(repo_dir_copy,timeout):
@@ -79,6 +81,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path",type=str)
     parser.add_argument("--output_path",type=str)
+    parser.add_argument("--num_cpu",type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
@@ -87,7 +90,7 @@ if __name__ == '__main__':
         repo = get_repo(repo_name)
 
     print("Start processing")
-    pool = multiprocessing.Pool(processes=CPU)
+    pool = multiprocessing.Pool(processes=args.num_cpu)
     pool.map(check_repo, df.iterrows())
     print("End processing")
     
