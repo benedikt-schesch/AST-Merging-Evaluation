@@ -152,7 +152,8 @@ if __name__ == '__main__':
         if not os.path.isfile(merge_list_file):
             continue
         
-        merges = pd.read_csv(merge_list_file)
+        merges = pd.read_csv(merge_list_file,index_col=0)
+        print(merges)
 
         for idx2, row2 in merges.iterrows():
             if row2["parent test"] != 0:
@@ -165,8 +166,11 @@ if __name__ == '__main__':
                                 row2["merge test"]))
 
     print("Number of merges:",len(args_merges))
+    print("Start Merge Testing")
     pool = multiprocessing.Pool(args.num_cpu)
     pool.map(test_merges,args_merges)
+    pool.close()
+    print("Finished Merge Testing")
 
     for idx,row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]

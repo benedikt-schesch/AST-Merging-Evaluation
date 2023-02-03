@@ -92,6 +92,7 @@ if __name__ == '__main__':
     print("Start processing")
     pool = multiprocessing.Pool(processes=args.num_cpu)
     pool.map(check_repo, df.iterrows())
+    pool.close()
     print("End processing")
     
     out = []
