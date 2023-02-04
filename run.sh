@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# usage: ./run.sh <num_cpus>
+# Runs the stack
+
 python3 src/python/repo_checker.py --repos_path data/repos.csv --output_path results/valid_repos.csv --num_cpu $1
 
 sh src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges

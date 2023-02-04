@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# usage: ./run_small.sh <num_cpus>
+# Runs the stack on small repos
+
 python3 src/python/repo_checker.py --repos_path data/repos_small.csv --output_path small/valid_repos.csv  --num_cpu $1
 
 sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
