@@ -5,6 +5,14 @@
 # This script take the path of a repo and tests it.
 # It executes Maven or gradle depending on what is more suitable.
 
+set -e 
+set -o nounset
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 REPO_DIR" >&2
+  exit 1
+fi
+
 cd $1
 if [ -f "gradlew" ] ; then
   ./gradlew test

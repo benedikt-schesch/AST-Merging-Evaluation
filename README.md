@@ -3,7 +3,7 @@ Ensure all bash scripts have execute permissions
 
 IMPORTANT: Use JDK 8
 # Optional for the requirements
-If you don't want to mess with your local python installation you can easily create a python virtual environment to install all dependencies witht he following commands:
+If you don't want to mess with your local python installation you can easily create a python virtual environment to install all dependencies with the following commands:
 ```
 pip3 install virtualenv
 python3 -m venv venv
@@ -17,7 +17,8 @@ pip install -r requirements.txt
 ```
 
 To delete all cached results:
-  rm -rf cache/
+  make clean-cache
+
 ## Ubuntu
 
 ```

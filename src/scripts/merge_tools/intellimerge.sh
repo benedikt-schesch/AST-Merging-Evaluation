@@ -1,6 +1,15 @@
 #!/bin/bash
 
 # usage: ./intellmerge.sh <merge-dir> <branch1> <branch2>
+
+set -e 
+set -o nounset
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 MERGE_DIR BRANCH1 BRANCH2" >&2
+  exit 1
+fi
+
 INTELLIMERGE=./jars/IntelliMerge-1.0.9-all.jar
 repo=$1
 branch1=$2

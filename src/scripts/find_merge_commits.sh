@@ -2,14 +2,22 @@
 
 # usage: ./find_merge_commits.sh <repo-list> <output-dir>
 
-# This scripts find the merge commits from a given
+# This script finds the merge commits from a given
 # list of valid repositories.
 # Merge commits maybe be of mainline branch, feature branches, 
 # and pull requests (both opened and closed).
 # Output a list of branch name, merge commit hashes, two parents 
 # commit hashes, and base commit of the two parents.
 
-# Recieve list of repo names from list of valid repos (arg #1)
+set -e 
+set -o nounset
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 REPO_LIST OUTPUT_DIR" >&2
+  exit 1
+fi
+
+# Receive list of repo names from list of valid repos (arg #1)
 VALID_REPOS=$(sed 1d $1 | cut -d ',' -f3)
 
 # Get the commits of a repo's (arg #1) pull request (arg #2)
