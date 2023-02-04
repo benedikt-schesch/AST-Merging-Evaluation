@@ -3,6 +3,15 @@
 # usage: ./gitmerge.sh <merge-dir> <branch-1> <branch-2>
 # merges branch2 into branch1
 # outputs result in-place to merge-dir
+
+set -e 
+set -o nounset
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 MERGE_DIR BRANCH1 BRANCH2" >&2
+  exit 1
+fi
+
 repo=$1
 branch1=$2
 branch2=$3
