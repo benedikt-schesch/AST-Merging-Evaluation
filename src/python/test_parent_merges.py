@@ -88,6 +88,7 @@ if __name__ == '__main__':
 
     tested_merges = []
     for idx,row in df.iterrows():
+        merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
         merge_list_file = args.merges_path+repo_name.split("/")[1]+".csv"
@@ -99,12 +100,16 @@ if __name__ == '__main__':
 
         for idx2, row2 in merges.iterrows():
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                tested_merges.append((repo_name,
+                merges_repo.append((repo_name,
                                 row2["left"],
                                 row2["right"],
                                 row2["merge"],
                                 valid_merge_counter,
                                 args.n_merges))
+        tested_merges.append(merges_repo)
+    
+    #Interleave testing to reduce probability that tests at the same hash happen in parallel
+    tested_merges = [val for l in zip(tested_merges) for val in l]
     
     
     print("Number of tested commits:",len(tested_merges))
