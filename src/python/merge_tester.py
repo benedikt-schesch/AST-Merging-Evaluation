@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+# usage: python3 merge_tester.py --repos_path <path_to_repo> 
+#                                         --output_path <output_path>
+#                                         --num_cpu <num_cpu_used>
+#
+# This script takes a csv of repos and verifies that the main branch passes it's tests
+
 import pandas as pd
 import git
 import subprocess
