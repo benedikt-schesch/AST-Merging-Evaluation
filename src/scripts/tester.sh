@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# usage: ./find_merge_commits.sh <repo-dir>
+
+# This script take the path of a repo and tests it.
+# It executes Maven or gradle depending on what is more suitable.
+
 cd $1
 if [ -f "gradlew" ] ; then
   ./gradlew test

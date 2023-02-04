@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+# usage: python3 test_parent_merges.py --repos_path <path_to_repo> 
+#                                         --merges_path <path_to_merges>
+#                                         --output_dir <output_directory>
+#                                         --n_merges <max_number_of_merges>
+#                                         --num_cpu <num_cpu_used>
+#
+# This script takes a list of merges and verifies that the two parents of each merge
+# has parents that pass tests.
+
 import pandas as pd
 import git
 import shutil

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+# usage: python3 repo_checker.py --repos_path <path_to_repo> 
+#                                         --output_path <output_path>
+#                                         --num_cpu <num_cpu_used>
+#
+# This script takes a csv of repos and verifies that the top of main passes tests
+
 import pandas as pd
 from git import Repo
 import subprocess
