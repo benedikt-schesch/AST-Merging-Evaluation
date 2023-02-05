@@ -62,8 +62,12 @@ def test_repo(repo_dir_copy, timeout):
 
 
 def check_repo(arg):
+    print("called check_repo")
+
     idx, row = arg
     repo_name = row["repository"]
+
+    print("repo_checker: check_repo("+str(idx)+", "+str(row)+"); repo_name="+str(repo_name))
 
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
@@ -100,6 +104,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_cpu", type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
+    print("len(df) " + str(len(df)))
 
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
