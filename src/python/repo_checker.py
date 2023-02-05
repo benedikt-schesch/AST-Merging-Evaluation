@@ -87,7 +87,7 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
-        print("repo_name=" + repo_name + ", rc=" + rc))
+        print("repo_name=" + repo_name + ", rc=" + rc)
         df = pd.DataFrame({"test": [rc]})
         df.to_csv(target_file)
     except Exception:
