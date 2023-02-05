@@ -158,6 +158,9 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_path)
     merge_dir = args.merges_path
 
+    if not os.path.isdir(CACHE):
+        os.mkdir(CACHE)
+
     result = pd.DataFrame(
         columns=[
             "project name",

@@ -93,6 +93,9 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
+    if not os.path.isdir(CACHE):
+        os.mkdir(CACHE)
+
     manager = Manager()
     valid_merge_counter = manager.dict()
 
