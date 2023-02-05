@@ -40,6 +40,7 @@ def get_repo(repo_name):
 
 
 def test_repo(repo_dir_copy, timeout):
+    "Returns the return code of trying 3 times to run tester.sh on the given working copy."
     if platform.system() == "Linux":  # Linux
         command_timeout = "timeout"
     else:  # MacOS
@@ -57,6 +58,7 @@ def test_repo(repo_dir_copy, timeout):
         if rc == 0:
             return 0
         if rc == 124:
+            # Timeout
             return 124
     return 1
 
@@ -85,7 +87,7 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
-        print(repo_name, rc)
+        print("repo_name=" + repo_name + ", rc=" + rc))
         df = pd.DataFrame({"test": [rc]})
         df.to_csv(target_file)
     except Exception:
