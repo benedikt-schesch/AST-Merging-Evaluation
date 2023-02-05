@@ -92,6 +92,8 @@ def check_repo(arg):
 
 
 if __name__ == "__main__":
+    if not os.path.exists("cache"):
+        os.mkdir("cache")
     if not os.path.exists(CACHE):
         os.mkdir(CACHE)
 
