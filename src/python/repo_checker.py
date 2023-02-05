@@ -73,6 +73,7 @@ def check_repo(arg):
 
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
+        print(repo_name,": Done, result is cached")
         return df.iloc[0]["test"]
 
     df = pd.DataFrame({"test": [1]})
