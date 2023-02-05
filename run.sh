@@ -1,15 +1,11 @@
 #!/bin/bash
 
-# usage: ./run.sh <num_cpus>
+# usage: ./run.sh
 # Runs the stack
 
 set -e 
 set -o nounset
 
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 NUM_CPUS" >&2
-  exit 1
-fi
 
 java -version
 

@@ -2,7 +2,6 @@
 
 # usage: python3 merge_tester.py --repos_path <path_to_repo>
 #                                         --output_path <output_path>
-#                                         --num_cpu <num_cpu_used>
 #
 # This script takes a csv of repos and verifies that the main branch passes it's tests
 
@@ -155,7 +154,6 @@ if __name__ == "__main__":
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
-    parser.add_argument("--num_cpu", type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     merge_dir = args.merges_path
@@ -203,7 +201,7 @@ if __name__ == "__main__":
 
     print("Number of merges:", len(args_merges))
     print("Start Merge Testing")
-    pool = multiprocessing.Pool(args.num_cpu)
+    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
     pool.map(test_merges, args_merges)
     pool.close()
     print("Finished Merge Testing")
