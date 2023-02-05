@@ -66,7 +66,7 @@ def test_repo(repo_dir_copy, timeout):
 def check_repo(arg):
     idx, row = arg
     repo_name = row["repository"]
-    print("repo_name: Started")
+    print(repo_name,": Started")
 
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
@@ -80,9 +80,9 @@ def check_repo(arg):
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
     try:
-        print("repo_name: Cloning repo")
+        print(repo_name,": Cloning repo")
         repo = get_repo(repo_name)
-        print("repo_name: Finished cloning")
+        print(repo_name,": Finished cloning")
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
@@ -92,7 +92,7 @@ def check_repo(arg):
     except Exception:
         pass
     shutil.rmtree(repo_dir_copy)
-    print("repo_name: Done")
+    print(repo_name,": Done")
     return df.iloc[0]["test"]
 
 
