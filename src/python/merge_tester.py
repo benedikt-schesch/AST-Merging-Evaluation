@@ -150,6 +150,7 @@ def test_merges(args):
 
 
 if __name__ == "__main__":
+    print("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--merges_path", type=str)
@@ -178,8 +179,9 @@ if __name__ == "__main__":
         ]
     )
 
+    print("merge_tester: Building Inputs")
     args_merges = []
-    for idx, row in df.iterrows():
+    for idx, row in tqdm(df.iterrows()):
         repo_name = row["repository"]
         merge_list_file = merge_dir + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
@@ -202,13 +204,16 @@ if __name__ == "__main__":
                 )
             )
 
-    print("Number of merges:", len(args_merges))
-    print("Start Merge Testing")
-    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    pool.map(test_merges, args_merges)
-    pool.close()
-    print("Finished Merge Testing")
+    print("merge_tester: Finished Building Inputs")
 
+    print("merge_tester: Number of merges:", len(args_merges))
+    print("merge_tester: Started Testing")
+    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
+    r = list(tqdm(pool.imap(test_merges, args_merges), total=len(args_merges)))
+    pool.close()
+    print("merge_tester: Finished Testing")
+
+    print("merge_tester: Building Output")
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
 
@@ -246,3 +251,6 @@ if __name__ == "__main__":
             res.columns = result.columns
             result = pd.concat([result, res], axis=0, ignore_index=True)
             result.to_csv(args.output_file)
+    print("merge_tester: Finished Building Output")
+    print("merge_tester: Done")
+
