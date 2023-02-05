@@ -53,8 +53,9 @@ def test_repo(repo_dir_copy, timeout):
                 repo_dir_copy,
             ],
             stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
         ).returncode
-        if rc == 0:
+        if rc == 0: # Success
             return 0
         if rc == 124:
             # Timeout
@@ -103,13 +104,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        repo = get_repo(repo_name)
-
     print("repo_checker: Start processing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    pool.map(check_repo, df.iterrows())
+    r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df.iterrows())))
     pool.close()
     print("repo_checker: End processing")
 
