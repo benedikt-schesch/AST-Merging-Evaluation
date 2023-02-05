@@ -11,6 +11,8 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
+java -version
+
 python3 src/python/repo_checker.py --repos_path data/repos.csv --output_path results/valid_repos.csv --num_cpu "$1"
 
 sh src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges
