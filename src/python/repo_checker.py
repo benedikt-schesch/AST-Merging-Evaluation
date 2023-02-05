@@ -2,7 +2,6 @@
 
 # usage: python3 repo_checker.py --repos_path <path_to_repo>
 #                                         --output_path <output_path>
-#                                         --num_cpu <num_cpu_used>
 #
 # This script takes a csv of repos and verifies that the top of main passes tests
 
@@ -83,7 +82,7 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
-        print("repo_name=" + repo_name + ", rc=" + rc))
+        print("repo_name=" + repo_name + ", rc=" + rc)
         df = pd.DataFrame({"test": [rc]})
         df.to_csv(target_file)
     except Exception:
@@ -99,7 +98,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--output_path", type=str)
-    parser.add_argument("--num_cpu", type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
@@ -108,7 +106,7 @@ if __name__ == "__main__":
         repo = get_repo(repo_name)
 
     print("repo_checker: Start processing")
-    pool = multiprocessing.Pool(processes=args.num_cpu)
+    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
     pool.map(check_repo, df.iterrows())
     pool.close()
     print("repo_checker: End processing")

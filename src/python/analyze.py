@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-df = pd.read_csv("data/result.csv")
+df = pd.read_csv("results/result.csv")
 
 
 for i in ["git merge", "spork", "intellimerge"]:

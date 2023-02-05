@@ -4,7 +4,6 @@
 #                                         --merges_path <path_to_merges>
 #                                         --output_dir <output_directory>
 #                                         --n_merges <max_number_of_merges>
-#                                         --num_cpu <num_cpu_used>
 #
 # This script takes a list of merges and verifies that the two parents of each merge
 # has parents that pass tests.
@@ -88,7 +87,6 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
-    parser.add_argument("--num_cpu", type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     if os.path.isdir(args.output_dir):
@@ -129,7 +127,7 @@ if __name__ == "__main__":
 
     print("Number of tested commits:", len(tested_merges))
     print("Started Testing")
-    pool = multiprocessing.Pool(args.num_cpu)
+    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
     result = pool.map(valid_merge, tested_merges)
     pool.close()
     print("Finished Testing")
