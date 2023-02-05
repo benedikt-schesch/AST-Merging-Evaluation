@@ -16,6 +16,7 @@ import multiprocessing
 from multiprocessing import Manager
 import argparse
 from repo_checker import test_repo, get_repo
+from tqdm import tqdm
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
@@ -81,6 +82,7 @@ def valid_merge(args):
 
 
 if __name__ == "__main__":
+    print("test_parent_merges: Start")
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
@@ -99,8 +101,9 @@ if __name__ == "__main__":
     manager = Manager()
     valid_merge_counter = manager.dict()
 
+    print("test_parent_merges: Constructing Inputs")
     tested_merges = []
-    for idx, row in df.iterrows():
+    for idx, row in tqdm(df.iterrows()):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -124,18 +127,21 @@ if __name__ == "__main__":
                     )
                 )
         tested_merges.append(merges_repo)
+    print("test_parent_merges: Finished Constructing Inputs")
 
     # Interleave testing to reduce probability that tests at the same hash happen in parallel
     tested_merges = [val for l in zip(tested_merges) for val in l]
 
-    print("Number of tested commits:", len(tested_merges))
-    print("Started Testing")
+    print("test_parent_merges: Number of tested commits:", len(tested_merges))
+    print("test_parent_merges: Started Testing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
     result = pool.map(valid_merge, tested_merges)
+    r = list(tqdm(pool.imap(valid_merge, tested_merges), total=len(tested_merges)))
     pool.close()
-    print("Finished Testing")
-
-    for idx, row in df.iterrows():
+    print("test_parent_merges: Finished Testing")
+    
+    print("test_parent_merges: Constructing Output")
+    for idx, row in tqdm(df.iterrows()):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
@@ -175,3 +181,5 @@ if __name__ == "__main__":
         result = pd.DataFrame(result)
         outout_file = args.output_dir + repo_name.split("/")[1] + ".csv"
         result.to_csv(outout_file)
+    print("test_parent_merges: Finished Constructing Output")
+    print("test_parent_merges: Done")

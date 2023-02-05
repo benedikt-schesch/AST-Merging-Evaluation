@@ -93,6 +93,7 @@ def check_repo(arg):
 
 
 if __name__ == "__main__":
+    print("repo_checker: Start")
     if not os.path.exists("cache"):
         os.mkdir("cache")
     if not os.path.exists(CACHE):
@@ -104,17 +105,20 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
-    print("repo_checker: Start processing")
+    print("repo_checker: Started Testing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df.iterrows())))
+    r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df)))
     pool.close()
-    print("repo_checker: End processing")
+    print("repo_checker: Finished Testing")
 
+    print("repo_checker: Building Output")
     out = []
-    for idx, row in df.iterrows():
+    for idx, row in tqdm(df.iterrows()):
         repo_name = row["repository"]
         repo = check_repo((idx, row))
         if repo == 0:
             out.append(row)
+    print("repo_checker: Finished Building Output")
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
+    print("repo_checker: Done")
