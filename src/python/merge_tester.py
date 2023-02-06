@@ -188,14 +188,13 @@ if __name__ == "__main__":
 
     print("merge_tester: Building Inputs")
     args_merges = []
-    for idx, row in tqdm(df.iterrows()):
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
         merge_list_file = merge_dir + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
-        print(merges)
 
         for idx2, row2 in merges.iterrows():
             if row2["parent test"] != 0:
