@@ -14,6 +14,7 @@ import time
 import multiprocessing
 import pandas as pd
 import argparse
+from pathlib import Path
 import platform
 from repo_checker import test_repo, get_repo
 from tqdm import tqdm
@@ -151,16 +152,12 @@ def test_merges(args):
 
 if __name__ == "__main__":
     print("merge_tester: Start")
-    if not os.path.isdir('repos'):
-        os.mkdir('repos')
-    if not os.path.exists("cache"):
-        os.mkdir("cache")
-    if not os.path.isdir(CACHE):
-        os.mkdir(CACHE)
-    if not os.path.isdir(SCRATCH_DIR):
-        os.mkdir(SCRATCH_DIR)
-    if not os.path.isdir(WORKDIR):
-        os.mkdir(WORKDIR)
+    Path('repos').mkdir( parents=True, exist_ok=True )
+    Path('cache').mkdir( parents=True, exist_ok=True )
+    Path(CACHE).mkdir( parents=True, exist_ok=True )
+    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
+    Path(SCRATCH_DIR).mkdir( parents=True, exist_ok=True )
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--merges_path", type=str)
