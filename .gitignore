@@ -2,7 +2,7 @@
 .vscode
 venv
 
-jars/
+jars/*
 cache/*
 output/
 merge_repo/
