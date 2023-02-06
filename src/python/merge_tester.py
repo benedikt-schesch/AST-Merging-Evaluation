@@ -151,6 +151,16 @@ def test_merges(args):
 
 if __name__ == "__main__":
     print("merge_tester: Start")
+    if not os.path.isdir('repos'):
+        os.mkdir('repos')
+    if not os.path.exists("cache"):
+        os.mkdir("cache")
+    if not os.path.isdir(CACHE):
+        os.mkdir(CACHE)
+    if not os.path.isdir(SCRATCH_DIR):
+        os.mkdir(SCRATCH_DIR)
+    if not os.path.isdir(WORKDIR):
+        os.mkdir(WORKDIR)
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--merges_path", type=str)
@@ -158,9 +168,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     merge_dir = args.merges_path
-
-    if not os.path.isdir(CACHE):
-        os.mkdir(CACHE)
 
     result = pd.DataFrame(
         columns=[

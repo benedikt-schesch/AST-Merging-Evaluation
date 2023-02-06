@@ -6,6 +6,15 @@
 set -e 
 set -o nounset
 
+java --version
+
+JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*".*/\1\2/p;')
+
+if [ $JAVA_VER != "18" ]; then
+  echo "Wrong Java version. Please use JAVA 8"
+  exit 1
+fi
+
 python3 src/python/repo_checker.py --repos_path data/repos_small.csv --output_path small/valid_repos.csv
 
 sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small

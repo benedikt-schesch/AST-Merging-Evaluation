@@ -7,6 +7,9 @@ output/
 merge_repo/
 data/result.csv
 merges_small_valid_subsamples/
+repos/
+.workdir/
+scratch/
 
 # Compiled class file
 *.class

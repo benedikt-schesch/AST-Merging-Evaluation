@@ -7,7 +7,7 @@
 # Merge commits maybe be of mainline branch, feature branches, 
 # and pull requests (both opened and closed).
 # Output a list of branch name, merge commit hashes, two parents 
-# commit hashes, and base commit of the two parents.
+# commit hashes, and base commit of the two parents inside of <output-dir>
 
 set -e 
 set -o nounset
