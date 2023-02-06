@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["merge", "left", "right", "base"],
+            names=["branch_name","merge", "left", "right", "base"],
             header=0,
             index_col=False,
         )
