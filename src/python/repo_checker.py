@@ -3,7 +3,7 @@
 # usage: python3 repo_checker.py --repos_path <path_to_repo>
 #                                         --output_path <output_path>
 #
-# This script takes a csv of repos and verifies that the top of main passes tests
+# This script takes a csv of repos and verifies that the head of main passes tests
 
 import pandas as pd
 from git import Repo
@@ -15,6 +15,7 @@ import git
 import argparse
 from tqdm import tqdm
 import platform
+from tqdm.contrib.concurrent import process_map
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
@@ -67,12 +68,14 @@ def check_repo(arg):
     idx, row = arg
     repo_name = row["repository"]
     print(repo_name,": Started")
+    result_interpretable = {0:"Valid",1:"Not Valid",124:"Not Valid Timeout"}
 
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
+        print(repo_name,": ",result_interpretable[df.iloc[0]["test"]])
         print(repo_name,": Done, result is cached")
         return df.iloc[0]["test"]
 
@@ -93,16 +96,21 @@ def check_repo(arg):
     except Exception:
         pass
     shutil.rmtree(repo_dir_copy)
+    print(repo_name,": ",result_interpretable[df.iloc[0]["test"]])
     print(repo_name,": Done")
     return df.iloc[0]["test"]
 
 
 if __name__ == "__main__":
     print("repo_checker: Start")
+    if not os.path.isdir('repos'):
+        os.mkdir('repos')
     if not os.path.exists("cache"):
         os.mkdir("cache")
-    if not os.path.exists(CACHE):
+    if not os.path.isdir(CACHE):
         os.mkdir(CACHE)
+    if not os.path.isdir(WORKDIR):
+        os.mkdir(WORKDIR)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
@@ -111,9 +119,8 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_path)
 
     print("repo_checker: Started Testing")
-    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df)))
-    pool.close()
+    with multiprocessing.Pool(processes=int(os.cpu_count()*0.75)) as pool:
+        r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df),))
     print("repo_checker: Finished Testing")
 
     print("repo_checker: Building Output")
@@ -126,4 +133,5 @@ if __name__ == "__main__":
     print("repo_checker: Finished Building Output")
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
+    print("repo_checker: Number of valid repos:",len(out))
     print("repo_checker: Done")

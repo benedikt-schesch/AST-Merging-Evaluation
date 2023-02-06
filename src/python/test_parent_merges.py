@@ -83,6 +83,14 @@ def valid_merge(args):
 
 if __name__ == "__main__":
     print("test_parent_merges: Start")
+    if not os.path.isdir('repos'):
+        os.mkdir('repos')
+    if not os.path.exists("cache"):
+        os.mkdir("cache")
+    if not os.path.isdir(CACHE):
+        os.mkdir(CACHE)
+    if not os.path.isdir(WORKDIR):
+        os.mkdir(WORKDIR)
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
@@ -95,8 +103,6 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
-    if not os.path.isdir(CACHE):
-        os.mkdir(CACHE)
 
     manager = Manager()
     valid_merge_counter = manager.dict()
@@ -135,7 +141,6 @@ if __name__ == "__main__":
     print("test_parent_merges: Number of tested commits:", len(tested_merges))
     print("test_parent_merges: Started Testing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    result = pool.map(valid_merge, tested_merges)
     r = list(tqdm(pool.imap(valid_merge, tested_merges), total=len(tested_merges)))
     pool.close()
     print("test_parent_merges: Finished Testing")
