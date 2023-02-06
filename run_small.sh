@@ -6,7 +6,7 @@
 set -e 
 set -o nounset
 
-java --version
+java -version
 
 JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*".*/\1\2/p;')
 
