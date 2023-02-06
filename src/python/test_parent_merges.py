@@ -12,6 +12,7 @@ import pandas as pd
 import git
 import shutil
 import os
+import itertools
 import multiprocessing
 from multiprocessing import Manager
 import argparse
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
     print("test_parent_merges: Constructing Inputs")
     tested_merges = []
-    for idx, row in tqdm(df.iterrows()):
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -134,19 +135,20 @@ if __name__ == "__main__":
                 )
         tested_merges.append(merges_repo)
     print("test_parent_merges: Finished Constructing Inputs")
-
+    
     # Interleave testing to reduce probability that tests at the same hash happen in parallel
-    tested_merges = [val for l in zip(tested_merges) for val in l]
+    arguments = [val for l in itertools.zip_longest(*tested_merges) for val in l if val is not None]
+    assert len(arguments) == sum([len(l) for l in tested_merges])
 
-    print("test_parent_merges: Number of tested commits:", len(tested_merges))
+    print("test_parent_merges: Number of tested commits:", len(arguments))
     print("test_parent_merges: Started Testing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    r = list(tqdm(pool.imap(valid_merge, tested_merges), total=len(tested_merges)))
+    r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     pool.close()
     print("test_parent_merges: Finished Testing")
     
     print("test_parent_merges: Constructing Output")
-    for idx, row in tqdm(df.iterrows()):
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):

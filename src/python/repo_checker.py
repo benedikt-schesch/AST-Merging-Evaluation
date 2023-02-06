@@ -90,7 +90,6 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
-        print("repo_name=" + repo_name + ", rc=" + rc)
         df = pd.DataFrame({"test": [rc]})
         df.to_csv(target_file)
     except Exception:
@@ -125,7 +124,7 @@ if __name__ == "__main__":
 
     print("repo_checker: Building Output")
     out = []
-    for idx, row in tqdm(df.iterrows()):
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
         repo = check_repo((idx, row))
         if repo == 0:
