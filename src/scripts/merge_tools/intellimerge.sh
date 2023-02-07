@@ -2,7 +2,7 @@
 
 # usage: ./intellmerge.sh <merge-dir> <branch1> <branch2>
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 3 ]; then
