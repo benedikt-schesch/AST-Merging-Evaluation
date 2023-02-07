@@ -22,5 +22,5 @@ clean:
 clean-cache:
 	rm -rf cache
 	rm -rf .workdir
-	rm -rf .repos
+	rm -rf repos
 	rm -rf scratch
