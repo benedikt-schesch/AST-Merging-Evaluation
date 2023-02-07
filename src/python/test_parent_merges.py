@@ -8,8 +8,6 @@
 # This script takes a list of merges and verifies that the two parents of each merge
 # has parents that pass tests.
 
-import pandas as pd
-import git
 import shutil
 import os
 import itertools
@@ -17,16 +15,19 @@ import multiprocessing
 from multiprocessing import Manager
 import argparse
 from pathlib import Path
+
 from repo_checker import test_repo, get_repo
 from tqdm import tqdm
+import pandas as pd
+import git
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 30 * 60 # 30 minutes
+TIMEOUT_SECONDS = 30 * 60  # 30 minutes
 
 
 def pass_test(repo_name, commit):
-    """ Checks if a certain commit in a repo passes tests.
+    """Checks if a certain commit in a repo passes tests.
     Args:
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
@@ -79,7 +80,7 @@ def pass_test(repo_name, commit):
 
 
 def valid_merge(args):
-    """ Verifies that the two parents of a merge pass tests. Only operates if no more than
+    """Verifies that the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
         repo_name (str): Name of the repo to test.
@@ -106,10 +107,10 @@ def valid_merge(args):
 
 if __name__ == "__main__":
     print("test_parent_merges: Start")
-    Path('repos').mkdir( parents=True, exist_ok=True )
-    Path('cache').mkdir( parents=True, exist_ok=True )
-    Path(CACHE).mkdir( parents=True, exist_ok=True )
-    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
+    Path("repos").mkdir(parents=True, exist_ok=True)
+    Path("cache").mkdir(parents=True, exist_ok=True)
+    Path(CACHE).mkdir(parents=True, exist_ok=True)
+    Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
@@ -123,13 +124,12 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
-
     manager = Manager()
     valid_merge_counter = manager.dict()
 
     print("test_parent_merges: Constructing Inputs")
     tested_merges = []
-    for idx, row in tqdm(df.iterrows(),total=len(df)):
+    for idx, row in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -154,20 +154,24 @@ if __name__ == "__main__":
                 )
         tested_merges.append(merges_repo)
     print("test_parent_merges: Finished Constructing Inputs")
-    
+
     # Interleave testing to reduce probability that tests at the same hash happen in parallel
-    arguments = [val for l in itertools.zip_longest(*tested_merges) for val in l if val is not None]
-    assert len(arguments) == sum([len(l) for l in tested_merges])
+    arguments = [
+        val
+        for l in itertools.zip_longest(*tested_merges)
+        for val in l
+        if val is not None
+    ]
+    assert len(arguments) == sum(len(l) for l in tested_merges)
 
     print("test_parent_merges: Number of tested commits:", len(arguments))
     print("test_parent_merges: Started Testing")
-    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
-    pool.close()
+    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+        r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("test_parent_merges: Finished Testing")
-    
+
     print("test_parent_merges: Constructing Output")
-    for idx, row in tqdm(df.iterrows(),total=len(df)):
+    for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
@@ -175,7 +179,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["branch_name","merge", "left", "right", "base"],
+            names=["branch_name", "merge", "left", "right", "base"],
             header=0,
             index_col=False,
         )
