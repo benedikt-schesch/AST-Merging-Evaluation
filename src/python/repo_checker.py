@@ -3,7 +3,7 @@
 # usage: python3 repo_checker.py --repos_path <path_to_repo>
 #                                         --output_path <output_path>
 #
-# This script takes a csv of repos and verifies that the head of main passes tests
+# This script takes a csv of repos and verifies that the head of main passes tests.
 
 import pandas as pd
 from git import Repo
@@ -124,7 +124,6 @@ def check_repo(arg):
 
 if __name__ == "__main__":
     Path('repos').mkdir( parents=True, exist_ok=True )
-    Path('cache').mkdir( parents=True, exist_ok=True )
     Path(CACHE).mkdir( parents=True, exist_ok=True )
     Path(WORKDIR).mkdir( parents=True, exist_ok=True )
 

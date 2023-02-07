@@ -1,17 +1,20 @@
 #!/bin/bash
 
 # usage: ./run.sh
-# Runs the stack
+# Runs the stack.
+# Takes a long time (days).
+# The output appears in results/ .
+
 
 set -e 
 set -o nounset
 
 java -version
 
-JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*".*/\1\2/p;')
+JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
-if [ $JAVA_VER != "18" ]; then
-  echo "Wrong Java version. Please use JAVA 8"
+if [ $JAVA_VER != "8" ]; then
+  echo "Wrong Java version $JAVA_VER. Please use Java 8."
   exit 1
 fi
 
