@@ -13,7 +13,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-cd $1
+cd "$1"
 if [ -f "gradlew" ] ; then
   ./gradlew test
   rc=$?
