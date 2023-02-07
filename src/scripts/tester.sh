@@ -27,19 +27,6 @@ if [ -f "gradlew" ] ; then
   fi
 fi
 
-# if [ -f "build.gradle" ] ; then
-#   gradle test
-#   rc=$?
-#   if [ $rc -ne 0 ] ; then
-#     echo Gradle Test Failure
-#     exit 1
-#   fi
-#   if [ $rc -eq 0 ] ; then
-#     echo Gradle Test Success
-#     exit 0
-#   fi
-# fi
-
 if [[ -f pom.xml || -f mvnw ]] ; then
   mvn test
   rc=$?
