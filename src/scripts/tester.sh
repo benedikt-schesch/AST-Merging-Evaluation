@@ -5,7 +5,7 @@
 # This script takes the path of a repo and tests it.
 # It executes Maven or gradle depending on what is more suitable.
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 1 ]; then
