@@ -214,7 +214,7 @@ if __name__ == "__main__":
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
     pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
-    r = list(tqdm(pool.imap(test_merges, args_merges), total=len(args_merges)))
+    r = list(tqdm(pool.imap(test_merges, args_merges), total=len(args_merges),miniters=1))
     pool.close()
     print("merge_tester: Finished Testing")
 
