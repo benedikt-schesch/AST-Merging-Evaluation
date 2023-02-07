@@ -16,6 +16,7 @@ import itertools
 import multiprocessing
 from multiprocessing import Manager
 import argparse
+from pathlib import Path
 from repo_checker import test_repo, get_repo
 from tqdm import tqdm
 
@@ -84,14 +85,11 @@ def valid_merge(args):
 
 if __name__ == "__main__":
     print("test_parent_merges: Start")
-    if not os.path.isdir('repos'):
-        os.mkdir('repos')
-    if not os.path.exists("cache"):
-        os.mkdir("cache")
-    if not os.path.isdir(CACHE):
-        os.mkdir(CACHE)
-    if not os.path.isdir(WORKDIR):
-        os.mkdir(WORKDIR)
+    Path('repos').mkdir( parents=True, exist_ok=True )
+    Path('cache').mkdir( parents=True, exist_ok=True )
+    Path(CACHE).mkdir( parents=True, exist_ok=True )
+    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
+
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
