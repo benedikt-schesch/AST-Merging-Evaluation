@@ -58,7 +58,9 @@ def test_merge(merging_method, repo_name, left, right, base):
                     repo_dir_copy + "/" + merging_method,
                     "AOFKMAFNASFKJNRFQJXNFHJ1",
                     "AOFKMAFNASFKJNRFQJXNFHJ2",
-                ]
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             ).returncode
             runtime = time.time() - start
         except Exception:
