@@ -91,8 +91,6 @@ def check_repo(arg):
     print(repo_name,": Started")
     result_interpretable = {0:"Valid",1:"Not Valid",124:"Not Valid Timeout"}
 
-    print("repo_checker: check_repo("+str(idx)+", "+str(row)+"); repo_name="+str(repo_name))
-
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
@@ -134,7 +132,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
-    print("len(df) " + str(len(df)))
 
     print("repo_checker: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count()*0.75)) as pool:
