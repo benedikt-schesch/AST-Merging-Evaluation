@@ -11,7 +11,7 @@ java -version
 
 JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
-if [ $JAVA_VER != "8" ]; then
+if [ "$JAVA_VER" != "8" ]; then
   echo "Wrong Java version $JAVA_VER. Please use Java 8."
   exit 1
 fi

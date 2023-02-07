@@ -5,25 +5,27 @@
 #
 # This script takes a csv of repos and verifies that the head of main passes tests.
 
-import pandas as pd
-from git import Repo
 import subprocess
 import shutil
 import os
 import multiprocessing
-import git
 import argparse
-from tqdm import tqdm
 import platform
 from pathlib import Path
+
+from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
+import pandas as pd
+from git import Repo
+import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 30 * 60 # 30 minutes
+TIMEOUT_MERGE = 30 * 60  # 30 minutes
+
 
 def get_repo(repo_name):
-    """ Clones a repository
+    """Clones a repository
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
@@ -47,7 +49,7 @@ def get_repo(repo_name):
 
 
 def test_repo(repo_dir_copy, timeout):
-    """ Tests a repository. Each test is conducted three times.
+    """Returns the return code of trying 3 times to run tester.sh on the given working copy.
     If one tests passes then the entire test is marked as passed.
     If one tests timeouts then the entire test is marked as timeout.
     Args:
@@ -56,7 +58,6 @@ def test_repo(repo_dir_copy, timeout):
     Returns:
         int: The test value.
     """
-    "Returns the return code of trying 3 times to run tester.sh on the given working copy."
     if platform.system() == "Linux":  # Linux
         command_timeout = "timeout"
     else:  # MacOS
@@ -70,9 +71,9 @@ def test_repo(repo_dir_copy, timeout):
                 repo_dir_copy,
             ],
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            stderr=subprocess.DEVNULL,
         ).returncode
-        if rc == 0: # Success
+        if rc == 0:  # Success
             return 0
         if rc == 124:
             # Timeout
@@ -81,7 +82,7 @@ def test_repo(repo_dir_copy, timeout):
 
 
 def check_repo(arg):
-    """ Checks if the head of main passes test.
+    """Checks if the head of main passes test.
     Args:
         arg (str): Information regarding that repo.
     Returns:
@@ -89,16 +90,16 @@ def check_repo(arg):
     """
     _, row = arg
     repo_name = row["repository"]
-    print(repo_name,": Started")
-    result_interpretable = {0:"Valid",1:"Not Valid",124:"Not Valid Timeout"}
+    print(repo_name, ": Started")
+    result_interpretable = {0: "Valid", 1: "Not Valid", 124: "Not Valid Timeout"}
 
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
-        print(repo_name,": ",result_interpretable[df.iloc[0]["test"]])
-        print(repo_name,": Done, result is cached")
+        print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
+        print(repo_name, ": Done, result is cached")
         return df.iloc[0]["test"]
 
     df = pd.DataFrame({"test": [1]})
@@ -106,9 +107,9 @@ def check_repo(arg):
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
     try:
-        print(repo_name,": Cloning repo")
+        print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
-        print(repo_name,": Finished cloning")
+        print(repo_name, ": Finished cloning")
         shutil.copytree(repo_dir, repo_dir_copy)
 
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
@@ -117,13 +118,13 @@ def check_repo(arg):
     except Exception:
         pass
     shutil.rmtree(repo_dir_copy)
-    print(repo_name,": ",result_interpretable[df.iloc[0]["test"]])
-    print(repo_name,": Done")
+    print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
+    print(repo_name, ": Done")
     return df.iloc[0]["test"]
 
 
 if __name__ == "__main__":
-    Path('repos').mkdir( parents=True, exist_ok=True )
+    Path("repos").mkdir( parents=True, exist_ok=True )
     Path(CACHE).mkdir( parents=True, exist_ok=True )
     Path(WORKDIR).mkdir( parents=True, exist_ok=True )
 
@@ -134,13 +135,18 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_path)
 
     print("repo_checker: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count()*0.75)) as pool:
-        r = list(tqdm(pool.imap(check_repo, df.iterrows()), total=len(df),))
+    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+        r = list(
+            tqdm(
+                pool.imap(check_repo, df.iterrows()),
+                total=len(df),
+            )
+        )
     print("repo_checker: Finished Testing")
 
     print("repo_checker: Building Output")
     out = []
-    for idx, row in tqdm(df.iterrows(),total=len(df)):
+    for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         repo = check_repo((idx, row))
         if repo == 0:
@@ -148,5 +154,5 @@ if __name__ == "__main__":
     print("repo_checker: Finished Building Output")
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
-    print("repo_checker: Number of valid repos:",len(out))
+    print("repo_checker: Number of valid repos:", len(out))
     print("repo_checker: Done")
