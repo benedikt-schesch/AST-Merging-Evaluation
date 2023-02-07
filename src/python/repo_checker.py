@@ -20,12 +20,18 @@ from tqdm.contrib.concurrent import process_map
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 10 * 60
+TIMEOUT_MERGE = 30 * 60 # 30 minutes
 
 def get_repo(repo_name):
+    """ Clones a repository
+    Args:
+        repo_name (str): The name of the repository to be cloned
+    Returns:
+        The repository
+    """
     repo_dir = "repos/" + repo_name
     if not os.path.isdir(repo_dir):
-        git_url = "https://github.com/" + repo_name + ".git"
+        git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
     else:
         repo = git.Git(repo_dir)
@@ -41,6 +47,15 @@ def get_repo(repo_name):
 
 
 def test_repo(repo_dir_copy, timeout):
+    """ Tests a repository. Each test is conducted three times.
+    If one tests passes then the entire test is marked as passed.
+    If one tests timeouts then the entire test is marked as timeout.
+    Args:
+        repo_dir_copy (str): The path of the repository.
+        timeout (int): Test Timeout limit.
+    Returns:
+        int: The test value.
+    """
     "Returns the return code of trying 3 times to run tester.sh on the given working copy."
     if platform.system() == "Linux":  # Linux
         command_timeout = "timeout"
@@ -66,7 +81,13 @@ def test_repo(repo_dir_copy, timeout):
 
 
 def check_repo(arg):
-    idx, row = arg
+    """ Checks if the head of main passes test.
+    Args:
+        arg (str): Information regarding that repo.
+    Returns:
+        int: 1 if the repo is valid (main head passes tests)
+    """
+    _, row = arg
     repo_name = row["repository"]
     print(repo_name,": Started")
     result_interpretable = {0:"Valid",1:"Not Valid",124:"Not Valid Timeout"}
