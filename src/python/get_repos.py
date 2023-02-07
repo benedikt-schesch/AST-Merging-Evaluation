@@ -10,13 +10,15 @@ import urllib.request
 import gzip
 from io import BytesIO
 
-urllib.request.urlretrieve("https://reporeapers.github.io/static/downloads/dataset.csv.gz", "data/repos.csv.gz")
-with gzip.open('data/repos.csv.gz', 'rb') as f:
+urllib.request.urlretrieve(
+    "https://reporeapers.github.io/static/downloads/dataset.csv.gz", "data/repos.csv.gz"
+)
+with gzip.open("data/repos.csv.gz", "rb") as f:
     file_content = f.read()
 df = pd.read_csv(BytesIO(file_content))
 df = df[df["language"] == "Java"]
-df = df.replace(to_replace='None', value=np.nan).dropna()
-df = df[df["stars"].astype(int)>10]
-df = df[df["unit_test"]>0.25]
+df = df.replace(to_replace="None", value=np.nan).dropna()
+df = df[df["stars"].astype(int) > 10]
+df = df[df["unit_test"] > 0.25]
 df.to_csv("data/repos.csv")
-print("Number of Repos:",len(df))
+print("Number of Repos:", len(df))
