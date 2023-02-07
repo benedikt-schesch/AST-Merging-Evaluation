@@ -11,6 +11,7 @@ merges_small_valid_subsamples/
 repos/
 .workdir/
 scratch/
+data/repos.csv.gz
 
 # Compiled class file
 *.class
