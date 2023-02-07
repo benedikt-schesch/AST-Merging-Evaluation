@@ -2,11 +2,16 @@
 .vscode
 venv
 
-cache/
+jars/*
+cache/*
 output/
 merge_repo/
 data/result.csv
 merges_small_valid_subsamples/
+repos/
+.workdir/
+scratch/
+data/repos.csv.gz
 
 # Compiled class file
 *.class

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# usage: ./find_merge_commits.sh <repo-dir>
+# usage: ./tester.sh.sh <repo-dir>
 
-# This script take the path of a repo and tests it.
+# This script takes the path of a repo and tests it.
 # It executes Maven or gradle depending on what is more suitable.
 
 set -e 
@@ -27,7 +27,7 @@ if [ -f "gradlew" ] ; then
   fi
 fi
 
-if [ -f "pom.xml" ] ; then
+if [[ -f pom.xml || -f mvnw ]] ; then
   mvn test
   rc=$?
   if [ $rc -ne 0 ] ; then

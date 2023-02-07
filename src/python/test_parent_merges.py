@@ -4,7 +4,6 @@
 #                                         --merges_path <path_to_merges>
 #                                         --output_dir <output_directory>
 #                                         --n_merges <max_number_of_merges>
-#                                         --num_cpu <num_cpu_used>
 #
 # This script takes a list of merges and verifies that the two parents of each merge
 # has parents that pass tests.
@@ -13,17 +12,27 @@ import pandas as pd
 import git
 import shutil
 import os
+import itertools
 import multiprocessing
 from multiprocessing import Manager
 import argparse
+from pathlib import Path
 from repo_checker import test_repo, get_repo
+from tqdm import tqdm
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 10 * 60
+TIMEOUT_SECONDS = 30 * 60 # 30 minutes
 
 
 def pass_test(repo_name, commit):
+    """ Checks if a certain commit in a repo passes tests.
+    Args:
+        repo_name (str): Name of the repo to test.
+        commit (str): Commit to test.
+    Returns:
+        int: Test result.
+    """
     cache_file = CACHE + repo_name.split("/")[1] + "_" + commit
 
     if os.path.isfile(cache_file):
@@ -70,6 +79,20 @@ def pass_test(repo_name, commit):
 
 
 def valid_merge(args):
+    """ Verifies that the two parents of a merge pass tests. Only operates if no more than
+        n_sampled other merges have passing parents.
+    Args:
+        repo_name (str): Name of the repo to test.
+        left (str): Left parent hash of a merge.
+        right (str): Right parent hash of a merge.
+        merge (str): Hash of the merge.
+        valid_merge_counter (str): Thread safe counter, counting number of valid merges.
+        n_sampled (str): Number of sampled merges.
+    Returns:
+        int: Test result of left parent.
+        int: Test result of right parent.
+        int: Test result of the merge.
+    """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled + 10:
         return
@@ -82,24 +105,31 @@ def valid_merge(args):
 
 
 if __name__ == "__main__":
+    print("test_parent_merges: Start")
+    Path('repos').mkdir( parents=True, exist_ok=True )
+    Path('cache').mkdir( parents=True, exist_ok=True )
+    Path(CACHE).mkdir( parents=True, exist_ok=True )
+    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
+
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
-    parser.add_argument("--num_cpu", type=int)
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
+
     manager = Manager()
     valid_merge_counter = manager.dict()
 
+    print("test_parent_merges: Constructing Inputs")
     tested_merges = []
-    for idx, row in df.iterrows():
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -123,18 +153,21 @@ if __name__ == "__main__":
                     )
                 )
         tested_merges.append(merges_repo)
-
+    print("test_parent_merges: Finished Constructing Inputs")
+    
     # Interleave testing to reduce probability that tests at the same hash happen in parallel
-    tested_merges = [val for l in zip(tested_merges) for val in l]
+    arguments = [val for l in itertools.zip_longest(*tested_merges) for val in l if val is not None]
+    assert len(arguments) == sum([len(l) for l in tested_merges])
 
-    print("Number of tested commits:", len(tested_merges))
-    print("Started Testing")
-    pool = multiprocessing.Pool(args.num_cpu)
-    result = pool.map(valid_merge, tested_merges)
+    print("test_parent_merges: Number of tested commits:", len(arguments))
+    print("test_parent_merges: Started Testing")
+    pool = multiprocessing.Pool(processes=int(os.cpu_count()*0.75))
+    r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     pool.close()
-    print("Finished Testing")
-
-    for idx, row in df.iterrows():
+    print("test_parent_merges: Finished Testing")
+    
+    print("test_parent_merges: Constructing Output")
+    for idx, row in tqdm(df.iterrows(),total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
@@ -142,7 +175,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["merge", "left", "right", "base"],
+            names=["branch_name","merge", "left", "right", "base"],
             header=0,
             index_col=False,
         )
@@ -168,9 +201,11 @@ if __name__ == "__main__":
                 if test_left == 0 and test_right == 0:
                     merges.loc[idx2, "parent test"] = 0
                     counter += 1
-                result.append(merges.loc[idx2])
+                    result.append(merges.loc[idx2])
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
         outout_file = args.output_dir + repo_name.split("/")[1] + ".csv"
         result.to_csv(outout_file)
+    print("test_parent_merges: Finished Constructing Output")
+    print("test_parent_merges: Done")
