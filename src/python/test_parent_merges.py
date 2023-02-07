@@ -22,10 +22,17 @@ from tqdm import tqdm
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 10 * 60
+TIMEOUT_SECONDS = 30 * 60 # 30 minutes
 
 
 def pass_test(repo_name, commit):
+    """ Checks if a certain commit in a repo passes tests.
+    Args:
+        repo_name (str): Name of the repo to test.
+        commit (str): Commit to test.
+    Returns:
+        int: Test result.
+    """
     cache_file = CACHE + repo_name.split("/")[1] + "_" + commit
 
     if os.path.isfile(cache_file):
@@ -72,6 +79,20 @@ def pass_test(repo_name, commit):
 
 
 def valid_merge(args):
+    """ Verifies that the two parents of a merge pass tests. Only operates if no more than
+        n_sampled other merges have passing parents.
+    Args:
+        repo_name (str): Name of the repo to test.
+        left (str): Left parent hash of a merge.
+        right (str): Right parent hash of a merge.
+        merge (str): Hash of the merge.
+        valid_merge_counter (str): Thread safe counter, counting number of valid merges.
+        n_sampled (str): Number of sampled merges.
+    Returns:
+        int: Test result of left parent.
+        int: Test result of right parent.
+        int: Test result of the merge.
+    """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled + 10:
         return
@@ -180,7 +201,7 @@ if __name__ == "__main__":
                 if test_left == 0 and test_right == 0:
                     merges.loc[idx2, "parent test"] = 0
                     counter += 1
-                result.append(merges.loc[idx2])
+                    result.append(merges.loc[idx2])
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
