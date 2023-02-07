@@ -20,4 +20,7 @@ clean:
 	rm -f small/valid_repos.csv
 
 clean-cache:
-	rm -rf cache/*
+	rm -rf cache
+	rm -rf .workdir
+	rm -rf .repos
+	rm -rf scratch
