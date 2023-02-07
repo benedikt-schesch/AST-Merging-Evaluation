@@ -15,6 +15,7 @@ import git
 import argparse
 from tqdm import tqdm
 import platform
+from pathlib import Path
 from tqdm.contrib.concurrent import process_map
 
 CACHE = "cache/repos_result/"
@@ -101,15 +102,10 @@ def check_repo(arg):
 
 
 if __name__ == "__main__":
-    print("repo_checker: Start")
-    if not os.path.isdir('repos'):
-        os.mkdir('repos')
-    if not os.path.exists("cache"):
-        os.mkdir("cache")
-    if not os.path.isdir(CACHE):
-        os.mkdir(CACHE)
-    if not os.path.isdir(WORKDIR):
-        os.mkdir(WORKDIR)
+    Path('repos').mkdir( parents=True, exist_ok=True )
+    Path('cache').mkdir( parents=True, exist_ok=True )
+    Path(CACHE).mkdir( parents=True, exist_ok=True )
+    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
