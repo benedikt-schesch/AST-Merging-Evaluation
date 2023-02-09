@@ -95,12 +95,6 @@ def check_repo(arg):
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
-    if os.path.isfile(target_file):
-        df = pd.read_csv(target_file)
-        print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-        print(repo_name, ": Done, result is cached")
-        return df.iloc[0]["test"]
-
     df = pd.DataFrame({"test": [1]})
     df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
@@ -111,8 +105,15 @@ def check_repo(arg):
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
-        shutil.copytree(repo_dir, repo_dir_copy)
+        
+        #Check if result is cached
+        if os.path.isfile(target_file):
+            df = pd.read_csv(target_file)
+            print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
+            print(repo_name, ": Done, result is cached")
+            return df.iloc[0]["test"]
 
+        shutil.copytree(repo_dir, repo_dir_copy)
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         df.to_csv(target_file)
