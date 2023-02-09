@@ -4,7 +4,7 @@
 # merges branch2 into branch1
 # outputs result in-place to merge-dir
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 3 ]; then

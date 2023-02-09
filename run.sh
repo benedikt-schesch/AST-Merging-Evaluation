@@ -3,7 +3,7 @@
 # usage: ./run.sh
 # Runs the stack
 
-set -e 
+set -e
 set -o nounset
 
 java -version
