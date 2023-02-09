@@ -126,7 +126,8 @@ def check_repo(arg):
         print(repo_name, ": Finished testing, result = exception")
         pass
     print(repo_name, ": Finished testing")
-    shutil.rmtree(repo_dir_copy)
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy)
     print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
     print(repo_name, ": Done")
     return df.iloc[0]["test"]
