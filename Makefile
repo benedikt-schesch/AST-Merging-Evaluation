@@ -1,7 +1,7 @@
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
-BASH_SCRIPTS = $(wildcard *.sh) $(wildcard src/scripts/*.sh)
+BASH_SCRIPTS = $(shell find . -name '*.sh')
 
 shell-script-style:
 	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}

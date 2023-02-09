@@ -5,7 +5,7 @@
 # This script takes the path of a repo and tests it.
 # It executes Maven or gradle depending on what is more suitable.
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 1 ]; then
@@ -13,7 +13,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-cd $1
+cd "$1"
 if [ -f "gradlew" ] ; then
   ./gradlew test
   rc=$?
