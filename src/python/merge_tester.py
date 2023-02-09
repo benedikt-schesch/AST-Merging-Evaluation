@@ -46,6 +46,8 @@ def test_merge(merging_method, repo_name, left, right, base):
         process = multiprocessing.current_process()
         pid = str(process.pid)
         repo_dir_copy = WORKDIR + pid
+        if os.path.isdir(repo_dir_copy):
+            shutil.rmtree(repo_dir_copy)
 
         if platform.system() == "Linux":  # Linux
             command_timeout = "timeout"

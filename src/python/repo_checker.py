@@ -104,6 +104,8 @@ def check_repo(arg):
     df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy)
     try:
         print(repo_name,": Cloning repo")
         repo = get_repo(repo_name)
