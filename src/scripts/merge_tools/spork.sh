@@ -19,27 +19,27 @@ branch1=$2
 branch2=$3
 wd=$(pwd)
 sporkfullpath=$(realpath $SPORK)
-cd $repo
+cd "$repo"
 
 # set up spork driver
-echo "[merge \"spork\"]" >> .git/config
-    echo "    name = spork" >> .git/config
-    echo "    driver = java -jar $sporkfullpath --git-mode %A %O %B -o %A" >> .git/config
+(echo "[merge \"spork\"]";
+    echo "    name = spork";
+    echo "    driver = java -jar $sporkfullpath --git-mode %A %O %B -o %A") >> .git/config
 echo "*.java merge=spork" >> .gitattributes
 
 # perform merge
-git checkout $branch1
-git merge --no-edit $branch2
+git checkout "$branch1"
+git merge --no-edit "$branch2"
 
 # report conflicts
 retVal=$?
 if [ $retVal -ne 0 ]; then
     echo "Conflict"
     git merge --abort
-    cd $wd
+    cd "$wd"
     exit $retVal
 fi
 
 # go back to wd
-cd $wd
+cd "$wd"
 exit 0
