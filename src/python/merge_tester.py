@@ -106,7 +106,7 @@ def test_merge(merging_method, repo_name, left, right, base):
             shutil.rmtree(dst_name)
         if os.path.isdir(repo_dir_copy + "/" + merging_method):
             shutil.copytree(repo_dir_copy + "/" + merging_method, dst_name)
-    if DELETE_WORKDIR:
+    if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     return merge, runtime
 

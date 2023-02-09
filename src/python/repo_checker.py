@@ -118,7 +118,8 @@ def check_repo(arg):
         df.to_csv(target_file)
     except Exception:
         pass
-    shutil.rmtree(repo_dir_copy)
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy)
     print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
     print(repo_name, ": Done")
     return df.iloc[0]["test"]
