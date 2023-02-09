@@ -18,7 +18,9 @@ if [ "$#" -ne 2 ]; then
 fi
 
 # Receive list of repo names from list of valid repos (arg #1)
-VALID_REPOS=$(sed 1d $1 | cut -d ',' -f3)
+VALID_REPOS=$(sed 1d "$1" | cut -d ',' -f3)
+# This line is necessary on some operating systems, such as Ubuntu
+mapfile -t VALID_REPOS <<< "$VALID_REPOS"
 
 # Get the commits of a repo's (arg #1) pull request (arg #2)
 GET_COMMITS_FROM_PR() {
