@@ -6,7 +6,7 @@
 # Return code is 0 for merge success, 1 for merge failure.
 # For merge failure, also outputs "Conflict".
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 3 ]; then

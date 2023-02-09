@@ -4,7 +4,7 @@
 # Runs the stack on two small repos.
 # The output appears in small/ .
 
-set -e 
+set -e
 set -o nounset
 
 java -version

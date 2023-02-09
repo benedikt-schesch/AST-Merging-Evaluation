@@ -6,7 +6,7 @@
 # To run the tests, it executes Maven or Gradle.
 # The exit status is 0 for test success or 1 for test failure.
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 1 ]; then

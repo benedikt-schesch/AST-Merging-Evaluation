@@ -10,7 +10,7 @@
 # hashes, two parents commit hashes, and base commit of the two parents.
 # <output-dir> must be a relative, not absolute, directory name.
 
-set -e 
+set -e
 set -o nounset
 
 if [ "$#" -ne 2 ]; then
@@ -64,7 +64,7 @@ do
     if test -f "$FILE"; then
         continue
     fi
-    
+
     # Header for $REPO_NAME.csv
     echo "branch_name,merge_commit,parent_1,parent_2,base_commit" \
         > "$OUTPUT_DIR/$REPO_NAME.csv"
@@ -75,16 +75,16 @@ do
     # Get all branches name
     BRANCHES=$(git branch -a --format="%(refname:lstrip=3)" \
                 | grep -vE '^[[:space:]]*$|HEAD' | sort -u)
-    
+
     # Feature branches often diverge from mainline branch (master)
-    # and carry redundant merge commit tuple (merge,parents,base) 
+    # and carry redundant merge commit tuple (merge,parents,base)
     # contained in mainline branch
-    # We want to eliminate redundant merge commit tuple, 
-    # so we will retrieve merge commit tuple of mainline 
-    # branch first, then go through other feature branchs 
+    # We want to eliminate redundant merge commit tuple,
+    # so we will retrieve merge commit tuple of mainline
+    # branch first, then go through other feature branchs
     # and only retrieve new merge commit tuple.
     # Get merge commits
-    
+
     DEFAULT_BRANCH=$(git branch --show-current)
     {
         MERGE_COMMITS="$(git log --merges --pretty=format:"%H")"
@@ -113,7 +113,7 @@ do
                 MERGE_BASE=$(git merge-base \
                             "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
                 COMMIT_TUPLE="$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE"
-                
+
                 # add commit tuple if not seen before
                 if ! grep --quiet "$COMMIT_TUPLE" "../$OUTPUT_DIR/$REPO_NAME.csv"
                 then
@@ -153,7 +153,7 @@ do
                             | jq --arg i "$i" '.[($i | tonumber)].parents') )
             NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                             | jq --arg i "$i" '.[($i | tonumber)].parents | length')
-            
+
             # A merge commit is found if it has two parents,
             # ignore non-merge commits
             if [[ $NUM_OF_PARENTS -eq 2 ]]
@@ -161,7 +161,7 @@ do
                 MERGE_COMMIT=${COMMITS[$i]}
                 MERGE_PARENTS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                                 | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha') )
-                
+
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
                 git fetch origin "pull/$PR_NUMBER/head:$PR_NUMBER"
                 git checkout -B "$PR_NUMBER"
@@ -171,7 +171,7 @@ do
             fi
         done
     done
-    
+
     cd ..
     rm -rf "$REPO_NAME"
 done
