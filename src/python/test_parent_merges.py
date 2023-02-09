@@ -7,6 +7,7 @@
 #
 # This script takes a list of merges and verifies that the two parents of each merge
 # has parents that pass tests.
+# It produces output into <output_directory>.
 
 import shutil
 import os

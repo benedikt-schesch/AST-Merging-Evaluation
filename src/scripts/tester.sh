@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# usage: ./tester.sh.sh <repo-dir>
+# usage: ./tester.sh <repo-dir>
 
-# This script takes the path of a repo and tests it.
-# It executes Maven or gradle depending on what is more suitable.
+# This script runs the tests of a given repo.
+# To run the tests, it executes Maven or Gradle.
+# The exit status is 0 for test success or 1 for test failure.
 
 set -e 
 set -o nounset

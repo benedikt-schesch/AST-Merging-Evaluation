@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# usage: ./intellmerge.sh <merge-dir> <branch1> <branch2>
+# usage: ./intellimerge.sh <dir> <branch-1> <branch-2>
+# <dir> must contain a clone of a repository.
+# Merges branch2 into branch1, in <dir>.
+# Return code is 0 for merge success, 1 for merge failure.
+# For merge failure, also outputs "Conflict".
 
 set -e 
 set -o nounset
@@ -11,16 +15,17 @@ if [ "$#" -ne 3 ]; then
 fi
 
 INTELLIMERGE=./jars/IntelliMerge-1.0.9-all.jar
-repo=$1
+
+dir=$1
 branch1=$2
 branch2=$3
 wd=$(pwd)
 
 # run intellimerge
-java -jar $INTELLIMERGE -r "$repo" -b "$branch1" "$branch2" -o temp
+java -jar $INTELLIMERGE -r "$dir" -b "$branch1" "$branch2" -o temp
 
 # run git merge
-cd "$repo"
+cd "$dir"
 git checkout "$branch1"
 # collect initial counts of conflict markers
 m1a=$(grep -ro "<<<<<<<" . | wc -l)
@@ -30,10 +35,10 @@ git merge --no-edit "$branch2"
 
 # move files
 cd "$wd"
-find temp -type f|while read f; do
+find temp -type f | while read f; do
     # construct paths
     suffix=${f#"temp"}
-    mv "$f" "$repo$suffix"
+    mv "$f" "$dir$suffix"
 done
 
 # report conflicts
