@@ -49,7 +49,7 @@ def get_repo(repo_name):
 
 
 def test_repo(repo_dir_copy, timeout):
-    """Tests a repository. Each test is conducted three times.
+    """Returns the return code of trying 3 times to run tester.sh on the given working copy.
     If one tests passes then the entire test is marked as passed.
     If one tests timeouts then the entire test is marked as timeout.
     Args:
@@ -58,7 +58,6 @@ def test_repo(repo_dir_copy, timeout):
     Returns:
         int: The test value.
     """
-    "Returns the return code of trying 3 times to run tester.sh on the given working copy."
     if platform.system() == "Linux":  # Linux
         command_timeout = "timeout"
     else:  # MacOS
@@ -107,6 +106,8 @@ def check_repo(arg):
     df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy)
     try:
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
@@ -118,7 +119,8 @@ def check_repo(arg):
         df.to_csv(target_file)
     except Exception:
         pass
-    shutil.rmtree(repo_dir_copy)
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy)
     print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
     print(repo_name, ": Done")
     return df.iloc[0]["test"]

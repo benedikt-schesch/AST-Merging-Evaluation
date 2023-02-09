@@ -18,18 +18,18 @@ branch2=$3
 wd=$(pwd)
 
 # perform merge
-cd $repo
-git checkout $branch1
-git merge --no-edit $branch2
+cd "$repo"
+git checkout "$branch1"
+git merge --no-edit "$branch2"
 
 # report conflicts
 retVal=$?
 if [ $retVal -ne 0 ]; then
     echo "Conflict"
     git merge --abort
-    cd $wd
+    cd "$wd"
     exit $retVal
 fi
 
 # go back to wd
-cd $wd
+cd "$wd"

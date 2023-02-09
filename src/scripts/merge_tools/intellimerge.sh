@@ -17,30 +17,30 @@ branch2=$3
 wd=$(pwd)
 
 # run intellimerge
-java -jar $INTELLIMERGE -r $repo -b $branch1 $branch2 -o temp
+java -jar $INTELLIMERGE -r "$repo" -b "$branch1" "$branch2" -o temp
 
 # run git merge
-cd $repo
-git checkout $branch1
+cd "$repo"
+git checkout "$branch1"
 # collect initial counts of conflict markers
 m1a=$(grep -ro "<<<<<<<" . | wc -l)
 m2a=$(grep -ro "=======" . | wc -l)
 m3a=$(grep -ro ">>>>>>>" . | wc -l)
-git merge --no-edit $branch2
+git merge --no-edit "$branch2"
 
 # move files
-cd $wd
+cd "$wd"
 find temp -type f|while read f; do
     # construct paths
     suffix=${f#"temp"}
-    mv $f $repo$suffix
+    mv "$f" "$repo$suffix"
 done
 
 # report conflicts
-m1b=$(grep -ro "<<<<<<<" $repo | wc -l)
-m2b=$(grep -ro "=======" $repo | wc -l)
-m3b=$(grep -ro ">>>>>>>" $repo | wc -l)
-if [ $m1a -ne $m1b ] && [ $m2a -ne $m2b ] && [ $m3a -ne $m3b ]; then
+m1b=$(grep -ro "<<<<<<<" "$repo" | wc -l)
+m2b=$(grep -ro "=======" "$repo" | wc -l)
+m3b=$(grep -ro ">>>>>>>" "$repo" | wc -l)
+if [ "$m1a" -ne "$m1b" ] && [ "$m2a" -ne "$m2b" ] && [ "$m3a" -ne "$m3b" ]; then
     echo "Conflict"
     exit 1
 fi
