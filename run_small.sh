@@ -23,3 +23,5 @@ sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
 python3 src/python/test_parent_merges.py --repos_path small/valid_repos.csv --merges_path small/merges_small/ --output_dir small/merges_small_valid/ --n_merges 2
 
 python3 src/python/merge_tester.py --repos_path small/valid_repos.csv --merges_path small/merges_small_valid/ --output_file small/result.csv
+
+python3 src/python/plots.py --result_path small/result.csv --output_path small/plots

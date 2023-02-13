@@ -22,3 +22,5 @@ sh src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges
 python3 src/python/test_parent_merges.py --repos_path results/valid_repos.csv --merges_path results/merges/ --output_dir results/merges_valid/ --n_merges 100
 
 python3 src/python/merge_tester.py --repos_path results/valid_repos.csv --merges_path results/merges_valid/ --output_file results/result.csv
+
+python3 src/python/merge_tester.py --result_path results/result.csv --output_path results/plots
