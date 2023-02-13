@@ -1,0 +1,7 @@
+name: Check style
+on: [push, pull_request]
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - make python-style
