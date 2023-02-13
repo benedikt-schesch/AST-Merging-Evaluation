@@ -5,18 +5,19 @@
 #
 # This script takes a csv of repos and verifies that the head of main passes tests
 
-import pandas as pd
-from git import Repo
 import subprocess
 import shutil
 import os
 import multiprocessing
-import git
 import argparse
-from tqdm import tqdm
 import platform
 from pathlib import Path
+
+from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
+import pandas as pd
+from git import Repo
+import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
@@ -95,14 +96,7 @@ def check_repo(arg):
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
-    if os.path.isfile(target_file):
-        df = pd.read_csv(target_file)
-        print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-        print(repo_name, ": Done, result is cached")
-        return df.iloc[0]["test"]
-
     df = pd.DataFrame({"test": [1]})
-    df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
     if os.path.isdir(repo_dir_copy):
@@ -111,13 +105,20 @@ def check_repo(arg):
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
-        shutil.copytree(repo_dir, repo_dir_copy)
+        
+        #Check if result is cached
+        if os.path.isfile(target_file):
+            df = pd.read_csv(target_file)
+            print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
+            print(repo_name, ": Done, result is cached")
+            return df.iloc[0]["test"]
 
+        shutil.copytree(repo_dir, repo_dir_copy)
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
-        df.to_csv(target_file)
     except Exception:
         pass
+    df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])

@@ -4,11 +4,12 @@
 # This script downloads the reaper dataset and only keeps repos with
 # at least 10 GitHub stars and a unit_test score of at least 0.25
 
+import gzip
+import urllib.request
+from io import BytesIO
+
 import pandas as pd
 import numpy as np
-import urllib.request
-import gzip
-from io import BytesIO
 
 urllib.request.urlretrieve(
     "https://reporeapers.github.io/static/downloads/dataset.csv.gz", "data/repos.csv.gz"
