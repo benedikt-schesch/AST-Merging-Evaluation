@@ -4,4 +4,4 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-      - make python-style
+      - run: make python-style
