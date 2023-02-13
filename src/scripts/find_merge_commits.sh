@@ -4,10 +4,11 @@
 
 # This script finds the merge commits from a given
 # list of valid repositories.
-# Merge commits maybe be of mainline branch, feature branches,
+# Merge commits maybe be on the mainline branch, feature branches,
 # and pull requests (both opened and closed).
-# Output a list of branch name, merge commit hashes, two parents
-# commit hashes, and base commit of the two parents inside of <output-dir>
+# Creates .csv files in <output-dir> that contain branch name, merge commit
+# hashes, two parents commit hashes, and base commit of the two parents.
+# <output-dir> must be a relative, not absolute, directory name.
 
 set -e
 set -o nounset
@@ -17,8 +18,11 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
+REPO_LIST="$1"
+OUTPUT_DIR="$2"
+
 # Receive list of repo names from list of valid repos (arg #1)
-VALID_REPOS=$(sed 1d "$1" | cut -d ',' -f3)
+VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f3)
 echo $VALID_REPOS
 # This line is necessary on some operating systems, such as Ubuntu
 mapfile -t VALID_REPOS <<< "$VALID_REPOS"
@@ -33,12 +37,12 @@ GET_COMMITS_FROM_PR() {
 }
 
 
-if [ ! -d "$2" ]; then
-    mkdir "$2"
+if [ ! -d "$OUTPUT_DIR" ]; then
+    mkdir "$OUTPUT_DIR"
 fi
 
-
-for REPO in "${VALID_REPOS[@]}"
+# ORG_AND_REPO is of the form "ORGANIZATION/REPO_NAME".
+for ORG_AND_REPO in "${VALID_REPOS[@]}"
 do
     # Getting merge commits of mainline and feature branches
     # For each repo in list of repo names:
@@ -51,16 +55,16 @@ do
     #           - get parents commits
     #           - get base commit of parents
     #           - output (branch_name,merge,parent1,parent2,base)"
-    echo $REPO
-    if [ "$REPO" == "" ]; then
+    echo $ORG_AND_REPO
+    if [ "$ORG_AND_REPO" == "" ]; then
 	continue
     fi
-    REPO_NAME=$(cut -d '/' -f2 <<< "$REPO")
+    REPO_NAME=$(cut -d '/' -f2 <<< "$ORG_AND_REPO")
     echo $REPO_NAME
     rm -rf "./$REPO_NAME"
 
     # Skip repos that have already been analyzed
-    FILE=$2/$REPO_NAME.csv
+    FILE=$OUTPUT_DIR/$REPO_NAME.csv
     echo "$FILE"
     if test -f "$FILE"; then
         continue
@@ -68,9 +72,9 @@ do
 
     # Header for $REPO_NAME.csv
     echo "branch_name,merge_commit,parent_1,parent_2,base_commit" \
-        > "$2/$REPO_NAME.csv"
+        > "$OUTPUT_DIR/$REPO_NAME.csv"
 
-    git clone "https://github.com/$REPO.git"
+    git clone "https://github.com/$ORG_AND_REPO.git"
     cd "$REPO_NAME"
 
     # Get all branches name
@@ -95,7 +99,7 @@ do
             MERGE_BASE=$(git merge-base \
                         "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
 
-            echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$2/$REPO_NAME.csv"
+            echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
         done
     }
 
@@ -116,9 +120,9 @@ do
                 COMMIT_TUPLE="$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE"
 
                 # add commit tuple if not seen before
-                if ! grep --quiet "$COMMIT_TUPLE" "../$2/$REPO_NAME.csv"
+                if ! grep --quiet "$COMMIT_TUPLE" "../$OUTPUT_DIR/$REPO_NAME.csv"
                 then
-                    echo "$BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$2/$REPO_NAME.csv"
+                    echo "$BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
                 fi
             done
         fi
@@ -142,17 +146,17 @@ do
                     --method GET \
                     --paginate \
                     --jq '.[].number' \
-                    "/repos/$REPO/pulls" \
+                    "/repos/$ORG_AND_REPO/pulls" \
                     -f state=all)
 
     for PR_NUMBER in "${PULL_REQUESTS[@]}"
     do
-        COMMITS=( $(GET_COMMITS_FROM_PR "$REPO" "$PR"_NUMBER | jq -r '.[].sha') )
+        COMMITS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR"_NUMBER | jq -r '.[].sha') )
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
-            PARENTS_RESULT=( $(GET_COMMITS_FROM_PR "$REPO" "$PR_NUMBER" \
+            PARENTS_RESULT=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                             | jq --arg i "$i" '.[($i | tonumber)].parents') )
-            NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$REPO" "$PR_NUMBER" \
+            NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                             | jq --arg i "$i" '.[($i | tonumber)].parents | length')
 
             # A merge commit is found if it has two parents,
@@ -160,7 +164,7 @@ do
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                MERGE_PARENTS=( $(GET_COMMITS_FROM_PR "$REPO" "$PR_NUMBER" \
+                MERGE_PARENTS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                                 | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha') )
 
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
@@ -168,7 +172,7 @@ do
                 git checkout -B "$PR_NUMBER"
 
                 MERGE_BASE=$(git merge-base "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
-                echo "$PR_NUMBER,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$2/$REPO_NAME.csv"
+                echo "$PR_NUMBER,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
             fi
         done
     done

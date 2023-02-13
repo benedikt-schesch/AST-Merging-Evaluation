@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# usage: ./gitmerge.sh <merge-dir> <branch-1> <branch-2>
-# merges branch2 into branch1
-# outputs result in-place to merge-dir
+# usage: ./gitmerge.sh <dir> <branch-1> <branch-2>
+# <dir> must contain a clone of a repository.
+# Merges branch2 into branch1, in <dir>.
+# Return code is 0 for merge success, 1 for merge failure.
+# For merge failure, also outputs "Conflict".
 
 set -e
 set -o nounset
@@ -12,13 +14,13 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-repo=$1
+dir=$1
 branch1=$2
 branch2=$3
 wd=$(pwd)
 
 # perform merge
-cd "$repo"
+cd "$dir"
 git checkout "$branch1"
 git merge --no-edit "$branch2"
 
