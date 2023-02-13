@@ -19,6 +19,7 @@ fi
 
 # Receive list of repo names from list of valid repos (arg #1)
 VALID_REPOS=$(sed 1d "$1" | cut -d ',' -f3)
+echo $VALID_REPOS
 # This line is necessary on some operating systems, such as Ubuntu
 mapfile -t VALID_REPOS <<< "$VALID_REPOS"
 
@@ -50,8 +51,12 @@ do
     #           - get parents commits
     #           - get base commit of parents
     #           - output (branch_name,merge,parent1,parent2,base)"
-
+    echo $REPO
+    if [ "$REPO" == "" ]; then
+	continue
+    fi
     REPO_NAME=$(cut -d '/' -f2 <<< "$REPO")
+    echo $REPO_NAME
     rm -rf "./$REPO_NAME"
 
     # Skip repos that have already been analyzed

@@ -97,7 +97,6 @@ def check_repo(arg):
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
 
     df = pd.DataFrame({"test": [1]})
-    df.to_csv(target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = WORKDIR + pid
     if os.path.isdir(repo_dir_copy):
@@ -117,9 +116,9 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
-        df.to_csv(target_file)
     except Exception:
         pass
+    df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
