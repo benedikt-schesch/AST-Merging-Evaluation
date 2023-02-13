@@ -144,7 +144,7 @@ def test_merges(args):
     )
 
     if os.path.isfile(cache_file):
-        result = pd.read_csv(cache_file,index_col=0)
+        result = pd.read_csv(cache_file, index_col=0)
         return (
             result.iloc[0][0],
             result.iloc[0][1],
