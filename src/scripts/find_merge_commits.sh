@@ -4,7 +4,7 @@
 
 # This script finds the merge commits from a given
 # list of valid repositories.
-# Merge commits maybe be on the mainline branch, feature branches, 
+# Merge commits maybe be on the mainline branch, feature branches,
 # and pull requests (both opened and closed).
 # Creates .csv files in <output-dir> that contain branch name, merge commit
 # hashes, two parents commit hashes, and base commit of the two parents.
@@ -57,7 +57,7 @@ do
 
     REPO_NAME=$(cut -d '/' -f2 <<< "$ORG_AND_REPO")
     rm -rf "./$REPO_NAME"
-    
+
     # Skip repos that have already been analyzed
     FILE=$OUTPUT_DIR/$REPO_NAME.csv
     echo "$FILE"
@@ -93,7 +93,7 @@ do
             MERGE_PARENTS=( $(git log --pretty=%P -n 1 "$MERGE_COMMIT") )
             MERGE_BASE=$(git merge-base \
                         "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
-            
+
             echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
         done
     }
@@ -143,7 +143,7 @@ do
                     --jq '.[].number' \
                     "/repos/$ORG_AND_REPO/pulls" \
                     -f state=all)
-    
+
     for PR_NUMBER in "${PULL_REQUESTS[@]}"
     do
         COMMITS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR"_NUMBER | jq -r '.[].sha') )
@@ -165,7 +165,7 @@ do
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
                 git fetch origin "pull/$PR_NUMBER/head:$PR_NUMBER"
                 git checkout -B "$PR_NUMBER"
-                
+
                 MERGE_BASE=$(git merge-base "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
                 echo "$PR_NUMBER,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
             fi
