@@ -5,18 +5,19 @@
 #
 # This script takes a csv of repos and verifies that the head of main passes tests
 
-import pandas as pd
-from git import Repo
 import subprocess
 import shutil
 import os
 import multiprocessing
-import git
 import argparse
-from tqdm import tqdm
 import platform
 from pathlib import Path
+
+from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
+import pandas as pd
+from git import Repo
+import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"

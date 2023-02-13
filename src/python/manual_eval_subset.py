@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import pandas as pd
 import os
-import git
 import shutil
 import subprocess
+
+import pandas as pd
+import git
 
 
 def merge(merging_method, left, right, base_dir):

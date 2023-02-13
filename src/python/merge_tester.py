@@ -5,19 +5,19 @@
 #
 # This script takes a csv of repos and verifies that the main branch passes it's tests
 
-import pandas as pd
-import git
 import subprocess
 import shutil
 import os
 import time
 import multiprocessing
-import pandas as pd
 import argparse
 from pathlib import Path
 import platform
+
 from repo_checker import test_repo, get_repo
 from tqdm import tqdm
+import pandas as pd
+import git
 
 
 SCRATCH_DIR = "scratch/"
@@ -234,11 +234,12 @@ if __name__ == "__main__":
 
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
-    pool = multiprocessing.Pool(processes=int(os.cpu_count() * 0.75))
-    r = list(
-        tqdm(pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1)
-    )
-    pool.close()
+    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+        r = list(
+            tqdm(
+                pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1
+            )
+        )
     print("merge_tester: Finished Testing")
     print("merge_tester: Building Output")
 

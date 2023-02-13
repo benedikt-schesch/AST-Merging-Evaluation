@@ -8,8 +8,6 @@
 # This script takes a list of merges and verifies that the two parents of each merge
 # has parents that pass tests.
 
-import pandas as pd
-import git
 import shutil
 import os
 import itertools
@@ -17,8 +15,11 @@ import multiprocessing
 from multiprocessing import Manager
 import argparse
 from pathlib import Path
+
 from repo_checker import test_repo, get_repo
 from tqdm import tqdm
+import pandas as pd
+import git
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
@@ -162,13 +163,12 @@ if __name__ == "__main__":
         for val in l
         if val is not None
     ]
-    assert len(arguments) == sum([len(l) for l in tested_merges])
+    assert len(arguments) == sum(len(l) for l in tested_merges)
 
     print("test_parent_merges: Number of tested commits:", len(arguments))
     print("test_parent_merges: Started Testing")
-    pool = multiprocessing.Pool(processes=int(os.cpu_count() * 0.75))
-    r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
-    pool.close()
+    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+        r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("test_parent_merges: Finished Testing")
 
     print("test_parent_merges: Constructing Output")
