@@ -105,8 +105,8 @@ def check_repo(arg):
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
-        
-        #Check if result is cached
+
+        # Check if result is cached
         if os.path.isfile(target_file):
             df = pd.read_csv(target_file)
             print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
