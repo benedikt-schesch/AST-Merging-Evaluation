@@ -4,6 +4,6 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
-      - run: ls
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - run: make check-python-style
