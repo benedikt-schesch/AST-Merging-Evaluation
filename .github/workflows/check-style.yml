@@ -4,4 +4,6 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-      - run: make python-style
+      - run: pwd
+      - run: ls
+      - run: make check-python-style
