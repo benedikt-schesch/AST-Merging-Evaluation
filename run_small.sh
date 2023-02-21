@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # usage: ./run_small.sh
-# Runs the stack on two small repos
+# Runs the stack on two small repos.
 # The output appears in small/ .
 
 set -e
@@ -9,10 +9,10 @@ set -o nounset
 
 java -version
 
-JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*".*/\1\2/p;')
+JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
-if [ "$JAVA_VER" != "18" ]; then
-  echo "Wrong Java version. Please use JAVA 8"
+if [ "$JAVA_VER" != "8" ]; then
+  echo "Wrong Java version $JAVA_VER. Please use Java 8."
   exit 1
 fi
 

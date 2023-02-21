@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
-# usage: python3 repo_checker.py --repos_path <path_to_repo>
-#                                         --output_path <output_path>
+# usage: python3 repo_checker.py --repos_path <repos.csv>
+#                                         --output_path <valid_repos.csv>
 #
-# This script takes a csv of repos and verifies that the head of main passes tests
+# This script takes a csv of repos.
+# It writes, to `valid_repos.csv`, those for which the head of main passes tests.
+# The input file `repos.csv` must contain a header, one of whose columns is "repository".
+# That column contains "ORGANIZATION/REPO" for a GitHub repository.
 
 import subprocess
 import shutil
@@ -105,18 +108,21 @@ def check_repo(arg):
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
-        
-        #Check if result is cached
+
+        # Check if result is cached
         if os.path.isfile(target_file):
             df = pd.read_csv(target_file)
             print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
             print(repo_name, ": Done, result is cached")
             return df.iloc[0]["test"]
 
+        print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
+        print(repo_name, ": Finished testing, result =", rc)
     except Exception:
+        print(repo_name, ": Finished testing, result = exception")
         pass
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
@@ -127,10 +133,9 @@ def check_repo(arg):
 
 
 if __name__ == "__main__":
-    Path("repos").mkdir(parents=True, exist_ok=True)
-    Path("cache").mkdir(parents=True, exist_ok=True)
-    Path(CACHE).mkdir(parents=True, exist_ok=True)
-    Path(WORKDIR).mkdir(parents=True, exist_ok=True)
+    Path("repos").mkdir( parents=True, exist_ok=True )
+    Path(CACHE).mkdir( parents=True, exist_ok=True )
+    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
