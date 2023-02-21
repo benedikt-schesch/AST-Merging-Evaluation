@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# usage: python3 repo_checker.py --repos_path <repos.csv>
+# usage: python3 validate_repos.py --repos_path <repos.csv>
 #                                         --output_path <valid_repos.csv>
 #
 # This script takes a csv of repos.
@@ -39,11 +39,7 @@ def get_repo(repo_name):
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
     else:
-        repo = git.Git(repo_dir)
-    try:
-        repo.remote.fetch()
-    except Exception:
-        pass
+        repo = git.Repo(repo_dir)
     try:
         repo.remote().fetch()
     except Exception:
@@ -143,7 +139,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_path)
 
-    print("repo_checker: Started Testing")
+    print("validate_repos: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
         r = list(
             tqdm(
@@ -151,17 +147,17 @@ if __name__ == "__main__":
                 total=len(df),
             )
         )
-    print("repo_checker: Finished Testing")
+    print("validate_repos: Finished Testing")
 
-    print("repo_checker: Building Output")
+    print("validate_repos: Building Output")
     out = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         repo = check_repo((idx, row))
         if repo == 0:
             out.append(row)
-    print("repo_checker: Finished Building Output")
+    print("validate_repos: Finished Building Output")
     out = pd.DataFrame(out)
     out.to_csv(args.output_path)
-    print("repo_checker: Number of valid repos:", len(out))
-    print("repo_checker: Done")
+    print("validate_repos: Number of valid repos:", len(out))
+    print("validate_repos: Done")

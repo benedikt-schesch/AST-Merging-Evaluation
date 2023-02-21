@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
 # usage: python3 merge_tester.py --repos_path <path_to_repo>
+#                                         --merges_path <merges_path>
 #                                         --output_path <output_path>
 #
-# This script takes a csv of repos and verifies that the main branch passes it's tests
+# This script takes a csv of repos and a csv of merges and performs the merges with
+# the different merging tools. Each merge is then tested.
+# An output file is generated with all the results for each merge.
 
 import subprocess
 import shutil
@@ -14,7 +17,7 @@ import argparse
 from pathlib import Path
 import platform
 
-from repo_checker import test_repo, get_repo
+from validate_repos import test_repo
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -55,12 +58,12 @@ def test_merge(merging_method, repo_name, left, right, base):
             command_timeout = "gtimeout"
 
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
-        repo = git.Git(repo_dir_copy + "/" + merging_method)
-        repo.fetch()
-        repo.checkout(left)
-        repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
-        repo.checkout(right)
-        repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
+        repo = git.Repo(repo_dir_copy + "/" + merging_method)
+        repo.remote().fetch()
+        repo.git.checkout(left)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
+        repo.git.checkout(right)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
         try:
             start = time.time()
             merge = subprocess.run(
