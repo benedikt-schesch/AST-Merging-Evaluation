@@ -42,6 +42,4 @@ if [ $retVal -ne 0 ]; then
     exit $retVal
 fi
 
-# go back to wd
-cd "$wd"
 exit 0
