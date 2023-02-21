@@ -80,7 +80,7 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 
     * tester.sh -> Runs a repo's programmer provided tests
 
-    * repo_checker.py -> Checks out all repos and removes all repos that fail their tests on main branch
+    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch
 
     * find_merge_commits.sh -> Finds all the merges in a project  
     * test_parent_commits.py -> Tests if the parents of a commit pass their tests

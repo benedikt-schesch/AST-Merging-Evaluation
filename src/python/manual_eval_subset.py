@@ -13,12 +13,12 @@ def merge(merging_method, left, right, base_dir):
     repo_dir_copy = base_dir + "/" + merging_method
 
     shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
-    repo = git.Git(repo_dir_copy + "/" + merging_method)
-    repo.fetch()
-    repo.checkout(left)
-    repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
-    repo.checkout(right)
-    repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
+    repo = git.Repo(repo_dir_copy + "/" + merging_method)
+    repo.remote().fetch()
+    repo.git.checkout(left)
+    repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
+    repo.git.checkout(right)
+    repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
     subprocess.run(
         [
             "src/scripts/merge_tools/" + merging_method + ".sh",

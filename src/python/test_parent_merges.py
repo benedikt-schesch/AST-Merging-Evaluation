@@ -17,7 +17,7 @@ from multiprocessing import Manager
 import argparse
 from pathlib import Path
 
-from repo_checker import test_repo, get_repo
+from validate_repos import test_repo, get_repo
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -56,11 +56,15 @@ def pass_test(repo_name, commit):
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
         shutil.copytree(repo_dir, repo_dir_copy)
-        repo = git.Git(repo_dir_copy)
-        repo.fetch()
-
+        repo = git.Repo(repo_dir_copy)
+        repo.remote().fetch()
+        
         try:
-            repo.checkout(commit)
+            repo.git.checkout(commit)
+            # Merges that are older than that date should be ignored for reproducibility
+            if repo.commit().committed_date > 1677003361:
+                raise Exception
+            
             try:
                 test = test_repo(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception:
