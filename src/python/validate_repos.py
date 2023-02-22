@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Tests the HEAD of a repo and validates it if the test passes."""
 
 # usage: python3 validate_repos.py --repos_path <repos.csv>
 #                                         --output_path <valid_repos.csv>
@@ -36,6 +37,8 @@ def get_repo(repo_name):
     """
     repo_dir = "repos/" + repo_name
     if not os.path.isdir(repo_dir):
+        # @ in fron here to make sure that we are not prompted login details
+        # for the repos that are now private
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
     else:
@@ -129,9 +132,9 @@ def check_repo(arg):
 
 
 if __name__ == "__main__":
-    Path("repos").mkdir( parents=True, exist_ok=True )
-    Path(CACHE).mkdir( parents=True, exist_ok=True )
-    Path(WORKDIR).mkdir( parents=True, exist_ok=True )
+    Path("repos").mkdir(parents=True, exist_ok=True)
+    Path(CACHE).mkdir(parents=True, exist_ok=True)
+    Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
