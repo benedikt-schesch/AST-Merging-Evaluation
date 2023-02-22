@@ -16,5 +16,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run python style check
       run: make check-python-style
+    - name: Install shellcheck
+      run: apt install shellcheck
     - name: Run shell style check
       run: make shell-script-style
