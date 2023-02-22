@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
+"""Output latex tables and plots."""
 
-import csv
-import os
 import argparse
 from pathlib import Path
 
@@ -73,7 +72,7 @@ if __name__ == "__main__":
     plt.savefig(output_path + "/stacked.pdf")
 
     # table 1 (overall results)
-    template = """\\begin{{tabular}}{{c|c c|c c|c c}} 
+    template = """\\begin{{tabular}}{{c|c c|c c|c c}}
             Tool & 
             \multicolumn{{2}}{{|c|}}{{Correct Merges}} & 
             \multicolumn{{2}}{{|c|}}{{Unhandled Merges}} &
@@ -122,7 +121,7 @@ if __name__ == "__main__":
         file.write(table)
 
     # table 2 (by merge source)
-    template2 = """\\begin{{tabular}}{{c|c c c c|c c c c|c c c c}} 
+    template2 = """\\begin{{tabular}}{{c|c c c c|c c c c|c c c c}}
             Tool & 
             \multicolumn{{4}}{{|c|}}{{Correct Merges}} & 
             \multicolumn{{4}}{{|c|}}{{Unhandled Merges}} &

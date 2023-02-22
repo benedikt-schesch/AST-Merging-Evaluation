@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Perform and test merges with different merge tools."""
 
 # usage: python3 merge_tester.py --repos_path <path_to_repo>
 #                                         --merges_path <merges_path>
@@ -213,8 +214,7 @@ if __name__ == "__main__":
     print("merge_tester: Building Inputs")
     args_merges = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+        merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -225,7 +225,7 @@ if __name__ == "__main__":
                 continue
             args_merges.append(
                 (
-                    repo_name,
+                    row["repository"],
                     row2["left"],
                     row2["right"],
                     row2["base"],
@@ -248,16 +248,14 @@ if __name__ == "__main__":
 
     output = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-
-        merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+        merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
 
         # Initialize new columns
-        merges["repo_name"] = [repo_name for i in merges.iterrows()]
+        merges["repo_name"] = [row["repository"] for i in merges.iterrows()]
         merges["gitmerge"] = [-10 for i in merges.iterrows()]
         merges["spork"] = [-10 for i in merges.iterrows()]
         merges["intellimerge"] = [-10 for i in merges.iterrows()]
@@ -275,7 +273,7 @@ if __name__ == "__main__":
                 intelli_runtime,
             ) = test_merges(
                 (
-                    repo_name,
+                    row["repository"],
                     row2["left"],
                     row2["right"],
                     row2["base"],

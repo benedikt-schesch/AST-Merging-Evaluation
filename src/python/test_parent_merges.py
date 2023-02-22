@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Tests the parents of a merge and subsamples merges from merges with passing parents."""
 
 # usage: python3 test_parent_merges.py --repos_path <path_to_repo>
 #                                         --merges_path <path_to_merges>
@@ -58,13 +59,13 @@ def pass_test(repo_name, commit):
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
-        
+
         try:
             repo.git.checkout(commit)
             # Merges that are older than that date should be ignored for reproducibility
             if repo.commit().committed_date > 1677003361:
                 raise Exception
-            
+
             try:
                 test = test_repo(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception:
@@ -102,7 +103,7 @@ def valid_merge(args):
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled + 10:
-        return
+        return 3, 3, 3
     left_test = pass_test(repo_name, left)
     right_test = pass_test(repo_name, right)
     if left_test == 0 and right_test == 0:
@@ -180,6 +181,7 @@ if __name__ == "__main__":
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+
         if not os.path.isfile(merge_list_file):
             continue
 
