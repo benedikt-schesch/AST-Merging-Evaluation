@@ -9,13 +9,14 @@ import gzip
 import urllib.request
 from io import BytesIO
 import os
+import sys
 
 import pandas as pd
 import numpy as np
 
 if __name__ == "__main__":
     if os.path.isfile("data/repos.csv"):
-        exit(0)
+        sys.exit(0)
 
     urllib.request.urlretrieve(
         "https://reporeapers.github.io/static/downloads/dataset.csv.gz",
