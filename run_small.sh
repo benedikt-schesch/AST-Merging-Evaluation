@@ -4,6 +4,12 @@
 # Runs the stack on two small repos.
 # The output appears in small/ .
 
+machine_id="${1:-0}"
+num_machines="${2:-1}"
+
+echo "Machine ID: $machine_id"
+echo "Number of machines: $num_machines"
+
 set -e
 set -o nounset
 
@@ -18,7 +24,9 @@ fi
 
 python3 src/python/get_repos.py
 
-python3 src/python/validate_repos.py --repos_path data/repos_small.csv --output_path small/valid_repos.csv
+python3 src/python/split_repos.py --repos_path data/repos_small.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file small/local_repos_small.csv
+
+python3 src/python/validate_repos.py --repos_path small/local_repos_small.csv --output_path small/valid_repos.csv
 
 sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
 
