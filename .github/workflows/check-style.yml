@@ -14,5 +14,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run style checjk
+    - name: Run python style check
       run: make check-python-style
+    - name: Install shellcheck
+      run: sudo apt install shellcheck
+    - name: Run shell style check
+      run: make shell-script-style
