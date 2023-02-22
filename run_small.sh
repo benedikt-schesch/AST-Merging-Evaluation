@@ -18,7 +18,9 @@ fi
 
 python3 src/python/get_repos.py
 
-python3 src/python/validate_repos.py --repos_path data/repos_small.csv --output_path small/valid_repos.csv
+python3 src/python/split_repos.py --repos_path data/repos_small.csv --machine_id 0 --num_machines 1 --output_file small/local_repos_small.csv
+
+python3 src/python/validate_repos.py --repos_path small/repos_small.csv --output_path small/valid_repos.csv
 
 sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
 
