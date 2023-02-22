@@ -76,18 +76,25 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 
  * src/ -> contains the following scripts:
 
-    * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
+   * python/ -> contains the following scripts:
 
-    * tester.sh -> Runs a repo's programmer provided tests
+      * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
 
-    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch
+      * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch
 
-    * find_merge_commits.sh -> Finds all the merges in a project  
-    * test_parent_commits.py -> Tests if the parents of a commit pass their tests
+      * latex_output.py -> Output latex code for the resulting plots and table
 
-    * gitmerge.sh -> Executes git merge on a specific merge  
-    * intellimerge.sh -> Executes intellimerge on a specific merge  
-    * spork.sh -> Executes spork on a specific merge  
+      * test_parent_commits.py -> Tests if the parents of a commit pass their tests
 
-    * analyze.py -> Print the number of merges in each class (test failes, test passed, timeout...) for each tool (Intellimerge, Spork, Git)
-    * plots.py -> Plotting script for the report
+      * get_repos.py -> Downloads the repos list
+
+   * scripts/ -> contains the following scripts:   
+      * tester.sh -> Runs a repo's programmer provided tests
+
+      * find_merge_commits.sh -> Finds all the merges in a project  
+      
+      * merge_tools/ -> contains the following scripts:   
+         * gitmerge.sh -> Executes git merge on a specific merge  
+         * intellimerge.sh -> Executes intellimerge on a specific merge  
+         * spork.sh -> Executes spork on a specific merge  
+
