@@ -16,6 +16,8 @@ if [ "$JAVA_VER" != "8" ]; then
   exit 1
 fi
 
+python3 src/python/get_repos.py
+
 python3 src/python/validate_repos.py --repos_path data/repos_small.csv --output_path small/valid_repos.csv
 
 sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
