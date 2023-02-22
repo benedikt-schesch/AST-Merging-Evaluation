@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# usage: ./run.sh
+# usage: ./run.sh <machine_id> <num_machine>
+# <machine_id> optional argument to specify the id of the current machine
+# <num_machine> optional argument to specify the total number of machines used
 # Runs the stack.
 # Takes a long time (days).
 # The output appears in results/ .
@@ -8,6 +10,12 @@
 
 set -e
 set -o nounset
+
+machine_id="${1:-0}"
+num_machines="${2:-1}"
+
+echo "Machine ID: $machine_id"
+echo "Number of machines: $num_machines"
 
 JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
@@ -18,7 +26,7 @@ fi
 
 python3 src/python/get_repos.py
 
-python3 src/python/split_repos.py --repos_path data/repos.csv --machine_id 0 --num_machines 1 --output_file results/local_repos.csv
+python3 src/python/split_repos.py --repos_path data/repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file results/local_repos.csv
 
 python3 src/python/validate_repos.py --repos_path results/local_repos.csv --output_path results/valid_repos.csv
 

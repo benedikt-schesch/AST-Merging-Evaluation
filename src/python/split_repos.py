@@ -25,5 +25,5 @@ if __name__ == "__main__":
     df = df.sample(frac=1, random_state=42).reset_index(drop=True)
     df = np.array_split(df, args.num_machines)[args.machine_id]
 
-    df.to_csv(args.output_file)
+    df.to_csv(args.output_file, index=False)
     print("Number of local Repos:", len(df))
