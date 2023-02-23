@@ -30,3 +30,5 @@ jobs:
       run: ./run_small.sh
       env:
         GH_TOKEN: ${{ github.token }}
+    - name: Verify Output
+      run: [[ $(cat small/result.csv | wc -l) -ne 5 ]] && exit 1
