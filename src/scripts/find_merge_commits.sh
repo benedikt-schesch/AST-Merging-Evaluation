@@ -10,6 +10,9 @@
 # hashes, two parents commit hashes, and base commit of the two parents.
 # <output-dir> must be a relative, not absolute, directory name.
 
+echo "Checking for Bash version...."
+echo "The Bash version is $BASH_VERSION !"
+
 set -e
 set -o nounset
 

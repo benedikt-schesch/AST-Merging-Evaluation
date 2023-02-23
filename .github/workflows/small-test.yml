@@ -22,6 +22,7 @@ jobs:
         pip install -r requirements.txt
     - name: Version control
       run: /bin/bash --version
+      shell: bash
     - name: Run run_small.sh
-      run: ./run_small.sh
+      run: /bin/bash run_small.sh
       shell: bash
