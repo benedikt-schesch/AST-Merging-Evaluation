@@ -23,6 +23,6 @@ jobs:
     - name: Version control
       run: /bin/bash --version
       shell: bash
-    - name: Run run_small.sh
+    - name: Executing run_small.sh
       run: /bin/bash run_small.sh
       shell: bash

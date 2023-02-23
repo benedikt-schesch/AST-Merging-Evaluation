@@ -28,7 +28,7 @@ python3 src/python/split_repos.py --repos_path data/repos_small.csv --machine_id
 
 python3 src/python/validate_repos.py --repos_path small/local_repos_small.csv --output_path small/valid_repos.csv
 
-sh src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
+./src/scripts/find_merge_commits.sh small/valid_repos.csv small/merges_small
 
 python3 src/python/test_parent_merges.py --repos_path small/valid_repos.csv --merges_path small/merges_small/ --output_dir small/merges_small_valid/ --n_merges 2
 
