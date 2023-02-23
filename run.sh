@@ -30,7 +30,7 @@ python3 src/python/split_repos.py --repos_path data/repos.csv --machine_id "$mac
 
 python3 src/python/validate_repos.py --repos_path results/local_repos.csv --output_path results/valid_repos.csv
 
-sh src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges
+./src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges
 
 python3 src/python/test_parent_merges.py --repos_path results/valid_repos.csv --merges_path results/merges/ --output_dir results/merges_valid/ --n_merges 100
 
