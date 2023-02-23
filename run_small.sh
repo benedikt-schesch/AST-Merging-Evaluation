@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # usage: ./run_small.sh
 # Runs the stack on two small repos.
