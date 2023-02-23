@@ -9,7 +9,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '8'
-        cache: 'maven'
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
