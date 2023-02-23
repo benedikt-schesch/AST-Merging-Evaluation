@@ -22,3 +22,5 @@ jobs:
         pip install -r requirements.txt
     - name: Executing run_small.sh
       run: /bin/bash run_small.sh
+      env:
+        GH_TOKEN: ${{ github.token }}
