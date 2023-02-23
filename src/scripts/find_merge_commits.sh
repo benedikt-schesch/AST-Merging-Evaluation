@@ -57,7 +57,7 @@ do
     if [ "$ORG_AND_REPO" == "" ]; then
 	    continue
     fi
-    REPO_NAME=$(cut -d '/' -f2 <<< "$ORG_AND_REPO")
+    REPO_NAME=$(echo $ORG_AND_REPO | cut -d '/' -f2)
     echo "$REPO_NAME"
     rm -rf "./$REPO_NAME"
 
@@ -93,7 +93,7 @@ do
         MERGE_COMMITS="$(git log --merges --pretty=format:"%H")"
         for MERGE_COMMIT in ${MERGE_COMMITS}
         do
-            IFS=" " read -r -a MERGE_PARENTS <<< "$(git log --pretty=%P -n 1 "$MERGE_COMMIT")"
+            mapfile -t MERGE_PARENTS < <(git log --pretty=%P -n 1 "$MERGE_COMMIT")
             MERGE_BASE=$(git merge-base \
                         "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
             echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
@@ -111,7 +111,7 @@ do
             MERGE_COMMITS=$(git log --merges --pretty=format:"%H")
             for MERGE_COMMIT in ${MERGE_COMMITS}
             do
-                IFS=" " read -r -a MERGE_PARENTS <<< "$(git log --pretty=%P -n 1 "$MERGE_COMMIT")"
+                mapfile -t MERGE_PARENTS < <(git log --pretty=%P -n 1 "$MERGE_COMMIT")
                 MERGE_BASE=$(git merge-base \
                             "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
                 COMMIT_TUPLE="$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE"
@@ -147,7 +147,7 @@ do
                     -f state=all)
     for PR_NUMBER in ${PULL_REQUESTS}
     do
-        IFS=" " read -r -a COMMITS <<< "$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" | jq -r '.[].sha')"
+        mapfile -t COMMITS < <(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" | jq -r '.[].sha')
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
             NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
@@ -158,8 +158,8 @@ do
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                IFS=" " read -r -a MERGE_PARENTS <<< "$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                                | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
+                mapfile -t MERGE_PARENTS < <(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
+                                | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')
 
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
                 git fetch origin "pull/$PR_NUMBER/head:$PR_NUMBER"
