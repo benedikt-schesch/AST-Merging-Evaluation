@@ -23,6 +23,6 @@ jobs:
     - name: Executing run_small.sh
       run: make clean-cache
     - name: Executing run_small.sh
-      run: /bin/bash run_small.sh
+      run: ./run_small.sh
       env:
         GH_TOKEN: ${{ github.token }}
