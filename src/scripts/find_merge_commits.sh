@@ -12,6 +12,8 @@
 
 echo "Checking for Bash version...."
 echo "The Bash version is $BASH_VERSION !"
+bash --version
+echo $0
 
 set -e
 set -o nounset
