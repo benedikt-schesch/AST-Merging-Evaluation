@@ -1,7 +1,7 @@
 name: Run Small test
 on: [push, pull_request]
 jobs:
-  style:
+  test:
     runs-on: ubuntu-latest
     defaults:
       run:
