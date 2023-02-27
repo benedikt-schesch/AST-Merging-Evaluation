@@ -50,7 +50,7 @@ def get_repo(repo_name):
     return repo
 
 
-def test_repo(repo_dir_copy, timeout):
+def repo_test(repo_dir_copy, timeout):
     """Returns the return code of trying 3 times to run tester.sh on the given working copy.
     If one tests passes then the entire test is marked as passed.
     If one tests timeouts then the entire test is marked as timeout.
@@ -117,7 +117,7 @@ def check_repo(arg):
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
-        rc = test_repo(repo_dir_copy, TIMEOUT_MERGE)
+        rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception:
