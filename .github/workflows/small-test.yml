@@ -30,12 +30,6 @@ jobs:
         wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
     - name: Cleaning caches
       run: make clean-cache
-    - name: Executing run_small.sh
-      run: ./run_small.sh
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Verify Output
+    - name: Test with pytest
       run: |
-        res=$(($(cat small/result.csv | wc -l)))
-        echo $res
-        [[ res -ne 5 ]] && exit 1
+        pytest
