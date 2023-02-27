@@ -25,15 +25,6 @@ OUTPUT_DIR="$2"
 VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f3)
 echo "$VALID_REPOS"
 
-# Get the commits of a repo's (arg #1) pull request (arg #2)
-GET_COMMITS_FROM_PR() {
-    gh api \
-        -H "Accept: application/vnd.github+json" \
-        --method GET \
-        --paginate \
-        "/repos/$1/pulls/$2/commits"
-}
-
 
 if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir "$OUTPUT_DIR"
@@ -147,19 +138,22 @@ do
                     -f state=all)
     for PR_NUMBER in ${PULL_REQUESTS}
     do
-        IFS=" " read -r -a COMMITS <<< "$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" | jq -r '.[].sha')"
+        GH_RES=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            --method GET \
+            --paginate \
+            "/repos/$ORG_AND_REPO/pulls/$PR_NUMBER/commits")
+        IFS=" " read -r -a COMMITS <<< "$(echo "$GH_RES" | jq -r '.[].sha')"
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
-            NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                            | jq --arg i "$i" '.[($i | tonumber)].parents | length')
+            NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
 
             # A merge commit is found if it has two parents,
             # ignore non-merge commits
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                RES="$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                                | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
+                RES="$(echo "$GH_RES" | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
                 RES="${RES//$'\n'/ }"
                 IFS=" " read -r -a MERGE_PARENTS <<< "$RES"
 
