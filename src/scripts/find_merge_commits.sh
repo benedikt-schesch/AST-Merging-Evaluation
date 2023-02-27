@@ -143,17 +143,17 @@ do
             --method GET \
             --paginate \
             "/repos/$ORG_AND_REPO/pulls/$PR_NUMBER/commits")
-        IFS=" " read -r -a COMMITS <<< "$(echo $GH_RES | jq -r '.[].sha')"
+        IFS=" " read -r -a COMMITS <<< "$(echo "$GH_RES" | jq -r '.[].sha')"
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
-            NUM_OF_PARENTS=$(echo $GH_RES | jq --arg i "$i" '.[($i | tonumber)].parents | length')
+            NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
 
             # A merge commit is found if it has two parents,
             # ignore non-merge commits
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                RES="$(echo $GH_RES | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
+                RES="$(echo "$GH_RES" | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
                 RES="${RES//$'\n'/ }"
                 IFS=" " read -r -a MERGE_PARENTS <<< "$RES"
 
