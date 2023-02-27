@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
+"""Perform and test merges with different merge tools."""
 
 # usage: python3 merge_tester.py --repos_path <path_to_repo>
+#                                         --merges_path <merges_path>
 #                                         --output_path <output_path>
 #
-# This script takes a csv of repos and verifies that the main branch passes it's tests
+# This script takes a csv of repos and a csv of merges and performs the merges with
+# the different merging tools. Each merge is then tested.
+# An output file is generated with all the results for each merge.
 
 import subprocess
 import shutil
@@ -14,7 +18,7 @@ import argparse
 from pathlib import Path
 import platform
 
-from repo_checker import test_repo, get_repo
+from validate_repos import repo_test
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -55,12 +59,12 @@ def test_merge(merging_method, repo_name, left, right, base):
             command_timeout = "gtimeout"
 
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
-        repo = git.Git(repo_dir_copy + "/" + merging_method)
-        repo.fetch()
-        repo.checkout(left)
-        repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
-        repo.checkout(right)
-        repo.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
+        repo = git.Repo(repo_dir_copy + "/" + merging_method)
+        repo.remote().fetch()
+        repo.git.checkout(left)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
+        repo.git.checkout(right)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
         try:
             start = time.time()
             merge = subprocess.run(
@@ -82,7 +86,7 @@ def test_merge(merging_method, repo_name, left, right, base):
         try:
             if merge == 0:
                 merge = (
-                    test_repo(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
+                    repo_test(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
                 )
         except Exception:
             merge = 5
@@ -210,8 +214,7 @@ if __name__ == "__main__":
     print("merge_tester: Building Inputs")
     args_merges = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+        merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -222,7 +225,7 @@ if __name__ == "__main__":
                 continue
             args_merges.append(
                 (
-                    repo_name,
+                    row["repository"],
                     row2["left"],
                     row2["right"],
                     row2["base"],
@@ -245,16 +248,14 @@ if __name__ == "__main__":
 
     output = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-
-        merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+        merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
 
         # Initialize new columns
-        merges["repo_name"] = [repo_name for i in merges.iterrows()]
+        merges["repo_name"] = [row["repository"] for i in merges.iterrows()]
         merges["gitmerge"] = [-10 for i in merges.iterrows()]
         merges["spork"] = [-10 for i in merges.iterrows()]
         merges["intellimerge"] = [-10 for i in merges.iterrows()]
@@ -272,7 +273,7 @@ if __name__ == "__main__":
                 intelli_runtime,
             ) = test_merges(
                 (
-                    repo_name,
+                    row["repository"],
                     row2["left"],
                     row2["right"],
                     row2["base"],

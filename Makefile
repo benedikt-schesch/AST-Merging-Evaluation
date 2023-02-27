@@ -16,6 +16,10 @@ python-style:
 	black ${PYTHON_FILES}
 	pylint -f parseable --disable=W,invalid-name ${PYTHON_FILES}
 
+check-python-style:
+	black ${PYTHON_FILES} --check
+	pylint -f parseable --disable=W,invalid-name ${PYTHON_FILES}
+
 clean:
 	rm -f small/valid_repos.csv
 

@@ -1,0 +1,37 @@
+name: Run Small test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '8'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Install maven
+      run: |
+        sudo apt update
+        sudo apt install maven
+    - name: Install Spork and Intellimerge
+      run: |
+        wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
+        wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+    - name: Cleaning caches
+      run: make clean-cache
+    - name: Test with pytest
+      run: |
+        pytest
+      env:
+          GH_TOKEN: ${{ github.token }}

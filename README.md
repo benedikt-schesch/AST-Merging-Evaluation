@@ -12,6 +12,14 @@ To install all the python requirements:
 pip install -r requirements.txt
 ```
 
+## Spork and Intellimerge
+
+To download the Intellimerge and Spork jar:
+```
+wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
+wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+```
+
 ### Alternative Python installation
 
 If you don't want to mess with your local python installation you can create a python virtual environment to install all dependencies with the following commands:
@@ -27,12 +35,19 @@ If you did the previous step make sure the virtual environemnt is activated when
 
 ```
 apt-get install -y jq
+type -p curl >/dev/null || sudo apt install curl -y
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+&& sudo apt update \
+&& sudo apt install gh -y
 ```
 
 ## MacOS
 
 ```
 brew install jq
+brew install gh
 ```
 
 # Run the code
@@ -64,30 +79,51 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 
 # Directory structure
 
- * .workdir -> This folder is used by each process to make its computations.
+ * .workdir/ -> This folder is used for the local computations of each process.
+
+ * .cache/ -> This folder is a cache for each computation.
+
+ * repos/ -> In this folder each repo is cloned.
+
+ * jars/ -> Location for the Intellimerge and Spork jars.
+
+ * scratch/ -> If enabled each merge will be stored in this location.
+
+ * results/ -> Stores the results for the full analysis.
+
+ * small/ -> Stores the results for the small analysis.
 
  * data/ -> contains:
 
-    * repos.csv -> List of all repos that fulfill the initial selection criterion  
+    * repos.csv -> List of all repos that fulfill the initial selection criterion.
+
+    * repos_small.csv -> List of only 2 repos.
 
  * results/ -> contains:
 
-    * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target
+    * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
 
  * src/ -> contains the following scripts:
 
-    * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects
+   * python/ -> contains the following scripts:
 
-    * tester.sh -> Runs a repo's programmer provided tests
+      * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-    * repo_checker.py -> Checks out all repos and removes all repos that fail their tests on main branch
+      * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
-    * find_merge_commits.sh -> Finds all the merges in a project  
-    * test_parent_commits.py -> Tests if the parents of a commit pass their tests
+      * latex_output.py -> Output latex code for the resulting plots and table.
 
-    * gitmerge.sh -> Executes git merge on a specific merge  
-    * intellimerge.sh -> Executes intellimerge on a specific merge  
-    * spork.sh -> Executes spork on a specific merge  
+      * test_parent_commits.py -> Tests if the parents of a commit pass their tests.
 
-    * analyze.py -> Print the number of merges in each class (test failes, test passed, timeout...) for each tool (Intellimerge, Spork, Git)
-    * plots.py -> Plotting script for the report
+      * get_repos.py -> Downloads the repos list.
+
+   * scripts/ -> contains the following scripts:
+      * tester.sh -> Runs a repo's programmer provided tests.
+
+      * find_merge_commits.sh -> Finds all the merges in a project.
+      
+      * merge_tools/ -> contains the following scripts:
+         * gitmerge.sh -> Executes git merge on a specific merge.
+         * intellimerge.sh -> Executes intellimerge on a specific merge.
+         * spork.sh -> Executes spork on a specific merge.
+

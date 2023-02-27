@@ -23,18 +23,7 @@ OUTPUT_DIR="$2"
 
 # Receive list of repo names from list of valid repos (arg #1)
 VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f3)
-echo $VALID_REPOS
-# This line is necessary on some operating systems, such as Ubuntu
-mapfile -t VALID_REPOS <<< "$VALID_REPOS"
-
-# Get the commits of a repo's (arg #1) pull request (arg #2)
-GET_COMMITS_FROM_PR() {
-    gh api \
-        -H "Accept: application/vnd.github+json" \
-        --method GET \
-        --paginate \
-        "/repos/$1/pulls/$2/commits"
-}
+echo "$VALID_REPOS"
 
 
 if [ ! -d "$OUTPUT_DIR" ]; then
@@ -42,7 +31,7 @@ if [ ! -d "$OUTPUT_DIR" ]; then
 fi
 
 # ORG_AND_REPO is of the form "ORGANIZATION/REPO_NAME".
-for ORG_AND_REPO in "${VALID_REPOS[@]}"
+for ORG_AND_REPO in ${VALID_REPOS}
 do
     # Getting merge commits of mainline and feature branches
     # For each repo in list of repo names:
@@ -55,12 +44,12 @@ do
     #           - get parents commits
     #           - get base commit of parents
     #           - output (branch_name,merge,parent1,parent2,base)"
-    echo $ORG_AND_REPO
+    echo "$ORG_AND_REPO"
     if [ "$ORG_AND_REPO" == "" ]; then
-	continue
+	    continue
     fi
     REPO_NAME=$(cut -d '/' -f2 <<< "$ORG_AND_REPO")
-    echo $REPO_NAME
+    echo "$REPO_NAME"
     rm -rf "./$REPO_NAME"
 
     # Skip repos that have already been analyzed
@@ -93,17 +82,16 @@ do
     DEFAULT_BRANCH=$(git branch --show-current)
     {
         MERGE_COMMITS="$(git log --merges --pretty=format:"%H")"
-        for MERGE_COMMIT in "${MERGE_COMMITS[@]}"
+        for MERGE_COMMIT in ${MERGE_COMMITS}
         do
-            MERGE_PARENTS=( $(git log --pretty=%P -n 1 "$MERGE_COMMIT") )
+            IFS=" " read -r -a MERGE_PARENTS <<< "$(git log --pretty=%P -n 1 "$MERGE_COMMIT")"
             MERGE_BASE=$(git merge-base \
                         "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
-
             echo "$DEFAULT_BRANCH,$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE" >> "../$OUTPUT_DIR/$REPO_NAME.csv"
         done
     }
 
-    for BRANCH in "${BRANCHES[@]}"
+    for BRANCH in ${BRANCHES}
     do
         # ignore master branch, commits already retrieved
         if [[ "$BRANCH" != "$DEFAULT_BRANCH" ]]
@@ -112,9 +100,9 @@ do
 
             # Get merge commits
             MERGE_COMMITS=$(git log --merges --pretty=format:"%H")
-            for MERGE_COMMIT in "${MERGE_COMMITS[@]}"
+            for MERGE_COMMIT in ${MERGE_COMMITS}
             do
-                MERGE_PARENTS=( $(git log --pretty=%P -n 1 "$MERGE_COMMIT") )
+                IFS=" " read -r -a MERGE_PARENTS <<< "$(git log --pretty=%P -n 1 "$MERGE_COMMIT")"
                 MERGE_BASE=$(git merge-base \
                             "${MERGE_PARENTS[0]}" "${MERGE_PARENTS[1]}")
                 COMMIT_TUPLE="$MERGE_COMMIT,${MERGE_PARENTS[0]},${MERGE_PARENTS[1]},$MERGE_BASE"
@@ -148,24 +136,26 @@ do
                     --jq '.[].number' \
                     "/repos/$ORG_AND_REPO/pulls" \
                     -f state=all)
-
-    for PR_NUMBER in "${PULL_REQUESTS[@]}"
+    for PR_NUMBER in ${PULL_REQUESTS}
     do
-        COMMITS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR"_NUMBER | jq -r '.[].sha') )
+        GH_RES=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            --method GET \
+            --paginate \
+            "/repos/$ORG_AND_REPO/pulls/$PR_NUMBER/commits")
+        IFS=" " read -r -a COMMITS <<< "$(echo "$GH_RES" | jq -r '.[].sha')"
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
-            PARENTS_RESULT=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                            | jq --arg i "$i" '.[($i | tonumber)].parents') )
-            NUM_OF_PARENTS=$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                            | jq --arg i "$i" '.[($i | tonumber)].parents | length')
+            NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
 
             # A merge commit is found if it has two parents,
             # ignore non-merge commits
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                MERGE_PARENTS=( $(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
-                                | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha') )
+                RES="$(echo "$GH_RES" | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
+                RES="${RES//$'\n'/ }"
+                IFS=" " read -r -a MERGE_PARENTS <<< "$RES"
 
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
                 git fetch origin "pull/$PR_NUMBER/head:$PR_NUMBER"

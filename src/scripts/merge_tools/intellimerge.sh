@@ -35,16 +35,16 @@ git merge --no-edit "$branch2"
 
 # move files
 cd "$wd"
-find temp -type f | while read f; do
+find temp -type f | while read -r f; do
     # construct paths
     suffix=${f#"temp"}
     mv "$f" "$dir$suffix"
 done
 
 # report conflicts
-m1b=$(grep -ro "<<<<<<<" "$repo" | wc -l)
-m2b=$(grep -ro "=======" "$repo" | wc -l)
-m3b=$(grep -ro ">>>>>>>" "$repo" | wc -l)
+m1b=$(grep -ro "<<<<<<<" "$dir" | wc -l)
+m2b=$(grep -ro "=======" "$dir" | wc -l)
+m3b=$(grep -ro ">>>>>>>" "$dir" | wc -l)
 if [ "$m1a" -ne "$m1b" ] && [ "$m2a" -ne "$m2b" ] && [ "$m3a" -ne "$m3b" ]; then
     echo "Conflict"
     exit 1
