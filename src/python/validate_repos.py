@@ -25,7 +25,7 @@ import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 30 * 60  # 30 minutes
+TIMEOUT_MERGE = 60 * 60  # 60 minutes
 
 
 def get_repo(repo_name):
