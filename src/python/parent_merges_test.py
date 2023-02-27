@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests the parents of a merge and subsamples merges from merges with passing parents."""
 
-# usage: python3 test_parent_merges.py --repos_path <path_to_repo>
+# usage: python3 parent_merges_test.py --repos_path <path_to_repo>
 #                                         --merges_path <path_to_merges>
 #                                         --output_dir <output_directory>
 #                                         --n_merges <max_number_of_merges>
@@ -113,7 +113,7 @@ def valid_merge(args):
 
 
 if __name__ == "__main__":
-    print("test_parent_merges: Start")
+    print("parent_merges_test: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
     Path("cache").mkdir(parents=True, exist_ok=True)
     Path(CACHE).mkdir(parents=True, exist_ok=True)
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     manager = Manager()
     valid_merge_counter = manager.dict()
 
-    print("test_parent_merges: Constructing Inputs")
+    print("parent_merges_test: Constructing Inputs")
     tested_merges = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
@@ -160,7 +160,7 @@ if __name__ == "__main__":
                     )
                 )
         tested_merges.append(merges_repo)
-    print("test_parent_merges: Finished Constructing Inputs")
+    print("parent_merges_test: Finished Constructing Inputs")
 
     # Interleave testing to reduce probability that tests at the same hash happen in parallel
     arguments = [
@@ -171,13 +171,13 @@ if __name__ == "__main__":
     ]
     assert len(arguments) == sum(len(l) for l in tested_merges)
 
-    print("test_parent_merges: Number of tested commits:", len(arguments))
-    print("test_parent_merges: Started Testing")
+    print("parent_merges_test: Number of tested commits:", len(arguments))
+    print("parent_merges_test: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
         r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
-    print("test_parent_merges: Finished Testing")
+    print("parent_merges_test: Finished Testing")
 
-    print("test_parent_merges: Constructing Output")
+    print("parent_merges_test: Constructing Output")
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
@@ -219,5 +219,5 @@ if __name__ == "__main__":
         result = pd.DataFrame(result)
         outout_file = args.output_dir + repo_name.split("/")[1] + ".csv"
         result.to_csv(outout_file)
-    print("test_parent_merges: Finished Constructing Output")
-    print("test_parent_merges: Done")
+    print("parent_merges_test: Finished Constructing Output")
+    print("parent_merges_test: Done")
