@@ -36,5 +36,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Verify Output
       run: |
-        echo $(cat small/result.csv | wc -l)
-        [[ $(cat small/result.csv | wc -l) -ne 5 ]] && exit 1
+        res=$(($(cat small/result.csv | wc -l)))
+        echo $res
+        [[ res -ne 5 ]] && exit 1
