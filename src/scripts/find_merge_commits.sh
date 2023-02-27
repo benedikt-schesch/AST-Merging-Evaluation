@@ -158,8 +158,10 @@ do
             if [[ $NUM_OF_PARENTS -eq 2 ]]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
-                IFS=" " read -r -a MERGE_PARENTS <<< "$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
+                RES="$(GET_COMMITS_FROM_PR "$ORG_AND_REPO" "$PR_NUMBER" \
                                 | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
+                RES="${RES//$'\n'/ }"
+                IFS=" " read -r -a MERGE_PARENTS <<< "$RES"
 
                 # Create a new local branch from PR_NUMBER in order to reference commits on PR
                 git fetch origin "pull/$PR_NUMBER/head:$PR_NUMBER"
