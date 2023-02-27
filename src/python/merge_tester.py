@@ -18,7 +18,7 @@ import argparse
 from pathlib import Path
 import platform
 
-from validate_repos import test_repo
+from validate_repos import repo_test
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -86,7 +86,7 @@ def test_merge(merging_method, repo_name, left, right, base):
         try:
             if merge == 0:
                 merge = (
-                    test_repo(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
+                    repo_test(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
                 )
         except Exception:
             merge = 5
