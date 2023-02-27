@@ -18,7 +18,7 @@ from multiprocessing import Manager
 import argparse
 from pathlib import Path
 
-from validate_repos import test_repo, get_repo
+from validate_repos import repo_test, get_repo
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -67,7 +67,7 @@ def pass_test(repo_name, commit):
                 raise Exception
 
             try:
-                test = test_repo(repo_dir_copy, TIMEOUT_SECONDS)
+                test = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception:
                 test = 2
         except Exception:
