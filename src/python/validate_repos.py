@@ -60,18 +60,20 @@ def repo_test(repo_dir_copy, timeout):
     """
     for i in range(3):
         try:
-            p = subprocess.Popen([
-                "src/scripts/tester.sh",
-                repo_dir_copy,
-            ], 
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            start_new_session=True)
+            p = subprocess.Popen(
+                [
+                    "src/scripts/tester.sh",
+                    repo_dir_copy,
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
             p.wait(timeout=TIMEOUT_MERGE)
             rc = p.returncode
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-            rc = 124 #Timeout
+            rc = 124  # Timeout
         if rc == 0:  # Success
             return 0
         if rc == 124:
