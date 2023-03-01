@@ -39,7 +39,7 @@ git merge --no-edit "$branch2"
 cd "$wd"
 find $temp_dir -type f | while read -r f; do
     # construct paths
-    suffix=${f#$temp_dir}
+    suffix=${f#"$temp_dir"}
     mv "$f" "$dir$suffix"
 done
 
