@@ -7,8 +7,6 @@
 #                               --output_path <output_path>
 # This script splits the repos list for each machine and stores the local repos list.
 
-import os
-import sys
 import argparse
 import pandas as pd
 import numpy as np
