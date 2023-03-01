@@ -22,14 +22,14 @@ fi
 
 mkdir -p cf
 
-python3 src/python/split_repos.py --repos_path data/repos_cf.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file cf/local_repos_cf.csv
+python3 src/python/validate_repos.py --repos_path cf/repos_cf.csv --output_path cf/valid_repos.csv
 
-python3 src/python/validate_repos.py --repos_path cf/local_repos_cf.csv --output_path cf/valid_repos.csv
+python3 src/python/split_repos.py --repos_path data/valid_repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file cf/local_repos_cf.csv
 
-./src/scripts/find_merge_commits.sh cf/valid_repos.csv cf/merges_cf
+./src/scripts/find_merge_commits.sh cf/local_repos_cf.csv cf/merges_cf
 
-python3 src/python/parent_merges_test.py --repos_path cf/valid_repos.csv --merges_path cf/merges_cf/ --output_dir cf/merges_cf_valid/ --n_merges 2
+python3 src/python/parent_merges_test.py --repos_path cf/local_repos_cf.csv --merges_path cf/merges_cf/ --output_dir cf/merges_cf_valid/ --n_merges 2
 
-python3 src/python/merge_tester.py --repos_path cf/valid_repos.csv --merges_path cf/merges_cf_valid/ --output_file cf/result.csv
+python3 src/python/merge_tester.py --repos_path cf/local_repos_cf.csv --merges_path cf/merges_cf_valid/ --output_file cf/result.csv
 
 python3 src/python/latex_output.py --result_path small/result.csv --output_path small/plots
