@@ -60,7 +60,7 @@ def repo_test(repo_dir_copy, timeout):
     """
     for i in range(3):
         try:
-            p = subprocess.Popen( # pylint: disable=consider-using-with
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/tester.sh",
                     repo_dir_copy,

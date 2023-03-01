@@ -63,7 +63,7 @@ def test_merge(merging_method, repo_name, left, right, base):
         repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
         try:
             start = time.time()
-            p = subprocess.Popen( # pylint: disable=consider-using-with
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
