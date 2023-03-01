@@ -26,14 +26,14 @@ fi
 
 python3 src/python/get_repos.py
 
-python3 src/python/split_repos.py --repos_path data/repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file results/local_repos.csv
+python3 src/python/validate_repos.py --repos_path data/repos.csv --output_path results/valid_repos.csv
 
-python3 src/python/validate_repos.py --repos_path results/local_repos.csv --output_path results/valid_repos.csv
+python3 src/python/split_repos.py --repos_path results/valid_repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file results/local_repos.csv
 
-./src/scripts/find_merge_commits.sh results/valid_repos.csv results/merges
+./src/scripts/find_merge_commits.sh results/local_repos.csv results/merges
 
-python3 src/python/parent_merges_test.py --repos_path results/valid_repos.csv --merges_path results/merges/ --output_dir results/merges_valid/ --n_merges 100
+python3 src/python/parent_merges_test.py --repos_path results/local_repos.csv --merges_path results/merges/ --output_dir results/merges_valid/ --n_merges 100
 
-python3 src/python/merge_tester.py --repos_path results/valid_repos.csv --merges_path results/merges_valid/ --output_file results/result.csv
+python3 src/python/merge_tester.py --repos_path results/local_repos.csv --merges_path results/merges_valid/ --output_file results/result.csv
 
 python3 src/python/latex_output.py --result_path results/result.csv --output_path results/plots
