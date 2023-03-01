@@ -11,6 +11,8 @@ repos/
 .workdir/
 scratch/
 data/repos.csv.gz
+.pytest_cache/
+cf/
 
 # Compiled class file
 *.class

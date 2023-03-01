@@ -9,6 +9,8 @@
 # the different merging tools. Each merge is then tested.
 # An output file is generated with all the results for each merge.
 
+import signal
+import subprocess
 import subprocess
 import shutil
 import os
@@ -16,7 +18,6 @@ import time
 import multiprocessing
 import argparse
 from pathlib import Path
-import platform
 
 from validate_repos import repo_test
 from tqdm import tqdm
@@ -53,11 +54,6 @@ def test_merge(merging_method, repo_name, left, right, base):
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
-        if platform.system() == "Linux":  # Linux
-            command_timeout = "timeout"
-        else:  # MacOS
-            command_timeout = "gtimeout"
-
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
@@ -67,10 +63,8 @@ def test_merge(merging_method, repo_name, left, right, base):
         repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
         try:
             start = time.time()
-            merge = subprocess.run(
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
                 [
-                    command_timeout,
-                    str(TIMEOUT_MERGE) + "s",
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
                     "AOFKMAFNASFKJNRFQJXNFHJ1",
@@ -78,8 +72,15 @@ def test_merge(merging_method, repo_name, left, right, base):
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-            ).returncode
+                start_new_session=True,
+            )
+            p.wait(timeout=TIMEOUT_MERGE)
+            merge = p.returncode
             runtime = time.time() - start
+        except subprocess.TimeoutExpired:
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            runtime = time.time() - start
+            merge = 124  # Timeout
         except Exception:
             merge = 6
             runtime = -1
