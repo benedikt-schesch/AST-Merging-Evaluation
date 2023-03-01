@@ -14,13 +14,11 @@ import shutil
 import os
 import multiprocessing
 import argparse
-import platform
 from pathlib import Path
+import signal
 
 from tqdm import tqdm
-from tqdm.contrib.concurrent import process_map
 import pandas as pd
-from git import Repo
 import git
 
 CACHE = "cache/repos_result/"
@@ -60,21 +58,22 @@ def repo_test(repo_dir_copy, timeout):
     Returns:
         int: The test value.
     """
-    if platform.system() == "Linux":  # Linux
-        command_timeout = "timeout"
-    else:  # MacOS
-        command_timeout = "gtimeout"
     for i in range(3):
-        rc = subprocess.run(
-            [
-                command_timeout,
-                str(timeout) + "s",
-                "src/scripts/tester.sh",
-                repo_dir_copy,
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        ).returncode
+        try:
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
+                [
+                    "src/scripts/tester.sh",
+                    repo_dir_copy,
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            p.wait(timeout=TIMEOUT_MERGE)
+            rc = p.returncode
+        except subprocess.TimeoutExpired:
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            rc = 124  # Timeout
         if rc == 0:  # Success
             return 0
         if rc == 124:

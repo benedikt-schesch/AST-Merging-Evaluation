@@ -102,7 +102,7 @@ def valid_merge(args):
         int: Test result of the merge.
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
-    if valid_merge_counter[repo_name] > n_sampled + 10:
+    if valid_merge_counter[repo_name] > int(1.1 * n_sampled):
         return 3, 3, 3
     left_test = pass_test(repo_name, left)
     right_test = pass_test(repo_name, right)

@@ -19,10 +19,12 @@ INTELLIMERGE=./jars/IntelliMerge-1.0.9-all.jar
 dir=$1
 branch1=$2
 branch2=$3
+temp_dir=".workdir/intelli_temp_$$/"
+mkdir $temp_dir
 wd=$(pwd)
 
 # run intellimerge
-java -jar $INTELLIMERGE -r "$dir" -b "$branch1" "$branch2" -o temp
+java -jar $INTELLIMERGE -r "$dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
 cd "$dir"
@@ -35,9 +37,9 @@ git merge --no-edit "$branch2"
 
 # move files
 cd "$wd"
-find temp -type f | while read -r f; do
+find $temp_dir -type f | while read -r f; do
     # construct paths
-    suffix=${f#"temp"}
+    suffix=${f#"$temp_dir"}
     mv "$f" "$dir$suffix"
 done
 
@@ -46,7 +48,9 @@ m1b=$(grep -ro "<<<<<<<" "$dir" | wc -l)
 m2b=$(grep -ro "=======" "$dir" | wc -l)
 m3b=$(grep -ro ">>>>>>>" "$dir" | wc -l)
 if [ "$m1a" -ne "$m1b" ] && [ "$m2a" -ne "$m2b" ] && [ "$m3a" -ne "$m3b" ]; then
+    rm -rf $temp_dir
     echo "Conflict"
     exit 1
 fi
+rm -rf $temp_dir
 exit 0
