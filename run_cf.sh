@@ -24,7 +24,7 @@ mkdir -p cf
 
 python3 src/python/validate_repos.py --repos_path data/repos_cf.csv --output_path cf/valid_repos.csv
 
-python3 src/python/split_repos.py --repos_path data/valid_repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file cf/local_repos_cf.csv
+python3 src/python/split_repos.py --repos_path cf/valid_repos.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file cf/local_repos_cf.csv
 
 ./src/scripts/find_merge_commits.sh cf/local_repos_cf.csv cf/merges_cf
 
