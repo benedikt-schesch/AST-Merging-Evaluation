@@ -88,11 +88,11 @@ if __name__ == "__main__":
     args = []
     for i in range(len(tools)):
         args.append(correct[i])
-        args.append(100 * correct[i] / total)
+        args.append(100 * correct[i] / total if total != 0 else 0)
         args.append(unhandled[i])
-        args.append(100 * unhandled[i] / total)
+        args.append(100 * unhandled[i] / total if total != 0 else 0)
         args.append(incorrect[i])
-        args.append(100 * incorrect[i] / total)
+        args.append(100 * incorrect[i] / total if total != 0 else 0)
 
     my_table = PrettyTable()
     my_table.field_names = [
@@ -156,21 +156,21 @@ if __name__ == "__main__":
     for i in range(len(tools)):
         correct = sum(val == 2 for val in m[i])
         args.append(correct)
-        args.append(100 * correct / len(main))
+        args.append(100 * correct / len(main) if len(main) != 0 else 0)
         correct = sum(val == 2 for val in f[i])
         args.append(correct)
         args.append(100 * correct / len(feature) if len(feature) > 0 else -1)
 
         unhandled = sum(val == 1 for val in m[i])
         args.append(unhandled)
-        args.append(100 * unhandled / len(main))
+        args.append(100 * unhandled / len(main)  if len(main) != 0 else 0)
         unhandled = sum(val == 1 for val in f[i])
         args.append(unhandled)
         args.append(100 * unhandled / len(feature) if len(feature) > 0 else -1)
 
         incorrect = sum(val in [3, 5, 126] for val in m[i])
         args.append(incorrect)
-        args.append(100 * incorrect / len(main))
+        args.append(100 * incorrect / len(main) if len(main) != 0 else 0)
         incorrect = sum(val in [3, 5, 126] for val in f[i])
         args.append(incorrect)
         args.append(100 * incorrect / len(feature) if len(feature) > 0 else -1)
