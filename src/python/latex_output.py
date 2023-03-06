@@ -7,7 +7,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
-
+import sys
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -114,7 +114,9 @@ if __name__ == "__main__":
         ]
     )
     print(my_table)
-
+    if len(my_table) == 0:
+        sys.exit(0)
+        
     table = template.format(*args)
 
     with open(output_path + "/table1.txt", "w") as file:
