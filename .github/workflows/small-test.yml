@@ -12,12 +12,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '8'
-    - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.ref }}
-          check-name: 'Run shell style check'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
