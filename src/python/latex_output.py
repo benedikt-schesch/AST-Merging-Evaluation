@@ -114,9 +114,9 @@ if __name__ == "__main__":
         ]
     )
     print(my_table)
-    if len(my_table) == 0:
+    if total == 0:
         sys.exit(0)
-        
+
     table = template.format(*args)
 
     with open(output_path + "/table1.txt", "w") as file:
