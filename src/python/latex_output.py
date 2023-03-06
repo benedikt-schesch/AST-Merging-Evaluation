@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Output latex tables and plots."""
 
+import sys
 import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
-import sys
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
         unhandled = sum(val == 1 for val in m[i])
         args.append(unhandled)
-        args.append(100 * unhandled / len(main)  if len(main) != 0 else 0)
+        args.append(100 * unhandled / len(main) if len(main) != 0 else 0)
         unhandled = sum(val == 1 for val in f[i])
         args.append(unhandled)
         args.append(100 * unhandled / len(feature) if len(feature) > 0 else -1)

@@ -1,7 +1,7 @@
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
-BASH_SCRIPTS = $(shell find . -name '*.sh')
+BASH_SCRIPTS = $(shell find . -name '*.sh' -not -path "./repos/*" -not -path "./.workdir/*")
 
 shell-script-style:
 	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
