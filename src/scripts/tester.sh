@@ -2,8 +2,7 @@
 
 # usage: ./tester.sh <repo-dir>
 
-# This script runs the tests of a given repo.
-# To run the tests, it executes Maven or Gradle.
+# This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
 set -e
@@ -15,6 +14,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 cd "$1"
+
 if [ -f "gradlew" ] ; then
   ./gradlew test
   rc=$?

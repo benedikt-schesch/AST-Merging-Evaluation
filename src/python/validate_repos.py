@@ -27,7 +27,7 @@ TIMEOUT_MERGE = 60 * 60  # 60 minutes
 
 
 def get_repo(repo_name):
-    """Clones a repository
+    """Clones a repository, or runs `git fetch` it if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
@@ -35,8 +35,8 @@ def get_repo(repo_name):
     """
     repo_dir = "repos/" + repo_name
     if not os.path.isdir(repo_dir):
-        # @ in fron here to make sure that we are not prompted login details
-        # for the repos that are now private
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
     else:
@@ -49,7 +49,7 @@ def get_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
-    """Returns the return code of trying 3 times to run tester.sh on the given working copy.
+    """Returns the process output of trying 3 times to run tester.sh on the given working copy.
     If one tests passes then the entire test is marked as passed.
     If one tests timeouts then the entire test is marked as timeout.
     Args:
@@ -60,26 +60,23 @@ def repo_test(repo_dir_copy, timeout):
     """
     for i in range(3):
         try:
-            p = subprocess.Popen(  # pylint: disable=consider-using-with
+            p = subprocess.run(
                 [
                     "src/scripts/tester.sh",
                     repo_dir_copy,
                 ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                start_new_session=True,
+                capture_output=True,
+                text=True,
+                timeout=TIMEOUT_MERGE,
             )
-            p.wait(timeout=TIMEOUT_MERGE)
-            rc = p.returncode
         except subprocess.TimeoutExpired:
-            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-            rc = 124  # Timeout
-        if rc == 0:  # Success
-            return 0
-        if rc == 124:
+            return 124  # Timeout
+        if p.returncode == 0:  # Success
+            return p
+        if p.returncode == 124:
             # Timeout
-            return 124
-    return 1
+            return p
+    return p
 
 
 def check_repo(arg):
@@ -111,7 +108,10 @@ def check_repo(arg):
         if os.path.isfile(target_file):
             df = pd.read_csv(target_file)
             print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-            print(repo_name, ": Done, result is cached")
+            print(
+                repo_name,
+                ": Done, result is cached: " + result_interpretable[df.iloc[0]["test"]],
+            )
             return df.iloc[0]["test"]
 
         print(repo_name, ": Testing")

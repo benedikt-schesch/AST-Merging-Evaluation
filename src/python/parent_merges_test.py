@@ -30,6 +30,7 @@ TIMEOUT_SECONDS = 30 * 60  # 30 minutes
 
 def pass_test(repo_name, commit):
     """Checks if a certain commit in a repo passes tests.
+    Uses a cache if it exists; otherwise creates the cache.
     Args:
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
@@ -60,29 +61,39 @@ def pass_test(repo_name, commit):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
 
+        result = 0
+        explanation = ""
+
         try:
             repo.git.checkout(commit)
-            # Merges that are older than that date should be ignored for reproducibility
-            if repo.commit().committed_date > 1677003361:
-                raise Exception
+        except Exception as e:
+            result = 3
+            explanation = "Unable to checkout " + commit + ": " + str(e)
 
+        # Merges that are newer than that date should be ignored for reproducibility
+        if result == 0 and repo.commit().committed_date > 1677003361:
+            result = 3
+            explanation = "committed_date is too new: " + repo.commit().committed_date
+
+        if result == 0:
             try:
-                test = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
-            except Exception:
-                test = 2
-        except Exception:
-            test = 3
+                result = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
+            except Exception as e:
+                result = 2
+                explanation = str(e)
 
         with open(cache_file, "w") as f:
-            f.write(str(test))
+            f.write(str(result))
+            f.write(explanation)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
-        return test
+        return result
 
-    except Exception:
+    except Exception as e:
         with open(cache_file, "w") as f:
             f.write(str(-1))
+            f.write(str(e))
         return -1
 
 
@@ -162,7 +173,8 @@ if __name__ == "__main__":
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
-    # Interleave testing to reduce probability that tests at the same hash happen in parallel
+    # `zip_longest` interleaves testing to reduce probability that tests at the same hash happen in
+    # parallel.
     arguments = [
         val
         for l in itertools.zip_longest(*tested_merges)
