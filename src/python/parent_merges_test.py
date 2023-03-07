@@ -60,29 +60,39 @@ def pass_test(repo_name, commit):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
 
+        result = 0
+        explanation = ""
+
         try:
             repo.git.checkout(commit)
-            # Merges that are older than that date should be ignored for reproducibility
-            if repo.commit().committed_date > 1677003361:
-                raise Exception
+        except Exception as e:
+            result = 3
+            explanation = "Unable to checkout " + commit + ": " + str(e)
 
+        # Merges that are newer than that date should be ignored for reproducibility
+        if result == 0 and repo.commit().committed_date > 1677003361:
+            result = 3
+            explanation = "committed_date is too new: " + repo.commit().committed_date
+
+        if result == 0:
             try:
-                test = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
-            except Exception:
-                test = 2
-        except Exception:
-            test = 3
+                result = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
+            except Exception as e:
+                result = 2
+                explanation = str(e)
 
         with open(cache_file, "w") as f:
-            f.write(str(test))
+            f.write(str(result))
+            f.write(explanation)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
-        return test
+        return result
 
-    except Exception:
+    except Exception as e:
         with open(cache_file, "w") as f:
             f.write(str(-1))
+            f.write(str(e))
         return -1
 
 
