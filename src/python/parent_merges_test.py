@@ -30,6 +30,7 @@ TIMEOUT_SECONDS = 30 * 60  # 30 minutes
 
 def pass_test(repo_name, commit):
     """Checks if a certain commit in a repo passes tests.
+    Uses a cache if it exists; otherwise creates the cache.
     Args:
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
@@ -162,7 +163,7 @@ if __name__ == "__main__":
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
-    # Interleave testing to reduce probability that tests at the same hash happen in parallel
+    # `zip_longest` interleaves testing to reduce probability that tests at the same hash happen in parallel.
     arguments = [
         val
         for l in itertools.zip_longest(*tested_merges)

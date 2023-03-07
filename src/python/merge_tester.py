@@ -20,7 +20,7 @@ import argparse
 from pathlib import Path
 
 from validate_repos import repo_test
-from tqdm import tqdm
+from tqdm import tqdm           # shows a progress meter as a loop runs
 import pandas as pd
 import git
 
