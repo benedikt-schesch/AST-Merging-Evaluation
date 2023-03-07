@@ -163,7 +163,8 @@ if __name__ == "__main__":
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
-    # `zip_longest` interleaves testing to reduce probability that tests at the same hash happen in parallel.
+    # `zip_longest` interleaves testing to reduce probability that tests at the same hash happen in
+    # parallel.
     arguments = [
         val
         for l in itertools.zip_longest(*tested_merges)
