@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Tests the parents of a merge and subsamples merges from merges with passing parents."""
+"""Tests the parents of a merge and subsamples merges from the merges with passing parents."""
 
 # usage: python3 parent_merges_test.py --repos_path <path_to_repo>
 #                                         --merges_path <path_to_merges>
 #                                         --output_dir <output_directory>
 #                                         --n_merges <max_number_of_merges>
 #
-# This script takes a list of merges and verifies that the two parents of each merge
-# has parents that pass tests.
-# It produces output into <output_directory>.
+# This script takes a list of merges for each repository and verifies that the two parents
+# of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
+# parents for each repository.
+# It produces output in <output_directory>.
 
 import shutil
 import os
