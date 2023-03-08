@@ -28,8 +28,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # If file exists ignore this step
-    if os.path.isfile(args.output_path):
-        sys.exit(0)
+    # if os.path.isfile(args.output_path):
+    #     sys.exit(0)
 
     df = pd.read_csv(args.repos_path)
     result = []
@@ -48,4 +48,5 @@ if __name__ == "__main__":
         result.append(row)
 
     result = pd.DataFrame(result)
+    result = result.set_index(result.columns[0]).reset_index(drop=True)
     result.to_csv(args.output_path)
