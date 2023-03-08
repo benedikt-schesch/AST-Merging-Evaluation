@@ -41,11 +41,8 @@ def pass_test(repo_name, commit):
     cache_file = CACHE + repo_name.split("/")[1] + "_" + commit
 
     if os.path.isfile(cache_file):
-        try:
-            with open(cache_file) as f:
-                return int(next(f))
-        except Exception:
-            return 1
+        with open(cache_file) as f:
+            return int(next(f))
 
     try:
         process = multiprocessing.current_process()
@@ -68,6 +65,9 @@ def pass_test(repo_name, commit):
         try:
             repo.git.checkout(commit)
         except Exception as e:
+            print(
+                repo_name, commit, "Exception when checking out commit. Exception:\n", e
+            )
             result = 3
             explanation = "Unable to checkout " + commit + ": " + str(e)
 
@@ -80,6 +80,12 @@ def pass_test(repo_name, commit):
             try:
                 result = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception as e:
+                print(
+                    repo_name,
+                    commit,
+                    "Exception when testing that commit. Exception:\n",
+                    e,
+                )
                 result = 2
                 explanation = str(e)
 
@@ -92,9 +98,15 @@ def pass_test(repo_name, commit):
         return result
 
     except Exception as e:
+        print(
+            repo_name,
+            commit,
+            "General exception when seting up testing. Exception:\n",
+            e,
+        )
         with open(cache_file, "w") as f:
             f.write(str(-1))
-            f.write(str(e))
+            f.write(" " + str(e))
         return -1
 
 
@@ -114,7 +126,7 @@ def valid_merge(args):
         int: Test result of the merge.
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
-    if valid_merge_counter[repo_name] > int(1.1 * n_sampled):
+    if valid_merge_counter[repo_name] > n_sampled:
         return 3, 3, 3
     left_test = pass_test(repo_name, left)
     right_test = pass_test(repo_name, right)
