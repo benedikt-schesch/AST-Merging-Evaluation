@@ -66,9 +66,9 @@ def repo_test(repo_dir_copy, timeout):
                     "src/scripts/tester.sh",
                     repo_dir_copy,
                 ],
-                capture_output=True,
-                text=True,
-                timeout=TIMEOUT_MERGE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
             )
             p.wait(timeout=TIMEOUT_MERGE)
             rc = p.returncode
