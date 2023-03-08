@@ -24,7 +24,9 @@ fi
 
 python3 src/python/get_repos.py
 
-python3 src/python/split_repos.py --repos_path data/repos_small.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file small/local_repos_small.csv
+python3 src/python/store_main_hashes.py --repos_path data/repos_small.csv --output_path data/repos_small_with_hash.csv
+
+python3 src/python/split_repos.py --repos_path data/repos_small_with_hash.csv --machine_id "$machine_id" --num_machines "$num_machines" --output_file small/local_repos_small.csv
 
 python3 src/python/validate_repos.py --repos_path small/local_repos_small.csv --output_path small/valid_repos.csv
 
