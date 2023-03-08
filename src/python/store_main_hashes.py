@@ -14,10 +14,34 @@ import os
 import sys
 import argparse
 from pathlib import Path
+import multiprocessing
 from validate_repos import get_repo
-
 from tqdm import tqdm
 import pandas as pd
+
+
+def get_latest_hash(args):
+    """Checks if the head of main passes test.
+    Args:
+        arg (idx,str): Information regarding that repo.
+    Returns:
+        pd.Series: repo infromation with the hash of the HEAD
+    """
+    _, row = args
+    repo_name = row["repository"]
+    print(repo_name, ": Started")
+
+    try:
+        print(repo_name, ": Cloning repo")
+        repo = get_repo(repo_name)
+    except Exception as e:
+        print(repo_name, ": Finished testing, result = exception, cause:", e)
+        return None
+
+    row["Validation hash"] = repo.head.commit.hexsha
+    print(repo_name, ": Done")
+    return row
+
 
 if __name__ == "__main__":
     Path("repos").mkdir(parents=True, exist_ok=True)
@@ -33,22 +57,17 @@ if __name__ == "__main__":
         sys.exit(0)
 
     df = pd.read_csv(args.repos_path)
-    result = []
 
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        print(repo_name, ": Started")
+    print("validate_repos: Started Testing")
+    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+        result = list(
+            tqdm(
+                pool.imap(get_latest_hash, df.iterrows()),
+                total=len(df),
+            )
+        )
 
-        try:
-            print(repo_name, ": Cloning repo")
-            repo = get_repo(repo_name)
-        except Exception:
-            print(repo_name, ": Finished testing, result = exception")
-            continue
-        row["Validation hash"] = repo.head.commit.hexsha
-        result.append(row)
-
-    result = pd.DataFrame(result)
+    result = pd.DataFrame([i for i in result if i is not None])
     result = result.set_index(result.columns[0]).reset_index(drop=True)
     result.to_csv(args.output_path)
     print("Finished Storing Repos Hashes")

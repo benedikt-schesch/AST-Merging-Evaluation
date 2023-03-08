@@ -10,9 +10,6 @@
 machine_id="${1:-0}"
 num_machines="${2:-1}"
 
-echo "Machine ID: $machine_id"
-echo "Number of machines: $num_machines"
-
 set -e
 set -o nounset
 
