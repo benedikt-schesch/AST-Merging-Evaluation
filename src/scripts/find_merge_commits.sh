@@ -22,7 +22,7 @@ REPO_LIST="$1"
 OUTPUT_DIR="$2"
 
 # Receive list of repo names from list of valid repos (arg #1)
-VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f2)
+VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f3)
 echo "$VALID_REPOS"
 
 
