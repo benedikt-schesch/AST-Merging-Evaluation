@@ -44,7 +44,7 @@ def get_repo(repo_name):
     try:
         repo.remote().fetch()
     except Exception as e:
-        print(repo_name,"Exception during cloning. Exception:\n",e)
+        print(repo_name, "Exception during cloning. Exception:\n", e)
         pass
     return repo
 
@@ -121,7 +121,7 @@ def check_repo(arg):
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
-        print(repo_name, ": Finished testing, result = exception, Exception:\n",e)
+        print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)

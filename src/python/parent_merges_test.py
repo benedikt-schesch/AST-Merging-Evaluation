@@ -65,7 +65,9 @@ def pass_test(repo_name, commit):
         try:
             repo.git.checkout(commit)
         except Exception as e:
-            print(repo_name, commit,"Exception when checking out commit. Exception:\n",e)
+            print(
+                repo_name, commit, "Exception when checking out commit. Exception:\n", e
+            )
             result = 3
             explanation = "Unable to checkout " + commit + ": " + str(e)
 
@@ -78,7 +80,12 @@ def pass_test(repo_name, commit):
             try:
                 result = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception as e:
-                print(repo_name, commit,"Exception when testing that commit. Exception:\n",e)
+                print(
+                    repo_name,
+                    commit,
+                    "Exception when testing that commit. Exception:\n",
+                    e,
+                )
                 result = 2
                 explanation = str(e)
 
@@ -91,7 +98,12 @@ def pass_test(repo_name, commit):
         return result
 
     except Exception as e:
-        print(repo_name, commit,"General exception when seting up testing. Exception:\n",e)
+        print(
+            repo_name,
+            commit,
+            "General exception when seting up testing. Exception:\n",
+            e,
+        )
         with open(cache_file, "w") as f:
             f.write(str(-1))
             f.write(str(e))
