@@ -61,7 +61,7 @@ def repo_test(repo_dir_copy, timeout):
     """
     for i in range(3):
         try:
-            p = subprocess.run(
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/tester.sh",
                     repo_dir_copy,
@@ -70,14 +70,14 @@ def repo_test(repo_dir_copy, timeout):
                 text=True,
                 timeout=TIMEOUT_MERGE,
             )
+            p.wait(timeout=TIMEOUT_MERGE)
+            rc = p.returncode
         except subprocess.TimeoutExpired:
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
             return 124  # Timeout
-        if p.returncode == 0:  # Success
-            return p
-        if p.returncode == 124:
-            # Timeout
-            return p
-    return p
+        if rc == 0:  # Success
+            return 0
+    return rc
 
 
 def check_repo(arg):
