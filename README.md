@@ -71,7 +71,7 @@ Directory `small/merges_small_valid` contains all the merges and also stores if 
 To run the stack on all repos:
 
 ```
-./run.sh
+./run_full.sh
 ```
 This will run the entire code on all the repos.
 All the output data can be found in `results/`.
@@ -88,6 +88,12 @@ To clean the cache run `make clean-cache`.
 To run style checking run `make style`.
 
 # Directory structure
+
+ * run.sh -> This file executes each step of the stack.
+
+ * run_small.sh -> This file executes the stack on two repositories.
+
+ * run_full.sh -> This file executes the stack on all the repositories.
 
  * .workdir/ -> This folder is used for the local computations of each process.
 
