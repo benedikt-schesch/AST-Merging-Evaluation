@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Output latex tables and plots."""
+"""Output LaTeX tables and plots."""
 
 import sys
 import argparse

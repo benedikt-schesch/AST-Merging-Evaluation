@@ -28,3 +28,6 @@ clean-cache:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
+
+clean-stored-hashes:
+	rm -r data/repos_small_with_hash.csv
