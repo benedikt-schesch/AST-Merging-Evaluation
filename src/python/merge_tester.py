@@ -34,7 +34,9 @@ TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 
 
-def test_merge(merging_method, repo_name, left, right, base):
+def test_merge(
+    merging_method, repo_name, left, right, base
+):  # pylint: disable=too-many-locals
     """Merges a repo and executes tests.
     Args:
         merging_method (str): Name of the merging method to use.
@@ -81,19 +83,40 @@ def test_merge(merging_method, repo_name, left, right, base):
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
             runtime = time.time() - start
             merge = 124  # Timeout
-        except Exception:
+        except Exception as e:
             merge = 6
             runtime = -1
+            print(
+                repo_name,
+                merging_method,
+                base,
+                "Exception during merge. Exception:\n",
+                e,
+            )
         try:
             if merge == 0:
                 merge = (
                     repo_test(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
                 )
-        except Exception:
+        except Exception as e:
             merge = 5
-    except Exception:
+            print(
+                repo_name,
+                merging_method,
+                base,
+                "Exception during testing of the merge. Exception:\n",
+                e,
+            )
+    except Exception as e:
         merge = -1
         runtime = -1
+        print(
+            repo_name,
+            merging_method,
+            base,
+            "General exception during the handling of the repository. Exception:\n",
+            e,
+        )
     if STORE_SCRATCH:
         dst_name = (
             SCRATCH_DIR
