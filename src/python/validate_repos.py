@@ -27,7 +27,7 @@ TIMEOUT_MERGE = 30 * 60  # 30 minutes
 
 
 def get_repo(repo_name):
-    """Clones a repository
+    """Clones a repository, or runs `git fetch` it if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
@@ -35,8 +35,8 @@ def get_repo(repo_name):
     """
     repo_dir = "repos/" + repo_name
     if not os.path.isdir(repo_dir):
-        # @ in fron here to make sure that we are not prompted login details
-        # for the repos that are now private
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
     else:

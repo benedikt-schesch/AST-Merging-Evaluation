@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Tests the parents of a merge and subsamples merges from merges with passing parents."""
+"""Tests the parents of a merge and subsamples merges from the merges with passing parents."""
 
 # usage: python3 parent_merges_test.py --repos_path <path_to_repo>
 #                                         --merges_path <path_to_merges>
 #                                         --output_dir <output_directory>
 #                                         --n_merges <max_number_of_merges>
 #
-# This script takes a list of merges and verifies that the two parents of each merge
-# has parents that pass tests.
-# It produces output into <output_directory>.
+# This script takes a list of merges for each repository and verifies that the two parents
+# of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
+# parents for each repository.
+# It produces output in <output_directory>.
 
 import shutil
 import os
@@ -30,6 +31,7 @@ TIMEOUT_SECONDS = 30 * 60  # 30 minutes
 
 def pass_test(repo_name, commit):
     """Checks if a certain commit in a repo passes tests.
+    Uses a cache if it exists; otherwise creates the cache.
     Args:
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
@@ -172,7 +174,8 @@ if __name__ == "__main__":
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
-    # Interleave testing to reduce probability that tests at the same hash happen in parallel
+    # `zip_longest` interleaves testing to reduce probability that tests at the same hash happen in
+    # parallel.
     arguments = [
         val
         for l in itertools.zip_longest(*tested_merges)

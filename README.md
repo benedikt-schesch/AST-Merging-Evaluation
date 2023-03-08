@@ -57,9 +57,8 @@ brew install git-lfs
 
 ## Test the stack
 To test the stack, execute:
-
 ```
-./run_small.sh
+pytest
 ```
 This will run the entire code on two small repos.
 All the output data can be found in `small/`.
@@ -80,11 +79,25 @@ The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
+## Clean Cache
+
+To clean the cache run `make clean-cache`.
+
+## Style Checking
+
+To run style checking run `make style`.
+
 # Directory structure
 
  * .workdir/ -> This folder is used for the local computations of each process.
 
- * .cache/ -> This folder is a cache for each computation.
+ * .cache/ -> This folder is a cache for each computation. contains:
+
+   * repos_result/ -> Caches the validation of each repository.
+
+   * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+
+   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
 
  * repos/ -> In this folder each repo is cloned.
 
