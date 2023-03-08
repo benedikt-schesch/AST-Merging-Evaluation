@@ -22,6 +22,7 @@ import pandas as pd
 if __name__ == "__main__":
     Path("repos").mkdir(parents=True, exist_ok=True)
 
+    print("Started Storing Repos Hashes")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_path", type=str)
     parser.add_argument("--output_path", type=str)
@@ -50,3 +51,4 @@ if __name__ == "__main__":
     result = pd.DataFrame(result)
     result = result.set_index(result.columns[0]).reset_index(drop=True)
     result.to_csv(args.output_path)
+    print("Finished Storing Repos Hashes")
