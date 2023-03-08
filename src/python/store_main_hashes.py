@@ -28,8 +28,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # If file exists ignore this step
-    # if os.path.isfile(args.output_path):
-    #     sys.exit(0)
+    if os.path.isfile(args.output_path):
+        sys.exit(0)
 
     df = pd.read_csv(args.repos_path)
     result = []
