@@ -32,6 +32,8 @@ echo "Number of machines: $num_machines"
 length=${#REPOS_PATH}
 REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
 
+mkdir -p "$OUT_DIR"
+
 python3 src/python/get_repos.py
 
 python3 src/python/store_main_hashes.py --repos_path "$REPOS_PATH" --output_path "$REPOS_PATH_WITH_HASHES"
