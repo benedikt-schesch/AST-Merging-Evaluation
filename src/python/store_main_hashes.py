@@ -34,11 +34,11 @@ def get_latest_hash(args):
     try:
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
+        row["Validation hash"] = repo.head.commit.hexsha
     except Exception as e:
         print(repo_name, ": Finished testing, result = exception, cause:", e)
         return None
 
-    row["Validation hash"] = repo.head.commit.hexsha
     print(repo_name, ": Done")
     return row
 
