@@ -106,7 +106,7 @@ def pass_test(repo_name, commit):
         )
         with open(cache_file, "w") as f:
             f.write(str(-1))
-            f.write(str(e))
+            f.write(" " + str(e))
         return -1
 
 
