@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--result_path", type=str)
