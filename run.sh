@@ -29,9 +29,14 @@ fi
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 
+length=${#REPOS_PATH}
+REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
+
 python3 src/python/get_repos.py
 
-python3 src/python/split_repos.py --repos_path "$REPOS_PATH" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
+python3 src/python/store_main_hashes.py --repos_path "$REPOS_PATH" --output_path "$REPOS_PATH_WITH_HASHES"
+
+python3 src/python/split_repos.py --repos_path "$REPOS_PATH_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
 python3 src/python/validate_repos.py --repos_path "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
 
