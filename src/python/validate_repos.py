@@ -105,7 +105,7 @@ def check_repo(arg):
     try:
         print(repo_name, ": Cloning repo")
         repo = get_repo(repo_name)
-        repo.git.checkout(repo["Validation hash"])
+        repo.git.checkout(row["Validation hash"])
         print(repo_name, ": Finished cloning")
 
         # Check if result is cached
