@@ -50,7 +50,7 @@ def get_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
-    """Returns the process output of trying 3 times to run tester.sh on the given working copy.
+    """Returns the return code of trying 3 times to run tester.sh on the given working copy.
     If one tests passes then the entire test is marked as passed.
     If one tests timeouts then the entire test is marked as timeout.
     Args:
