@@ -30,4 +30,5 @@ clean-cache:
 	rm -rf scratch
 
 clean-stored-hashes:
-	rm -r data/repos_small_with_hash.csv
+	rm -f data/repos_small_with_hashes.csv
+	rm -f data/repos_with_hashes.csv
