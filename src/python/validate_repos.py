@@ -43,7 +43,8 @@ def get_repo(repo_name):
         repo = git.Repo(repo_dir)
     try:
         repo.remote().fetch()
-    except Exception:
+    except Exception as e:
+        print(repo_name,"Exception during cloning. Exception:\n",e)
         pass
     return repo
 
@@ -119,9 +120,8 @@ def check_repo(arg):
         rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
-    except Exception:
-        print(repo_name, ": Finished testing, result = exception")
-        pass
+    except Exception as e:
+        print(repo_name, ": Finished testing, result = exception, Exception:\n",e)
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
