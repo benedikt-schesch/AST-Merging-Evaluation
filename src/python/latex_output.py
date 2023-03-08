@@ -28,6 +28,7 @@ FAILURE_STRINGS = [
 ]
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_csv", type=str)
