@@ -29,6 +29,7 @@ clean-cache:
 	rm -rf repos
 	rm -rf scratch
 
+# This target deletes files that are committed to version control.
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv

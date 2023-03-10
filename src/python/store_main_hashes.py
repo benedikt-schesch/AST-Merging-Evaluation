@@ -29,7 +29,7 @@ def get_latest_hash(args):
     """
     _, row = args
     repo_name = row["repository"]
-    print(repo_name, ": Started")
+    print(repo_name, ": Started get_latest_hash")
 
     try:
         print(repo_name, ": Cloning repo")
@@ -39,7 +39,7 @@ def get_latest_hash(args):
         print(repo_name, ": Finished testing, result = exception, cause:", e)
         return None
 
-    print(repo_name, ": Done")
+    print(repo_name, ": Finished get_latest_hash")
     return row
 
 

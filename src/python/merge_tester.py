@@ -16,6 +16,7 @@ import os
 import time
 import multiprocessing
 import argparse
+import traceback
 from pathlib import Path
 
 from validate_repos import repo_test
@@ -117,6 +118,7 @@ def test_merge(
             "General exception during the handling of the repository. Exception:\n",
             e,
         )
+        print(traceback.format_exc())
     if STORE_SCRATCH:
         dst_name = (
             SCRATCH_DIR
