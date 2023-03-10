@@ -90,7 +90,7 @@ def pass_test(repo_name, commit):
                 explanation = str(e)
 
         with open(cache_file, "w") as f:
-            f.write(str(result)+" ")
+            f.write(str(result) + " ")
             f.write(explanation)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
@@ -105,7 +105,7 @@ def pass_test(repo_name, commit):
             e,
         )
         with open(cache_file, "w") as f:
-            f.write(str(-1)+" ")
+            f.write(str(-1) + " ")
             f.write(" " + str(e))
         return -1
 
