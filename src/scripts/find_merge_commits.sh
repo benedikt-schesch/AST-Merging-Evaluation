@@ -147,6 +147,7 @@ do
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
             NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
+            echo "PR_NUMBER = $PR_NUMBER"
             echo "GH_RES = $GH_RES"
             echo "NUM_OF_PARENTS = $NUM_OF_PARENTS"
 
