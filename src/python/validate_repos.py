@@ -77,7 +77,7 @@ def repo_test(repo_dir_copy, timeout):
             return 124  # Timeout
         if rc == 0:  # Success
             return 0
-    return 1 # Failure
+    return 1  # Failure
 
 
 def check_repo(arg):
