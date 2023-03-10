@@ -150,7 +150,7 @@ do
 
             # A merge commit is found if it has two parents,
             # ignore non-merge commits
-            if [ "$NUM_OF_PARENTS" -eq 2 ]
+            if [ $NUM_OF_PARENTS -eq 2 ]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
                 RES="$(echo "$GH_RES" | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
