@@ -23,7 +23,7 @@ OUTPUT_DIR="$2"
 
 # Receive list of repo names from list of valid repos (arg #1)
 VALID_REPOS=$(sed 1d "$REPO_LIST" | cut -d ',' -f3)
-echo "$VALID_REPOS"
+echo "VALID_REPOS = $VALID_REPOS"
 
 
 if [ ! -d "$OUTPUT_DIR" ]; then
@@ -44,17 +44,17 @@ do
     #           - get parents commits
     #           - get base commit of parents
     #           - output (branch_name,merge,parent1,parent2,base)"
-    echo "$ORG_AND_REPO"
+    echo "ORG_AND_REPO = $ORG_AND_REPO"
     if [ "$ORG_AND_REPO" == "" ]; then
 	    continue
     fi
     REPO_NAME=$(cut -d '/' -f2 <<< "$ORG_AND_REPO")
-    echo "$REPO_NAME"
+    echo "REPO_NAME = $REPO_NAME"
     rm -rf "./$REPO_NAME"
 
     # Skip repos that have already been analyzed
     FILE=$OUTPUT_DIR/$REPO_NAME.csv
-    echo "$FILE"
+    echo "FILE = $FILE"
     if test -f "$FILE"; then
         continue
     fi
@@ -147,9 +147,17 @@ do
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
             NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
+            if ! [[ $NUM_OF_PARENTS =~ ^[0-9]+$ ]] ; then
+                echo "NUM_OF_PARENTS is not a number!"
+                echo "ORG_AND_REPO = $ORG_AND_REPO"
+                echo "PR_NUMBER = $PR_NUMBER"
+                echo "GH_RES = $GH_RES"
+                echo "i = $i"
+                echo "NUM_OF_PARENTS = $NUM_OF_PARENTS"
+                exit 1
+            fi
 
-            # A merge commit is found if it has two parents,
-            # ignore non-merge commits
+            # A merge commit has two parents, ignore non-merge commits.
             if [ "$NUM_OF_PARENTS" -eq 2 ]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
