@@ -59,24 +59,20 @@ def repo_test(repo_dir_copy, timeout):
         int: The test value.
     """
     for i in range(3):
-        try:
-            p = subprocess.run(  # pylint: disable=consider-using-with
-                [
-                    "src/scripts/tester.sh",
-                    repo_dir_copy,
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=timeout,
-            )
-            # p.wait(timeout=TIMEOUT_MERGE)
-            rc = p.returncode
-        except subprocess.TimeoutExpired:
-            # os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-            return 124  # Timeout
-        if rc == 0:  # Success
-            return 0
-    return 1  # Failure
+        p = subprocess.run(  # pylint: disable=consider-using-with
+            [
+                "src/scripts/tester.sh",
+                repo_dir_copy,
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=timeout,
+            capture_output=True,
+        )
+        rc = p.returncode
+        if rc == 0 or rc == 124:  # Success or Timeout
+            return rc, p.stdout
+    return 1, p.stdout  # Failure
 
 
 def check_repo(arg):
