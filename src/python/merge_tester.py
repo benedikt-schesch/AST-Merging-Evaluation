@@ -94,9 +94,10 @@ def test_merge(
             )
         try:
             if merge == 0:
-                merge, stdout = (
-                    repo_test(repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING) + 2
+                merge, stdout = repo_test(
+                    repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
+                merge += 2
         except Exception as e:
             merge = 5
             print(
