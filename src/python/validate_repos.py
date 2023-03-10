@@ -15,7 +15,6 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-import signal
 
 from tqdm import tqdm
 import pandas as pd
@@ -60,24 +59,20 @@ def repo_test(repo_dir_copy, timeout):
         int: The test value.
     """
     for i in range(3):
-        try:
-            p = subprocess.Popen(  # pylint: disable=consider-using-with
-                [
-                    "src/scripts/tester.sh",
-                    repo_dir_copy,
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                start_new_session=True,
-            )
-            p.wait(timeout=TIMEOUT_MERGE)
-            rc = p.returncode
-        except subprocess.TimeoutExpired:
-            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-            return 124  # Timeout
-        if rc == 0:  # Success
-            return 0
-    return 1  # Failure
+        p = subprocess.run(  # pylint: disable=consider-using-with
+            [
+                "src/scripts/tester.sh",
+                repo_dir_copy,
+            ],
+            timeout=timeout,
+            capture_output=True,
+        )
+        rc = p.returncode
+        stdout = p.stdout.decode("utf-8")
+        if rc in (0, 124):  # Success or Timeout
+            return rc, stdout
+
+    return 1, stdout  # Failure
 
 
 def check_repo(arg):
@@ -119,7 +114,7 @@ def check_repo(arg):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, stdout = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
