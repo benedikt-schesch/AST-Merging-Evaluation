@@ -112,7 +112,7 @@ def check_repo(arg):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, stdout = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
