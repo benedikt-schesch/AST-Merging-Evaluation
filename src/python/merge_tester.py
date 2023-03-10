@@ -59,10 +59,10 @@ def test_merge(
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
-        repo.git.checkout(left,force=True)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1",force=True)
-        repo.git.checkout(right,force=True)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2",force=True)
+        repo.git.checkout(left, force=True)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1", force=True)
+        repo.git.checkout(right, force=True)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2", force=True)
         try:
             start = time.time()
             p = subprocess.Popen(  # pylint: disable=consider-using-with
