@@ -42,7 +42,7 @@ def pass_test(repo_name, commit):
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
-            return int(next(f))
+            return int(next(f).split(" ")[0])
 
     try:
         process = multiprocessing.current_process()
@@ -63,7 +63,7 @@ def pass_test(repo_name, commit):
         explanation = ""
 
         try:
-            repo.git.checkout(commit)
+            repo.git.checkout(commit, force=True)
         except Exception as e:
             print(
                 repo_name, commit, "Exception when checking out commit. Exception:\n", e
@@ -90,7 +90,7 @@ def pass_test(repo_name, commit):
                 explanation = str(e)
 
         with open(cache_file, "w") as f:
-            f.write(str(result))
+            f.write(str(result) + " ")
             f.write(explanation)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
@@ -105,7 +105,7 @@ def pass_test(repo_name, commit):
             e,
         )
         with open(cache_file, "w") as f:
-            f.write(str(-1))
+            f.write(str(-1) + " ")
             f.write(" " + str(e))
         return -1
 
