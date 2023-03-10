@@ -11,7 +11,6 @@
 
 import signal
 import subprocess
-import subprocess
 import shutil
 import os
 import time
@@ -65,7 +64,7 @@ def test_merge(
         repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2", force=True)
         try:
             start = time.time()
-            p = subprocess.Popen(  # pylint: disable=consider-using-with
+            p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
@@ -74,9 +73,9 @@ def test_merge(
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                start_new_session=True,
+                timeout=TIMEOUT_MERGE,
             )
-            p.wait(timeout=TIMEOUT_MERGE)
+            # p.wait(timeout=TIMEOUT_MERGE)
             merge = p.returncode
             runtime = time.time() - start
         except subprocess.TimeoutExpired:

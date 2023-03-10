@@ -15,7 +15,6 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-import signal
 
 from tqdm import tqdm
 import pandas as pd
@@ -61,19 +60,19 @@ def repo_test(repo_dir_copy, timeout):
     """
     for i in range(3):
         try:
-            p = subprocess.Popen(  # pylint: disable=consider-using-with
+            p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/tester.sh",
                     repo_dir_copy,
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                start_new_session=True,
+                timeout=timeout,
             )
-            p.wait(timeout=TIMEOUT_MERGE)
+            # p.wait(timeout=TIMEOUT_MERGE)
             rc = p.returncode
         except subprocess.TimeoutExpired:
-            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            # os.killpg(os.getpgid(p.pid), signal.SIGTERM)
             return 124  # Timeout
         if rc == 0:  # Success
             return 0
