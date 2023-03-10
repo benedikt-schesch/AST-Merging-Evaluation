@@ -64,13 +64,11 @@ def repo_test(repo_dir_copy, timeout):
                 "src/scripts/tester.sh",
                 repo_dir_copy,
             ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
             timeout=timeout,
             capture_output=True,
         )
         rc = p.returncode
-        if rc == 0 or rc == 124:  # Success or Timeout
+        if rc in (0, 124):  # Success or Timeout
             return rc, p.stdout
     return 1, p.stdout  # Failure
 
