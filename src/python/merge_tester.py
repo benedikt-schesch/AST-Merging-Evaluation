@@ -52,17 +52,17 @@ def test_merge(
         repo_dir = "repos/" + repo_name
         process = multiprocessing.current_process()
         pid = str(process.pid)
-        repo_dir_copy = WORKDIR + pid
+        repo_dir_copy = WORKDIR + pid + "/repo"
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
-        repo.git.checkout(left)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1")
-        repo.git.checkout(right)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2")
+        repo.git.checkout(left, force=True)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1", force=True)
+        repo.git.checkout(right, force=True)
+        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2", force=True)
         try:
             start = time.time()
             p = subprocess.Popen(  # pylint: disable=consider-using-with

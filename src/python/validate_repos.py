@@ -77,7 +77,7 @@ def repo_test(repo_dir_copy, timeout):
             return 124  # Timeout
         if rc == 0:  # Success
             return 0
-    return rc
+    return 1  # Failure
 
 
 def check_repo(arg):
@@ -97,18 +97,17 @@ def check_repo(arg):
 
     df = pd.DataFrame({"test": [1]})
     pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = WORKDIR + pid
+    repo_dir_copy = WORKDIR + pid + "/repo"
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     try:
         print(repo_name, ": Cloning repo")
-        repo = get_repo(repo_name)
+        _ = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
 
         # Check if result is cached
         if os.path.isfile(target_file):
             df = pd.read_csv(target_file)
-            print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
             print(
                 repo_name,
                 ": Done, result is cached: " + result_interpretable[df.iloc[0]["test"]],
@@ -119,7 +118,7 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
-        repo.git.checkout(row["Validation hash"])
+        repo.git.checkout(row["Validation hash"], force=True)
         rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
@@ -128,8 +127,7 @@ def check_repo(arg):
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
-    print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-    print(repo_name, ": Done")
+    print(repo_name, "Done, result : ", result_interpretable[df.iloc[0]["test"]])
     return df.iloc[0]["test"]
 
 
