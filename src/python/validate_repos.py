@@ -105,8 +105,7 @@ def check_repo(arg):
         shutil.rmtree(repo_dir_copy)
     try:
         print(repo_name, ": Cloning repo")
-        repo = get_repo(repo_name)
-        repo.git.checkout(row["Validation hash"])
+        _ = get_repo(repo_name)
         print(repo_name, ": Finished cloning")
 
         # Check if result is cached
@@ -118,6 +117,9 @@ def check_repo(arg):
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
+        repo = git.Repo(repo_dir_copy)
+        repo.remote().fetch()
+        repo.git.checkout(row["Validation hash"], force=True)
         rc = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
