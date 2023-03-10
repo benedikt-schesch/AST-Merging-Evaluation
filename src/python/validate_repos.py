@@ -74,13 +74,10 @@ def repo_test(repo_dir_copy, timeout):
             rc = p.returncode
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-            rc = 124  # Timeout
+            return 124  # Timeout
         if rc == 0:  # Success
             return 0
-        if rc == 124:
-            # Timeout
-            return 124
-    return 1
+    return 1 # Failure
 
 
 def check_repo(arg):
