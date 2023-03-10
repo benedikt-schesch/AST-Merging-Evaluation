@@ -68,9 +68,11 @@ def repo_test(repo_dir_copy, timeout):
             capture_output=True,
         )
         rc = p.returncode
+        stdout = p.stdout.decode("utf-8")
         if rc in (0, 124):  # Success or Timeout
-            return rc, p.stdout
-    return 1, p.stdout  # Failure
+            return rc, stdout
+
+    return 1, stdout  # Failure
 
 
 def check_repo(arg):
