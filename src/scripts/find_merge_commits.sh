@@ -147,12 +147,17 @@ do
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
             NUM_OF_PARENTS=$(echo "$GH_RES" | jq --arg i "$i" '.[($i | tonumber)].parents | length')
-            echo "i = $i"
-            echo "PR_NUMBER = $PR_NUMBER"
-            echo "GH_RES = $GH_RES"
-            echo "NUM_OF_PARENTS = $NUM_OF_PARENTS"
+            if ! [[ $NUM_OF_PARENTS =~ ^[0-9]+$ ]] ; then
+                echo "NUM_OF_PARENTS is not a number!"
+                echo "ORG_AND_REPO = $ORG_AND_REPO"
+                echo "PR_NUMBER = $PR_NUMBER"
+                echo "GH_RES = $GH_RES"
+                echo "i = $i"
+                echo "NUM_OF_PARENTS = $NUM_OF_PARENTS"
+                exit 1
+            fi
 
-            # A merge commit has two parents, ignore non-merge commits
+            # A merge commit has two parents, ignore non-merge commits.
             # shellcheck disable=SC2086 # Don't quote a number.
             if [ $NUM_OF_PARENTS -eq 2 ]
             then
