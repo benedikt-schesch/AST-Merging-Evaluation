@@ -78,7 +78,7 @@ def pass_test(repo_name, commit):
 
         if result == 0:
             try:
-                result = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
+                result, explanation = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
             except Exception as e:
                 print(
                     repo_name,
