@@ -148,3 +148,4 @@ To run style checking run `make style`.
          * gitmerge.sh -> Executes git merge on a specific merge.
          * intellimerge.sh -> Executes intellimerge on a specific merge.
          * spork.sh -> Executes spork on a specific merge.
+
