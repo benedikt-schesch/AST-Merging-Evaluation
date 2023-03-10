@@ -100,7 +100,7 @@ def check_repo(arg):
 
     df = pd.DataFrame({"test": [1]})
     pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = WORKDIR + pid
+    repo_dir_copy = WORKDIR + pid + "/repo"
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     try:

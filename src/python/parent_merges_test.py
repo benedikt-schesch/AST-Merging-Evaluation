@@ -49,7 +49,7 @@ def pass_test(repo_name, commit):
         pid = str(process.pid)
 
         repo_dir = "repos/" + repo_name
-        repo_dir_copy = WORKDIR + pid
+        repo_dir_copy = WORKDIR + pid + "/repo"
 
         repo = get_repo(repo_name)
 
