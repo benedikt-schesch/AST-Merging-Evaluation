@@ -16,6 +16,7 @@ import os
 import time
 import multiprocessing
 import argparse
+import traceback
 from pathlib import Path
 
 from validate_repos import repo_test

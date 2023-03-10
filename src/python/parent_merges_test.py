@@ -18,6 +18,7 @@ import multiprocessing
 from multiprocessing import Manager
 import argparse
 from pathlib import Path
+import traceback
 
 from validate_repos import repo_test, get_repo
 from tqdm import tqdm
