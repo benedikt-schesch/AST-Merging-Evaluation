@@ -52,7 +52,7 @@ def test_merge(
         repo_dir = "repos/" + repo_name
         process = multiprocessing.current_process()
         pid = str(process.pid)
-        repo_dir_copy = WORKDIR + pid
+        repo_dir_copy = WORKDIR + pid + "/repo"
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
