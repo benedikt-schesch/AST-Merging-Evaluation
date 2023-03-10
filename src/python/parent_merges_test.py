@@ -18,6 +18,7 @@ import multiprocessing
 from multiprocessing import Manager
 import argparse
 from pathlib import Path
+import traceback
 
 from validate_repos import repo_test, get_repo
 from tqdm import tqdm
@@ -107,6 +108,7 @@ def pass_test(repo_name, commit):
         with open(cache_file, "w") as f:
             f.write(str(-1) + " ")
             f.write(" " + str(e))
+            f.write(traceback.format_exc())
         return -1
 
 
