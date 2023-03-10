@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# usage: ./run_small.sh
-# Runs the stack on two small repos.
-# The output appears in small/ .
+# usage: ./run_cf.sh
+# Runs the stack on the Checker Framework repository.
+# The output appears in cf/ .
 # <machine_id> optional argument to specify the id of the current machine.
 # <num_machine> optional argument to specify the total number of machines used.
 

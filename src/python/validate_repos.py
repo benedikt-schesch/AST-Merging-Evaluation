@@ -122,7 +122,11 @@ def check_repo(arg):
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
-    print(repo_name, "Finished check_repo, result : ", result_interpretable[df.iloc[0]["test"]])
+    print(
+        repo_name,
+        "Finished check_repo, result : ",
+        result_interpretable[df.iloc[0]["test"]],
+    )
     return df.iloc[0]["test"]
 
 

@@ -158,8 +158,7 @@ do
             fi
 
             # A merge commit has two parents, ignore non-merge commits.
-            # shellcheck disable=SC2086 # Don't quote a number.
-            if [ $NUM_OF_PARENTS -eq 2 ]
+            if [ "$NUM_OF_PARENTS" -eq 2 ]
             then
                 MERGE_COMMIT=${COMMITS[$i]}
                 RES="$(echo "$GH_RES" | jq -r --arg i "$i" '.[($i | tonumber)].parents[].sha')"
