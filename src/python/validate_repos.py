@@ -111,8 +111,10 @@ def check_repo(arg):
         # Check if result is cached
         if os.path.isfile(target_file):
             df = pd.read_csv(target_file)
-            print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-            print(repo_name, ": Done, result is cached")
+            print(
+                repo_name,
+                ": Done, result is cached: " + result_interpretable[df.iloc[0]["test"]],
+            )
             return df.iloc[0]["test"]
 
         print(repo_name, ": Testing")
@@ -128,8 +130,7 @@ def check_repo(arg):
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
-    print(repo_name, ": ", result_interpretable[df.iloc[0]["test"]])
-    print(repo_name, ": Done")
+    print(repo_name, "Done, result : ", result_interpretable[df.iloc[0]["test"]])
     return df.iloc[0]["test"]
 
 
