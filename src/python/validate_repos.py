@@ -69,10 +69,11 @@ def repo_test(repo_dir_copy, timeout):
         )
         rc = p.returncode
         stdout = p.stdout.decode("utf-8")
+        stderr = p.stderr.decode("utf-8")
         if rc in (0, 124):  # Success or Timeout
-            return rc, stdout
+            return rc, stdout, stderr
 
-    return 1, stdout  # Failure
+    return 1, stdout, stderr  # Failure
 
 
 def check_repo(arg):
@@ -114,7 +115,7 @@ def check_repo(arg):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc, stdout = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, stdout, stderr = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
