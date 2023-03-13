@@ -95,7 +95,7 @@ def test_merge(
             )
         try:
             if merge == 0:
-                merge, stdout = repo_test(
+                merge, stdout, stderr = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
                 merge += 2

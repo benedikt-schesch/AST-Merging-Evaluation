@@ -59,20 +59,29 @@ def repo_test(repo_dir_copy, timeout):
         int: The test value.
     """
     for i in range(3):
+        command = [
+            "src/scripts/tester.sh",
+            repo_dir_copy,
+        ]
         p = subprocess.run(  # pylint: disable=consider-using-with
-            [
-                "src/scripts/tester.sh",
-                repo_dir_copy,
-            ],
+            command,
             timeout=timeout,
             capture_output=True,
         )
         rc = p.returncode
         stdout = p.stdout.decode("utf-8")
+        stderr = p.stderr.decode("utf-8")
+        explanation = (
+            "Run Command"
+            + " ".join(command)
+            + "stdout:\n"
+            + stdout
+            + "\n stderr:\n"
+            + stderr
+        )
         if rc in (0, 124):  # Success or Timeout
-            return rc, stdout
-
-    return 1, stdout  # Failure
+            return rc, explanation
+    return 1, explanation  # Failure
 
 
 def check_repo(arg):
@@ -114,7 +123,7 @@ def check_repo(arg):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc, stdout = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
