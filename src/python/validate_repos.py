@@ -74,7 +74,7 @@ def repo_test(repo_dir_copy, timeout):
         explanation = (
             "Run Command"
             + " ".join(command)
-            + "stdout:\n"
+            + "\n stdout:\n"
             + stdout
             + "\n stderr:\n"
             + stderr
