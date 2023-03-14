@@ -16,7 +16,7 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  ./gradlew test
+  ./gradlew test --parallel
   rc=$?
   if [ $rc -ne 0 ] ; then
     echo Gradle Test Failure
