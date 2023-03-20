@@ -37,3 +37,6 @@ jobs:
         pytest
       env:
           GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+    - name: Check diffs
+      run: |
+        make small-test-diff

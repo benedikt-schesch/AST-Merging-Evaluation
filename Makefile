@@ -33,3 +33,10 @@ clean-cache:
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
+
+small-test:
+	run_small.sh
+	${MAKE} diff-small-test
+
+small-test-diff:
+	diff -U3 -r small test/small-goal-files

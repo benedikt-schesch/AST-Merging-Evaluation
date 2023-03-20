@@ -28,6 +28,7 @@ fi
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
+echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_PATH}
 REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
@@ -42,7 +43,7 @@ python3 src/python/split_repos.py --repos_path "$REPOS_PATH_WITH_HASHES" --machi
 
 python3 src/python/validate_repos.py --repos_path "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
 
-./src/scripts/find_merge_commits.sh "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
+java -cp ~/research/version-control/AST-Merging-Evaluation-branch-rewrite-find_merge_commits/build/libs/javadoclookup-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
 
 python3 src/python/parent_merges_test.py --repos_path "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES"
 
