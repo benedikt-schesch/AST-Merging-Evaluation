@@ -138,11 +138,14 @@ do
                     -f state=all)
     for PR_NUMBER in ${PULL_REQUESTS}
     do
+        # "jq reduce inputs ..." command concatenates top-level arrays, when
+        # --paginate has an effect and the result is multiple JSON arrays.
         GH_RES=$(gh api \
             -H "Accept: application/vnd.github+json" \
             --method GET \
             --paginate \
-            "/repos/$ORG_AND_REPO/pulls/$PR_NUMBER/commits")
+            "/repos/$ORG_AND_REPO/pulls/$PR_NUMBER/commits" \
+            | jq 'reduce inputs as $i (.; . += $i)')
         IFS=" " read -r -a COMMITS <<< "$(echo "$GH_RES" | jq -r '.[].sha')"
         for (( i=0; i < ${#COMMITS[@]}; i++ ))
         do
