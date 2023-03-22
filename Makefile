@@ -43,5 +43,5 @@ small-test-diff:
 	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	diff -U3 test/small-goal-files small -x merges -x .gitignore -x plots -x result.csv
+	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x plots -x result.csv
 	rm -f test/small/goal-files/result-without-times.txt small/result-without-times.txt
