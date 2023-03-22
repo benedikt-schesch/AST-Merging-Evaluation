@@ -39,5 +39,5 @@ small-test:
 	${MAKE} small-test-diff
 
 small-test-diff:
-# TODO: add more files to this test
+# TODO: remove some of the exclusions.
 	diff -U3 -r test/small-goal-files small -x .gitignore -x merges_valid -x plots -x result.csv
