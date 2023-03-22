@@ -20,8 +20,5 @@ jobs:
       run: sudo apt install shellcheck
     - name: Run shell style check
       run: make shell-script-style
-    # Reinstate after upgrading build.gradle to: id 'org.checkerframework' version '0.6.26'
-    # - name: Run tests in Gradle buildfile
-    #   run: ./gradlew build
     - name: Ensure Java code is documented
       run: ./gradlew requireJavadoc

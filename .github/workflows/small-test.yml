@@ -32,11 +32,13 @@ jobs:
       run: make clean-cache
     - name: Cleaning Stored Hashes
       run: make clean-stored-hashes
+    - name: Build Java programs
+      run: ./gradlew build
     - name: Test with pytest
       run: |
         pytest
       env:
           GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-    - name: Check diffs
+    - name: Run small-test
       run: |
         make small-test-diff
