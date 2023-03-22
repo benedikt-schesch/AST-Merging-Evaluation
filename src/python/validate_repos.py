@@ -114,7 +114,7 @@ def check_repo(arg):
             df = pd.read_csv(target_file)
             print(
                 repo_name,
-                ": Done, result is cached: " + result_interpretable[df.iloc[0]["test"]],
+                ": Done, result is cached in " + target_file + ": " + result_interpretable[df.iloc[0]["test"]],
             )
             return df.iloc[0]["test"]
 
