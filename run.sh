@@ -28,6 +28,7 @@ fi
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
+echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_PATH}
 REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
