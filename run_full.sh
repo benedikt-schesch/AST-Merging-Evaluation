@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage: ./run_full.sh <machine_id> <num_machines>
 # Runs the stack all the repositories

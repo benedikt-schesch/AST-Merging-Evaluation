@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage: ./run.sh <repo_list> <output_folder> <n_merges> <machine_id> <num_machine>
 # <repo_list> list of repositories.
