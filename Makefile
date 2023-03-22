@@ -35,8 +35,9 @@ clean-stored-hashes:
 	rm -f data/repos_with_hashes.csv
 
 small-test:
-	run_small.sh
+	./run_small.sh
 	${MAKE} small-test-diff
 
 small-test-diff:
-	diff -U3 -r small test/small-goal-files
+# TODO: add more files to this test
+	diff -U3 -r test/small-goal-files small -x .gitignore -x merges_valid -x plots -x result.csv

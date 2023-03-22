@@ -40,3 +40,5 @@ jobs:
     - name: Run small-test
       run: |
         make small-test
+      env:
+          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
