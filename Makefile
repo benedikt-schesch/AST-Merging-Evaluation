@@ -41,9 +41,7 @@ small-test:
 small-test-diff:
 	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
-	diff -U3 test/small-goal-files small -x merges -x .gitignore -x merges_valid -x plots -x result.csv
-	diff -U3 test/small-goal-files/merges_valid small/merges_valid
-	cat test/small-goal-files/result.csv | rev | cut -d, -f4-15 | rev > test/tmp1.txt
-	cat small/result.csv | rev | cut -d, -f4-15 | rev > test/tmp2.txt
-	diff -U3 test/tmp1.txt test/tmp2.txt
-	rm -rf test/tmp1.txt test/tmp2.txt
+	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
+	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
+	diff -U3 test/small-goal-files small -x merges -x .gitignore -x plots -x result.csv
+	rm -f test/small/goal-files/result-without-times.txt small/result-without-times.txt
