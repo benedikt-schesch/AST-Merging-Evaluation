@@ -36,7 +36,7 @@ clean-stored-hashes:
 
 small-test:
 	run_small.sh
-	${MAKE} diff-small-test
+	${MAKE} small-test-diff
 
 small-test-diff:
 	diff -U3 -r small test/small-goal-files
