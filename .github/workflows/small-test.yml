@@ -34,9 +34,9 @@ jobs:
       run: make clean-stored-hashes
     - name: Build Java programs
       run: ./gradlew build
-    - name: Test with pytest
+    - name: Run small test
       run: |
-        pytest
+        make small-test
       env:
           GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     - name: Run small-test
