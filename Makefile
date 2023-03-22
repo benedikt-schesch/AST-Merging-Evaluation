@@ -21,7 +21,7 @@ check-python-style:
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
 clean:
-	rm -f small/valid_repos.csv
+	rm -rf small/merges small/valid_repos.csv
 
 clean-cache:
 	rm -rf cache
@@ -33,3 +33,10 @@ clean-cache:
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
+
+small-test:
+	run_small.sh
+	${MAKE} small-test-diff
+
+small-test-diff:
+	diff -U3 -r small test/small-goal-files
