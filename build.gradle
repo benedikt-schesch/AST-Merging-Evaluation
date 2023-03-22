@@ -20,8 +20,8 @@ repositories {
   mavenCentral()
   maven {
     // for org.jenkins-ci artifacts
-            url 'https://repo.jenkins-ci.org/releases/'
-        }
+    url 'https://repo.jenkins-ci.org/releases/'
+  }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -34,28 +34,16 @@ dependencies {
 
   // https://mvnrepository.com/artifact/org.kohsuke/github-api
   implementation group: 'org.kohsuke', name: 'github-api', version: '1.314'
-// These are required by github-api
-	compileOnly 'com.google.code.findbugs:annotations:3.0.0'
-	compileOnly 'com.google.code.findbugs:jsr305:3.0.0'
-compileOnly group: 'com.infradna.tool', name: 'bridge-method-injector', version: '1.24'
-compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
+  // These are required by github-api
+  compileOnly 'com.google.code.findbugs:annotations:3.0.0'
+  compileOnly 'com.google.code.findbugs:jsr305:3.0.0'
+  compileOnly group: 'com.infradna.tool', name: 'bridge-method-injector', version: '1.24'
+  compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
 
-
-
-// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
-// JGit 6.0 and later requires Java 11 to run.
-// implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.5.0.202303070854-r'
-implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
-
-
-    // // The production code uses the SLF4J logging API at compile time
-    // compile 'org.slf4j:slf4j-api:1.7.25'
-  // 
-    // // Declare the dependency for your favourite test framework you want to use in your tests.
-    // // TestNG is also supported by the Gradle Test task. Just change the
-    // // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
-    // // 'test.useTestNG()' to your build script.
-    // testCompile 'junit:junit:4.12'
+  // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+  // JGit 6.0 and later requires Java 11 to run, so use the 5.x version.
+  // implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.5.0.202303070854-r'
+  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 }
 
 application {
