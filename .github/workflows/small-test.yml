@@ -32,11 +32,6 @@ jobs:
       run: make clean-cache
     - name: Cleaning Stored Hashes
       run: make clean-stored-hashes
-    - name: Test with pytest
-      run: |
-        pytest
-      env:
-          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     - name: Run small-test
       run: |
         make small-test

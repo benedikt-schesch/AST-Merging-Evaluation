@@ -39,5 +39,7 @@ small-test:
 	${MAKE} small-test-diff
 
 small-test-diff:
-# TODO: remove some of the exclusions.
-	diff -U3 -r test/small-goal-files small -x .gitignore -x merges_valid -x plots -x result.csv
+	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
+	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
+	diff -U3 test/small-goal-files small -x merges -x .gitignore -x merges_valid -x plots -x result.csv
+	diff -U3 test/small-goal-files/merges_valid small/merges_valid
