@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage: ./find_merge_commits.sh <repo-list> <output-dir>
 
