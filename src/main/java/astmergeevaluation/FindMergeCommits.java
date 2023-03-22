@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -81,8 +80,6 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   public static void main(String[] args) throws IOException, GitAPIException {
-    System.out.printf("main(%s)%n", Arrays.toString(args));
-
     if (args.length != 2) {
       System.err.printf("Usage: FindMergeCommits <repo-csv-file> <output-dir>%n");
       System.exit(1);
@@ -172,7 +169,6 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
-    System.out.println("writeMergeCommitsForRepos " + this);
     for (String orgAndRepo : repos) {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
@@ -196,8 +192,8 @@ public class FindMergeCommits {
     Path outputPath = outputFile.toPath();
     if (Files.exists(outputPath)) {
       // File exists, so there is nothing to do.
-      System.out.printf(
-          "writeMergeCommits CACHED(%s, %s); outputFile = %s%n", orgName, repoName, outputFile);
+      // System.out.printf(
+      //     "writeMergeCommits CACHED(%s, %s); outputFile = %s%n", orgName, repoName, outputFile);
       return;
     }
 
@@ -277,11 +273,6 @@ public class FindMergeCommits {
     List<Ref> branches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
     branches = withoutDuplicateBranches(branches);
     StringJoiner sj = new StringJoiner(System.lineSeparator());
-    sj.add(String.format("deduplicated branches (%d) for %s =", branches.size(), repo));
-    for (Ref branch : branches) {
-      sj.add(String.format("  %s [%s]", branch, branch.getClass()));
-    }
-    System.out.println(sj.toString());
 
     for (Ref branch : branches) {
       writeMergeCommitsForBranch(git, repo, branch, writer, written);
@@ -303,7 +294,6 @@ public class FindMergeCommits {
   void writeMergeCommitsForBranch(
       Git git, FileRepository repo, Ref branch, BufferedWriter writer, Set<ObjectId> written)
       throws IOException, GitAPIException {
-    System.out.printf("writeMergeCommitsForBranch(%s, %s, ...)%n", repo, branch);
 
     ObjectId branchId = branch.getObjectId();
     if (branchId == null) {
@@ -315,7 +305,6 @@ public class FindMergeCommits {
       if (parents.length != 2) {
         continue;
       }
-      System.out.println(commit.getName() + " " + commit.getShortMessage());
 
       RevCommit parent1 = parents[0];
       RevCommit parent2 = parents[1];
