@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage: ./spork.sh <dir> <branch-1> <branch-2>
 # <dir> must contain a clone of a repository.
