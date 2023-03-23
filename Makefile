@@ -21,7 +21,7 @@ check-python-style:
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
 clean:
-	rm -f small/valid_repos.csv
+	rm -rf small/merges small/valid_repos.csv
 
 clean-cache:
 	rm -rf cache
@@ -33,3 +33,15 @@ clean-cache:
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
+
+small-test:
+	./run_small.sh
+	${MAKE} small-test-diff
+
+small-test-diff:
+	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
+	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
+	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
+	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
+	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x plots -x result.csv
+	rm -f test/small/goal-files/result-without-times.txt small/result-without-times.txt

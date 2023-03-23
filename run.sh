@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage: ./run.sh <repo_list> <output_folder> <n_merges> <machine_id> <num_machine>
 # <repo_list> list of repositories.
@@ -28,6 +28,7 @@ fi
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
+echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_PATH}
 REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
