@@ -188,7 +188,9 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommits(String orgName, String repoName) throws IOException, GitAPIException {
-    File outputFile = new File(outputDir.toFile(), orgName + "__" + repoName + ".csv");
+    // This variant includes the organization name in the filename.
+    // File outputFile = new File(outputDir.toFile(), orgName + "__" + repoName + ".csv");
+    File outputFile = new File(outputDir.toFile(), repoName + ".csv");
     Path outputPath = outputFile.toPath();
     if (Files.exists(outputPath)) {
       // File exists, so there is nothing to do.
