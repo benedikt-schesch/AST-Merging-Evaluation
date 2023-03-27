@@ -33,6 +33,7 @@ clean-cache:
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
+
 small-test:
 	./run_small.sh
 	${MAKE} small-test-diff
