@@ -48,7 +48,7 @@ dependencies {
 }
 
 application {
-  mainClass = 'org.plumelib.javadoclookup.CreateJavadocIndex'
+  mainClass = 'astmergeevaluation.FindMergeCommits'
 }
 
 sourceCompatibility = 1.8

@@ -124,7 +124,7 @@ public class FindMergeCommits {
             .build();
 
     File tokenFile = new File(System.getProperty("user.home"), ".github-personal-access-token");
-    String environmentToken = System.getenv("GITHUB_TOKEN");
+    String environmentGithubToken = System.getenv("GITHUB_TOKEN");
 
     String gitHubUsername;
     String gitHubPersonalAccessToken;
@@ -139,9 +139,9 @@ public class FindMergeCommits {
       }
       this.credentialsProvider =
           new UsernamePasswordCredentialsProvider(gitHubUsername, gitHubPersonalAccessToken);
-    } else if (environmentToken != null) {
+    } else if (environmentGithubToken != null) {
       this.credentialsProvider =
-          new UsernamePasswordCredentialsProvider("Bearer", environmentToken);
+          new UsernamePasswordCredentialsProvider("Bearer", environmentGithubToken);
     } else {
       System.err.println(
           "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
