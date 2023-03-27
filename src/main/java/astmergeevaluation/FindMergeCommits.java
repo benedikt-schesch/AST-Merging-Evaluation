@@ -50,9 +50,10 @@ import org.kohsuke.github.GitHubBuilder;
  * <p>The ouput is a set of {@code \.csv} files with columns: repository, branch name, merge commit
  * SHA, parent 1 commit SHA, base commit SHA.
  *
- * <p>Requires the existence of a {@code .github-personal-access-token} file in your home directory
- * whose first line is your GitHub username, whose second line is a read-only personal access token,
- * and all other lines are ignored. (See <a
+ * <p>Requires the existence of a {@code GITHUB_TOKEN} environment variable (GitHub Actions provides
+ * this) or a {@code .github-personal-access-token} file in your home directory whose first line is
+ * your GitHub username, whose second line is a read-only personal access token, and all other lines
+ * are ignored. (See <a
  * href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token">Creating
  * a fine-grained personal access token</a>.) Make sure the file is not world-readable. JGit
  * requires authentication for cloning and fetching public repositories.
@@ -117,27 +118,37 @@ public class FindMergeCommits {
     this.gitHub =
         GitHubBuilder.fromEnvironment()
             // Use a cache to avoid repeating the same query multiple times (but the OkHttp class
-            // is
-            // deprecated).
+            // is deprecated).
             // .withConnector(new OkHttpConnector(new OkUrlFactory(new
             // OkHttpClient().setCache(cache))))
             .build();
 
+    File tokenFile = new File(System.getProperty("user.home"), ".github-personal-access-token");
+    String environmentToken = System.getenv("GITHUB_TOKEN");
+
     String gitHubUsername;
     String gitHubPersonalAccessToken;
-    try (BufferedReader pwReader =
-        new BufferedReader(
-            new FileReader(
-                new File(System.getProperty("user.home"), ".github-personal-access-token")))) {
-      gitHubUsername = pwReader.readLine();
-      gitHubPersonalAccessToken = pwReader.readLine();
-    }
-    if (gitHubUsername == null || gitHubPersonalAccessToken == null) {
-      System.err.println("File .github-personal-access-token does not contain two lines.");
+    if (tokenFile.exists()) {
+      try (BufferedReader pwReader = new BufferedReader(new FileReader(tokenFile))) {
+        gitHubUsername = pwReader.readLine();
+        gitHubPersonalAccessToken = pwReader.readLine();
+      }
+      if (gitHubUsername == null || gitHubPersonalAccessToken == null) {
+        System.err.println("File .github-personal-access-token does not contain two lines.");
+        System.exit(2);
+      }
+      this.credentialsProvider =
+          new UsernamePasswordCredentialsProvider(gitHubUsername, gitHubPersonalAccessToken);
+    } else if (environmentToken != null) {
+      this.credentialsProvider =
+          new UsernamePasswordCredentialsProvider("Bearer", environmentToken);
+    } else {
+      System.err.println(
+          "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
+      // dummy assignment to prevent javac definite assignment warning.
+      this.credentialsProvider = new UsernamePasswordCredentialsProvider("no", "credentials");
     }
-    this.credentialsProvider =
-        new UsernamePasswordCredentialsProvider(gitHubUsername, gitHubPersonalAccessToken);
   }
 
   /**
@@ -173,7 +184,7 @@ public class FindMergeCommits {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepo);
-        System.exit(2);
+        System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
     }
