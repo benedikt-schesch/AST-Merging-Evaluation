@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Perform and test merges with different merge tools."""
+"""Perform and test merges with different merge tools.
 
-# usage: python3 merge_tester.py --repos_path <path_to_repo>
-#                                         --merges_path <merges_path>
-#                                         --output_path <output_path>
-#
-# This script takes a csv of repos and a csv of merges and performs the merges with
-# the different merging tools. Each merge is then tested.
-# An output file is generated with all the results for each merge.
+usage: python3 merge_tester.py --repos_path <path_to_repos.csv>
+                               --merges_path <path_to_merges_directory>
+                               --output_path <output_path>
+
+This script takes a csv of repos and a csv of merges and performs the merges with
+the different merging tools. Each merge is then tested.
+An output file is generated with all the results for each merge.
+"""
 
 import signal
 import subprocess
@@ -26,10 +27,12 @@ import git
 
 
 SCRATCH_DIR = "scratch/"
+# If true, the merged repository will be stored.
+# Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
 WORKDIR = ".workdir/"
-CACHE = "cache/merge_test_results/"
 DELETE_WORKDIR = True
+CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 
@@ -37,7 +40,7 @@ TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 def test_merge(
     merging_method, repo_name, left, right, base
 ):  # pylint: disable=too-many-locals
-    """Merges a repo and executes tests.
+    """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
         repo_name (str): Name of the repo.
@@ -45,9 +48,11 @@ def test_merge(
         right (str): Right parent hash of a merge.
         base (str): Base parent hash of a merge.
     Returns:
-        int: Test result of merge.
+        int: Test result of merge.  0 means success, non-zero means failure.
         float: Runtime to execute the merge.
     """
+    # Variable `merge` is returned by this routine.
+
     try:
         repo_dir = "repos/" + repo_name
         process = multiprocessing.current_process()
@@ -76,7 +81,6 @@ def test_merge(
                 stderr=subprocess.DEVNULL,
                 timeout=TIMEOUT_MERGE,
             )
-            # p.wait(timeout=TIMEOUT_MERGE)
             merge = p.returncode
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
@@ -145,7 +149,7 @@ def test_merges(args):
     """Merges a repo with spork, intellimerge and git. Executes tests on
         all merges
     Args:
-        repo_name (str): Name of the repo.
+        repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
         left (str): Left parent hash of a merge.
         right (str): Right parent hash of a merge.
         base (str): Base parent hash of a merge.

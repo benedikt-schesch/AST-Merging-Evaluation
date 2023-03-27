@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
 
+main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
