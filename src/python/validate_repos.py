@@ -42,6 +42,7 @@ def get_repo(repo_name):
         repo = git.Repo(repo_dir)
     try:
         repo.remote().fetch()
+        repo.submodule_update()
     except Exception as e:
         print(repo_name, "Exception during cloning. Exception:\n", e)
         pass
@@ -125,6 +126,7 @@ def check_repo(arg):
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
+        repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
         rc, explanation = repo_test(repo_dir_copy, TIMEOUT_MERGE)
         df = pd.DataFrame({"test": [rc]})

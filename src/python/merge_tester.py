@@ -59,6 +59,7 @@ def test_merge(
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
+        repo.submodule_update()
         repo.git.checkout(left, force=True)
         repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1", force=True)
         repo.git.checkout(right, force=True)

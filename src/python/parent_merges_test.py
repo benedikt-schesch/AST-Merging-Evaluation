@@ -59,6 +59,7 @@ def pass_test(repo_name, commit):
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
+        repo.submodule_update()
 
         result = 0
         explanation = ""
