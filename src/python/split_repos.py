@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Split the repos list according to the number of machine used."""
+"""Split the repos list according to the number of machines used.
 
-# usage: python3 get_repos.py --repos_path <repos_path>
-#                               --machine_id <machine_id>
-#                               --num_machines <num_machines>
-#                               --output_path <output_path>
-# This script splits the repos list for each machine and stores the local repos list.
+usage: python3 get_repos.py --repos_path <path_to_repos.csv>
+                            --machine_id <machine_id>
+                            --num_machines <num_machines>
+                            --output_file <output_path>
+This script splits the repos list for each machine and stores the local repos list.
+"""
 
 import argparse
 import pandas as pd

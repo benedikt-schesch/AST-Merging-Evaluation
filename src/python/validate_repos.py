@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Tests the HEAD of a repo and validates it if the test passes."""
+"""Tests the HEAD of a repo and validates it if the test passes.
 
-# usage: python3 validate_repos.py --repos_path <repos.csv>
-#                                         --output_path <valid_repos.csv>
-#
-# This script takes a csv of repos.
-# It writes, to `valid_repos.csv`, those for which the head of main passes tests.
-# The input file `repos.csv` must contain a header, one of whose columns is "repository".
-# That column contains "ORGANIZATION/REPO" for a GitHub repository.
+usage: python3 validate_repos.py --repos_path <repos.csv>
+                                 --output_path <valid_repos.csv>
+
+Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
+That column contains "ORGANIZATION/REPO" for a GitHub repository.
+Output:  the rows of the input for which the head of main passes tests.
+"""
 
 import subprocess
 import shutil
@@ -25,7 +25,7 @@ WORKDIR = ".workdir/"
 TIMEOUT_MERGE = 30 * 60  # 30 minutes
 
 
-def get_repo(repo_name):
+def clone_repo(repo_name):
     """Clones a repository, or runs `git fetch` it if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
@@ -33,13 +33,13 @@ def get_repo(repo_name):
         The repository
     """
     repo_dir = "repos/" + repo_name
-    if not os.path.isdir(repo_dir):
+    if os.path.isdir(repo_dir):
+        repo = git.Repo(repo_dir)
+    else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.Repo.clone_from(git_url, repo_dir)
-    else:
-        repo = git.Repo(repo_dir)
     try:
         repo.remote().fetch()
     except Exception as e:
@@ -49,18 +49,18 @@ def get_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
-    """Returns the return code of trying 3 times to run tester.sh on the given working copy.
-    If one tests passes then the entire test is marked as passed.
-    If one tests timeouts then the entire test is marked as timeout.
+    """Returns the return code of trying 3 times to run run_repo_tests.sh on the given working copy.
+    If one test passes then the entire test is marked as passed.
+    If one test timeouts then the entire test is marked as timeout.
     Args:
-        repo_dir_copy (str): The path of the repository.
+        repo_dir_copy (str): The path of the working copy (the clone).
         timeout (int): Test Timeout limit.
     Returns:
         int: The test value.
     """
     for i in range(3):
         command = [
-            "src/scripts/tester.sh",
+            "src/scripts/run_repo_tests.sh",
             repo_dir_copy,
         ]
         p = subprocess.run(  # pylint: disable=consider-using-with
@@ -72,11 +72,11 @@ def repo_test(repo_dir_copy, timeout):
         stdout = p.stdout.decode("utf-8")
         stderr = p.stderr.decode("utf-8")
         explanation = (
-            "Run Command"
+            "Run Command: "
             + " ".join(command)
-            + "\n stdout:\n"
+            + "\nstdout:\n"
             + stdout
-            + "\n stderr:\n"
+            + "\nstderr:\n"
             + stderr
         )
         if rc in (0, 124):  # Success or Timeout
@@ -84,7 +84,7 @@ def repo_test(repo_dir_copy, timeout):
     return 1, explanation  # Failure
 
 
-def check_repo(arg):
+def head_passes_tests(arg):
     """Checks if the head of main passes test.
     Args:
         arg (str): Information regarding that repo.
@@ -93,7 +93,7 @@ def check_repo(arg):
     """
     _, row = arg
     repo_name = row["repository"]
-    print(repo_name, ": Started check_repo")
+    print(repo_name, ": Started head_passes_tests")
     result_interpretable = {0: "Valid", 1: "Not Valid", 124: "Not Valid Timeout"}
 
     repo_dir = "repos/" + repo_name
@@ -106,7 +106,7 @@ def check_repo(arg):
         shutil.rmtree(repo_dir_copy)
     try:
         print(repo_name, ": Cloning repo")
-        _ = get_repo(repo_name)
+        _ = clone_repo(repo_name)
         print(repo_name, ": Finished cloning")
 
         # Check if result is cached
@@ -136,7 +136,7 @@ def check_repo(arg):
         shutil.rmtree(repo_dir_copy)
     print(
         repo_name,
-        "Finished check_repo, result : ",
+        "Finished head_passes_tests, result : ",
         result_interpretable[df.iloc[0]["test"]],
     )
     return df.iloc[0]["test"]
@@ -157,7 +157,7 @@ if __name__ == "__main__":
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
         r = list(
             tqdm(
-                pool.imap(check_repo, df.iterrows()),
+                pool.imap(head_passes_tests, df.iterrows()),
                 total=len(df),
             )
         )
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     out = []
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
-        repo = check_repo((idx, row))
+        repo = head_passes_tests((idx, row))
         if repo == 0:
             out.append(row)
     print("validate_repos: Finished Building Output")

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./tester.sh <repo-dir>
+# usage: ./run_repo_tests.sh <repo-dir>
 
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
@@ -41,4 +41,5 @@ if [[ -f pom.xml || -f mvnw ]] ; then
   fi
 fi
 
+echo "No Gradle or Maven buildfile"
 exit 1
