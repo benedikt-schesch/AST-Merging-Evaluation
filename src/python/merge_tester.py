@@ -317,5 +317,5 @@ if __name__ == "__main__":
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)
     print("merge_tester: Finished Building Output")
-    print("merge_tester: Number of analyzed merges ",len(output))
+    print("merge_tester: Number of analyzed merges ", len(output))
     print("merge_tester: Done")
