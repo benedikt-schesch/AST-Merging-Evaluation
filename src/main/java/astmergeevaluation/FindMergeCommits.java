@@ -215,13 +215,14 @@ public class FindMergeCommits {
     Set<ObjectId> written = new HashSet<>();
 
     String repoDirName =
-        "/scratch/"
+        "/tmp/"
             + System.getProperty("user.name")
             + "/ast-merge-eval-data/"
             + orgName
             + "__"
             + repoName;
     File repoDirFile = new File(repoDirName);
+    repoDirFile.mkdirs();
 
     // With these assignments, git.branchList() always returns an empty list!
     // So delete and re-clone. :-(
