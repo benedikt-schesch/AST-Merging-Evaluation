@@ -37,7 +37,7 @@ WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
-UNIQUE_COMMIT_NAME="AOFKMAFNASFKJNRFQJXNFHJ"
+UNIQUE_COMMIT_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
 
 
 def test_merge(
@@ -68,17 +68,17 @@ def test_merge(
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
         repo.git.checkout(left, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME+"1", force=True)
+        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "1", force=True)
         repo.git.checkout(right, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME+"2", force=True)
+        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "2", force=True)
         try:
             start = time.time()
             p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
-                    UNIQUE_COMMIT_NAME+"1",
-                    UNIQUE_COMMIT_NAME+"2",
+                    UNIQUE_COMMIT_NAME + "1",
+                    UNIQUE_COMMIT_NAME + "2",
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,

@@ -8,7 +8,6 @@ In latex_output.py, the arguments --result_path and --output_path sound very sim
 In latex_output.py, the use of bitwise operators is very subtle.  Consider making it a bit more explicit, say by using `int(bool(foo) and bool(bar))` rather than `foo & bar`.
 
 merge_tester.py:
-What is the magic string "AOFKMAFNASFKJNRFQJXNFHJ1"?  Is it just a branch name that is unlikely to exist in any repository?  Please document, and maybe put it in a global variable rather than repeating it twice in the code.
 Rather than variables idx2 and row2, I would find "merge_idx" or "idx_merge" clearer.
 
 parent_merges_test.py:
