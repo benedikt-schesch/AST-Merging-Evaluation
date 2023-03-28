@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests the HEAD of a repo and validates it if the test passes.
 
-usage: python3 validate_repos.py --repos_path <repos.csv>
+usage: python3 validate_repos.py --repos_csv <repos.csv>
                                  --output_path <valid_repos.csv>
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
@@ -22,7 +22,7 @@ import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 30 * 60  # 30 minutes
+TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def clone_repo(repo_name):
@@ -88,9 +88,9 @@ def repo_test(repo_dir_copy, timeout):
 def head_passes_tests(arg):
     """Checks if the head of main passes test.
     Args:
-        arg (str): Information regarding that repo.
+        arg (idx, row): Information regarding that repo.
     Returns:
-        int: 1 if the repo is valid (main head passes tests)
+        boolean: if the repo is valid (main head passes tests)
     """
     _, row = arg
     repo_name = row["repository"]
@@ -120,7 +120,7 @@ def head_passes_tests(arg):
                 + ": "
                 + result_interpretable[df.iloc[0]["test"]],
             )
-            return df.iloc[0]["test"]
+            return df.iloc[0]["test"] == 0
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
@@ -128,7 +128,7 @@ def head_passes_tests(arg):
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
@@ -141,7 +141,7 @@ def head_passes_tests(arg):
         "Finished head_passes_tests, result : ",
         result_interpretable[df.iloc[0]["test"]],
     )
-    return df.iloc[0]["test"]
+    return df.iloc[0]["test"] == 0
 
 
 if __name__ == "__main__":
@@ -150,10 +150,10 @@ if __name__ == "__main__":
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
 
     print("validate_repos: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
@@ -167,10 +167,8 @@ if __name__ == "__main__":
 
     print("validate_repos: Building Output")
     out = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        repo = head_passes_tests((idx, row))
-        if repo == 0:
+    for repo_idx, row in tqdm(df.iterrows(), total=len(df)):
+        if head_passes_tests((repo_idx, row)):
             out.append(row)
     print("validate_repos: Finished Building Output")
     out = pd.DataFrame(out)

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Tests the parents of a merge and subsamples merges from the merges with passing parents.
 
-usage: python3 parent_merges_test.py --repos_path <path_to_repos.csv>
+usage: python3 parent_merges_test.py --repos_csv <path_to_repos.csv>
                                      --merges_path <path_to_merges_directory>
                                      --output_dir <output_directory>
                                      --n_merges <max_number_of_merges>
 
-This script takes a list of merges for each repository and verifies that the two parents
-of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
-parents for each repository.
-It produces output in <output_directory>.
+This script takes a list of repositories and a path merges_path which contains a list of merges for 
+each repository. The script verifies that the two parents of each merge has parents that pass tests.
+It subsamples n_merges of merges that have passing parents for each repository.
+The output is produced in <output_directory>.
 """
 
 import shutil
@@ -28,7 +28,7 @@ import git
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 30 * 60  # 30 minutes
+TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def pass_test(repo_name, commit):
@@ -45,6 +45,9 @@ def pass_test(repo_name, commit):
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
             return int(next(f).split(" ")[0])
+
+    with open(cache_file, "w") as f:
+        f.write("-10 Process Started")
 
     try:
         process = multiprocessing.current_process()
@@ -81,7 +84,7 @@ def pass_test(repo_name, commit):
 
         if result == 0:
             try:
-                result, explanation = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
+                result, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
             except Exception as e:
                 print(
                     repo_name,
@@ -149,12 +152,12 @@ if __name__ == "__main__":
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
@@ -164,7 +167,7 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -175,7 +178,8 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
         merges = merges.sample(frac=1, random_state=42)
 
-        for idx2, row2 in merges.iterrows():
+        for _, row2 in merges.iterrows():
+            # Make sure that both SHA are of correct lenght
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 merges_repo.append(
                     (
@@ -207,12 +211,16 @@ if __name__ == "__main__":
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
         if not os.path.isfile(merge_list_file):
-            continue
+            raise Exception(
+                repo_name
+                + " does not have a list of merge. Missing file: "
+                + merge_list_file
+            )
 
         merges = pd.read_csv(
             merge_list_file,
@@ -226,7 +234,7 @@ if __name__ == "__main__":
 
         result = []
         counter = 0
-        for idx2, row2 in merges.iterrows():
+        for merge_idx, row2 in merges.iterrows():
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 test_left, test_right, test_merge = valid_merge(
                     (
@@ -238,11 +246,11 @@ if __name__ == "__main__":
                         0,
                     )
                 )
-                merges.loc[idx2, "merge test"] = test_merge
+                merges.loc[merge_idx, "merge test"] = test_merge
                 if test_left == 0 and test_right == 0:
-                    merges.loc[idx2, "parent test"] = 0
+                    merges.loc[merge_idx, "parent test"] = 0
                     counter += 1
-                    result.append(merges.loc[idx2])
+                    result.append(merges.loc[merge_idx])
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
