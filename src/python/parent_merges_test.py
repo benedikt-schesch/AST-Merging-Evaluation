@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Tests the parents of a merge and subsamples merges from the merges with passing parents."""
+"""Tests the parents of a merge and subsamples merges from the merges with passing parents.
 
-# usage: python3 parent_merges_test.py --repos_path <path_to_repo>
-#                                         --merges_path <path_to_merges>
-#                                         --output_dir <output_directory>
-#                                         --n_merges <max_number_of_merges>
-#
-# This script takes a list of merges for each repository and verifies that the two parents
-# of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
-# parents for each repository.
-# It produces output in <output_directory>.
+usage: python3 parent_merges_test.py --repos_path <path_to_repos.csv>
+                                     --merges_path <path_to_merges_directory>
+                                     --output_dir <output_directory>
+                                     --n_merges <max_number_of_merges>
+
+This script takes a list of merges for each repository and verifies that the two parents
+of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
+parents for each repository.
+It produces output in <output_directory>.
+"""
 
 import shutil
 import os
@@ -20,7 +21,7 @@ import argparse
 from pathlib import Path
 import traceback
 
-from validate_repos import repo_test, get_repo
+from validate_repos import repo_test, clone_repo
 from tqdm import tqdm
 import pandas as pd
 import git
@@ -52,7 +53,7 @@ def pass_test(repo_name, commit):
         repo_dir = "repos/" + repo_name
         repo_dir_copy = WORKDIR + pid + "/repo"
 
-        repo = get_repo(repo_name)
+        repo = clone_repo(repo_name)
 
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
@@ -158,8 +159,8 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
-    manager = Manager()
-    valid_merge_counter = manager.dict()
+    multiprocessing_manager = Manager()
+    valid_merge_counter = multiprocessing_manager.dict()
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
