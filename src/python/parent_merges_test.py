@@ -45,6 +45,9 @@ def pass_test(repo_name, commit):
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
             return int(next(f).split(" ")[0])
+    
+    with open(cache_file, "w") as f:
+        f.write("-10 Process Started")
 
     try:
         process = multiprocessing.current_process()

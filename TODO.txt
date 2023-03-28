@@ -1,5 +1,4 @@
 latex_output.py:
-It would be nice to test the latex_output.py script as part of the "small test".
 In the paper, the generated LaTeX table should appear in its own file, to reduce the possibility of cut-and-paste errors.
 In latex_output.py, say where the output should be copied to.
 
