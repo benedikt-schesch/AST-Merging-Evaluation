@@ -89,7 +89,7 @@ def head_passes_tests(arg):
     Args:
         arg (str): Information regarding that repo.
     Returns:
-        int: 1 if the repo is valid (main head passes tests)
+        int: 0 if the repo is valid (main head passes tests)
     """
     _, row = arg
     repo_name = row["repository"]
@@ -119,7 +119,7 @@ def head_passes_tests(arg):
                 + ": "
                 + result_interpretable[df.iloc[0]["test"]],
             )
-            return df.iloc[0]["test"]
+            return df.iloc[0]["test"] == 0
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
@@ -139,7 +139,7 @@ def head_passes_tests(arg):
         "Finished head_passes_tests, result : ",
         result_interpretable[df.iloc[0]["test"]],
     )
-    return df.iloc[0]["test"]
+    return df.iloc[0]["test"] == 0
 
 
 if __name__ == "__main__":
@@ -166,9 +166,7 @@ if __name__ == "__main__":
     print("validate_repos: Building Output")
     out = []
     for repo_idx, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
-        repo = head_passes_tests((repo_idx, row))
-        if repo == 0:
+        if head_passes_tests((repo_idx, row)):
             out.append(row)
     print("validate_repos: Finished Building Output")
     out = pd.DataFrame(out)
