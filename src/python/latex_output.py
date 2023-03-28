@@ -156,7 +156,8 @@ if __name__ == "__main__":
         args.append(100 * incorrect / len(feature) if len(feature) > 0 else -1)
 
         template2 += (
-            "            "+merge_tool.capitalize()
+            "            "
+            + merge_tool.capitalize()
             + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & \
                 {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\ \n"
         )
