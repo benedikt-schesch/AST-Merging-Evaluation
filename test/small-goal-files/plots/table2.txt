@@ -1,0 +1,18 @@
+\begin{tabular}{c|c c c c|c c c c|c c c c}
+            Tool & 
+            \multicolumn{4}{|c|}{Correct Merges} & 
+            \multicolumn{4}{|c|}{Unhandled Merges} &
+            \multicolumn{4}{|c|}{Incorrect Merges}\\
+            &
+            \multicolumn{2}{|c}{Main Branch} & 
+            \multicolumn{2}{c|}{Feature Branch} &
+            \multicolumn{2}{|c}{Main Branch} & 
+            \multicolumn{2}{c|}{Feature Branch} &
+            \multicolumn{2}{|c}{Main Branch} & 
+            \multicolumn{2}{c|}{Feature Branch} &
+            \hline
+            & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\ 
+Gitmerge & 4 & 100.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\%\\ 
+Spork & 4 & 100.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\%\\ 
+Intellimerge & 4 & 100.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\% & 0 & 0.00\% & 0 & -1.00\%\\ 
+\end{tabular}

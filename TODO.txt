@@ -1,10 +1,7 @@
-In latex_output.py, merge_tester.py, and elsewhere, please don't hard-code the three different merge tools.  Instead, have a list (just once) of them, and the script should iterate over that list.  This probably requires using a data structure, rather than 4 different variables, to hold the info about merge tool results.  This will probably also fix the problem that the main routine is so long, by adding subroutines.
-
 latex_output.py:
 It would be nice to test the latex_output.py script as part of the "small test".
 In the paper, the generated LaTeX table should appear in its own file, to reduce the possibility of cut-and-paste errors.
 In latex_output.py, say where the output should be copied to.
-In latex_output.py, the use of bitwise operators is very subtle.  Consider making it a bit more explicit, say by using `int(bool(foo) and bool(bar))` rather than `foo & bar`.
 
 parent_merges_test.py:
 Rather than using `zip_longest` to interleave testing to reduce the probability that tests at the same hash happen in parallel, I suggest using a lock file.  If the output directory already exists but the results file does not, then just wait for the result.

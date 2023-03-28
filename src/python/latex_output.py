@@ -24,6 +24,8 @@ if __name__ == "__main__":
     data = pd.read_csv(args.input_csv)
     for merge_tool in MERGE_TOOLS:
         data[merge_tool] = data[merge_tool].astype(int)
+
+        # Filter out all data points that have any type of failure
         data = data[data[merge_tool] > 0]
 
     # figure 1 (stacked area)
