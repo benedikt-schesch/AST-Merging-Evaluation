@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests the HEAD of a repo and validates it if the test passes.
 
-usage: python3 validate_repos.py --repos_path <repos.csv>
+usage: python3 validate_repos.py --repos_csv <repos.csv>
                                  --output_path <valid_repos.csv>
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
@@ -22,7 +22,7 @@ import git
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_MERGE = 30 * 60  # 30 minutes
+TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def clone_repo(repo_name):
@@ -126,7 +126,7 @@ def head_passes_tests(arg):
         repo = git.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_MERGE)
+        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
         df = pd.DataFrame({"test": [rc]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
@@ -148,10 +148,10 @@ if __name__ == "__main__":
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
 
     print("validate_repos: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:

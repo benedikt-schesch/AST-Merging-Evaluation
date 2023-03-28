@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests the parents of a merge and subsamples merges from the merges with passing parents.
 
-usage: python3 parent_merges_test.py --repos_path <path_to_repos.csv>
+usage: python3 parent_merges_test.py --repos_csv <path_to_repos.csv>
                                      --merges_path <path_to_merges_directory>
                                      --output_dir <output_directory>
                                      --n_merges <max_number_of_merges>
@@ -28,7 +28,7 @@ import git
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
-TIMEOUT_SECONDS = 30 * 60  # 30 minutes
+TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def pass_test(repo_name, commit):
@@ -80,7 +80,7 @@ def pass_test(repo_name, commit):
 
         if result == 0:
             try:
-                result, explanation = repo_test(repo_dir_copy, TIMEOUT_SECONDS)
+                result, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
             except Exception as e:
                 print(
                     repo_name,
@@ -148,12 +148,12 @@ if __name__ == "__main__":
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)

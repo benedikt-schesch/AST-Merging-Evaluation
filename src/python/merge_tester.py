@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Perform and test merges with different merge tools.
 
-usage: python3 merge_tester.py --repos_path <path_to_repos.csv>
+usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
                                --merges_path <path_to_merges_directory>
                                --output_path <output_path>
 
@@ -30,11 +30,14 @@ SCRATCH_DIR = "scratch/"
 # If true, the merged repository will be stored.
 # Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
-WORKDIR = ".workdir/"
+# If true, the working directories will be deleted.
+# Otherwise, it is deleted after its tests are run.
 DELETE_WORKDIR = True
+WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
+UNIQUE_COMMIT_NAME="AOFKMAFNASFKJNRFQJXNFHJ"
 
 
 def test_merge(
@@ -65,17 +68,17 @@ def test_merge(
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
         repo.git.checkout(left, force=True)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ1", force=True)
+        repo.git.checkout("-b", UNIQUE_COMMIT_NAME+"1", force=True)
         repo.git.checkout(right, force=True)
-        repo.git.checkout("-b", "AOFKMAFNASFKJNRFQJXNFHJ2", force=True)
+        repo.git.checkout("-b", UNIQUE_COMMIT_NAME+"2", force=True)
         try:
             start = time.time()
             p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
-                    "AOFKMAFNASFKJNRFQJXNFHJ1",
-                    "AOFKMAFNASFKJNRFQJXNFHJ2",
+                    UNIQUE_COMMIT_NAME+"1",
+                    UNIQUE_COMMIT_NAME+"2",
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -235,11 +238,11 @@ if __name__ == "__main__":
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
 
     print("merge_tester: Building Inputs")
     args_merges = []
