@@ -13,14 +13,14 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--result_path", type=str)
+    parser.add_argument("--input_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
     output_path = args.output_path
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     # open results file
-    data = pd.read_csv(args.result_path)
+    data = pd.read_csv(args.input_csv)
     data["gitmerge"] = data["gitmerge"].astype(int)
     data["spork"] = data["spork"].astype(int)
     data["intellimerge"] = data["intellimerge"].astype(int)

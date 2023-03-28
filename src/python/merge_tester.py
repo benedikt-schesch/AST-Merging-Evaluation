@@ -38,6 +38,7 @@ CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 UNIQUE_COMMIT_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
+MERGE_TOOLS = ["gitmerge","spork","intellimerge"]
 
 
 def test_merge(
@@ -182,51 +183,22 @@ def test_merges(args):
 
     if os.path.isfile(cache_file):
         result = pd.read_csv(cache_file, index_col=0)
-        return (
-            result.iloc[0][0],
-            result.iloc[0][1],
-            result.iloc[0][2],
-            result.iloc[0][3],
-            result.iloc[0][4],
-            result.iloc[0][5],
-        )
+        return result.iloc[0, :].values.flatten().tolist()
 
     out = pd.DataFrame([[-2, -2, -2, -2, -2, -2]])
     out.to_csv(cache_file)
 
-    # Git Merge
-    git_merge, git_runtime = test_merge("gitmerge", repo_name, left, right, base)
+    merge_results = []
+    merge_runtimes = []
+    for merge_tool in MERGE_TOOLS:
+        merge_result, merge_runtime = test_merge(merge_tool, repo_name, left, right, base)
+        merge_results.append(merge_result)
+        merge_runtimes.append(merge_runtime)
 
-    # Spork Merge
-    spork_merge, spork_runtime = test_merge("spork", repo_name, left, right, base)
-
-    # IntelliMerge
-    intelli_merge, intelli_runtime = test_merge(
-        "intellimerge", repo_name, left, right, base
-    )
-
-    out = pd.DataFrame(
-        [
-            [
-                git_merge,
-                spork_merge,
-                intelli_merge,
-                git_runtime,
-                spork_runtime,
-                intelli_runtime,
-            ]
-        ]
-    )
+    out = pd.DataFrame([merge_results+merge_runtimes])
     out.to_csv(cache_file)
 
-    return (
-        git_merge,
-        spork_merge,
-        intelli_merge,
-        git_runtime,
-        spork_runtime,
-        intelli_runtime,
-    )
+    return out.iloc[0, :].values.flatten().tolist()
 
 
 if __name__ == "__main__":
@@ -289,22 +261,13 @@ if __name__ == "__main__":
 
         # Initialize new columns
         merges["repo_name"] = [row["repository"] for i in merges.iterrows()]
-        merges["gitmerge"] = [-10 for i in merges.iterrows()]
-        merges["spork"] = [-10 for i in merges.iterrows()]
-        merges["intellimerge"] = [-10 for i in merges.iterrows()]
-        merges["gitmerge runtime"] = [-10 for i in merges.iterrows()]
-        merges["spork runtime"] = [-10 for i in merges.iterrows()]
-        merges["intellimerge runtime"] = [-10 for i in merges.iterrows()]
+        for merge_tool in MERGE_TOOLS:
+            merges[merge_tool] = [-10 for i in merges.iterrows()]
+        for merge_tool in MERGE_TOOLS:
+            merges[merge_tool+" runtime"] = [-10 for i in merges.iterrows()]
 
         for merge_idx, row2 in merges.iterrows():
-            (
-                git_merge,
-                spork_merge,
-                intelli_merge,
-                git_runtime,
-                spork_runtime,
-                intelli_runtime,
-            ) = test_merges(
+            results = test_merges(
                 (
                     row["repository"],
                     row2["left"],
@@ -313,12 +276,9 @@ if __name__ == "__main__":
                     row2["merge"],
                 )
             )
-            merges.loc[merge_idx, "gitmerge"] = git_merge
-            merges.loc[merge_idx, "spork"] = spork_merge
-            merges.loc[merge_idx, "intellimerge"] = intelli_merge
-            merges.loc[merge_idx, "gitmerge runtime"] = git_runtime
-            merges.loc[merge_idx, "spork runtime"] = spork_runtime
-            merges.loc[merge_idx, "intellimerge runtime"] = intelli_runtime
+            for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+                merges.loc[merge_idx, merge_tool] = results[merge_tool_idx]
+                merges.loc[merge_idx, merge_tool+" runtime"] = results[len(MERGE_TOOLS)+merge_tool_idx] 
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)

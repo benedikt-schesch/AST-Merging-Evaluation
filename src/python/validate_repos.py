@@ -87,9 +87,9 @@ def repo_test(repo_dir_copy, timeout):
 def head_passes_tests(arg):
     """Checks if the head of main passes test.
     Args:
-        arg (str): Information regarding that repo.
+        arg (idx, row): Information regarding that repo.
     Returns:
-        int: 0 if the repo is valid (main head passes tests)
+        boolean: if the repo is valid (main head passes tests)
     """
     _, row = arg
     repo_name = row["repository"]

@@ -49,4 +49,4 @@ python3 src/python/parent_merges_test.py --repos_csv "$OUT_DIR/valid_repos.csv" 
 
 python3 src/python/merge_tester.py --repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv"
 
-python3 src/python/latex_output.py --result_path "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"
+python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"
