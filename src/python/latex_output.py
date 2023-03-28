@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
+from merge_tester import MERGE_TOOLS
 
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
@@ -21,9 +22,8 @@ if __name__ == "__main__":
 
     # open results file
     data = pd.read_csv(args.input_csv)
-    data["gitmerge"] = data["gitmerge"].astype(int)
-    data["spork"] = data["spork"].astype(int)
-    data["intellimerge"] = data["intellimerge"].astype(int)
+    for merge_tool in MERGE_TOOLS:
+        data[merge_tool] = data[merge_tool].astype(int)
 
     data = data[
         (data["gitmerge"] > 0) & (data["spork"] > 0) & (data["intellimerge"] > 0)

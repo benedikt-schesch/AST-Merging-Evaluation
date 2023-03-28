@@ -38,7 +38,7 @@ CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 UNIQUE_COMMIT_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
-MERGE_TOOLS = ["gitmerge","spork","intellimerge"]
+MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 
 def test_merge(
@@ -191,11 +191,13 @@ def test_merges(args):
     merge_results = []
     merge_runtimes = []
     for merge_tool in MERGE_TOOLS:
-        merge_result, merge_runtime = test_merge(merge_tool, repo_name, left, right, base)
+        merge_result, merge_runtime = test_merge(
+            merge_tool, repo_name, left, right, base
+        )
         merge_results.append(merge_result)
         merge_runtimes.append(merge_runtime)
 
-    out = pd.DataFrame([merge_results+merge_runtimes])
+    out = pd.DataFrame([merge_results + merge_runtimes])
     out.to_csv(cache_file)
 
     return out.iloc[0, :].values.flatten().tolist()
@@ -264,7 +266,7 @@ if __name__ == "__main__":
         for merge_tool in MERGE_TOOLS:
             merges[merge_tool] = [-10 for i in merges.iterrows()]
         for merge_tool in MERGE_TOOLS:
-            merges[merge_tool+" runtime"] = [-10 for i in merges.iterrows()]
+            merges[merge_tool + " runtime"] = [-10 for i in merges.iterrows()]
 
         for merge_idx, row2 in merges.iterrows():
             results = test_merges(
@@ -278,7 +280,9 @@ if __name__ == "__main__":
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
                 merges.loc[merge_idx, merge_tool] = results[merge_tool_idx]
-                merges.loc[merge_idx, merge_tool+" runtime"] = results[len(MERGE_TOOLS)+merge_tool_idx] 
+                merges.loc[merge_idx, merge_tool + " runtime"] = results[
+                    len(MERGE_TOOLS) + merge_tool_idx
+                ]
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)
