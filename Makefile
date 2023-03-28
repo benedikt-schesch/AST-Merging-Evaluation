@@ -44,4 +44,4 @@ small-test-diff:
 	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf
-	rm -f test/small/goal-files/result-without-times.txt small/result-without-times.txt
+	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
