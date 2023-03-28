@@ -3,7 +3,7 @@
 
 # usage: python3 get_repos.py
 # This script downloads the reaper dataset and outputs, to file data/repos.csv, the Java repos with
-# at least 10 GitHub stars and a unit_test score of at least 0.25
+# strictly more than 10 GitHub stars and a unit_test score of at least 0.25
 
 import gzip
 import urllib.request

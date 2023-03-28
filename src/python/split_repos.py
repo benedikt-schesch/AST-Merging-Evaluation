@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Split the repos list according to the number of machines used.
 
-usage: python3 get_repos.py --repos_path <path_to_repos.csv>
+usage: python3 get_repos.py --repos_csv <path_to_repos.csv>
                             --machine_id <machine_id>
                             --num_machines <num_machines>
                             --output_file <output_path>
@@ -14,12 +14,12 @@ import numpy as np
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--machine_id", type=int)
     parser.add_argument("--num_machines", type=int)
     parser.add_argument("--output_file", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
     # Make sure load factor is not biased
     df = df.sample(frac=1, random_state=42).reset_index(drop=True)
     df = np.array_split(df, args.num_machines)[args.machine_id]

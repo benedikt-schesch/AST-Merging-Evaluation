@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Store the hash of the HEAD of main branch for each repository enabling reproducible results.
 
-usage: python3 store_main_hashes.py --repos_path <repos.csv>
+usage: python3 store_main_hashes.py --repos_csv <repos.csv>
                                     --output_path <valid_repos.csv>
 
 Input: a csv of repos.
@@ -23,7 +23,7 @@ import pandas as pd
 def get_latest_hash(args):
     """Checks if the head of main passes test.
     Args:
-        arg (idx,str): Information regarding that repo.
+        arg (idx,row): Information regarding that repo.
     Returns:
         pd.Series: repo infromation with the hash of the HEAD
     """
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     print("Started Storing Repos Hashes")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_path", type=str)
+    parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     if os.path.isfile(args.output_path):
         sys.exit(0)
 
-    df = pd.read_csv(args.repos_path)
+    df = pd.read_csv(args.repos_csv)
 
     print("validate_repos: Started Testing")
     with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
