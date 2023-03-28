@@ -23,7 +23,7 @@ import pandas as pd
 def get_latest_hash(args):
     """Checks if the head of main passes test.
     Args:
-        arg (idx,str): Information regarding that repo.
+        arg (idx,row): Information regarding that repo.
     Returns:
         pd.Series: repo infromation with the hash of the HEAD
     """

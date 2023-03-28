@@ -11,8 +11,6 @@ parent_merges_test.py:
 Rather than using `zip_longest` to interleave testing to reduce the probability that tests at the same hash happen in parallel, I suggest using a lock file.  If the output directory already exists but the results file does not, then just wait for the result.
 
 store_main_hashes.py:
-get_latest_hash says: "Args: arg (idx,str)", but the second argument is a row (a hash table) rather than a string.
-Does get_latest_hash side-effect its second argument, or does it operate on a copy?
 Why desn't check_repo (which I renamed to head_passes_tests) return a boolean rather than numeric value?
 Also, the documentation "int: 1 if the repo is valid (main head passes tests)" is inconsistent with the value of result_interpretable.  result_interpretable can be a class variable rather than created anew on each call to the routine.
 

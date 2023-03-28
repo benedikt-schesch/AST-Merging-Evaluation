@@ -212,7 +212,11 @@ if __name__ == "__main__":
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
         if not os.path.isfile(merge_list_file):
-            raise Exception(repo_name+" does not have a list of merge. Missing file: "+merge_list_file)
+            raise Exception(
+                repo_name
+                + " does not have a list of merge. Missing file: "
+                + merge_list_file
+            )
 
         merges = pd.read_csv(
             merge_list_file,
