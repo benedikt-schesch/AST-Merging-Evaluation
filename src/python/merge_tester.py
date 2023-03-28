@@ -246,14 +246,14 @@ if __name__ == "__main__":
 
     print("merge_tester: Building Inputs")
     args_merges = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
 
-        for idx2, row2 in merges.iterrows():
+        for _, row2 in merges.iterrows():
             if row2["parent test"] != 0:
                 continue
             args_merges.append(
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     print("merge_tester: Building Output")
 
     output = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
             continue
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         merges["spork runtime"] = [-10 for i in merges.iterrows()]
         merges["intellimerge runtime"] = [-10 for i in merges.iterrows()]
 
-        for idx2, row2 in merges.iterrows():
+        for merge_idx, row2 in merges.iterrows():
             (
                 git_merge,
                 spork_merge,
@@ -313,12 +313,12 @@ if __name__ == "__main__":
                     row2["merge"],
                 )
             )
-            merges.loc[idx2, "gitmerge"] = git_merge
-            merges.loc[idx2, "spork"] = spork_merge
-            merges.loc[idx2, "intellimerge"] = intelli_merge
-            merges.loc[idx2, "gitmerge runtime"] = git_runtime
-            merges.loc[idx2, "spork runtime"] = spork_runtime
-            merges.loc[idx2, "intellimerge runtime"] = intelli_runtime
+            merges.loc[merge_idx, "gitmerge"] = git_merge
+            merges.loc[merge_idx, "spork"] = spork_merge
+            merges.loc[merge_idx, "intellimerge"] = intelli_merge
+            merges.loc[merge_idx, "gitmerge runtime"] = git_runtime
+            merges.loc[merge_idx, "spork runtime"] = spork_runtime
+            merges.loc[merge_idx, "intellimerge runtime"] = intelli_runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)

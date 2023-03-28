@@ -165,9 +165,9 @@ if __name__ == "__main__":
 
     print("validate_repos: Building Output")
     out = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for repo_idx, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
-        repo = head_passes_tests((idx, row))
+        repo = head_passes_tests((repo_idx, row))
         if repo == 0:
             out.append(row)
     print("validate_repos: Finished Building Output")

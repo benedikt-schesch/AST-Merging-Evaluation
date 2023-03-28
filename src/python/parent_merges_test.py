@@ -6,10 +6,10 @@ usage: python3 parent_merges_test.py --repos_csv <path_to_repos.csv>
                                      --output_dir <output_directory>
                                      --n_merges <max_number_of_merges>
 
-This script takes a list of merges for each repository and verifies that the two parents
-of each merge has parents that pass tests. It subsamples n_merges of merges that have passing
-parents for each repository.
-It produces output in <output_directory>.
+This script takes a list of repositories and a path merges_path which contains a list of merges for each repository.
+The script verifies that the two parents of each merge has parents that pass tests. It subsamples n_merges of
+merges that have passing parents for each repository.
+The output is produced in <output_directory>.
 """
 
 import shutil
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
@@ -174,7 +174,8 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
         merges = merges.sample(frac=1, random_state=42)
 
-        for idx2, row2 in merges.iterrows():
+        for _, row2 in merges.iterrows():
+            # Make sure that both SHA are of correct lenght
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 merges_repo.append(
                     (
@@ -206,12 +207,12 @@ if __name__ == "__main__":
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
+    for _, row in tqdm(df.iterrows(), total=len(df)):
         repo_name = row["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
         if not os.path.isfile(merge_list_file):
-            continue
+            raise Exception(repo_name+" does not have a list of merge. Missing file: "+merge_list_file)
 
         merges = pd.read_csv(
             merge_list_file,
@@ -225,7 +226,7 @@ if __name__ == "__main__":
 
         result = []
         counter = 0
-        for idx2, row2 in merges.iterrows():
+        for merge_idx, row2 in merges.iterrows():
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 test_left, test_right, test_merge = valid_merge(
                     (
@@ -237,11 +238,11 @@ if __name__ == "__main__":
                         0,
                     )
                 )
-                merges.loc[idx2, "merge test"] = test_merge
+                merges.loc[merge_idx, "merge test"] = test_merge
                 if test_left == 0 and test_right == 0:
-                    merges.loc[idx2, "parent test"] = 0
+                    merges.loc[merge_idx, "parent test"] = 0
                     counter += 1
-                    result.append(merges.loc[idx2])
+                    result.append(merges.loc[merge_idx])
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
