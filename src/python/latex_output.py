@@ -8,62 +8,47 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
+from merge_tester import MERGE_TOOLS
 
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--result_path", type=str)
+    parser.add_argument("--input_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
     output_path = args.output_path
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     # open results file
-    data = pd.read_csv(args.result_path)
-    data["gitmerge"] = data["gitmerge"].astype(int)
-    data["spork"] = data["spork"].astype(int)
-    data["intellimerge"] = data["intellimerge"].astype(int)
+    data = pd.read_csv(args.input_csv)
+    for merge_tool in MERGE_TOOLS:
+        data[merge_tool] = data[merge_tool].astype(int)
 
-    data = data[
-        (data["gitmerge"] > 0) & (data["spork"] > 0) & (data["intellimerge"] > 0)
-    ]
-
-    gitmerge = data["gitmerge"]
-    spork = data["spork"]
-    intellimerge = data["intellimerge"]
-
-    gitmergeincorrect = sum(val in [3, 5, 126] for val in gitmerge)
-    gitmergecorrect = sum(val == 2 for val in gitmerge)
-    gitmergeunhandled = sum(val == 1 for val in gitmerge)
-    gitmergefailure = sum(val in [6, 124] for val in gitmerge)
-
-    sporkincorrect = sum(val in [3, 5, 126] for val in spork)
-    sporkcorrect = sum(val == 2 for val in spork)
-    sporkunhandled = sum(val == 1 for val in spork)
-    sporkfailure = sum(val in [6, 124] for val in spork)
-
-    intellimergeincorrect = sum(val in [3, 5, 126] for val in intellimerge)
-    intellimergecorrect = sum(val == 2 for val in intellimerge)
-    intellimergeunhandled = sum(val == 1 for val in intellimerge)
-    intellimergefailure = sum(val in [6, 124] for val in intellimerge)
+        # Filter out all data points that have any type of failure
+        data = data[data[merge_tool] > 0]
 
     # figure 1 (stacked area)
-    tools = ["Git Merge", "Spork", "IntelliMerge"]
-    incorrect = [gitmergeincorrect, sporkincorrect, intellimergeincorrect]
-    unhandled = [gitmergeunhandled, sporkunhandled, intellimergeunhandled]
-    correct = [gitmergecorrect, sporkcorrect, intellimergecorrect]
-    failure = [gitmergefailure, sporkfailure, intellimergefailure]
+    incorrect = []
+    correct = []
+    unhandled = []
+    failure = []
+    for merge_tool in MERGE_TOOLS:
+        merge_tool_data = data[merge_tool]
+        incorrect.append(sum(val in [3, 5, 126] for val in merge_tool_data))
+        correct.append(sum(val == 2 for val in merge_tool_data))
+        unhandled.append(sum(val == 1 for val in merge_tool_data))
+        failure.append((val in [6, 124] for val in merge_tool_data))
 
     fig, ax = plt.subplots()
 
-    ax.bar(tools, incorrect, label="Incorrect", color="#1F77B4")
-    ax.bar(tools, unhandled, bottom=incorrect, label="Unhandled", color="#FF7F0E")
+    ax.bar(MERGE_TOOLS, incorrect, label="Incorrect", color="#1F77B4")
+    ax.bar(MERGE_TOOLS, unhandled, bottom=incorrect, label="Unhandled", color="#FF7F0E")
     ax.bar(
-        tools,
+        MERGE_TOOLS,
         correct,
         label="Correct",
-        bottom=[incorrect[i] + unhandled[i] for i in range(len(tools))],
+        bottom=[incorrect[i] + unhandled[i] for i in range(len(MERGE_TOOLS))],
         color="#2CA02C",
     )
 
@@ -80,21 +65,29 @@ if __name__ == "__main__":
             \multicolumn{{2}}{{|c|}}{{Unhandled Merges}} &
             \multicolumn{{2}}{{|c}}{{Incorrect Merges}}\\\\
             \hline
-            & \# & \% & \# & \% & \# & \%\\\\ 
-            Git Merge & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-            Spork & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-            IntelliMerge & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-        \end{{tabular}}"""
+            & \# & \% & \# & \% & \# & \%\\\\ \n"""
 
     total = len(data)
     args = []
-    for i in range(len(tools)):
-        args.append(correct[i])
-        args.append(100 * correct[i] / total if total != 0 else 0)
-        args.append(unhandled[i])
-        args.append(100 * unhandled[i] / total if total != 0 else 0)
-        args.append(incorrect[i])
-        args.append(100 * incorrect[i] / total if total != 0 else 0)
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+        args.append(correct[merge_tool_idx])
+        args.append(100 * correct[merge_tool_idx] / total if total != 0 else 0)
+        args.append(unhandled[merge_tool_idx])
+        args.append(100 * unhandled[merge_tool_idx] / total if total != 0 else 0)
+        args.append(incorrect[merge_tool_idx])
+        args.append(100 * incorrect[merge_tool_idx] / total if total != 0 else 0)
+        template += (
+            merge_tool.capitalize()
+            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\\n"
+        )
+    template += """\end{{tabular}}"""
+
+    table = template.format(*args)
+
+    with open(output_path + "/table1.txt", "w") as file:
+        file.write(table)
+
+    # Printed Table
 
     my_table = PrettyTable()
     my_table.field_names = [
@@ -103,26 +96,19 @@ if __name__ == "__main__":
         "Unhandled Merges",
         "Incorrect Merges",
     ]
-    my_table.add_row(
-        ["Git Merge", gitmergecorrect, gitmergeincorrect, gitmergeunhandled]
-    )
-    my_table.add_row(["Spork", sporkcorrect, sporkincorrect, sporkunhandled])
-    my_table.add_row(
-        [
-            "IntelliMerge",
-            intellimergecorrect,
-            intellimergeincorrect,
-            intellimergeunhandled,
-        ]
-    )
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+        my_table.add_row(
+            [
+                merge_tool,
+                correct[merge_tool_idx],
+                incorrect[merge_tool_idx],
+                unhandled[merge_tool_idx],
+            ]
+        )
+
     print(my_table)
     if total == 0:
         sys.exit(0)
-
-    table = template.format(*args)
-
-    with open(output_path + "/table1.txt", "w") as file:
-        file.write(table)
 
     # table 2 (by merge source)
     template2 = """\\begin{{tabular}}{{c|c c c c|c c c c|c c c c}}
@@ -138,46 +124,45 @@ if __name__ == "__main__":
             \multicolumn{{2}}{{|c}}{{Main Branch}} & 
             \multicolumn{{2}}{{c|}}{{Feature Branch}} &
             \hline
-            & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\\\ 
-            Git Merge & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-            Spork & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-            IntelliMerge & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\
-        \end{{tabular}}"""
+            & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\\\ \n"""
 
-    main = data[(data["branch_name"] == "main") | (data["branch_name"] == "master")]
-    feature = data[(data["branch_name"] != "main") & (data["branch_name"] != "master")]
-
-    gitmergem = main["gitmerge"]
-    sporkm = main["spork"]
-    intellimergem = main["intellimerge"]
-    gitmergef = feature["gitmerge"]
-    sporkf = feature["spork"]
-    intellimergef = feature["intellimerge"]
-    m = [gitmergem, sporkm, intellimergem]
-    f = [gitmergef, sporkf, intellimergef]
+    main = data[data["branch_name"].isin(main_branch_names)]
+    feature = data[~data["branch_name"].isin(main_branch_names)]
 
     args = []
-    for i in range(len(tools)):
-        correct = sum(val == 2 for val in m[i])
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+        mergem = main[merge_tool]
+        mergef = feature[merge_tool]
+
+        correct = sum(val == 2 for val in mergem)
         args.append(correct)
         args.append(100 * correct / len(main) if len(main) != 0 else 0)
-        correct = sum(val == 2 for val in f[i])
+        correct = sum(val == 2 for val in mergef)
         args.append(correct)
         args.append(100 * correct / len(feature) if len(feature) > 0 else -1)
 
-        unhandled = sum(val == 1 for val in m[i])
+        unhandled = sum(val == 1 for val in mergem)
         args.append(unhandled)
         args.append(100 * unhandled / len(main) if len(main) != 0 else 0)
-        unhandled = sum(val == 1 for val in f[i])
+        unhandled = sum(val == 1 for val in mergef)
         args.append(unhandled)
         args.append(100 * unhandled / len(feature) if len(feature) > 0 else -1)
 
-        incorrect = sum(val in [3, 5, 126] for val in m[i])
+        incorrect = sum(val in [3, 5, 126] for val in mergem)
         args.append(incorrect)
         args.append(100 * incorrect / len(main) if len(main) != 0 else 0)
-        incorrect = sum(val in [3, 5, 126] for val in f[i])
+        incorrect = sum(val in [3, 5, 126] for val in mergef)
         args.append(incorrect)
         args.append(100 * incorrect / len(feature) if len(feature) > 0 else -1)
+
+        template2 += (
+            "            "
+            + merge_tool.capitalize()
+            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & \
+                {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\ \n"
+        )
+
+    template2 += """\end{{tabular}}"""
 
     table2 = template2.format(*args)
 
