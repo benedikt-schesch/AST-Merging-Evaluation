@@ -26,7 +26,6 @@ if __name__ == "__main__":
         data[merge_tool] = data[merge_tool].astype(int)
         data = data[data[merge_tool] > 0]
 
-
     # figure 1 (stacked area)
     incorrect = []
     correct = []
@@ -75,7 +74,10 @@ if __name__ == "__main__":
         args.append(100 * unhandled[merge_tool_idx] / total if total != 0 else 0)
         args.append(incorrect[merge_tool_idx])
         args.append(100 * incorrect[merge_tool_idx] / total if total != 0 else 0)
-        template += merge_tool.capitalize()+" & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\\n"
+        template += (
+            merge_tool.capitalize()
+            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\\n"
+        )
     template += """\end{{tabular}}"""
 
     table = template.format(*args)
@@ -83,7 +85,6 @@ if __name__ == "__main__":
     with open(output_path + "/table1.txt", "w") as file:
         file.write(table)
 
-    
     # Printed Table
 
     my_table = PrettyTable()
@@ -95,7 +96,12 @@ if __name__ == "__main__":
     ]
     for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
         my_table.add_row(
-            [merge_tool, correct[merge_tool_idx], incorrect[merge_tool_idx], unhandled[merge_tool_idx]]
+            [
+                merge_tool,
+                correct[merge_tool_idx],
+                incorrect[merge_tool_idx],
+                unhandled[merge_tool_idx],
+            ]
         )
 
     print(my_table)
@@ -117,7 +123,7 @@ if __name__ == "__main__":
             \multicolumn{{2}}{{c|}}{{Feature Branch}} &
             \hline
             & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\\\ \n"""
-    
+
     main = data[data["branch_name"].isin(main_branch_names)]
     feature = data[~data["branch_name"].isin(main_branch_names)]
 
@@ -147,8 +153,12 @@ if __name__ == "__main__":
         args.append(incorrect)
         args.append(100 * incorrect / len(feature) if len(feature) > 0 else -1)
 
-        template2 += merge_tool.capitalize()+" & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\ \n"
-    
+        template2 += (
+            merge_tool.capitalize()
+            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & \
+                {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\ \n"
+        )
+
     template2 += """\end{{tabular}}"""
 
     table2 = template2.format(*args)
