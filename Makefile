@@ -40,6 +40,8 @@ small-test:
 
 small-test-diff:
 	cat small/local_repos.csv
+	cat small/merges/Algorithms.csv
+	cat small/merges/ez-vcard.csv
 	cat small/merges_valid/Algorithms.csv
 	cat small/merges_valid/ez-vcard.csv
 	cat small/result.csv
