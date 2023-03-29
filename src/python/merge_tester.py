@@ -43,7 +43,7 @@ MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 def test_merge(
     merging_method, repo_name, left, right, base
-):  # pylint: disable=too-many-locals
+):  # pylint: disable=too-many-locals, disable=too-many-statements
     """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
@@ -87,7 +87,7 @@ def test_merge(
                 timeout=TIMEOUT_MERGE,
             )
             merge = p.returncode
-            print(repo_name+" "+merging_method+" merge with return code:",merge)
+            print(repo_name + " " + merging_method + " merge with return code:", merge)
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
@@ -108,7 +108,10 @@ def test_merge(
                 merge, explanation = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
-                print(repo_name+" "+merging_method+" testing with return code:",merge)
+                print(
+                    repo_name + " " + merging_method + " testing with return code:",
+                    merge,
+                )
                 merge += 2
         except Exception as e:
             merge = 5
