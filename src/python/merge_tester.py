@@ -43,7 +43,7 @@ MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 def test_merge(
     merging_method, repo_name, left, right, base
-):  # pylint: disable=too-many-locals
+):  # pylint: disable=too-many-locals, disable=too-many-statements
     """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
@@ -68,6 +68,7 @@ def test_merge(
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
+        repo.submodule_update()
         repo.git.checkout(left, force=True)
         repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "1", force=True)
         repo.git.checkout(right, force=True)
@@ -105,6 +106,10 @@ def test_merge(
             if merge == 0:
                 merge, explanation = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
+                )
+                print(
+                    repo_name + " " + merging_method + " testing with return code:",
+                    merge,
                 )
                 merge += 2
         except Exception as e:
@@ -287,4 +292,5 @@ if __name__ == "__main__":
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)
     print("merge_tester: Finished Building Output")
+    print("merge_tester: Number of analyzed merges ", len(output))
     print("merge_tester: Done")

@@ -30,7 +30,7 @@ echo "*.java merge=spork" >> "$clone_dir/.gitattributes"
 
 # perform merge
 cd "$clone_dir"
-git checkout "$branch1"
+git checkout "$branch1" --force
 git merge --no-edit "$branch2"
 
 # report conflicts

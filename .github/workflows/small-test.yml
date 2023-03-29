@@ -8,6 +8,7 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v3
+    - uses: fregante/setup-git-user@v2
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
@@ -32,8 +33,12 @@ jobs:
       run: make clean-cache
     - name: Cleaning Stored Hashes
       run: make clean-stored-hashes
+    - name: Build Java programs
+      run: ./gradlew build
     - name: Run small test
       run: |
+        git config --global user.email "example@example.com"
+        git config --global user.name "Example Example"
         make small-test
       env:
-          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
