@@ -80,7 +80,9 @@ def pass_test(repo_name, commit):
         # Merges that are newer than that date should be ignored for reproducibility
         if result == 0 and repo.commit().committed_date > 1677003361:
             result = 3
-            explanation = "committed_date is too new: " + str(repo.commit().committed_date)
+            explanation = "committed_date is too new: " + str(
+                repo.commit().committed_date
+            )
 
         if result == 0:
             try:
