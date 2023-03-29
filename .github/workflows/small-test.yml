@@ -35,7 +35,9 @@ jobs:
     - name: Build Java programs
       run: ./gradlew build
     - name: Run small test
-      run: |
+      - run: git config --global user.email "example@example.com"
+      - run: git config --global user.name "Example Example"
+      - run: |
         make small-test
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
