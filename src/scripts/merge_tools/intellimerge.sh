@@ -28,7 +28,7 @@ java -jar $INTELLIMERGE -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
 cd "$clone_dir"
-git checkout "$branch1"
+git checkout "$branch1" --force
 # collect initial counts of strings that are conflict markers, but appear in the clone.
 m1a=$(grep -ro "^<<<<<<<$" . | wc -l)
 m2a=$(grep -ro "^=======$" . | wc -l)

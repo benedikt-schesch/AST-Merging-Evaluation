@@ -82,12 +82,11 @@ def test_merge(
                     UNIQUE_COMMIT_NAME + "1",
                     UNIQUE_COMMIT_NAME + "2",
                 ],
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 timeout=TIMEOUT_MERGE,
             )
             merge = p.returncode
-            print(repo_name + " " + merging_method + " merge with return code:", merge)
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
