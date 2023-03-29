@@ -1,0 +1,176 @@
+plugins {
+  id 'java'
+  id 'application'
+
+  // To create a fat jar build/libs/...-all.jar, run: ./gradlew shadowJar
+  id 'com.github.johnrengelman.shadow' version '8.1.0'
+
+  // Code formatting; defines targets "spotlessApply" and "spotlessCheck"
+  // Version 6.14 and later requires JDK 11 or higher; the plugin crashes under JDK 8.
+  id 'com.diffplug.spotless' version '6.13.0'
+
+  // Error Prone linter
+  id('net.ltgt.errorprone') version '3.0.1'
+
+  // Checker Framework pluggable type-checking
+  // TODO: when updating to 0.6.26, remove "skipCheckerFramework = true" below
+  id 'org.checkerframework' version '0.6.25'
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    // for org.jenkins-ci artifacts
+    url 'https://repo.jenkins-ci.org/releases/'
+  }
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+  // https://mvnrepository.com/artifact/com.opencsv/opencsv
+  implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
+
+  // https://mvnrepository.com/artifact/org.pacesys.openstack4j.connectors/openstack4j-okhttp
+  implementation group: 'org.pacesys.openstack4j.connectors', name: 'openstack4j-okhttp', version: '3.2.0'
+
+  // https://mvnrepository.com/artifact/org.kohsuke/github-api
+  implementation group: 'org.kohsuke', name: 'github-api', version: '1.314'
+  // These are required by github-api
+  compileOnly 'com.google.code.findbugs:annotations:3.0.0'
+  compileOnly 'com.google.code.findbugs:jsr305:3.0.0'
+  compileOnly group: 'com.infradna.tool', name: 'bridge-method-injector', version: '1.24'
+  compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
+
+  // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+  // JGit 6.0 and later requires Java 11 to run, so use the 5.x version.
+  // implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.5.0.202303070854-r'
+  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
+}
+
+application {
+  mainClass = 'astmergeevaluation.FindMergeCommits'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+spotless {
+  format 'misc', {
+    // define the files to apply `misc` to
+    target '*.md', '.gitignore'
+
+    // define the steps to apply to those files
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+  }
+  java {
+    targetExclude('**/WeakIdentityHashMap.java')
+    googleJavaFormat()
+    formatAnnotations()
+  }
+  groovyGradle {
+    target '**/*.gradle'
+    greclipse()  // which formatter Spotless should use to format .gradle files.
+    indentWithSpaces(2)
+    trimTrailingWhitespace()
+    // endWithNewline() // Don't want to end empty files with a newline
+  }
+}
+
+/// Error Prone linter
+
+dependencies {
+  errorprone('com.google.errorprone:error_prone_core:2.18.0')
+}
+tasks.withType(JavaCompile).configureEach {
+  // "-processing" avoids javac warning "No processor claimed any of these annotations".
+  options.compilerArgs << '-Xlint:all,-processing' << '-Werror'
+  options.errorprone {
+    enabled = JavaVersion.current() != JavaVersion.VERSION_1_8
+    // disable('ReferenceEquality') // Use Interning Checker instead.
+  }
+}
+
+/// Checker Framework pluggable type-checking
+
+apply plugin: 'org.checkerframework'
+
+// TEMPORARY, until upgrading to Checker Framework plugin 0.6.26.
+checkerFramework {
+  skipCheckerFramework = true
+}
+
+checkerFramework {
+  checkers = [
+    // No need to run CalledMethodsChecker, because ResourceLeakChecker does so.
+    // 'org.checkerframework.checker.calledmethods.CalledMethodsChecker',
+    'org.checkerframework.checker.formatter.FormatterChecker',
+    'org.checkerframework.checker.index.IndexChecker',
+    'org.checkerframework.checker.interning.InterningChecker',
+    'org.checkerframework.checker.lock.LockChecker',
+    'org.checkerframework.checker.nullness.NullnessChecker',
+    'org.checkerframework.checker.regex.RegexChecker',
+    'org.checkerframework.checker.resourceleak.ResourceLeakChecker',
+    'org.checkerframework.checker.signature.SignatureChecker',
+    'org.checkerframework.checker.signedness.SignednessChecker',
+    'org.checkerframework.common.initializedfields.InitializedFieldsChecker',
+  ]
+  extraJavacArgs = [
+    '-Werror',
+    '-AcheckPurityAnnotations',
+    '-ArequirePrefixInWarningSuppressions',
+    '-AwarnUnneededSuppressions',
+  ]
+}
+
+// To use a locally-built Checker Framework, run gradle with "-PcfLocal".
+if (project.hasProperty('cfLocal')) {
+  def cfHome = String.valueOf(System.getenv('CHECKERFRAMEWORK'))
+  dependencies {
+    compileOnly files(cfHome + '/checker/dist/checker-qual.jar')
+    testCompileOnly files(cfHome + '/checker/dist/checker-qual.jar')
+    checkerFramework files(cfHome + '/checker/dist/checker.jar')
+  }
+}
+
+/// Javadoc
+
+// Turn Javadoc warnings into errors.
+javadoc {
+  options.addStringOption('Xwerror', '-Xdoclint:all')
+  options.addStringOption('private', '-quiet')
+  if (JavaVersion.current().compareTo(org.gradle.api.JavaVersion.VERSION_1_9) >= 0) {
+    options.addStringOption('source', '8')
+  }
+  doLast {
+    ant.replaceregexp(match:"@import url\\('resources/fonts/dejavu.css'\\);\\s*", replace:'',
+    flags:'g', byline:true) {
+      fileset(dir: destinationDir)
+    }
+  }
+}
+check.dependsOn javadoc
+
+configurations {
+  requireJavadoc
+}
+dependencies {
+  requireJavadoc 'org.plumelib:require-javadoc:1.0.6'
+}
+task requireJavadoc(type: JavaExec) {
+  description = 'Ensures that Javadoc documentation exists.'
+  mainClass = 'org.plumelib.javadoc.RequireJavadoc'
+  classpath = configurations.requireJavadoc
+  args 'src/main/java'
+}
+check.dependsOn requireJavadoc
+
+
+/// Emacs support
+
+/* Make Emacs TAGS table */
+task tags(type: Exec) {
+  description 'Run etags to create an Emacs TAGS table'
+  commandLine 'bash', '-c', "find src/ -name '*.java' | sort | xargs etags"
+}

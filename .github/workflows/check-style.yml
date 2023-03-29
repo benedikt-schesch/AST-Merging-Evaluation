@@ -20,3 +20,5 @@ jobs:
       run: sudo apt install shellcheck
     - name: Run shell style check
       run: make shell-script-style
+    - name: Ensure Java code is documented
+      run: ./gradlew requireJavadoc

@@ -21,7 +21,7 @@ wd=$(pwd)
 
 # perform merge
 cd "$clone_dir"
-git checkout "$branch1"
+git checkout "$branch1" --force
 git merge --no-edit "$branch2"
 
 # report conflicts
