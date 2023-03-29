@@ -37,6 +37,8 @@ jobs:
       run: ./gradlew build
     - name: Run small test
       run: |
+        git config --global user.email "example@example.com"
+        git config --global user.name "Example Example"
         make small-test
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
