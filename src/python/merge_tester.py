@@ -82,8 +82,8 @@ def test_merge(
                     UNIQUE_COMMIT_NAME + "1",
                     UNIQUE_COMMIT_NAME + "2",
                 ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.DEVNULL,
                 timeout=TIMEOUT_MERGE,
             )
             merge = p.returncode
