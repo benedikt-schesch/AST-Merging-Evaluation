@@ -87,6 +87,7 @@ def test_merge(
                 timeout=TIMEOUT_MERGE,
             )
             merge = p.returncode
+            print(repo_name+" "+merging_method+" merge with return code:",merge)
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
@@ -107,6 +108,7 @@ def test_merge(
                 merge, explanation = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
+                print(repo_name+" "+merging_method+" testing with return code:",merge)
                 merge += 2
         except Exception as e:
             merge = 5
