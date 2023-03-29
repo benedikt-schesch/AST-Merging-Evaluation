@@ -80,7 +80,7 @@ def pass_test(repo_name, commit):
         # Merges that are newer than that date should be ignored for reproducibility
         if result == 0 and repo.commit().committed_date > 1677003361:
             result = 3
-            explanation = "committed_date is too new: " + repo.commit().committed_date
+            explanation = "committed_date is too new: " + str(repo.commit().committed_date)
 
         if result == 0:
             try:
@@ -206,7 +206,8 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+    cpu_count = os.cpu_count() or 1
+    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
         r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
