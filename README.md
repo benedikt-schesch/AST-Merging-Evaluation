@@ -140,10 +140,10 @@ To run style checking run `make style`.
       * get_repos.py -> Downloads the repos list.
 
    * scripts/ -> contains the following scripts:
-      * tester.sh -> Runs a repo's programmer provided tests.
+      * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
       * find_merge_commits.sh -> Finds all the merges in a project.
-      
+
       * merge_tools/ -> contains the following scripts:
          * gitmerge.sh -> Executes git merge on a specific merge.
          * intellimerge.sh -> Executes intellimerge on a specific merge.

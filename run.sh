@@ -13,7 +13,7 @@
 set -e
 set -o nounset
 
-REPOS_PATH="$1"
+REPOS_CSV="$1"
 OUT_DIR="$2"
 N_MERGES=$3
 machine_id="${4:-0}"
@@ -30,23 +30,23 @@ echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 
-length=${#REPOS_PATH}
-REPOS_PATH_WITH_HASHES="${REPOS_PATH::length-4}_with_hashes.csv"
+length=${#REPOS_CSV}
+REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
 
 mkdir -p "$OUT_DIR"
 
 python3 src/python/get_repos.py
 
-python3 src/python/store_main_hashes.py --repos_path "$REPOS_PATH" --output_path "$REPOS_PATH_WITH_HASHES"
+python3 src/python/store_main_hashes.py --repos_csv "$REPOS_CSV" --output_path "$REPOS_CSV_WITH_HASHES"
 
-python3 src/python/split_repos.py --repos_path "$REPOS_PATH_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
+python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/validate_repos.py --repos_path "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
+python3 src/python/validate_repos.py --repos_csv "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
 
-./src/scripts/find_merge_commits.sh "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
+java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
 
-python3 src/python/parent_merges_test.py --repos_path "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES"
+python3 src/python/parent_merges_test.py --repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES"
 
-python3 src/python/merge_tester.py --repos_path "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv"
+python3 src/python/merge_tester.py --repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv"
 
-python3 src/python/latex_output.py --result_path "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"
+python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"

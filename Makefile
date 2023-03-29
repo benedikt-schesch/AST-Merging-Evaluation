@@ -39,9 +39,15 @@ small-test:
 	${MAKE} small-test-diff
 
 small-test-diff:
+	cat small/local_repos.csv
+	cat small/merges/Algorithms.csv
+	cat small/merges/ez-vcard.csv
+	cat small/merges_valid/Algorithms.csv
+	cat small/merges_valid/ez-vcard.csv
+	cat small/result.csv
 	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x plots -x result.csv
-	rm -f test/small/goal-files/result-without-times.txt small/result-without-times.txt
+	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf
+	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt

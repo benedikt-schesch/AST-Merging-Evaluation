@@ -2,8 +2,8 @@
 """Download repo list."""
 
 # usage: python3 get_repos.py
-# This script downloads the reaper dataset and only keeps repos with
-# at least 10 GitHub stars and a unit_test score of at least 0.25
+# This script downloads the reaper dataset and outputs, to file data/repos.csv, the Java repos with
+# strictly more than 10 GitHub stars and a unit_test score of at least 0.25
 
 import gzip
 import urllib.request
