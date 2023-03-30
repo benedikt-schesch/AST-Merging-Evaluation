@@ -284,8 +284,8 @@ if __name__ == "__main__":
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
-                merges.loc[merge_idx, merge_tool] = results[merge_tool_idx]
-                merges.loc[merge_idx, merge_tool + " runtime"] = results[
+                merges.at[merge_idx, merge_tool] = results[merge_tool_idx]
+                merges.at[merge_idx, merge_tool + " runtime"] = results[
                     len(MERGE_TOOLS) + merge_tool_idx
                 ]
         output.append(merges)
