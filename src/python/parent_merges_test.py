@@ -24,7 +24,7 @@ import traceback
 from validate_repos import repo_test, clone_repo
 from tqdm import tqdm
 import pandas as pd
-import git
+import git.repo
 
 CACHE = "cache/commit_test_result/"
 WORKDIR = ".workdir/"
@@ -61,7 +61,7 @@ def pass_test(repo_name, commit):
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
         shutil.copytree(repo_dir, repo_dir_copy)
-        repo = git.Repo(repo_dir_copy)
+        repo = git.repo.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.submodule_update()
 
@@ -80,7 +80,9 @@ def pass_test(repo_name, commit):
         # Merges that are newer than that date should be ignored for reproducibility
         if result == 0 and repo.commit().committed_date > 1677003361:
             result = 3
-            explanation = "committed_date is too new: " + repo.commit().committed_date
+            explanation = "committed_date is too new: " + str(
+                repo.commit().committed_date
+            )
 
         if result == 0:
             try:
@@ -206,7 +208,8 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+    cpu_count = os.cpu_count() or 1
+    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
         r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
@@ -246,11 +249,11 @@ if __name__ == "__main__":
                         0,
                     )
                 )
-                merges.loc[merge_idx, "merge test"] = test_merge
+                merges.at[merge_idx, "merge test"] = test_merge
                 if test_left == 0 and test_right == 0:
-                    merges.loc[merge_idx, "parent test"] = 0
+                    merges.at[merge_idx, "parent test"] = 0
                     counter += 1
-                    result.append(merges.loc[merge_idx])
+                    result.append(merges.loc[merge_idx])  # type: ignore
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)

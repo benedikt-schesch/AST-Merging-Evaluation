@@ -23,7 +23,7 @@ from pathlib import Path
 from validate_repos import repo_test
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
-import git
+import git.repo
 
 
 SCRATCH_DIR = "scratch/"
@@ -56,25 +56,24 @@ def test_merge(
         float: Runtime to execute the merge.
     """
     # Variable `merge` is returned by this routine.
-
+    repo_dir = "repos/" + repo_name
+    process = multiprocessing.current_process()
+    pid = str(process.pid)
+    repo_dir_copy = WORKDIR + pid + "/repo"
     try:
-        repo_dir = "repos/" + repo_name
-        process = multiprocessing.current_process()
-        pid = str(process.pid)
-        repo_dir_copy = WORKDIR + pid + "/repo"
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
-        repo = git.Repo(repo_dir_copy + "/" + merging_method)
+        repo = git.repo.Repo(repo_dir_copy + "/" + merging_method)
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(left, force=True)
         repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "1", force=True)
         repo.git.checkout(right, force=True)
         repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "2", force=True)
+        start = time.time()
         try:
-            start = time.time()
             p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
@@ -89,7 +88,7 @@ def test_merge(
             merge = p.returncode
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
-            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
             runtime = time.time() - start
             merge = 124  # Timeout
         except Exception as e:
@@ -188,7 +187,7 @@ def test_merges(args):
 
     if os.path.isfile(cache_file):
         result = pd.read_csv(cache_file, index_col=0)
-        return result.iloc[0, :].values.flatten().tolist()
+        return result.iloc[0, :].values
 
     out = pd.DataFrame([[-2, -2, -2, -2, -2, -2]])
     out.to_csv(cache_file)
@@ -205,7 +204,7 @@ def test_merges(args):
     out = pd.DataFrame([merge_results + merge_runtimes])
     out.to_csv(cache_file)
 
-    return out.iloc[0, :].values.flatten().tolist()
+    return out.iloc[0, :].values
 
 
 if __name__ == "__main__":
@@ -249,7 +248,8 @@ if __name__ == "__main__":
 
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+    cpu_count = os.cpu_count() or 1
+    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
         r = list(
             tqdm(
                 pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1
@@ -284,8 +284,8 @@ if __name__ == "__main__":
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
-                merges.loc[merge_idx, merge_tool] = results[merge_tool_idx]
-                merges.loc[merge_idx, merge_tool + " runtime"] = results[
+                merges.at[merge_idx, merge_tool] = results[merge_tool_idx]
+                merges.at[merge_idx, merge_tool + " runtime"] = results[
                     len(MERGE_TOOLS) + merge_tool_idx
                 ]
         output.append(merges)

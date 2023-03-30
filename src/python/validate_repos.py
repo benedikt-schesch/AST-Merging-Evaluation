@@ -18,7 +18,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 import pandas as pd
-import git
+import git.repo
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
@@ -34,12 +34,12 @@ def clone_repo(repo_name):
     """
     repo_dir = "repos/" + repo_name
     if os.path.isdir(repo_dir):
-        repo = git.Repo(repo_dir)
+        repo = git.repo.Repo(repo_dir)
     else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         git_url = "https://:@github.com/" + repo_name + ".git"
-        repo = git.Repo.clone_from(git_url, repo_dir)
+        repo = git.repo.Repo.clone_from(git_url, repo_dir)
     try:
         repo.remote().fetch()
         repo.submodule_update()
@@ -59,6 +59,7 @@ def repo_test(repo_dir_copy, timeout):
     Returns:
         int: The test value.
     """
+    explanation = ""
     for i in range(3):
         command = [
             "src/scripts/run_repo_tests.sh",
@@ -124,7 +125,7 @@ def head_passes_tests(arg):
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
-        repo = git.Repo(repo_dir_copy)
+        repo = git.repo.Repo(repo_dir_copy)
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
@@ -156,7 +157,8 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_csv)
 
     print("validate_repos: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+    cpu_count = os.cpu_count() or 1
+    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
         r = list(
             tqdm(
                 pool.imap(head_passes_tests, df.iterrows()),
