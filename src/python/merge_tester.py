@@ -187,7 +187,7 @@ def test_merges(args):
 
     if os.path.isfile(cache_file):
         result = pd.read_csv(cache_file, index_col=0)
-        return result.iloc[0, :].values.flatten().tolist()
+        return result.iloc[0, :].values
 
     out = pd.DataFrame([[-2, -2, -2, -2, -2, -2]])
     out.to_csv(cache_file)
@@ -204,7 +204,7 @@ def test_merges(args):
     out = pd.DataFrame([merge_results + merge_runtimes])
     out.to_csv(cache_file)
 
-    return out.iloc[0, :].values.flatten().tolist()
+    return out.iloc[0, :].values
 
 
 if __name__ == "__main__":
