@@ -59,6 +59,7 @@ def repo_test(repo_dir_copy, timeout):
     Returns:
         int: The test value.
     """
+    explanation = ""
     for i in range(3):
         command = [
             "src/scripts/run_repo_tests.sh",
