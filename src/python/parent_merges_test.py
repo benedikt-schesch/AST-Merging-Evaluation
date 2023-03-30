@@ -253,7 +253,7 @@ if __name__ == "__main__":
                 if test_left == 0 and test_right == 0:
                     merges.at[merge_idx, "parent test"] = 0
                     counter += 1
-                    result.append(merges.loc[merge_idx]) # type: ignore
+                    result.append(merges.loc[merge_idx])  # type: ignore
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
