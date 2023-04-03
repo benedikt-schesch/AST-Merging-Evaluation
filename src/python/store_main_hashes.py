@@ -59,7 +59,8 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_csv)
 
     print("validate_repos: Started Testing")
-    with multiprocessing.Pool(processes=int(os.cpu_count() * 0.75)) as pool:
+    cpu_count = os.cpu_count() or 1
+    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
         result = list(
             tqdm(
                 pool.imap(get_latest_hash, df.iterrows()),

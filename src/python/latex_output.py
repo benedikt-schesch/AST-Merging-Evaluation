@@ -61,11 +61,11 @@ if __name__ == "__main__":
     # table 1 (overall results)
     template = """\\begin{{tabular}}{{c|c c|c c|c c}}
             Tool & 
-            \multicolumn{{2}}{{|c|}}{{Correct Merges}} & 
-            \multicolumn{{2}}{{|c|}}{{Unhandled Merges}} &
-            \multicolumn{{2}}{{|c}}{{Incorrect Merges}}\\\\
-            \hline
-            & \# & \% & \# & \% & \# & \%\\\\ \n"""
+            \\multicolumn{{2}}{{|c|}}{{Correct Merges}} & 
+            \\multicolumn{{2}}{{|c|}}{{Unhandled Merges}} &
+            \\multicolumn{{2}}{{|c}}{{Incorrect Merges}}\\\\
+            \\hline
+            & \\# & \\% & \\# & \\% & \\# & \\%\\\\ \n"""
 
     total = len(data)
     args = []
@@ -78,9 +78,9 @@ if __name__ == "__main__":
         args.append(100 * incorrect[merge_tool_idx] / total if total != 0 else 0)
         template += (
             merge_tool.capitalize()
-            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\\n"
+            + " & {} & {:.2f}\\% & {} & {:.2f}\\% & {} & {:.2f}\\%\\\\\n"
         )
-    template += """\end{{tabular}}"""
+    template += """\\end{{tabular}}"""
 
     table = template.format(*args)
 
@@ -113,18 +113,18 @@ if __name__ == "__main__":
     # table 2 (by merge source)
     template2 = """\\begin{{tabular}}{{c|c c c c|c c c c|c c c c}}
             Tool & 
-            \multicolumn{{4}}{{|c|}}{{Correct Merges}} & 
-            \multicolumn{{4}}{{|c|}}{{Unhandled Merges}} &
-            \multicolumn{{4}}{{|c|}}{{Incorrect Merges}}\\\\
+            \\multicolumn{{4}}{{|c|}}{{Correct Merges}} & 
+            \\multicolumn{{4}}{{|c|}}{{Unhandled Merges}} &
+            \\multicolumn{{4}}{{|c|}}{{Incorrect Merges}}\\\\
             &
-            \multicolumn{{2}}{{|c}}{{Main Branch}} & 
-            \multicolumn{{2}}{{c|}}{{Feature Branch}} &
-            \multicolumn{{2}}{{|c}}{{Main Branch}} & 
-            \multicolumn{{2}}{{c|}}{{Feature Branch}} &
-            \multicolumn{{2}}{{|c}}{{Main Branch}} & 
-            \multicolumn{{2}}{{c|}}{{Feature Branch}} &
-            \hline
-            & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\\\ \n"""
+            \\multicolumn{{2}}{{|c}}{{Main Branch}} & 
+            \\multicolumn{{2}}{{c|}}{{Feature Branch}} &
+            \\multicolumn{{2}}{{|c}}{{Main Branch}} & 
+            \\multicolumn{{2}}{{c|}}{{Feature Branch}} &
+            \\multicolumn{{2}}{{|c}}{{Main Branch}} & 
+            \\multicolumn{{2}}{{c|}}{{Feature Branch}} &
+            \\hline
+            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\%\\\\ \n"""
 
     main = data[data["branch_name"].isin(main_branch_names)]
     feature = data[~data["branch_name"].isin(main_branch_names)]
@@ -158,11 +158,11 @@ if __name__ == "__main__":
         template2 += (
             "            "
             + merge_tool.capitalize()
-            + " & {} & {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\% & {} & \
-                {:.2f}\% & {} & {:.2f}\% & {} & {:.2f}\%\\\\ \n"
+            + " & {} & {:.2f}\\% & {} & {:.2f}\\% & {} & {:.2f}\\% & {} & \
+                {:.2f}\\% & {} & {:.2f}\\% & {} & {:.2f}\\%\\\\ \n"
         )
 
-    template2 += """\end{{tabular}}"""
+    template2 += """\\end{{tabular}}"""
 
     table2 = template2.format(*args)
 
