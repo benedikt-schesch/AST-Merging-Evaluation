@@ -1,6 +1,0 @@
-latex_output.py:
-In the paper, the generated LaTeX table should appear in its own file, to reduce the possibility of cut-and-paste errors.
-In latex_output.py, say where the output should be copied to.
-
-intellimerge.sh:
-Why is it required that all of m1a, m2a, and m3a differ.  Isn't it enough for any one of them to differ?
