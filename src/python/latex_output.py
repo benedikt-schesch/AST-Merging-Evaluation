@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
-"""Output LaTeX tables and plots."""
+"""Output LaTeX tables and plots.
+
+usage: python3 latex_output.py --input_csv <path_to_input>
+                               --output_path <output_path>
+
+This script takes a csv wiht all the results for each merge and merge tool.
+It outputs all three tables in output_path for the latex file. All tables
+should be copied into tables/ of the latex project.
+"""
+
 
 import sys
 import argparse
 from pathlib import Path
 
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
@@ -84,7 +94,7 @@ if __name__ == "__main__":
 
     table = template.format(*args)
 
-    with open(output_path + "/table1.txt", "w") as file:
+    with open(output_path + "/table_summary.txt", "w") as file:
         file.write(table)
 
     # Printed Table
@@ -166,5 +176,31 @@ if __name__ == "__main__":
 
     table2 = template2.format(*args)
 
-    with open(output_path + "/table2.txt", "w") as file:
+    with open(output_path + "/table_feature_main_summary.txt", "w") as file:
         file.write(table2)
+
+    # table 3 (by merge source)
+    res = " & ".join(["{:.1f}" for _ in MERGE_TOOLS])
+    template3 = """\\begin{{tabular}}{{c|c|c|c}}
+        & Git Merge & Spork & IntelliMerge\\\\
+        \\hline \n"""
+    template3 += """\tMean runtime &""" + res + """\\\\ \n"""
+    template3 += """\tMedian runtime &""" + res + """\\\\ \n"""
+    template3 += (
+        """\tMax runtime &"""
+        + res
+        + """\\\\
+        \\end{{tabular}}"""
+    )
+
+    main = data[data["branch_name"].isin(main_branch_names)]
+    feature = data[~data["branch_name"].isin(main_branch_names)]
+
+    args = []
+    for f in [np.mean, np.median, np.max]:
+        for merge_tool in MERGE_TOOLS:
+            args.append(f(data[merge_tool + " runtime"]))
+    table3 = template3.format(*args)
+
+    with open(output_path + "/table_runtime.txt", "w") as file:
+        file.write(table3)
