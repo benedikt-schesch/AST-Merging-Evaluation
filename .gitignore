@@ -67,6 +67,12 @@ var/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Test output
+cache/commit_test_result/
+cache/merge_test_results/
+test/tmp1.txt
+test/tmp2.txt
+
 # Unit test / coverage reports
 .tox/
 .coverage
