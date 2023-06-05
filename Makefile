@@ -21,7 +21,7 @@ check-python-style:
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
 clean:
-	rm -rf small/merges small/valid_repos.csv
+	rm -rf small/
 
 clean-cache:
 	rm -rf cache
