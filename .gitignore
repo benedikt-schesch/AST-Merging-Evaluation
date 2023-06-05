@@ -19,6 +19,7 @@ cf/
 # Test output
 test/tmp1.txt
 test/tmp2.txt
+test/small-goal-files/result-without-times.txt
 
 # Compiled class file
 *.class
