@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.checkerframework.checker.lock.qual.GuardSatisfied;
@@ -129,7 +128,8 @@ public class FindMergeCommits {
     String gitHubUsername;
     String gitHubPersonalAccessToken;
     if (tokenFile.exists()) {
-      try (BufferedReader pwReader = new BufferedReader(new FileReader(tokenFile))) {
+      try (@SuppressWarnings("DefaultCharset")
+          BufferedReader pwReader = new BufferedReader(new FileReader(tokenFile) /*, UTF_8*/)) {
         gitHubUsername = pwReader.readLine();
         gitHubPersonalAccessToken = pwReader.readLine();
       }
@@ -161,8 +161,8 @@ public class FindMergeCommits {
    */
   static List<String> reposFromCsv(String inputFileName) throws IOException, GitAPIException {
     List<String> repos = new ArrayList<>();
-    try (FileReader fr =
-            new FileReader(inputFileName /* for Java 11: , Charset.defaultCharset()*/);
+    try (@SuppressWarnings("DefaultCharset")
+            FileReader fr = new FileReader(inputFileName /*, UTF_8*/);
         CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(fr)) {
       String[] repoColumn;
       while ((repoColumn = csvReader.readNext("repository")) != null) {
@@ -286,7 +286,6 @@ public class FindMergeCommits {
 
     List<Ref> branches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
     branches = withoutDuplicateBranches(branches);
-    StringJoiner sj = new StringJoiner(System.lineSeparator());
 
     for (Ref branch : branches) {
       writeMergeCommitsForBranch(git, repo, branch, writer, written);

@@ -3,19 +3,21 @@
 To delete all cached results:
   make clean-cache
 
-# Requirements:
+## Requirements
 
-## Python
+### Python
 
 To install all the python requirements:
-```
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Spork and Intellimerge
+### Spork and Intellimerge
 
 To download the Intellimerge and Spork jar:
-```
+
+```bash
 wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
 wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
 ```
@@ -23,17 +25,18 @@ wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O ja
 ### Alternative Python installation
 
 If you don't want to mess with your local python installation you can create a python virtual environment to install all dependencies with the following commands:
-```
+
+```bash
 pip3 install virtualenv
 python3 -m venv venv
 source venv/bin/activate
 ```
+
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
+### Ubuntu
 
-## Ubuntu
-
-```
+```bash
 sudo apt-get install -y jq
 type -p curl >/dev/null || sudo apt install curl -y
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -45,106 +48,117 @@ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.s
 sudo apt-get install git-lfs
 ```
 
-## MacOS
+### MacOS
 
-```
+```bash
 brew install jq
 brew install gh
 brew install git-lfs
 ```
 
-# Run the code
+---
 
-## Test the stack
+## Run the code
+
+### Test the stack
+
 To test the stack, execute:
+
+```bash
+make clean
+make clean-cache
+sh run.sh
+make small-test-diff
 ```
-pytest
-```
+
 This will run the entire code on two small repos.
 All the output data can be found in `small/`.
 The final result is found in `small/result.csv`.
 Directory `small/merges_small` contains all the merges.
 Directory `small/merges_small_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
-## Perform full analysis
+### Perform full analysis
 
 To run the stack on all repos:
 
-```
+```bash
 ./run_full.sh
 ```
+
 This will run the entire code on all the repos.
 All the output data can be found in `results/`.
 The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
-## Clean Cache
+### Clean Cache
 
 To clean the cache run `make clean-cache`.
 
-## Style Checking
+### Style Checking
 
 To run style checking run `make style`.
 
-# Directory structure
+---
 
- * run.sh -> This file executes each step of the stack.
+## Directory structure
 
- * run_small.sh -> This file executes the stack on two repositories.
+* run.sh -> This file executes each step of the stack.
 
- * run_full.sh -> This file executes the stack on all the repositories.
+* run_small.sh -> This file executes the stack on two repositories.
 
- * .workdir/ -> This folder is used for the local computations of each process.
+* run_full.sh -> This file executes the stack on all the repositories.
 
- * .cache/ -> This folder is a cache for each computation. contains:
+* .workdir/ -> This folder is used for the local computations of each process.
 
-   * repos_result/ -> Caches the validation of each repository.
+* .cache/ -> This folder is a cache for each computation. contains:
 
-   * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+  * repos_result/ -> Caches the validation of each repository.
 
-   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
+  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
 
- * repos/ -> In this folder each repo is cloned.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
 
- * jars/ -> Location for the Intellimerge and Spork jars.
+* repos/ -> In this folder each repo is cloned.
 
- * scratch/ -> If enabled each merge will be stored in this location.
+* jars/ -> Location for the Intellimerge and Spork jars.
 
- * results/ -> Stores the results for the full analysis.
+* scratch/ -> If enabled each merge will be stored in this location.
 
- * small/ -> Stores the results for the small analysis.
+* results/ -> Stores the results for the full analysis.
 
- * data/ -> contains:
+* small/ -> Stores the results for the small analysis.
 
-    * repos.csv -> List of all repos that fulfill the initial selection criterion.
+* data/ -> contains:
 
-    * repos_small.csv -> List of only 2 repos.
+  * repos.csv -> List of all repos that fulfill the initial selection criterion.
 
- * results/ -> contains:
+  * repos_small.csv -> List of only 2 repos.
 
-    * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
+* results/ -> contains:
 
- * src/ -> contains the following scripts:
+  * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
 
-   * python/ -> contains the following scripts:
+* src/ -> contains the following scripts:
 
-      * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
+  * python/ -> contains the following scripts:
 
-      * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
+    * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-      * latex_output.py -> Output latex code for the resulting plots and table.
+    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
-      * test_parent_commits.py -> Tests if the parents of a commit pass their tests.
+    * latex_output.py -> Output latex code for the resulting plots and table.
 
-      * get_repos.py -> Downloads the repos list.
+    * test_parent_commits.py -> Tests if the parents of a commit pass their tests.
 
-   * scripts/ -> contains the following scripts:
-      * run_repo_tests.sh -> Runs a repo's programmer provided tests.
+    * get_repos.py -> Downloads the repos list.
 
-      * find_merge_commits.sh -> Finds all the merges in a project.
+  * scripts/ -> contains the following scripts:
+    * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
-      * merge_tools/ -> contains the following scripts:
-         * gitmerge.sh -> Executes git merge on a specific merge.
-         * intellimerge.sh -> Executes intellimerge on a specific merge.
-         * spork.sh -> Executes spork on a specific merge.
+    * find_merge_commits.sh -> Finds all the merges in a project.
+
+    * merge_tools/ -> contains the following scripts:
+      * gitmerge.sh -> Executes git merge on a specific merge.
+      * intellimerge.sh -> Executes intellimerge on a specific merge.
+      * spork.sh -> Executes spork on a specific merge.
