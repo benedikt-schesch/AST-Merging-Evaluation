@@ -67,7 +67,7 @@ To test the stack, execute:
 ```bash
 make clean
 make clean-cache
-sh run.sh
+sh run_small.sh
 make small-test-diff
 ```
 
