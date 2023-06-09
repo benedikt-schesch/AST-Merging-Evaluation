@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# usage: ./run.sh <repo_list> <output_folder> <n_merges> <machine_id> <num_machine>
+# usage: ./run.sh <repo_list> <output_folder> <n_merges> [<machine_id> <num_machine>]
 # <repo_list> list of repositories.
+## TODO: list of repositories is what format?  URL?  "owner/reponame"?
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
 # <machine_id> optional argument to specify the id of the current machine.
@@ -23,6 +24,7 @@ JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut
 
 if [ "$JAVA_VER" != "8" ]; then
   echo "Wrong Java version $JAVA_VER. Please use Java 8."
+  ## TODO: Could you document why?  I suspect it's because you determined that most repositories on GitHub work with Java 8 but don't work with later versions of Java.
   exit 1
 fi
 
