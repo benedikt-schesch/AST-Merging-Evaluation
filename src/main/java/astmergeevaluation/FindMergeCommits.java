@@ -145,16 +145,17 @@ public class FindMergeCommits {
         System.err.println("File .github-personal-access-token does not contain two lines.");
         System.exit(2);
       }
+      this.credentialsProvider =
+          new UsernamePasswordCredentialsProvider(gitHubUsername, gitHubPersonalAccessToken);
     } else if (environmentGithubToken != null) {
-      gitHubUsername = "Bearer";
-      gitHubPersonalAccessToken = environmentGithubToken;
+      this.credentialsProvider =
+          new UsernamePasswordCredentialsProvider("Bearer", environmentGithubToken);
     } else {
       System.err.println(
           "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
+      throw new Error("unreachable"); // needed due to javac definite assignment check
     }
-    this.credentialsProvider =
-        new UsernamePasswordCredentialsProvider(gitHubUsername, gitHubPersonalAccessToken);
   }
 
   /**
