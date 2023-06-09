@@ -99,7 +99,7 @@ if __name__ == "__main__":
             merge_tool.capitalize()
             + " & {} & {:.2f}\\% & {} & {:.2f}\\% & {} & {:.2f}\\%\\\\\n"
         )
-    template += """\\end{{tabular}}"""
+    template += """\\end{{tabular}}\n"""
 
     table = template.format(*args)
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 {:.2f}\\% & {} & {:.2f}\\% & {} & {:.2f}\\%\\\\ \n"
         )
 
-    template2 += """\\end{{tabular}}"""
+    template2 += """\\end{{tabular}}\n"""
 
     table2 = template2.format(*args)
 
@@ -203,7 +203,7 @@ if __name__ == "__main__":
         """\tMax runtime &"""
         + res
         + """\\\\
-        \\end{{tabular}}"""
+        \\end{{tabular}}\n"""
     )
 
     main = data[data["branch_name"].isin(main_branch_names)]
