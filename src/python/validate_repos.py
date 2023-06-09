@@ -160,12 +160,14 @@ if __name__ == "__main__":
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
     with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
-        results = [pool.apply_async(head_passes_tests, args=v) for v in df.iterrows()]
+        results = [
+            pool.apply_async(head_passes_tests, args=(v,)) for v in df.iterrows()
+        ]
         for result in results:
             try:
-                return_value = result.get(2*TIMEOUT_TESTING)
+                return_value = result.get(2 * TIMEOUT_TESTING)
             except multiprocessing.TimeoutError:
-                print('Timeout')
+                print("Timeout")
     print("validate_repos: Finished Testing")
 
     print("validate_repos: Building Output")
