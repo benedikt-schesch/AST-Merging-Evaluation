@@ -2,7 +2,7 @@
 
 # usage: ./run.sh <repo_list> <output_folder> <n_merges> [<machine_id> <num_machine>]
 # <repo_list> list of repositories.
-## TODO: list of repositories is what format?  URL?  "owner/reponame"?
+## TODO: list of repositories in what format?  URL?  "owner/reponame"?
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
 # <machine_id> optional argument to specify the id of the current machine.

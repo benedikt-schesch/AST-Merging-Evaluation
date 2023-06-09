@@ -49,7 +49,7 @@ import org.kohsuke.github.GitHubBuilder;
  * <p>The output is a set of {@code .csv} files with columns: repository, branch name, merge commit
  * SHA, parent 1 commit SHA, base commit SHA.
  *
- * <p>Requires (becaule JGit requires authentication for cloning and fetching public repositories):
+ * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
  * <ul>
  *   <li>the existence of a {@code GITHUB_TOKEN} environment variable (GitHub Actions provides
