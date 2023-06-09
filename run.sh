@@ -39,7 +39,7 @@ mkdir -p "$OUT_DIR"
 
 python3 src/python/get_repos.py
 
-python3 src/python/store_main_hashes.py --repos_csv "$REPOS_CSV" --output_path "$REPOS_CSV_WITH_HASHES"
+python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "$REPOS_CSV_WITH_HASHES"
 
 python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
