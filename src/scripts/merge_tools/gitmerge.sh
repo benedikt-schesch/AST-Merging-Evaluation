@@ -17,20 +17,19 @@ fi
 clone_dir=$1
 branch1=$2
 branch2=$3
-wd=$(pwd)
 
 # perform merge
-cd "$clone_dir"
+pushd "$clone_dir"
 git checkout "$branch1" --force
 git merge --no-edit "$branch2"
+retVal=$?
 
 # report conflicts
-retVal=$?
 if [ $retVal -ne 0 ]; then
     echo "Conflict"
     git merge --abort
-    cd "$wd"
-    exit $retVal
 fi
 
-cd "$wd"
+popd
+
+exit $retVal
