@@ -249,7 +249,8 @@ if __name__ == "__main__":
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(
             tqdm(
                 pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1

@@ -209,7 +209,8 @@ if __name__ == "__main__":
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
