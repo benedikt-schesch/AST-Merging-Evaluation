@@ -126,8 +126,8 @@ def valid_merge(args):
         n_sampled other merges have passing parents.
     Args:
         repo_name (str): Name of the repo to test.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
         merge (str): Hash of the merge.
         valid_merge_counter (str): Thread safe counter, counting number of valid merges.
         n_sampled (str): Number of sampled merges.
