@@ -50,7 +50,8 @@ if __name__ == "__main__":
         correct.append(sum(val == 2 for val in merge_tool_data))
         unhandled.append(sum(val == 1 for val in merge_tool_data))
         failure.append((val in [6, 124] for val in merge_tool_data))
-    ## TODO: Either add another variable for "everything else", or assert that the lengths of these variables sum ot the length of merge_tool_data.
+    ## TODO: Either add another variable for "everything else", or assert that the lengths of these
+    ## variables sum ot the length of merge_tool_data.
 
     fig, ax = plt.subplots()
 
@@ -83,7 +84,11 @@ if __name__ == "__main__":
     total = len(data)
     args = []
     for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
-        ## TODO:  I find this code hard to read, and it's probably a bit inefficient.  Why not output each line to the file, line by line (or add it to the `table` variable line by line), rather than building up a huge template and a huge list of arguments, and then applying the format to the template at the begining.  I have the same comment elsewhere is this file.
+        ## TODO:  I find this code hard to read, and it's probably a bit inefficient.  Why not
+        ## output each line to the file, line by line (or add it to the `table` variable line by
+        ## line), rather than building up a huge template and a huge list of arguments, and then
+        ## applying the format to the template at the begining.  I have the same comment elsewhere
+        ## in this file.
         args.append(correct[merge_tool_idx])
         args.append(100 * correct[merge_tool_idx] / total if total != 0 else 0)
         args.append(unhandled[merge_tool_idx])

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Write the hash of the HEAD of the default branch (often "main" or "master") for each repository to its own file.
+"""Write the hash of the HEAD of the default branch for each repository to its own file.
 If the file already exists, do nothing.
 After this is done, the resulting files are used indefinitely, for reproducible results.
+Note: the default branch is often named "main" or "master".
 
 usage: python3 write_head_hashes.py --repos_csv <repos.csv>
                                     --output_path <valid_repos.csv>

@@ -23,6 +23,7 @@ check-python-style:
 clean:
 	rm -rf small/
 
+## TODO: Don't intermix, within a single directory like "cache", both files that are committed to version control and files that are not.
 # This target deletes files that are committed to version control.
 clean-cache:
 	rm -rf cache

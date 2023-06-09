@@ -33,13 +33,13 @@ STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be deleted.
 # Otherwise, it is deleted after its tests are run.
-## TODO: It's a bit inconsistent that the variables are STORE_SCRATCH and DELETE_WORKDIR, which have different boolean senses.
+## TODO: It's a bit inconsistent that the variables are STORE_SCRATCH and DELETE_WORKDIR,
+## which have different boolean senses.
 DELETE_WORKDIR = True
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
-## TODO: Use a more mnemonic value, such as "MERGE_TESTER" or the like (even if you add some random cruft to it too, for uniqueness.
-BRANCH_BASE_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
+BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
@@ -138,9 +138,8 @@ def test_merge(
         )
         print(traceback.format_exc())
     if STORE_SCRATCH:
-        dst_name = (
-            SCRATCH_DIR
-            + '_'.join([repo_name, left, right, base, merging_method])
+        dst_name = SCRATCH_DIR + "_".join(
+            [repo_name, left, right, base, merging_method]
         )
         if os.path.isdir(dst_name):
             shutil.rmtree(dst_name)
@@ -195,7 +194,8 @@ def test_merges(args):
         merge_result, merge_runtime = test_merge(
             merge_tool, repo_name, left, right, base
         )
-        ## TODO: Why not make pairs, or make a heterogeneous list of results and run times?  Either of those would be easier to iterate over, I think.
+        ## TODO: Why not make pairs, or make a heterogeneous list of results and run times?
+        ## Either of those would be easier to iterate over, I think.
         merge_results.append(merge_result)
         merge_runtimes.append(merge_runtime)
 

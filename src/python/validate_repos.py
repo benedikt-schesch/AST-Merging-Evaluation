@@ -128,7 +128,9 @@ def head_passes_tests(arg):
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
-        ## TODO: Why is this necessary?  We don't care about new commits that have been recently added to the repository, because our experiments ignore all commits after a certain date.
+        ## TODO: Why is it necessary to fetch and update?  We don't care about new commits that have
+        ## been recently added to the repository, because our experiments ignore all commits after a
+        ## certain date.
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)

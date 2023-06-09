@@ -119,7 +119,8 @@ def pass_test(repo_name, commit):
         return -1
 
 
-## TODO: the name "valid" is vague and therefore ambiguous.  Use a better name like "parents pass test".
+## TODO: the name "valid" is vague and therefore ambiguous.  Use a better name like "parents pass
+## test".
 def valid_merge(args):
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
