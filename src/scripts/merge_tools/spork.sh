@@ -4,7 +4,7 @@
 # <clone_dir> must contain a clone of a repository.
 # Merges branch2 into branch1, in <clone_dir>.
 # Return code is 0 for merge success, 1 for merge failure.
-# For merge failure, also outputs "Conflict".
+# For merge failure, also outputs "Conflict" and aborts the merge.
 
 set -e
 set -o nounset
@@ -16,6 +16,8 @@ fi
 
 SPORK=./jars/spork.jar
 sporkfullpath=$(realpath $SPORK)
+
+## TODO: If file ${sporkfullpath} does not exist, call the Makefile target that downloads it.
 
 clone_dir=$1
 branch1=$2

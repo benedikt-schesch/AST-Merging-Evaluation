@@ -119,8 +119,9 @@ def pass_test(repo_name, commit):
         return -1
 
 
+## TODO: the name "valid" is vague and therefore ambiguous.  Use a better name like "parents pass test".
 def valid_merge(args):
-    """Verifies that the two parents of a merge pass tests. Only operates if no more than
+    """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
         repo_name (str): Name of the repo to test.
@@ -169,6 +170,7 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
+    ## TODO: use a more descriptive name than "row".
     for _, row in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
         repo_name = row["repository"]
@@ -180,8 +182,10 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
         merges = merges.sample(frac=1, random_state=42)
 
+        ## TODO: use a more descriptive name than "row2".
         for _, row2 in merges.iterrows():
-            # Make sure that both SHA are of correct lenght
+            ## TODO: Err if this condition is not met.
+            # Make sure that both SHA are of correct length.
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 merges_repo.append(
                     (
@@ -209,7 +213,8 @@ if __name__ == "__main__":
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
@@ -238,6 +243,7 @@ if __name__ == "__main__":
         result = []
         counter = 0
         for merge_idx, row2 in merges.iterrows():
+            ## TODO: Err if this condition is not met.
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 test_left, test_right, test_merge = valid_merge(
                     (
@@ -253,6 +259,7 @@ if __name__ == "__main__":
                 if test_left == 0 and test_right == 0:
                     merges.at[merge_idx, "parent test"] = 0
                     counter += 1
+                    ## TODO: What does "loc" stand for?
                     result.append(merges.loc[merge_idx])  # type: ignore
                 if counter >= args.n_merges:
                     break

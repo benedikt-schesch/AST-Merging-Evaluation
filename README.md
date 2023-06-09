@@ -15,6 +15,8 @@ pip install -r requirements.txt
 
 ### Spork and Intellimerge
 
+TODO: I think it would be better if there were a Makefile step to do this download.  That would simplify the instructions and make them less error-prone.  It would also simplify the CI job and reduce duplication between the CI steps and this file.
+
 To download the Intellimerge and Spork jar:
 
 ```bash
@@ -35,6 +37,8 @@ source venv/bin/activate
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
 ### Ubuntu
+
+TODO: Minor: `command -v` is a more idiomatic way than `type -p` to check the existence of a program.
 
 ```bash
 sudo apt-get install -y jq
@@ -65,11 +69,12 @@ brew install git-lfs
 To test the stack, execute:
 
 ```bash
-make clean
-make clean-cache
+make clean clean-cache
 sh run_small.sh
 make small-test-diff
 ```
+## TODO: Why isn't the above just "make small-test"?
+## TODO: When I ran this, I saw diffs.  What should I do in order to investigate that?
 
 This will run the entire code on two small repos.
 All the output data can be found in `small/`.
@@ -103,6 +108,15 @@ To run style checking run `make style`.
 
 ## Directory structure
 
+TODO: I found this list a bit overwhelming.
+Could you organize it by
+ * what is committed to the repository vs
+ * what is not committed
+and also by
+ * which directories/files are inputs vs
+ * which ones are outputs
+?
+
 * run.sh -> This file executes each step of the stack.
 
 * run_small.sh -> This file executes the stack on two repositories.
@@ -110,8 +124,11 @@ To run style checking run `make style`.
 * run_full.sh -> This file executes the stack on all the repositories.
 
 * .workdir/ -> This folder is used for the local computations of each process.
+  TODO: Are its contents named by Unix process (using "$$")?
 
 * .cache/ -> This folder is a cache for each computation. contains:
+
+  TODO: This seems to be `cache/`, not `.cache/`
 
   * repos_result/ -> Caches the validation of each repository.
 
@@ -138,6 +155,9 @@ To run style checking run `make style`.
 * results/ -> contains:
 
   * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
+
+TODO: "results/" appears twice in the above list.
+TODO: If the listed files are all the contents of "data/" and "results/", would it make sense to use a single directory for all those files?
 
 * src/ -> contains the following scripts:
 

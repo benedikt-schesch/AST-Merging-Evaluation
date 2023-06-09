@@ -6,7 +6,7 @@ usage: python3 validate_repos.py --repos_csv <repos.csv>
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
-Output:  the rows of the input for which the head of main passes tests.
+Output:  the rows of the input for which the head of the default branch passes tests.
 """
 
 import subprocess
@@ -26,7 +26,7 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def clone_repo(repo_name):
-    """Clones a repository, or runs `git fetch` it if it is already cloned.
+    """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
@@ -50,6 +50,7 @@ def clone_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
+    ## TODO: I would treat timeouts like failures:  they may be transient.
     """Returns the return code of trying 3 times to run run_repo_tests.sh on the given working copy.
     If one test passes then the entire test is marked as passed.
     If one test timeouts then the entire test is marked as timeout.
@@ -127,6 +128,7 @@ def head_passes_tests(arg):
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
+        ## TODO: Why is this necessary?  We don't care about new commits that have been recently added to the repository, because our experiments ignore all commits after a certain date.
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
@@ -159,7 +161,8 @@ if __name__ == "__main__":
 
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
             pool.apply_async(head_passes_tests, args=(v,)) for v in df.iterrows()
         ]
@@ -177,6 +180,6 @@ if __name__ == "__main__":
             out.append(row)
     print("validate_repos: Finished Building Output")
     out = pd.DataFrame(out)
-    out.to_csv(args.output_path)
     print("validate_repos: Number of valid repos:", len(out))
+    out.to_csv(args.output_path)
     print("validate_repos: Done")

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Store the hash of the HEAD of main branch for each repository enabling reproducible results.
+"""Write the hash of the HEAD of the default branch (often "main" or "master") for each repository to its own file.
+If the file already exists, do nothing.
+After this is done, the resulting files are used indefinitely, for reproducible results.
 
 usage: python3 write_head_hashes.py --repos_csv <repos.csv>
                                     --output_path <valid_repos.csv>
@@ -7,7 +9,7 @@ usage: python3 write_head_hashes.py --repos_csv <repos.csv>
 Input: a csv of repos.
 The input file `repos.csv` must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
-Output: the hash of the HEAD of the main branch used for reproducible results.
+Output: Write one file per repository, with the hash of the HEAD of the default branch.
 """
 
 import os
@@ -21,6 +23,8 @@ import pandas as pd
 
 
 def get_latest_hash(args):
+    ## TODO: Testing isn't mentioned in the file documentation, and I don't see
+    ## where in this file testing is performed.
     """Checks if the head of main passes test.
     Args:
         arg (idx,row): Information regarding that repo.
@@ -54,13 +58,16 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(args.output_path):
+        print("validate_repos: Cached")
         sys.exit(0)
 
     df = pd.read_csv(args.repos_csv)
 
+    ## TODO: What is being tested?
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         result = list(
             tqdm(
                 pool.imap(get_latest_hash, df.iterrows()),
@@ -68,6 +75,8 @@ if __name__ == "__main__":
             )
         )
 
+    ## TODO: It is confusing to reassign a veriable with a different type.
+    ## Introduce a new variable if the type changes.
     result = pd.DataFrame([i for i in result if i is not None])
     result = result.set_index(result.columns[0]).reset_index(drop=True)
     result.to_csv(args.output_path)

@@ -23,6 +23,7 @@ check-python-style:
 clean:
 	rm -rf small/
 
+# This target deletes files that are committed to version control.
 clean-cache:
 	rm -rf cache
 	rm -rf .workdir
@@ -34,7 +35,9 @@ clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
 
+# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
+	${MAKE} clean-cache
 	./run_small.sh
 	${MAKE} small-test-diff
 

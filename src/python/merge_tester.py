@@ -27,17 +27,21 @@ import git.repo
 
 
 SCRATCH_DIR = "scratch/"
-# If true, the merged repository will be stored.
+# If true, the merged repository under SCRATCH_DIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
-# If true, the working directories will be deleted.
-# Otherwise, it is deleted after its tests are run.
-DELETE_WORKDIR = True
 WORKDIR = ".workdir/"
+# If true, the working directories in WORKDIR will be deleted.
+# Otherwise, it is deleted after its tests are run.
+## TODO: It's a bit inconsistent that the variables are STORE_SCRATCH and DELETE_WORKDIR, which have different boolean senses.
+DELETE_WORKDIR = True
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
-UNIQUE_COMMIT_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
+## TODO: Use a more mnemonic value, such as "MERGE_TESTER" or the like (even if you add some random cruft to it too, for uniqueness.
+BRANCH_BASE_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
+LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
+RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 
@@ -47,10 +51,10 @@ def test_merge(
     """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
-        repo_name (str): Name of the repo.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
     Returns:
         int: Test result of merge.  0 means success, non-zero means failure.
         float: Runtime to execute the merge.
@@ -59,6 +63,7 @@ def test_merge(
     repo_dir = "repos/" + repo_name
     process = multiprocessing.current_process()
     pid = str(process.pid)
+    # The repo will be copied here, then work done in the copy.
     repo_dir_copy = WORKDIR + pid + "/repo"
     try:
         if os.path.isdir(repo_dir_copy):
@@ -69,17 +74,17 @@ def test_merge(
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(left, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "1", force=True)
+        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
         repo.git.checkout(right, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "2", force=True)
+        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
         start = time.time()
         try:
             p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
-                    UNIQUE_COMMIT_NAME + "1",
-                    UNIQUE_COMMIT_NAME + "2",
+                    LEFT_BRANCH_NAME,
+                    RIGHT_BRANCH_NAME,
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -110,6 +115,7 @@ def test_merge(
                     repo_name + " " + merging_method + " testing with return code:",
                     merge,
                 )
+                ## TODO: Please document the meaning/purpose of this operation.
                 merge += 2
         except Exception as e:
             merge = 5
@@ -134,42 +140,33 @@ def test_merge(
     if STORE_SCRATCH:
         dst_name = (
             SCRATCH_DIR
-            + repo_name
-            + "_"
-            + left
-            + "_"
-            + right
-            + "_"
-            + base
-            + "_"
-            + merging_method
+            + '_'.join([repo_name, left, right, base, merging_method])
         )
         if os.path.isdir(dst_name):
             shutil.rmtree(dst_name)
         if os.path.isdir(repo_dir_copy + "/" + merging_method):
             shutil.copytree(repo_dir_copy + "/" + merging_method, dst_name)
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy)
+    shutil.rmtree(repo_dir_copy, ignore_errors=True)
     return merge, runtime
 
 
 def test_merges(args):
-    """Merges a repo with spork, intellimerge and git. Executes tests on
-        all merges
+    """Merges a repo with all the mergetools. Executes tests on all merges.
     Args:
         repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
         merge (str): Merge hash to be considered.
     Returns:
         int: Git merge test result.
         int: Spork merge test result.
         int: Intellimerge merge test result.
-        float: Git runtime.
-        float: Spork runtime.
-        float: Intellimerge runtime.
+        float: Git run time.
+        float: Spork run time.
+        float: Intellimerge run time.
     """
+    ## TODO: I think it would be better to return a map from merge tool to (result, run time)
     repo_name, left, right, base, merge = args
     cache_file = (
         CACHE
@@ -198,6 +195,7 @@ def test_merges(args):
         merge_result, merge_runtime = test_merge(
             merge_tool, repo_name, left, right, base
         )
+        ## TODO: Why not make pairs, or make a heterogeneous list of results and run times?  Either of those would be easier to iterate over, I think.
         merge_results.append(merge_result)
         merge_runtimes.append(merge_runtime)
 
@@ -210,6 +208,7 @@ def test_merges(args):
 if __name__ == "__main__":
     print("merge_tester: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
+    ## TODO: What is the relationship between "cache" and CACHE?
     Path("cache").mkdir(parents=True, exist_ok=True)
     Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
@@ -223,7 +222,9 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_csv)
 
     print("merge_tester: Building Inputs")
+    ## TODO: What does `args_merges` represent?  What is its structure?
     args_merges = []
+    ## TODO: Use a more descriptive name than `row`.
     for _, row in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = args.merges_path + row["repository"].split("/")[1] + ".csv"
         if not os.path.isfile(merge_list_file):
@@ -231,6 +232,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(merge_list_file, index_col=0)
 
+        ## TODO: Use a more descriptive name than `row2`.
         for _, row2 in merges.iterrows():
             if row2["parent test"] != 0:
                 continue
@@ -244,12 +246,14 @@ if __name__ == "__main__":
                 )
             )
 
+    ## TODO: Be more descriptive than "Inputs".
     print("merge_tester: Finished Building Inputs")
 
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(
             tqdm(
                 pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1
