@@ -43,10 +43,10 @@ import org.kohsuke.github.GitHubBuilder;
  * Given a list of repositories, outputs a list of merge commits. The merge commits may be on the
  * mainline branch, feature branches, and pull requests (both opened and closed).
  *
- * <p>The input is a .\csv file, one of whose columns is named "repository" and contains
+ * <p>The input is a .csv file, one of whose columns is named "repository" and contains
  * "owner/repo".
  *
- * <p>The ouput is a set of {@code \.csv} files with columns: repository, branch name, merge commit
+ * <p>The output is a set of {@code .csv} files with columns: repository, branch name, merge commit
  * SHA, parent 1 commit SHA, base commit SHA.
  *
  * <p>Requires the existence of a {@code GITHUB_TOKEN} environment variable (GitHub Actions provides
@@ -152,7 +152,7 @@ public class FindMergeCommits {
   }
 
   /**
-   * Reads a list of repositories from a .csv file one of whose columns is "repository".
+   * Reads a list of repositories from a .csv file, one of whose columns is "repository".
    *
    * @param inputFileName the name of the input .csv file
    * @return a list of repositories

@@ -48,9 +48,9 @@ def test_merge(
     Args:
         merging_method (str): Name of the merging method to use.
         repo_name (str): Name of the repo.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
     Returns:
         int: Test result of merge.  0 means success, non-zero means failure.
         float: Runtime to execute the merge.
@@ -158,17 +158,17 @@ def test_merges(args):
         all merges
     Args:
         repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
         merge (str): Merge hash to be considered.
     Returns:
         int: Git merge test result.
         int: Spork merge test result.
         int: Intellimerge merge test result.
-        float: Git runtime.
-        float: Spork runtime.
-        float: Intellimerge runtime.
+        float: Git run time.
+        float: Spork run time.
+        float: Intellimerge run time.
     """
     repo_name, left, right, base, merge = args
     cache_file = (

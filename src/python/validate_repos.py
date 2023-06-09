@@ -6,7 +6,7 @@ usage: python3 validate_repos.py --repos_csv <repos.csv>
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
-Output:  the rows of the input for which the head of main passes tests.
+Output:  the rows of the input for which the head of the default branch passes tests.
 """
 
 import subprocess
@@ -26,7 +26,7 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def clone_repo(repo_name):
-    """Clones a repository, or runs `git fetch` it if it is already cloned.
+    """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:

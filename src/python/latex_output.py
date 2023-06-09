@@ -4,7 +4,7 @@
 usage: python3 latex_output.py --input_csv <path_to_input>
                                --output_path <output_path>
 
-This script takes a csv wiht all the results for each merge and merge tool.
+This script takes a csv with all the results for each merge and merge tool.
 It outputs all three tables in output_path for the latex file. All tables
 should be copied into tables/ of the latex project.
 """
