@@ -100,6 +100,17 @@ def head_passes_tests(arg):
 
     repo_dir = "repos/" + repo_name
     target_file = CACHE + repo_name.replace("/", "_") + ".csv"
+    # Check if result is cached
+    if os.path.isfile(target_file):
+        df = pd.read_csv(target_file)
+        print(
+            repo_name,
+            ": Done, result is cached in "
+            + target_file
+            + ": "
+            + result_interpretable[df.iloc[0]["test"]],
+        )
+        return df.iloc[0]["test"] == 0
 
     df = pd.DataFrame({"test": [1]})
     pid = str(multiprocessing.current_process().pid)
@@ -110,18 +121,6 @@ def head_passes_tests(arg):
         print(repo_name, ": Cloning repo")
         _ = clone_repo(repo_name)
         print(repo_name, ": Finished cloning")
-
-        # Check if result is cached
-        if os.path.isfile(target_file):
-            df = pd.read_csv(target_file)
-            print(
-                repo_name,
-                ": Done, result is cached in "
-                + target_file
-                + ": "
-                + result_interpretable[df.iloc[0]["test"]],
-            )
-            return df.iloc[0]["test"] == 0
 
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
