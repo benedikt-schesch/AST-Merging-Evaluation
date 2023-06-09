@@ -15,7 +15,8 @@ if [ "$#" -ne 3 ]; then
 fi
 
 SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
-sporkfullpath=$(realpath "${SCRIPT_PATH}/../../../jars/spork.jar")
+ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
+sporkfullpath="${ROOT_PATH}/jars/spork.jar"
 
 clone_dir=$1
 branch1=$2
