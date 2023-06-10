@@ -18,7 +18,10 @@ SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
 ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
 sporkfullpath="${ROOT_PATH}/jars/spork.jar"
 
-## TODO: If file ${sporkfullpath} does not exist, call the Makefile target that downloads it.
+# If file ${sporkfullpath} does not exist, call make download-spork
+if [ ! -f "${sporkfullpath}" ]; then
+    make download-spork
+fi
 
 clone_dir=$1
 branch1=$2
