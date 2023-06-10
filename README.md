@@ -66,11 +66,8 @@ brew install git-lfs
 To test the stack, execute:
 
 ```bash
-make clean clean-cache
-sh run_small.sh
-make small-test-diff
+make small-test
 ```
-## TODO: Why isn't the above just "make small-test"?
 ## TODO: When I ran this, I saw diffs.  What should I do in order to investigate that?
 
 This will run the entire code on two small repos.
