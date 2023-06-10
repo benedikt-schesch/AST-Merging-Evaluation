@@ -32,7 +32,7 @@ def clone_repo(repo_name):
     Returns:
         The repository
     """
-    repo_dir = "repos/" + repo_name
+    repo_dir = os.path.join("repos/", repo_name)
     if os.path.isdir(repo_dir):
         repo = git.repo.Repo(repo_dir)
     else:
@@ -98,8 +98,8 @@ def head_passes_tests(arg):
     print(repo_name, ": Started head_passes_tests")
     result_interpretable = {0: "Valid", 1: "Not Valid", 124: "Not Valid Timeout"}
 
-    repo_dir = "repos/" + repo_name
-    target_file = CACHE + repo_name.replace("/", "_") + ".csv"
+    repo_dir = os.path.join("repos/", repo_name)
+    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + ".csv")
     # Check if result is cached
     if os.path.isfile(target_file):
         df = pd.read_csv(target_file)
@@ -116,7 +116,7 @@ def head_passes_tests(arg):
     df.to_csv(target_file)
     df = pd.DataFrame({"test": [1]})
     pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = WORKDIR + pid + "/repo"
+    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     try:
