@@ -11,6 +11,7 @@ should be copied into tables/ of the latex project.
 
 
 import sys
+import os
 import argparse
 from pathlib import Path
 
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(reversed(handles), reversed(labels))
 
-    plt.savefig(output_path + "/stacked.pdf")
+    plt.savefig(os.path.join(output_path,"stacked.pdf"))
 
     # table 1 (overall results)
     template = """\\begin{{tabular}}{{c|c c|c c|c c}}
@@ -94,7 +95,7 @@ if __name__ == "__main__":
 
     table = template.format(*args)
 
-    with open(output_path + "/table_summary.txt", "w") as file:
+    with open(os.path.join(output_path + "table_summary.txt"), "w") as file:
         file.write(table)
 
     # Printed Table
@@ -176,7 +177,7 @@ if __name__ == "__main__":
 
     table2 = template2.format(*args)
 
-    with open(output_path + "/table_feature_main_summary.txt", "w") as file:
+    with open(os.path.join(output_path + "table_feature_main_summary.txt"), "w") as file:
         file.write(table2)
 
     # table 3 (by merge source)
@@ -202,5 +203,5 @@ if __name__ == "__main__":
             args.append(f(data[merge_tool + " runtime"]))
     table3 = template3.format(*args)
 
-    with open(output_path + "/table_runtime.txt", "w") as file:
+    with open(os.path.join(output_path + "table_runtime.txt"), "w") as file:
         file.write(table3)

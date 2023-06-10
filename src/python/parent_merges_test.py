@@ -40,7 +40,7 @@ def pass_test(repo_name, commit):
     Returns:
         int: Test result.
     """
-    cache_file = CACHE + repo_name.split("/")[1] + "_" + commit
+    cache_file = os.path.join(CACHE,repo_name.split("/")[1] + "_" + commit)
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
