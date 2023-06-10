@@ -40,7 +40,7 @@ def pass_test(repo_name, commit):
     Returns:
         int: Test result.
     """
-    cache_file = CACHE + repo_name.split("/")[1] + "_" + commit
+    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit)
 
     if os.path.isfile(cache_file):
         with open(cache_file) as f:
@@ -53,8 +53,8 @@ def pass_test(repo_name, commit):
         process = multiprocessing.current_process()
         pid = str(process.pid)
 
-        repo_dir = "repos/" + repo_name
-        repo_dir_copy = WORKDIR + pid + "/repo"
+        repo_dir = os.path.join("repos/", repo_name)
+        repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
 
         repo = clone_repo(repo_name)
 
@@ -173,7 +173,9 @@ if __name__ == "__main__":
         merges_repo = []
         repo_name = row["repository"]
         valid_merge_counter[repo_name] = 0
-        merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
+        merge_list_file = os.path.join(
+            args.merges_path, repo_name.split("/")[1] + ".csv"
+        )
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -257,7 +259,7 @@ if __name__ == "__main__":
                 if counter >= args.n_merges:
                     break
         result = pd.DataFrame(result)
-        outout_file = args.output_dir + repo_name.split("/")[1] + ".csv"
-        result.to_csv(outout_file)
+        output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+        result.to_csv(output_file)
     print("parent_merges_test: Finished Constructing Output")
     print("parent_merges_test: Done")
