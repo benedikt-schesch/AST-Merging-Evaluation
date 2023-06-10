@@ -30,7 +30,7 @@ temp_dir=".workdir/intelli_temp_$$/"
 mkdir $temp_dir
 
 # run intellimerge
-java -jar $intellimergefullpath -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
+java -jar "$intellimergefullpath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
 pushd "$clone_dir"
