@@ -1,3 +1,5 @@
+all: style  gradle-assemble
+
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
@@ -51,3 +53,6 @@ small-test-diff:
 	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
 	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
+
+gradle-assemble:
+	./gradlew assemble
