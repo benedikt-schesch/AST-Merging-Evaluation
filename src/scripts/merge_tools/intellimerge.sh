@@ -39,7 +39,7 @@ popd
 find $temp_dir -type f | while read -r f; do
     # construct paths
     suffix=${f#"$temp_dir"}
-    mv "$f" "$clone_dir$suffix"
+    mv "$f" "$clone_dir/$suffix"
 done
 rm -rf $temp_dir
 
