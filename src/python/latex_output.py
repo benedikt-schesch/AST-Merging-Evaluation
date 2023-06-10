@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     table = template.format(*args)
 
-    with open(os.path.join(output_path + "table_summary.txt"), "w") as file:
+    with open(os.path.join(output_path, "table_summary.txt"), "w") as file:
         file.write(table)
 
     # Printed Table
@@ -179,9 +179,7 @@ if __name__ == "__main__":
 
     table2 = template2.format(*args)
 
-    with open(
-        os.path.join(output_path + "table_feature_main_summary.txt"), "w"
-    ) as file:
+    with open(os.path.join(output_path, "table_feature_main_summary.txt"), "w") as file:
         file.write(table2)
 
     # table 3 (by merge source)
@@ -208,5 +206,5 @@ if __name__ == "__main__":
             args.append(f(data[merge_tool + " runtime"]))
     table3 = template3.format(*args)
 
-    with open(os.path.join(output_path + "table_runtime.txt"), "w") as file:
+    with open(os.path.join(output_path, "table_runtime.txt"), "w") as file:
         file.write(table3)
