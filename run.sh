@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # usage: ./run.sh <repo_list> <output_folder> <n_merges> [<machine_id> <num_machine>]
-# <repo_list> list of repositories.
-## TODO: list of repositories in what format?  URL?  "owner/reponame"?
+# <repo_list> list of repositories in csv formart with a column 
+#     repository that has format owner/reponame for each repository.
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
 # <machine_id> optional argument to specify the id of the current machine.
