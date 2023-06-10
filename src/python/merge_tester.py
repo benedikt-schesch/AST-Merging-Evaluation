@@ -37,7 +37,9 @@ WORKDIR = ".workdir/"
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
-UNIQUE_COMMIT_NAME = "AOFKMAFNASFKJNRFQJXNFHJ"
+BRANCH_BASE_NAME = "___MERGE_TESTER"
+LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
+RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 
@@ -48,9 +50,9 @@ def test_merge(
     Args:
         merging_method (str): Name of the merging method to use.
         repo_name (str): Name of the repo.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
     Returns:
         int: Test result of merge.  0 means success, non-zero means failure.
         float: Runtime to execute the merge.
@@ -69,17 +71,17 @@ def test_merge(
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(left, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "1", force=True)
+        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
         repo.git.checkout(right, force=True)
-        repo.git.checkout("-b", UNIQUE_COMMIT_NAME + "2", force=True)
+        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
         start = time.time()
         try:
             p = subprocess.run(  # pylint: disable=consider-using-with
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
-                    UNIQUE_COMMIT_NAME + "1",
-                    UNIQUE_COMMIT_NAME + "2",
+                    LEFT_BRANCH_NAME,
+                    RIGHT_BRANCH_NAME,
                 ],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -151,17 +153,17 @@ def test_merges(args):
         all merges
     Args:
         repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
-        base (str): Base parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
+        base (str): Base parent hash of the merge.
         merge (str): Merge hash to be considered.
     Returns:
         int: Git merge test result.
         int: Spork merge test result.
         int: Intellimerge merge test result.
-        float: Git runtime.
-        float: Spork runtime.
-        float: Intellimerge runtime.
+        float: Git run time.
+        float: Spork run time.
+        float: Intellimerge run time.
     """
     repo_name, left, right, base, merge = args
     cache_file = os.path.join(

@@ -21,22 +21,21 @@ branch1=$2
 branch2=$3
 temp_dir=".workdir/intelli_temp_$$/"
 mkdir $temp_dir
-wd=$(pwd)
 
 # run intellimerge
 java -jar $INTELLIMERGE -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
-cd "$clone_dir"
+pushd "$clone_dir"
 git checkout "$branch1" --force
 # collect initial counts of strings that are conflict markers, but appear in the clone.
 m1a=$(grep -ro "^<<<<<<<$" . | wc -l)
 m2a=$(grep -ro "^=======$" . | wc -l)
 m3a=$(grep -ro "^>>>>>>>$" . | wc -l)
 git merge --no-edit "$branch2"
+popd
 
-# move files to ${clone_dir}
-cd "$wd"
+# move files
 find $temp_dir -type f | while read -r f; do
     # construct paths
     suffix=${f#"$temp_dir"}

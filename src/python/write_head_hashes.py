@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Store the hash of the HEAD of main branch for each repository enabling reproducible results.
 
-usage: python3 store_main_hashes.py --repos_csv <repos.csv>
+usage: python3 write_head_hashes.py --repos_csv <repos.csv>
                                     --output_path <valid_repos.csv>
 
 Input: a csv of repos.
 The input file `repos.csv` must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
-Output: the hash of the HEAD of the main branch used for reproducible results.
+Output: Write one file per repository, with the hash of the HEAD of the default branch.
 """
 
 import os
