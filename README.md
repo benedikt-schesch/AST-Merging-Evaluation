@@ -15,13 +15,10 @@ pip install -r requirements.txt
 
 ### Spork and Intellimerge
 
-TODO: I think it would be better if there were a Makefile step to do this download.  That would simplify the instructions and make them less error-prone.  It would also simplify the CI job and reduce duplication between the CI steps and this file.
-
 To download the Intellimerge and Spork jar:
 
 ```bash
-wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
-wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+make download-merge-tools
 ```
 
 ### Alternative Python installation
