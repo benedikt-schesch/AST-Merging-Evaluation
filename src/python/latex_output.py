@@ -193,7 +193,6 @@ if __name__ == "__main__":
 \\begin{tabular}{c|c|c|c}
     Tool & Mean Runtime & Median Runtime & Max runtime\\
     \\hline\n"""
-    
 
     args = []
     for merge_tool in MERGE_TOOLS:
