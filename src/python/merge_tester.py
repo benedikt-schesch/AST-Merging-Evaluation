@@ -33,9 +33,7 @@ STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be deleted.
 # Otherwise, it is deleted after its tests are run.
-## TODO: It's a bit inconsistent that the variables are STORE_SCRATCH and DELETE_WORKDIR,
-## which have different boolean senses.
-DELETE_WORKDIR = True
+STORE_WORKDIR = False
 CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
@@ -146,7 +144,8 @@ def test_merge(
         repo_dir_copy_merging_method = os.path.join(repo_dir_copy, merging_method)
         if os.path.isdir(repo_dir_copy_merging_method):
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
-    shutil.rmtree(repo_dir_copy, ignore_errors=True)
+    if not STORE_WORKDIR:
+        shutil.rmtree(repo_dir_copy, ignore_errors=True)
     return merge, runtime
 
 
