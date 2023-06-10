@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./run.sh <repo_list> <output_folder> <n_merges> <machine_id> <num_machine>
+# usage: ./run.sh <repo_list> <output_folder> <n_merges> [<machine_id> <num_machine>]
 # <repo_list> list of repositories.
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
