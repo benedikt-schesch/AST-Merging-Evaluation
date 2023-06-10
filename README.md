@@ -35,11 +35,9 @@ If you did the previous step make sure the virtual environemnt is activated when
 
 ### Ubuntu
 
-TODO: Minor: `command -v` is a more idiomatic way than `type -p` to check the existence of a program.
-
 ```bash
 sudo apt-get install -y jq
-type -p curl >/dev/null || sudo apt install curl -y
+command -v curl >/dev/null || sudo apt install curl -y
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
 && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
 && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
