@@ -56,10 +56,10 @@ def test_merge(
         float: Runtime to execute the merge.
     """
     # Variable `merge` is returned by this routine.
-    repo_dir = os.path.join("repos/",repo_name)
+    repo_dir = os.path.join("repos/", repo_name)
     process = multiprocessing.current_process()
     pid = str(process.pid)
-    repo_dir_copy = os.path.join(WORKDIR,pid,"repo")
+    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     try:
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
@@ -134,19 +134,11 @@ def test_merge(
     if STORE_SCRATCH:
         dst_name = os.path.join(
             SCRATCH_DIR,
-            repo_name
-            + "_"
-            + left
-            + "_"
-            + right
-            + "_"
-            + base
-            + "_"
-            + merging_method
+            repo_name + "_" + left + "_" + right + "_" + base + "_" + merging_method,
         )
         if os.path.isdir(dst_name):
             shutil.rmtree(dst_name)
-        repo_dir_copy_merging_method = os.path.join(repo_dir_copy,merging_method)
+        repo_dir_copy_merging_method = os.path.join(repo_dir_copy, merging_method)
         if os.path.isdir(repo_dir_copy_merging_method):
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
     if os.path.isdir(repo_dir_copy):
@@ -183,7 +175,7 @@ def test_merges(args):
         + base
         + "_"
         + merge
-        + ".csv"
+        + ".csv",
     )
 
     if os.path.isfile(cache_file):
@@ -226,7 +218,9 @@ if __name__ == "__main__":
     print("merge_tester: Building Inputs")
     args_merges = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        merge_list_file = os.path.join(args.merges_path, row["repository"].split("/")[1] + ".csv")
+        merge_list_file = os.path.join(
+            args.merges_path, row["repository"].split("/")[1] + ".csv"
+        )
         if not os.path.isfile(merge_list_file):
             continue
 
@@ -261,7 +255,9 @@ if __name__ == "__main__":
 
     output = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        merge_list_file = os.path.join(args.merges_path,row["repository"].split("/")[1] + ".csv")
+        merge_list_file = os.path.join(
+            args.merges_path, row["repository"].split("/")[1] + ".csv"
+        )
         if not os.path.isfile(merge_list_file):
             continue
 
