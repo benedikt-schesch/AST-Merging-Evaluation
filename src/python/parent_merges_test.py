@@ -120,12 +120,12 @@ def pass_test(repo_name, commit):
 
 
 def valid_merge(args):
-    """Verifies that the two parents of a merge pass tests. Only operates if no more than
+    """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
         repo_name (str): Name of the repo to test.
-        left (str): Left parent hash of a merge.
-        right (str): Right parent hash of a merge.
+        left (str): Left parent hash of the merge.
+        right (str): Right parent hash of the merge.
         merge (str): Hash of the merge.
         valid_merge_counter (str): Thread safe counter, counting number of valid merges.
         n_sampled (str): Number of sampled merges.
@@ -181,7 +181,7 @@ if __name__ == "__main__":
         merges = merges.sample(frac=1, random_state=42)
 
         for _, row2 in merges.iterrows():
-            # Make sure that both SHA are of correct lenght
+            # Make sure that both SHA are of correct length.
             if len(row2["left"]) == 40 and len(row2["right"]) == 40:
                 merges_repo.append(
                     (
