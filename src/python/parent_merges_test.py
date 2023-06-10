@@ -119,9 +119,7 @@ def pass_test(repo_name, commit):
         return -1
 
 
-## TODO: the name "valid" is vague and therefore ambiguous.  Use a better name like "parents pass
-## test".
-def valid_merge(args):
+def parent_pass_test(args):
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
@@ -171,10 +169,9 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
-    ## TODO: use a more descriptive name than "row".
-    for _, row in tqdm(df.iterrows(), total=len(df)):
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
-        repo_name = row["repository"]
+        repo_name = repository_data["repository"]
         valid_merge_counter[repo_name] = 0
         merge_list_file = os.path.join(
             args.merges_path, repo_name.split("/")[1] + ".csv"
@@ -185,17 +182,16 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
         merges = merges.sample(frac=1, random_state=42)
 
-        ## TODO: use a more descriptive name than "row2".
-        for _, row2 in merges.iterrows():
+        for _, merge_data in merges.iterrows():
             ## TODO: Err if this condition is not met.
             # Make sure that both SHA are of correct length.
-            if len(row2["left"]) == 40 and len(row2["right"]) == 40:
+            if len(merge_data["left"]) == 40 and len(merge_data["right"]) == 40:
                 merges_repo.append(
                     (
                         repo_name,
-                        row2["left"],
-                        row2["right"],
-                        row2["merge"],
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_data["merge"],
                         valid_merge_counter,
                         args.n_merges,
                     )
@@ -218,12 +214,12 @@ if __name__ == "__main__":
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
-        r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
+        r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
-    for _, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
+        repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
         if not os.path.isfile(merge_list_file):
@@ -245,15 +241,15 @@ if __name__ == "__main__":
 
         result = []
         counter = 0
-        for merge_idx, row2 in merges.iterrows():
+        for merge_idx, merge_data in merges.iterrows():
             ## TODO: Err if this condition is not met.
-            if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                test_left, test_right, test_merge = valid_merge(
+            if len(merge_data["left"]) == 40 and len(merge_data["right"]) == 40:
+                test_left, test_right, test_merge = parent_pass_test(
                     (
                         repo_name,
-                        row2["left"],
-                        row2["right"],
-                        row2["merge"],
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_data["merge"],
                         {repo_name: 0},
                         0,
                     )

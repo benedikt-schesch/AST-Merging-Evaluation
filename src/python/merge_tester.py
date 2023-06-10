@@ -208,8 +208,6 @@ def test_merges(args):
 if __name__ == "__main__":
     print("merge_tester: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
-    ## TODO: What is the relationship between "cache" and CACHE?
-    Path("cache").mkdir(parents=True, exist_ok=True)
     Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
@@ -224,27 +222,25 @@ if __name__ == "__main__":
     print("merge_tester: Building Inputs")
     ## TODO: What does `args_merges` represent?  What is its structure?
     args_merges = []
-    ## TODO: Use a more descriptive name than `row`.
-    for _, row in tqdm(df.iterrows(), total=len(df)):
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
-            args.merges_path, row["repository"].split("/")[1] + ".csv"
+            args.merges_path, repository_data["repository"].split("/")[1] + ".csv"
         )
         if not os.path.isfile(merge_list_file):
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
 
-        ## TODO: Use a more descriptive name than `row2`.
-        for _, row2 in merges.iterrows():
-            if row2["parent test"] != 0:
+        for _, merge_data in merges.iterrows():
+            if merge_data["parent test"] != 0:
                 continue
             args_merges.append(
                 (
-                    row["repository"],
-                    row2["left"],
-                    row2["right"],
-                    row2["base"],
-                    row2["merge"],
+                    repository_data["repository"],
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["base"],
+                    merge_data["merge"],
                 )
             )
 
@@ -265,9 +261,9 @@ if __name__ == "__main__":
     print("merge_tester: Building Output")
 
     output = []
-    for _, row in tqdm(df.iterrows(), total=len(df)):
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
-            args.merges_path, row["repository"].split("/")[1] + ".csv"
+            args.merges_path, repository_data["repository"].split("/")[1] + ".csv"
         )
         if not os.path.isfile(merge_list_file):
             continue
@@ -275,20 +271,20 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, index_col=0)
 
         # Initialize new columns
-        merges["repo_name"] = [row["repository"] for i in merges.iterrows()]
+        merges["repo_name"] = [repository_data["repository"] for i in merges.iterrows()]
         for merge_tool in MERGE_TOOLS:
             merges[merge_tool] = [-10 for i in merges.iterrows()]
         for merge_tool in MERGE_TOOLS:
             merges[merge_tool + " runtime"] = [-10 for i in merges.iterrows()]
 
-        for merge_idx, row2 in merges.iterrows():
+        for merge_idx, merge_data in merges.iterrows():
             results = test_merges(
                 (
-                    row["repository"],
-                    row2["left"],
-                    row2["right"],
-                    row2["base"],
-                    row2["merge"],
+                    repository_data["repository"],
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["base"],
+                    merge_data["merge"],
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
