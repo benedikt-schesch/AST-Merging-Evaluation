@@ -91,7 +91,6 @@ public class FindMergeCommits {
 
     String outputDirectoryName = args[1];
     Path outputDir = Paths.get(outputDirectoryName);
-    outputDir.toFile().mkdirs();
 
     FindMergeCommits fmc = new FindMergeCommits(repos, outputDir);
 
@@ -107,7 +106,7 @@ public class FindMergeCommits {
    * Creates an instance of FindMergeCommits.
    *
    * @param repos a list of GitHub repositories, in "owner/repository" format
-   * @param outputDir where to write results
+   * @param outputDir where to write results; is created if it does not exist
    * @throws IOException if there is trouble reading or writing files
    */
   FindMergeCommits(List<String> repos, Path outputDir) throws IOException {
@@ -121,6 +120,8 @@ public class FindMergeCommits {
             // .withConnector(new OkHttpConnector(new OkUrlFactory(new
             // OkHttpClient().setCache(cache))))
             .build();
+
+    outputDir.toFile().mkdirs();
 
     File tokenFile = new File(System.getProperty("user.home"), ".github-personal-access-token");
     String environmentGithubToken = System.getenv("GITHUB_TOKEN");
