@@ -18,30 +18,22 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  ./gradlew test --parallel
-  rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Gradle Test Failure
-    exit 1
-  fi
-  if [ $rc -eq 0 ] ; then
-    echo Gradle Test Success
-    exit 0
-  fi
+  command="./gradlew test --parallel"
+elif [ -f "mvnw" ] ; then
+  command="./mvnw test"
+elif [ -f pom.xml ] ; then
+  command="mvn test"
+else
+  echo "No Gradle or Maven buildfile"
+  exit 1
 fi
 
-if [[ -f pom.xml || -f mvnw ]] ; then
-  mvn test
-  rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Maven Test Failure
-    exit 1
-  fi
-  if [ $rc -eq 0 ] ; then
-    echo Maven Test Success
-    exit 0
-  fi
+${command}
+rc=$?
+if $rc ; then
+  echo "Test success: ${command}"
+else
+  echo "Test failure: ${command}"
 fi
 
-echo "No Gradle or Maven buildfile"
-exit 1
+exit $rc
