@@ -28,8 +28,6 @@ jobs:
       run: |
         sudo apt update
         sudo apt install maven
-    - name: Download Spork and Intellimerge
-      run: make download-merge-tools
     - name: Clean caches & workspace
       run: make clean
     - name: Build Java programs
