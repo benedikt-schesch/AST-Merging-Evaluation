@@ -50,14 +50,15 @@ def clone_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
-    """Returns the return code of trying 3 times to run run_repo_tests.sh on the given working copy.
+    """Returns the result of trying 3 times to run run_repo_tests.sh on the given working copy.
     If one test passes then the entire test is marked as passed.
     If one test timeouts then the entire test is marked as timeout.
     Args:
         repo_dir_copy (str): The path of the working copy (the clone).
         timeout (int): Test Timeout limit.
     Returns:
-        int: The test value.
+        str: The result of the test.
+        str: explanation.
     """
     explanation = ""
     rc = 1  # Failure
@@ -83,8 +84,10 @@ def repo_test(repo_dir_copy, timeout):
             + stderr
         )
         if rc == 0:  # Success
-            return rc, explanation
-    return rc, explanation  # Failure
+            return "Success", explanation
+        if rc == 128:
+            return "Timeout", explanation
+    return "Failure", explanation  # Failure
 
 
 def head_passes_tests(arg):
@@ -92,12 +95,11 @@ def head_passes_tests(arg):
     Args:
         arg (idx, row): Information regarding that repo.
     Returns:
-        boolean: if the repo is valid (main head passes tests)
+        str: Valid repo result (main head passes tests)
     """
     _, row = arg
     repo_name = row["repository"]
     print(repo_name, ": Started head_passes_tests")
-    result_interpretable = {0: "Valid", 1: "Not Valid", 124: "Not Valid Timeout"}
 
     repo_dir = os.path.join("repos/", repo_name)
     target_file = os.path.join(CACHE, repo_name.replace("/", "_") + ".csv")
@@ -109,13 +111,14 @@ def head_passes_tests(arg):
             ": Done, result is cached in "
             + target_file
             + ": "
-            + result_interpretable[df.iloc[0]["test"]],
+            + df.iloc[0]["Repo Validation"],
         )
-        return df.iloc[0]["test"] == 0
+        return df.iloc[0]["Repo Validation"]
 
-    df = pd.DataFrame({"test": [3]})
+    df = pd.DataFrame(
+        {"Repo Validation": ["Not tested"], "Explanation": ["Process started"]}
+    )
     df.to_csv(target_file)
-    df = pd.DataFrame({"test": [1]})
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     if os.path.isdir(repo_dir_copy):
@@ -135,9 +138,12 @@ def head_passes_tests(arg):
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
         rc, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
-        df = pd.DataFrame({"test": [rc]})
+        df = pd.DataFrame({"Repo Validation": [rc], "Explanation": [explanation]})
         print(repo_name, ": Finished testing, result =", rc)
     except Exception as e:
+        df = pd.DataFrame(
+            {"Repo Validation": "Failure Exception", "Explanation": [str(e)]}
+        )
         print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
     df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
@@ -145,9 +151,9 @@ def head_passes_tests(arg):
     print(
         repo_name,
         "Finished head_passes_tests, result : ",
-        result_interpretable[df.iloc[0]["test"]],
+        df.iloc[0]["Repo Validation"],
     )
-    return df.iloc[0]["test"] == 0
+    return df.iloc[0]["Repo Validation"]
 
 
 if __name__ == "__main__":
@@ -159,7 +165,7 @@ if __name__ == "__main__":
     parser.add_argument("--repos_csv", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv)
+    df = pd.read_csv(args.repos_csv, index_col=0).reset_index(drop=True)
 
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
@@ -177,11 +183,12 @@ if __name__ == "__main__":
 
     print("validate_repos: Building Output")
     out = []
-    for repo_idx, row in tqdm(df.iterrows(), total=len(df)):
-        if head_passes_tests((repo_idx, row)):
-            out.append(row)
+    valid_repos_mask = [
+        head_passes_tests((repo_idx, row)) == "Success"
+        for repo_idx, row in tqdm(df.iterrows(), total=len(df))
+    ]
+    out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
-    out = pd.DataFrame(out)
     print("validate_repos: Number of valid repos:", len(out))
     out.to_csv(args.output_path)
     print("validate_repos: Done")

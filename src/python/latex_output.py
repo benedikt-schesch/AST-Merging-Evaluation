@@ -21,6 +21,11 @@ import pandas as pd
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOLS
 
+FAILURE_STRINGS = [
+    "Failure merge general exception",
+    "Failure testing exception",
+    "Failure general exception during handling of the repository",
+]
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
@@ -33,11 +38,6 @@ if __name__ == "__main__":
 
     # open results file
     result_df = pd.read_csv(args.input_csv)
-    for merge_tool in MERGE_TOOLS:
-        result_df[merge_tool] = result_df[merge_tool].astype(int)
-
-        # Filter out all result_df points that have any type of failure
-        result_df = result_df[result_df[merge_tool] > 0]
 
     # figure 1 (stacked area)
     incorrect = []
@@ -46,10 +46,10 @@ if __name__ == "__main__":
     failure = []
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
-        incorrect.append(sum(val in [3, 5, 126] for val in merge_tool_status))
-        correct.append(sum(val == 2 for val in merge_tool_status))
-        unhandled.append(sum(val == 1 for val in merge_tool_status))
-        failure.append(sum(val in [6, 124] for val in merge_tool_status))
+        correct.append(sum(val == "Success test" for val in merge_tool_status))
+        incorrect.append(sum(val == "Failure test" for val in merge_tool_status))
+        unhandled.append(sum(val == "Failure merge" for val in merge_tool_status))
+        failure.append(sum(val in FAILURE_STRINGS for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
         )
@@ -147,29 +147,29 @@ if __name__ == "__main__":
         mergem = main[merge_tool]
         mergef = feature[merge_tool]
 
-        correct_main = sum(val == 2 for val in mergem)
+        correct_main = sum(val == "Success test" for val in mergem)
         correct_main_percentage = (
             100 * correct_main / len(main) if len(main) != 0 else 0
         )
-        correct_feature = sum(val == 2 for val in mergef)
+        correct_feature = sum(val == "Success test" for val in mergef)
         correct_feature_percentage = (
             100 * correct_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        unhandled_main = sum(val == 1 for val in mergem)
+        unhandled_main = sum(val == "Failure test" for val in mergem)
         unhandled_main_percentage = (
             100 * unhandled_main / len(main) if len(main) != 0 else 0
         )
-        unhandled_feature = sum(val == 1 for val in mergef)
+        unhandled_feature = sum(val == "Failure test" for val in mergef)
         unhandled_feature_percentage = (
             100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        incorrect_main = sum(val in [3, 5, 126] for val in mergem)
+        incorrect_main = sum(val in FAILURE_STRINGS for val in mergem)
         incorrect_main_percentage = (
             100 * incorrect_main / len(main) if len(main) != 0 else 0
         )
-        incorrect_feature = sum(val in [3, 5, 126] for val in mergef)
+        incorrect_feature = sum(val in FAILURE_STRINGS for val in mergef)
         incorrect_feature_percentage = (
             100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
         )

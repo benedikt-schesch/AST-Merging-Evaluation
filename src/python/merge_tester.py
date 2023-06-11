@@ -88,14 +88,14 @@ def test_merge(
                 stderr=subprocess.DEVNULL,
                 timeout=TIMEOUT_MERGE,
             )
-            merge = p.returncode
+            merge = "Failure merge" if p.returncode else "Success merge"
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
             runtime = time.time() - start
-            merge = 124  # Timeout
+            merge = "Timeout"
         except Exception as e:
-            merge = 6
+            merge = "Failure merge general exception"
             runtime = -1
             print(
                 repo_name,
@@ -105,18 +105,17 @@ def test_merge(
                 e,
             )
         try:
-            if merge == 0:
+            if merge == "Success merge":
                 merge, explanation = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
                 print(
-                    repo_name + " " + merging_method + " testing with return code:",
+                    repo_name + " " + merging_method + " testing with result:",
                     merge,
                 )
-                ## TODO: Please document the meaning/purpose of this operation.
-                merge += 2
+                merge += " test"
         except Exception as e:
-            merge = 5
+            merge = "Failure testing exception"
             print(
                 repo_name,
                 merging_method,
@@ -125,7 +124,7 @@ def test_merge(
                 e,
             )
     except Exception as e:
-        merge = -1
+        merge = "Failure general exception during handling of the repository"
         runtime = -1
         print(
             repo_name,
@@ -158,14 +157,9 @@ def test_merges(args):
         base (str): Base parent hash of the merge.
         merge (str): Merge hash to be considered.
     Returns:
-        int: Git merge test result.
-        int: Spork merge test result.
-        int: Intellimerge merge test result.
-        float: Git run time.
-        float: Spork run time.
-        float: Intellimerge run time.
+        pd.DataFrame: Index: [Result,Runtime]. Columns: MERGE_TOOLS
+                    For each merge tool the result and runtime is recorded
     """
-    ## TODO: I think it would be better to return a map from merge tool to (result, run time)
     repo_name, left, right, base, merge = args
     cache_file = os.path.join(
         CACHE,
@@ -182,27 +176,20 @@ def test_merges(args):
     )
 
     if os.path.isfile(cache_file):
-        result = pd.read_csv(cache_file, index_col=0)
-        return result.iloc[0, :].values
+        return pd.read_csv(cache_file, index_col=0)
 
-    out = pd.DataFrame([[-2, -2, -2, -2, -2, -2]])
-    out.to_csv(cache_file)
-
-    merge_results = []
-    merge_runtimes = []
+    merge_results = {}
     for merge_tool in MERGE_TOOLS:
         merge_result, merge_runtime = test_merge(
             merge_tool, repo_name, left, right, base
         )
-        ## TODO: Why not make pairs, or make a heterogeneous list of results and run times?
-        ## Either of those would be easier to iterate over, I think.
-        merge_results.append(merge_result)
-        merge_runtimes.append(merge_runtime)
+        merge_results[merge_tool] = [merge_result, merge_runtime]
 
-    out = pd.DataFrame([merge_results + merge_runtimes])
+    out = pd.DataFrame.from_dict(merge_results)
+    out = out.rename(index={0: "Result", 1: "Runtime"})
     out.to_csv(cache_file)
 
-    return out.iloc[0, :].values
+    return out
 
 
 if __name__ == "__main__":
@@ -287,9 +274,9 @@ if __name__ == "__main__":
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
-                merges.at[merge_idx, merge_tool] = results[merge_tool_idx]
-                merges.at[merge_idx, merge_tool + " runtime"] = results[
-                    len(MERGE_TOOLS) + merge_tool_idx
+                merges.at[merge_idx, merge_tool] = results[merge_tool]["Result"]
+                merges.at[merge_idx, merge_tool + " runtime"] = results[merge_tool][
+                    "Runtime"
                 ]
         output.append(merges)
     output = pd.concat(output, ignore_index=True)

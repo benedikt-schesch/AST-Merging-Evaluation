@@ -38,16 +38,18 @@ def pass_test(repo_name, commit):
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
     Returns:
-        int: Test result.
+        str: Test result.
     """
-    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit)
+    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit + ".csv")
 
     if os.path.isfile(cache_file):
-        with open(cache_file) as f:
-            return int(next(f).split(" ")[0])
+        df = pd.read_csv(cache_file)
+        return df.iloc[0]["Test result"]
 
-    with open(cache_file, "w") as f:
-        f.write("-10 Process Started")
+    df = pd.DataFrame(
+        {"Test result": ["Not tested"], "Explanation": ["Process started"]}
+    )
+    df.to_csv(cache_file)
 
     try:
         process = multiprocessing.current_process()
@@ -65,7 +67,7 @@ def pass_test(repo_name, commit):
         repo.remote().fetch()
         repo.submodule_update()
 
-        result = 0
+        result = "Success"
         explanation = ""
 
         try:
@@ -74,17 +76,17 @@ def pass_test(repo_name, commit):
             print(
                 repo_name, commit, "Exception when checking out commit. Exception:\n", e
             )
-            result = 3
+            result = "Failure git checkout"
             explanation = "Unable to checkout " + commit + ": " + str(e)
 
         # Merges that are newer than that date should be ignored for reproducibility
-        if result == 0 and repo.commit().committed_date > 1677003361:
-            result = 3
+        if result == "Success" and repo.commit().committed_date > 1677003361:
+            result = "Failure commit date too new"
             explanation = "committed_date is too new: " + str(
                 repo.commit().committed_date
             )
 
-        if result == 0:
+        if result == "Success":
             try:
                 result, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
             except Exception as e:
@@ -94,12 +96,11 @@ def pass_test(repo_name, commit):
                     "Exception when testing that commit. Exception:\n",
                     e,
                 )
-                result = 2
+                result = "Failure exception during testing"
                 explanation = str(e)
 
-        with open(cache_file, "w") as f:
-            f.write(str(result) + " ")
-            f.write(explanation)
+        df = pd.DataFrame({"Test result": [result], "Explanation": [explanation]})
+        df.to_csv(cache_file)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
@@ -112,11 +113,11 @@ def pass_test(repo_name, commit):
             "General exception when seting up testing. Exception:\n",
             e,
         )
-        with open(cache_file, "w") as f:
-            f.write(str(-1) + " ")
-            f.write(" " + str(e))
-            f.write(traceback.format_exc())
-        return -1
+        df = pd.DataFrame(
+            {"Test result": "Failure general rxception", "Explanation": [str(e)]}
+        )
+        df.to_csv(cache_file)
+        return "Failure General Exception"
 
 
 def parent_pass_test(args):
@@ -130,16 +131,16 @@ def parent_pass_test(args):
         valid_merge_counter (str): Thread safe counter, counting number of valid merges.
         n_sampled (str): Number of sampled merges.
     Returns:
-        int: Test result of left parent.
-        int: Test result of right parent.
-        int: Test result of the merge.
+        str: Test result of left parent.
+        str: Test result of right parent.
+        str: Test result of the merge.
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled:
-        return 3, 3, 3
+        return "Enough tested merges", "Enough tested merges", "Enough tested merges"
     left_test = pass_test(repo_name, left)
     right_test = pass_test(repo_name, right)
-    if left_test == 0 and right_test == 0:
+    if left_test == "Success" and right_test == "Success":
         valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
     merge_test = pass_test(repo_name, merge)
     return left_test, right_test, merge_test
@@ -233,8 +234,8 @@ if __name__ == "__main__":
             index_col=False,
         )
         merges = merges.sample(frac=1, random_state=42)
-        merges["parent test"] = [1 for i in merges.iterrows()]
-        merges["merge test"] = [1 for i in merges.iterrows()]
+        merges["parent test"] = ["Failure" for i in merges.iterrows()]
+        merges["merge test"] = ["Failure" for i in merges.iterrows()]
 
         result = []
         counter = 0
@@ -250,8 +251,8 @@ if __name__ == "__main__":
                 )
             )
             merges.at[merge_idx, "merge test"] = test_merge
-            if test_left == 0 and test_right == 0:
-                merges.at[merge_idx, "parent test"] = 0
+            if test_left == "Success" and test_right == "Success":
+                merges.at[merge_idx, "parent test"] = "Success"
                 counter += 1
                 # Append the row to the result.
                 result.append(merges.loc[merge_idx])  # type: ignore
