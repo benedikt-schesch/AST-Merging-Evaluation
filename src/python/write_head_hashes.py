@@ -24,9 +24,7 @@ import pandas as pd
 
 
 def get_latest_hash(args):
-    ## TODO: Testing isn't mentioned in the file documentation, and I don't see
-    ## where in this file testing is performed.
-    """Checks if the head of main passes test.
+    """Collects the latest hash of the HEAD of the default branch for a repo.
     Args:
         arg (idx,row): Information regarding that repo.
     Returns:
@@ -64,8 +62,7 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv)
 
-    ## TODO: What is being tested?
-    print("validate_repos: Started Testing")
+    print("write_head_hashes: Started cloning repos and collecting head hashes")
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
