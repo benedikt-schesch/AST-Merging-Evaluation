@@ -35,10 +35,8 @@ echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_CSV}
 REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
-SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
-ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
-intellimergefullpath="${ROOT_PATH}/jars/IntelliMerge-1.0.9-all.jar"
-sporkfullpath="${ROOT_PATH}/jars/spork.jar"
+intellimergefullpath="jars/IntelliMerge-1.0.9-all.jar"
+sporkfullpath="jars/spork.jar"
 
 # If file ${sporkfullpath} does not exist download spork
 if [ ! -f "${sporkfullpath}" ]; then
@@ -61,7 +59,7 @@ python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "
 python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
 python3 src/python/validate_repos.py --repos_csv "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
-
+exit 0
 java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
 
 python3 src/python/parent_merges_test.py --repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES"
