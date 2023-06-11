@@ -22,21 +22,29 @@ check-python-style:
 	black ${PYTHON_FILES} --check
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
-clean:
-	rm -rf small/
+#This target cleans up the workspace and the cache.
+clean: clean-workspace clean-cache
 
-clean-cache:
+# This target deletes files that are committed to version control.
+clean-workspace:
 	rm -rf cache
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
+	rm -rf small
+
+# This target deletes files in the cache.
+clean-cache:
+	rm -rf cache
 
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
 
+# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
+	${MAKE} clean-cache
 	./run_small.sh
 	${MAKE} small-test-diff
 
@@ -56,3 +64,13 @@ small-test-diff:
 
 gradle-assemble:
 	./gradlew assemble
+
+download-merge-tools: download-intellimerge download-spork
+
+download-intellimerge:
+	mkdir -p jars
+	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
+
+download-spork:
+	mkdir -p jars
+	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar

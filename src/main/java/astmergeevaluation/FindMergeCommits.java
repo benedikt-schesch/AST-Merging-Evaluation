@@ -49,18 +49,24 @@ import org.kohsuke.github.GitHubBuilder;
  * <p>The output is a set of {@code .csv} files with columns: repository, branch name, merge commit
  * SHA, parent 1 commit SHA, base commit SHA.
  *
- * <p>Requires the existence of a {@code GITHUB_TOKEN} environment variable (GitHub Actions provides
- * this) or a {@code .github-personal-access-token} file in your home directory whose first line is
- * your GitHub username, whose second line is a read-only personal access token, and all other lines
- * are ignored. (See <a
- * href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token">Creating
- * a fine-grained personal access token</a>.) Make sure the file is not world-readable. JGit
- * requires authentication for cloning and fetching public repositories.
+ * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
+ *
+ * <ul>
+ *   <li>the existence of a {@code GITHUB_TOKEN} environment variable (GitHub Actions provides
+ *       this), or
+ *   <li>a {@code .github-personal-access-token} file in your home directory whose first line is
+ *       your GitHub username, whose second line is a read-only personal access token, and all other
+ *       lines are ignored. (See <a
+ *       href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token">Creating
+ *       a fine-grained personal access token</a>.) Make sure the file is not world-readable.
+ * </ul>
  */
-@SuppressWarnings("deprecation")
+// TODO: Why is `@SuppressWarnings` needed?  I commented it out and (with Java 8) got no deprecaton
+// warning.
+@SuppressWarnings("deprecation") // TODO: add comment here about why needed.
 public class FindMergeCommits {
 
-  /** The repositories to search for merge commits. */
+  /** The GitHub repositories to search for merge commits. Each is in the format "owner/repo". */
   List<String> repos;
 
   /** The output directory. */
@@ -73,9 +79,10 @@ public class FindMergeCommits {
   final CredentialsProvider credentialsProvider;
 
   /**
-   * Given a list of GitHub repositories, outputs a list of merge commits.
+   * Outputs (TODO: to where?) a list of merge commits from the given repositories.
    *
-   * @param args a list of GitHub repositories, in "owner/repo" format
+   * @param args the first element is a .csv file containing GitHub repositories, in "owner/repo"
+   *     format, in a column named "repository"
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
@@ -147,8 +154,7 @@ public class FindMergeCommits {
       System.err.println(
           "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
-      // dummy assignment to prevent javac definite assignment warning.
-      this.credentialsProvider = new UsernamePasswordCredentialsProvider("no", "credentials");
+      throw new Error("unreachable"); // needed due to javac definite assignment check
     }
   }
 
@@ -207,12 +213,11 @@ public class FindMergeCommits {
     if (Files.exists(outputPath)) {
       // File exists, so there is nothing to do.
       // System.out.printf(
-      //     "writeMergeCommits CACHED(%s, %s); outputFile = %s%n", orgName, repoName, outputFile);
+      //     "writeMergeCommits(%s, %s) CACHED; outputFile = %s%n", orgName, repoName, outputFile);
       return;
     }
 
-    // SHA of commits that have already been written to the file.
-    /** The ids of the merge commits that have already been output. */
+    /** The SHA ids of the merge commits that have already been written to the file. */
     Set<ObjectId> written = new HashSet<>();
 
     String repoDirName =
@@ -237,16 +242,14 @@ public class FindMergeCommits {
       }
     }
 
-    Git git;
-    FileRepository repo;
-    git =
+    Git git =
         Git.cloneRepository()
             .setURI("https://github.com/" + orgName + "/" + repoName + ".git")
             .setDirectory(repoDirFile)
             .setCloneAllBranches(true)
             .setCredentialsProvider(credentialsProvider)
             .call();
-    repo = new FileRepository(repoDirFile);
+    FileRepository repo = new FileRepository(repoDirFile);
 
     makeBranchesForPullRequests(git);
 
@@ -317,6 +320,7 @@ public class FindMergeCommits {
     for (RevCommit commit : commits) {
       RevCommit[] parents = commit.getParents();
       if (parents.length != 2) {
+        // This is not a merge commit.
         continue;
       }
 
@@ -381,7 +385,7 @@ public class FindMergeCommits {
   }
 
   /**
-   * Given two commits, return their merge base commit.
+   * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
    * <p>Since only two commits are passed in, this always returns an existing commit, never a
    * synthetic one. When a criss-cross merge exists in the history, this outputs an arbitrary one of
@@ -442,7 +446,7 @@ public class FindMergeCommits {
 
   // This doesn't work; I don't know why.
   /**
-   * Given two commits, return their merge base commit.
+   * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
    * <p>Since only two commits are passed in, this always returns an existing commit, never a
    * synthetic one. When a criss-cross merge exists in the history, this outputs an arbitrary one of
@@ -479,7 +483,7 @@ public class FindMergeCommits {
 
   // This doesn't work; I don't know why.
   /**
-   * Given two commits, return their merge base commit.
+   * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
    * <p>Since only two commits are passed in, this always returns an existing commit, never a
    * synthetic one. When a criss-cross merge exists in the history, this outputs an arbitrary one of

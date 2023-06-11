@@ -5,6 +5,8 @@
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
+## TODO: Try different JVMs.
+
 set -e
 set -o nounset
 
