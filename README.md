@@ -1,7 +1,6 @@
 # ASTMerging
 
-To delete all cached results:
-  make clean-cache
+To delete all cached results: `make clean-cache`
 
 ## Requirements
 
@@ -91,6 +90,10 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 ### Clean Cache
 
 To clean the cache run `make clean-cache`.
+
+### Clean Workspace
+
+To cleanup the workspace:`make clean-workspace`
 
 ### Style Checking
 
