@@ -77,7 +77,7 @@ def test_merge(
         repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
         start = time.time()
         try:
-            p = subprocess.run(  # pylint: disable=consider-using-with
+            p = subprocess.run(
                 [
                     "src/scripts/merge_tools/" + merging_method + ".sh",
                     repo_dir_copy + "/" + merging_method,
@@ -219,8 +219,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_csv)
 
-    print("merge_tester: Building Inputs")
-    ## TODO: What does `args_merges` represent?  What is its structure?
+    print("merge_tester: Building Function Arguments")
+    # Function arguments: (repo_name, left, right, base, merge)
     args_merges = []
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
@@ -244,8 +244,7 @@ if __name__ == "__main__":
                 )
             )
 
-    ## TODO: Be more descriptive than "Inputs".
-    print("merge_tester: Finished Building Inputs")
+    print("merge_tester: Finished Building Function Arguments")
 
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
