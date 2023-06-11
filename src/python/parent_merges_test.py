@@ -12,7 +12,6 @@ It subsamples n_merges of merges that have passing parents for each repository.
 The output is produced in <output_directory>.
 """
 
-from typing import ScalarType
 import shutil
 import os
 import itertools
@@ -184,19 +183,16 @@ if __name__ == "__main__":
         merges = merges.sample(frac=1, random_state=42)
 
         for _, merge_data in merges.iterrows():
-            ## TODO: Err if this condition is not met.
-            # Make sure that both SHA are of correct length.
-            if len(merge_data["left"]) == 40 and len(merge_data["right"]) == 40:
-                merges_repo.append(
-                    (
-                        repo_name,
-                        merge_data["left"],
-                        merge_data["right"],
-                        merge_data["merge"],
-                        valid_merge_counter,
-                        args.n_merges,
-                    )
+            merges_repo.append(
+                (
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["merge"],
+                    valid_merge_counter,
+                    args.n_merges,
                 )
+            )
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
@@ -243,26 +239,24 @@ if __name__ == "__main__":
         result = []
         counter = 0
         for merge_idx, merge_data in merges.iterrows():
-            ## TODO: Err if this condition is not met.
-            if len(merge_data["left"]) == 40 and len(merge_data["right"]) == 40:
-                test_left, test_right, test_merge = parent_pass_test(
-                    (
-                        repo_name,
-                        merge_data["left"],
-                        merge_data["right"],
-                        merge_data["merge"],
-                        {repo_name: 0},
-                        0,
-                    )
+            test_left, test_right, test_merge = parent_pass_test(
+                (
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["merge"],
+                    {repo_name: 0},
+                    0,
                 )
-                merges.at[merge_idx, "merge test"] = test_merge
-                if test_left == 0 and test_right == 0:
-                    merges.at[merge_idx, "parent test"] = 0
-                    counter += 1
-                    # Append the row to the result.
-                    result.append(merges.loc[merge_idx])  # type: ignore
-                if counter >= args.n_merges:
-                    break
+            )
+            merges.at[merge_idx, "merge test"] = test_merge
+            if test_left == 0 and test_right == 0:
+                merges.at[merge_idx, "parent test"] = 0
+                counter += 1
+                # Append the row to the result.
+                result.append(merges.loc[merge_idx])  # type: ignore
+            if counter >= args.n_merges:
+                break
         result = pd.DataFrame(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         result.to_csv(output_file)
