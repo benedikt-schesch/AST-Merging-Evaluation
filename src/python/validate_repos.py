@@ -50,7 +50,6 @@ def clone_repo(repo_name):
 
 
 def repo_test(repo_dir_copy, timeout):
-    ## TODO: I would treat timeouts like failures:  they may be transient.
     """Returns the return code of trying 3 times to run run_repo_tests.sh on the given working copy.
     If one test passes then the entire test is marked as passed.
     If one test timeouts then the entire test is marked as timeout.
@@ -61,6 +60,7 @@ def repo_test(repo_dir_copy, timeout):
         int: The test value.
     """
     explanation = ""
+    rc = 1  # Failure
     for i in range(3):
         command = [
             "src/scripts/run_repo_tests.sh",
@@ -82,9 +82,9 @@ def repo_test(repo_dir_copy, timeout):
             + "\nstderr:\n"
             + stderr
         )
-        if rc in (0, 124):  # Success or Timeout
+        if rc == 0:  # Success
             return rc, explanation
-    return 1, explanation  # Failure
+    return rc, explanation  # Failure
 
 
 def head_passes_tests(arg):

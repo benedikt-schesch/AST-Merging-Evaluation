@@ -12,6 +12,7 @@ It subsamples n_merges of merges that have passing parents for each repository.
 The output is produced in <output_directory>.
 """
 
+from typing import ScalarType
 import shutil
 import os
 import itertools
@@ -258,7 +259,7 @@ if __name__ == "__main__":
                 if test_left == 0 and test_right == 0:
                     merges.at[merge_idx, "parent test"] = 0
                     counter += 1
-                    ## TODO: What does "loc" stand for?
+                    # Append the row to the result.
                     result.append(merges.loc[merge_idx])  # type: ignore
                 if counter >= args.n_merges:
                     break
