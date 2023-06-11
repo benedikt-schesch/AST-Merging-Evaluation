@@ -155,7 +155,7 @@ To run style checking run `make style`.
 ### Uncommited Files
 
 * .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
-  
+
 * repos/ -> In this folder each repo is cloned.
 
 * results/ -> Contains all the results for the full analysis.
