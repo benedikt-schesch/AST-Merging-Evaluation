@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # usage: ./run.sh <repo_list> <output_folder> <n_merges> [<machine_id> <num_machine>]
-# <repo_list> list of repositories.
+# <repo_list> list of repositories in csv formart with a column 
+#     repository that has format owner/reponame for each repository.
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
 # <machine_id> optional argument to specify the id of the current machine.
@@ -21,6 +22,8 @@ num_machines="${5:-1}"
 
 JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
+# This project has been eecuted with Java 8 and might yield different results with other versions.
+# Java 8 returned the largest amount of valid repositories.
 if [ "$JAVA_VER" != "8" ]; then
   echo "Wrong Java version $JAVA_VER. Please use Java 8."
   exit 1
@@ -32,6 +35,18 @@ echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_CSV}
 REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
+intellimergefullpath="jars/IntelliMerge-1.0.9-all.jar"
+sporkfullpath="jars/spork.jar"
+
+# If file ${sporkfullpath} does not exist download spork
+if [ ! -f "${sporkfullpath}" ]; then
+    make download-spork
+fi
+
+# If file ${intellimergefullpath} does not exist download intellimerge
+if [ ! -f "${intellimergefullpath}" ]; then
+    make download-intellimerge
+fi
 
 ./gradlew assemble
 

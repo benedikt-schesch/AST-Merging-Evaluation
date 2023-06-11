@@ -38,16 +38,18 @@ def pass_test(repo_name, commit):
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
     Returns:
-        int: Test result.
+        str: Test result.
     """
-    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit)
+    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit + ".csv")
 
     if os.path.isfile(cache_file):
-        with open(cache_file) as f:
-            return int(next(f).split(" ")[0])
+        df = pd.read_csv(cache_file)
+        return df.iloc[0]["Test result"]
 
-    with open(cache_file, "w") as f:
-        f.write("-10 Process Started")
+    df = pd.DataFrame(
+        {"Test result": ["Not tested"], "Explanation": ["Process started"]}
+    )
+    df.to_csv(cache_file)
 
     try:
         process = multiprocessing.current_process()
@@ -65,7 +67,7 @@ def pass_test(repo_name, commit):
         repo.remote().fetch()
         repo.submodule_update()
 
-        result = 0
+        result = "Success"
         explanation = ""
 
         try:
@@ -74,17 +76,17 @@ def pass_test(repo_name, commit):
             print(
                 repo_name, commit, "Exception when checking out commit. Exception:\n", e
             )
-            result = 3
+            result = "Failure git checkout"
             explanation = "Unable to checkout " + commit + ": " + str(e)
 
         # Merges that are newer than that date should be ignored for reproducibility
-        if result == 0 and repo.commit().committed_date > 1677003361:
-            result = 3
+        if result == "Success" and repo.commit().committed_date > 1677003361:
+            result = "Failure commit date too new"
             explanation = "committed_date is too new: " + str(
                 repo.commit().committed_date
             )
 
-        if result == 0:
+        if result == "Success":
             try:
                 result, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
             except Exception as e:
@@ -94,12 +96,11 @@ def pass_test(repo_name, commit):
                     "Exception when testing that commit. Exception:\n",
                     e,
                 )
-                result = 2
+                result = "Failure exception during testing"
                 explanation = str(e)
 
-        with open(cache_file, "w") as f:
-            f.write(str(result) + " ")
-            f.write(explanation)
+        df = pd.DataFrame({"Test result": [result], "Explanation": [explanation]})
+        df.to_csv(cache_file)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
@@ -112,14 +113,14 @@ def pass_test(repo_name, commit):
             "General exception when seting up testing. Exception:\n",
             e,
         )
-        with open(cache_file, "w") as f:
-            f.write(str(-1) + " ")
-            f.write(" " + str(e))
-            f.write(traceback.format_exc())
-        return -1
+        df = pd.DataFrame(
+            {"Test result": "Failure general rxception", "Explanation": [str(e)]}
+        )
+        df.to_csv(cache_file)
+        return "Failure General Exception"
 
 
-def valid_merge(args):
+def parent_pass_test(args):
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
@@ -130,16 +131,16 @@ def valid_merge(args):
         valid_merge_counter (str): Thread safe counter, counting number of valid merges.
         n_sampled (str): Number of sampled merges.
     Returns:
-        int: Test result of left parent.
-        int: Test result of right parent.
-        int: Test result of the merge.
+        str: Test result of left parent.
+        str: Test result of right parent.
+        str: Test result of the merge.
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled:
-        return 3, 3, 3
+        return "Enough tested merges", "Enough tested merges", "Enough tested merges"
     left_test = pass_test(repo_name, left)
     right_test = pass_test(repo_name, right)
-    if left_test == 0 and right_test == 0:
+    if left_test == "Success" and right_test == "Success":
         valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
     merge_test = pass_test(repo_name, merge)
     return left_test, right_test, merge_test
@@ -169,9 +170,9 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
-    for _, row in tqdm(df.iterrows(), total=len(df)):
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
-        repo_name = row["repository"]
+        repo_name = repository_data["repository"]
         valid_merge_counter[repo_name] = 0
         merge_list_file = os.path.join(
             args.merges_path, repo_name.split("/")[1] + ".csv"
@@ -182,19 +183,17 @@ if __name__ == "__main__":
         merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
         merges = merges.sample(frac=1, random_state=42)
 
-        for _, row2 in merges.iterrows():
-            # Make sure that both SHA are of correct length.
-            if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                merges_repo.append(
-                    (
-                        repo_name,
-                        row2["left"],
-                        row2["right"],
-                        row2["merge"],
-                        valid_merge_counter,
-                        args.n_merges,
-                    )
+        for _, merge_data in merges.iterrows():
+            merges_repo.append(
+                (
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["merge"],
+                    valid_merge_counter,
+                    args.n_merges,
                 )
+            )
         tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
@@ -211,13 +210,14 @@ if __name__ == "__main__":
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
-    with multiprocessing.Pool(processes=int(cpu_count * 0.75)) as pool:
-        r = list(tqdm(pool.imap(valid_merge, arguments), total=len(arguments)))
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
+        r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
-    for _, row in tqdm(df.iterrows(), total=len(df)):
-        repo_name = row["repository"]
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
+        repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
         if not os.path.isfile(merge_list_file):
@@ -234,30 +234,30 @@ if __name__ == "__main__":
             index_col=False,
         )
         merges = merges.sample(frac=1, random_state=42)
-        merges["parent test"] = [1 for i in merges.iterrows()]
-        merges["merge test"] = [1 for i in merges.iterrows()]
+        merges["parent test"] = ["Failure" for i in merges.iterrows()]
+        merges["merge test"] = ["Failure" for i in merges.iterrows()]
 
         result = []
         counter = 0
-        for merge_idx, row2 in merges.iterrows():
-            if len(row2["left"]) == 40 and len(row2["right"]) == 40:
-                test_left, test_right, test_merge = valid_merge(
-                    (
-                        repo_name,
-                        row2["left"],
-                        row2["right"],
-                        row2["merge"],
-                        {repo_name: 0},
-                        0,
-                    )
+        for merge_idx, merge_data in merges.iterrows():
+            test_left, test_right, test_merge = parent_pass_test(
+                (
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["merge"],
+                    {repo_name: 0},
+                    0,
                 )
-                merges.at[merge_idx, "merge test"] = test_merge
-                if test_left == 0 and test_right == 0:
-                    merges.at[merge_idx, "parent test"] = 0
-                    counter += 1
-                    result.append(merges.loc[merge_idx])  # type: ignore
-                if counter >= args.n_merges:
-                    break
+            )
+            merges.at[merge_idx, "merge test"] = test_merge
+            if test_left == "Success" and test_right == "Success":
+                merges.at[merge_idx, "parent test"] = "Success"
+                counter += 1
+                # Append the row to the result.
+                result.append(merges.loc[merge_idx])  # type: ignore
+            if counter >= args.n_merges:
+                break
         result = pd.DataFrame(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         result.to_csv(output_file)
