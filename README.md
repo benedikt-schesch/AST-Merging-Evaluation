@@ -103,56 +103,13 @@ To run style checking run `make style`.
 
 ## Directory structure
 
-TODO: I found this list a bit overwhelming.
-Could you organize it by
- * what is committed to the repository vs
- * what is not committed
-and also by
- * which directories/files are inputs vs
- * which ones are outputs
-?
+### Commited files
 
 * run.sh -> This file executes each step of the stack.
 
 * run_small.sh -> This file executes the stack on two repositories.
 
 * run_full.sh -> This file executes the stack on all the repositories.
-
-* .workdir/ -> This folder is used for the local computations of each process.
-  TODO: Are its contents named by Unix process (using "$$")?
-
-* .cache/ -> This folder is a cache for each computation. contains:
-
-  TODO: This seems to be `cache/`, not `.cache/`
-
-  * repos_result/ -> Caches the validation of each repository.
-
-  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
-
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
-
-* repos/ -> In this folder each repo is cloned.
-
-* jars/ -> Location for the Intellimerge and Spork jars.
-
-* scratch/ -> If enabled each merge will be stored in this location.
-
-* results/ -> Stores the results for the full analysis.
-
-* small/ -> Stores the results for the small analysis.
-
-* data/ -> contains:
-
-  * repos.csv -> List of all repos that fulfill the initial selection criterion.
-
-  * repos_small.csv -> List of only 2 repos.
-
-* results/ -> contains:
-
-  * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
-
-TODO: "results/" appears twice in the above list.
-TODO: If the listed files are all the contents of "data/" and "results/", would it make sense to use a single directory for all those files?
 
 * src/ -> contains the following scripts:
 
@@ -171,9 +128,41 @@ TODO: If the listed files are all the contents of "data/" and "results/", would 
   * scripts/ -> contains the following scripts:
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
-    * find_merge_commits.sh -> Finds all the merges in a project.
-
     * merge_tools/ -> contains the following scripts:
       * gitmerge.sh -> Executes git merge on a specific merge.
       * intellimerge.sh -> Executes intellimerge on a specific merge.
       * spork.sh -> Executes spork on a specific merge.
+
+  * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
+
+* cache/ -> This folder is a cache for each computation. contains:
+
+  * repos_result/ -> Caches the validation of each repository.
+
+  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
+
+* data/ -> All input data, contains:
+
+  * repos.csv -> List of all repos that fulfill the initial selection criterion.
+
+  * repos_with_hashes.csv -> repos.csv but with the tested commit for repository validation
+
+  * repos_small.csv -> List of only 2 repos.
+
+  * repos_small_with_hashes.csv -> repos_small.csv but with the tested commit for repository validation
+
+### Uncommited Files
+
+* .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
+  
+* repos/ -> In this folder each repo is cloned.
+
+* results/ -> Contains all the results for the full analysis.
+
+* small/ -> Contains all the results for the small analysis.
+
+* jars/ -> Location for the Intellimerge and Spork jars.
+
+* scratch/ -> If enabled each merge will be stored in this location.
