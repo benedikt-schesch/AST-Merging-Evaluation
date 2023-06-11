@@ -65,7 +65,6 @@ To test the stack, execute:
 ```bash
 make small-test
 ```
-## TODO: When I ran this, I saw diffs.  What should I do in order to investigate that?
 
 This will run the entire code on two small repos.
 All the output data can be found in `small/`.
