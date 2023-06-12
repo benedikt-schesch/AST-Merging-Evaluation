@@ -43,8 +43,36 @@ RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
 
 
-def test_merge(
-    merging_method, repo_name, left, right, base
+def write_cache(status, runtime, explanation, cache_file):
+    """Writes the result of a test to a cache file.
+    Args:
+        status (str): Test result.
+        runtime (float): Runtime of the test.
+        explanation (str): Explanation of the test result.
+        cache_file (str): Path to the cache file.
+    """
+    with open(cache_file, "w") as f:
+        f.write(status + "\n" + str(runtime) + "\n" + explanation)
+
+
+def read_cache(cache_file):
+    """Reads the result of a test from a cache file.
+    Args:
+        cache_file (str): Path to the cache file.
+    Returns:
+        str: Test result.
+        float: Runtime of the test.
+        str: Explanation of the test result.
+    """
+    with open(cache_file, "r") as f:
+        status = f.readline().strip()
+        runtime = float(f.readline().strip())
+        explanation = f.readline().strip()
+    return status, runtime, explanation
+
+
+def merge_and_test(
+    args,
 ):  # pylint: disable=too-many-locals, disable=too-many-statements
     """Merges a repo and executes its tests.
     Args:
@@ -53,11 +81,30 @@ def test_merge(
         left (str): Left parent hash of the merge.
         right (str): Right parent hash of the merge.
         base (str): Base parent hash of the merge.
+        merge (str): Name of the merge.
     Returns:
         int: Test result of merge.  0 means success, non-zero means failure.
         float: Runtime to execute the merge.
     """
-    # Variable `merge` is returned by this routine.
+    merging_method, repo_name, left, right, base, merge = args
+    cache_file = os.path.join(
+        CACHE,
+        repo_name.split("/")[1]
+        + "_"
+        + left
+        + "_"
+        + right
+        + "_"
+        + base
+        + "_"
+        + merge
+        + "_"
+        + merging_method,
+    )
+    if os.path.isfile(cache_file):
+        status, runtime, _ = read_cache(cache_file)
+        return status, runtime
+    # Variable `merge_status` is returned by this routine.
     repo_dir = os.path.join("repos/", repo_name)
     process = multiprocessing.current_process()
     pid = str(process.pid)
@@ -88,14 +135,17 @@ def test_merge(
                 stderr=subprocess.DEVNULL,
                 timeout=TIMEOUT_MERGE,
             )
-            merge = "Failure merge" if p.returncode else "Success merge"
+            merge_status = "Failure merge" if p.returncode else "Success merge"
+            explanation = ""
             runtime = time.time() - start
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
             runtime = time.time() - start
-            merge = "Timeout"
+            merge_status = "Timeout"
+            explanation = "Timeout during merge"
         except Exception as e:
-            merge = "Failure merge general exception"
+            merge_status = "Failure merge general exception"
+            explanation = str(e)
             runtime = -1
             print(
                 repo_name,
@@ -105,17 +155,18 @@ def test_merge(
                 e,
             )
         try:
-            if merge == "Success merge":
-                merge, explanation = repo_test(
+            if merge_status == "Success merge":
+                merge_status, explanation = repo_test(
                     repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
                 )
                 print(
                     repo_name + " " + merging_method + " testing with result:",
-                    merge,
+                    merge_status,
                 )
-                merge += " test"
+                merge_status += " test"
         except Exception as e:
-            merge = "Failure testing exception"
+            merge_status = "Failure testing exception"
+            explanation = str(e)
             print(
                 repo_name,
                 merging_method,
@@ -124,7 +175,8 @@ def test_merge(
                 e,
             )
     except Exception as e:
-        merge = "Failure general exception during handling of the repository"
+        merge_status = "Failure general exception during handling of the repository"
+        explanation = str(e)
         runtime = -1
         print(
             repo_name,
@@ -134,6 +186,7 @@ def test_merge(
             e,
         )
         print(traceback.format_exc())
+
     if STORE_SCRATCH:
         dst_name = os.path.join(
             SCRATCH_DIR, "_".join([repo_name, left, right, base, merging_method])
@@ -143,53 +196,12 @@ def test_merge(
         repo_dir_copy_merging_method = os.path.join(repo_dir_copy, merging_method)
         if os.path.isdir(repo_dir_copy_merging_method):
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
+
     if not STORE_WORKDIR:
         shutil.rmtree(repo_dir_copy, ignore_errors=True)
+
+    write_cache(merge_status, runtime, explanation, cache_file)
     return merge, runtime
-
-
-def test_merges(args):
-    """Merges a repo with all the mergetools. Executes tests on all merges.
-    Args:
-        repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
-        left (str): Left parent hash of the merge.
-        right (str): Right parent hash of the merge.
-        base (str): Base parent hash of the merge.
-        merge (str): Merge hash to be considered.
-    Returns:
-        pd.DataFrame: Index: [Result,Runtime]. Columns: MERGE_TOOLS
-                    For each merge tool the result and runtime is recorded
-    """
-    repo_name, left, right, base, merge = args
-    cache_file = os.path.join(
-        CACHE,
-        repo_name.split("/")[1]
-        + "_"
-        + left
-        + "_"
-        + right
-        + "_"
-        + base
-        + "_"
-        + merge
-        + ".csv",
-    )
-
-    if os.path.isfile(cache_file):
-        return pd.read_csv(cache_file, index_col=0)
-
-    merge_results = {}
-    for merge_tool in MERGE_TOOLS:
-        merge_result, merge_runtime = test_merge(
-            merge_tool, repo_name, left, right, base
-        )
-        merge_results[merge_tool] = [merge_result, merge_runtime]
-
-    out = pd.DataFrame.from_dict(merge_results)
-    out = out.rename(index={0: "Result", 1: "Runtime"})
-    out.to_csv(cache_file)
-
-    return out
 
 
 if __name__ == "__main__":
@@ -217,19 +229,20 @@ if __name__ == "__main__":
             continue
 
         merges = pd.read_csv(merge_list_file, index_col=0)
-
         for _, merge_data in merges.iterrows():
-            if merge_data["parent test"] != 0:
+            if merge_data["parent test"] != "Success":
                 continue
-            args_merges.append(
-                (
-                    repository_data["repository"],
-                    merge_data["left"],
-                    merge_data["right"],
-                    merge_data["base"],
-                    merge_data["merge"],
+            for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+                args_merges.append(
+                    (
+                        merge_tool,
+                        repository_data["repository"],
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_data["base"],
+                        merge_data["merge"],
+                    )
                 )
-            )
 
     print("merge_tester: Finished Building Function Arguments")
 
@@ -240,7 +253,9 @@ if __name__ == "__main__":
     with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(
             tqdm(
-                pool.imap(test_merges, args_merges), total=len(args_merges), miniters=1
+                pool.imap(merge_and_test, args_merges),
+                total=len(args_merges),
+                miniters=1,
             )
         )
     print("merge_tester: Finished Testing")
@@ -264,20 +279,22 @@ if __name__ == "__main__":
             merges[merge_tool + " runtime"] = [-10 for i in merges.iterrows()]
 
         for merge_idx, merge_data in merges.iterrows():
-            results = test_merges(
-                (
-                    repository_data["repository"],
-                    merge_data["left"],
-                    merge_data["right"],
-                    merge_data["base"],
-                    merge_data["merge"],
-                )
-            )
+            if merge_data["parent test"] != "Success":
+                continue
+
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
-                merges.at[merge_idx, merge_tool] = results[merge_tool]["Result"]
-                merges.at[merge_idx, merge_tool + " runtime"] = results[merge_tool][
-                    "Runtime"
-                ]
+                status, runtime = merge_and_test(
+                    (
+                        merge_tool,
+                        repository_data["repository"],
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_data["base"],
+                        merge_data["merge"],
+                    )
+                )
+                merges.at[merge_idx, merge_tool] = status
+                merges.at[merge_idx, merge_tool + " runtime"] = runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
     output.to_csv(args.output_file)

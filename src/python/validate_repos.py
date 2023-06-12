@@ -8,7 +8,7 @@ Input: a csv of repos.  It must contain a header, one of whose columns is "repos
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output:  the rows of the input for which the head of the default branch passes tests.
 """
-
+import csv
 import subprocess
 import shutil
 import os
@@ -90,6 +90,33 @@ def repo_test(repo_dir_copy, timeout):
     return "Failure", explanation  # Failure
 
 
+def write_cache(status, explanation, cache_file):
+    """Writes the result of the test to a cache file.
+    Args:
+        status (str): The result of the test.
+        explanation (str): The explanation of the result.
+        cache_file (str): The path of the cache file.
+    """
+    with open(cache_file, "w") as f:
+        f.write(status)
+        f.write("\n")
+        f.write(explanation)
+
+
+def read_cache(cache_file):
+    """Reads the result of the test from a cache file.
+    Args:
+        cache_file (str): The path of the cache file.
+    Returns:
+        str: The result of the test.
+        str: The explanation of the result.
+    """
+    with open(cache_file, "r") as f:
+        status = f.readline().strip()
+        explanation = f.readlines()
+    return status, explanation
+
+
 def head_passes_tests(arg):
     """Checks if the head of main passes test.
     Args:
@@ -105,20 +132,14 @@ def head_passes_tests(arg):
     target_file = os.path.join(CACHE, repo_name.replace("/", "_") + ".csv")
     # Check if result is cached
     if os.path.isfile(target_file):
-        df = pd.read_csv(target_file)
+        status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Done, result is cached in "
-            + target_file
-            + ": "
-            + df.iloc[0]["Repo Validation"],
+            ": Done, result is cached in " + target_file + ": " + status,
         )
-        return df.iloc[0]["Repo Validation"]
+        return status
 
-    df = pd.DataFrame(
-        {"Repo Validation": ["Not tested"], "Explanation": ["Process started"]}
-    )
-    df.to_csv(target_file)
+    write_cache("Not tested", "Process started", target_file)
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     if os.path.isdir(repo_dir_copy):
@@ -137,23 +158,21 @@ def head_passes_tests(arg):
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
-        rc, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
-        df = pd.DataFrame({"Repo Validation": [rc], "Explanation": [explanation]})
-        print(repo_name, ": Finished testing, result =", rc)
+        status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
+        write_cache(status, explanation, target_file)
+        print(repo_name, ": Finished testing, result =", status)
     except Exception as e:
-        df = pd.DataFrame(
-            {"Repo Validation": "Failure Exception", "Explanation": [str(e)]}
-        )
+        status = "Failure Exception"
+        write_cache(status, str(e), target_file)
         print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
-    df.to_csv(target_file)
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy)
     print(
         repo_name,
         "Finished head_passes_tests, result : ",
-        df.iloc[0]["Repo Validation"],
+        status,
     )
-    return df.iloc[0]["Repo Validation"]
+    return status
 
 
 if __name__ == "__main__":
@@ -172,7 +191,8 @@ if __name__ == "__main__":
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
-            pool.apply_async(head_passes_tests, args=(v,)) for v in df.iterrows()
+            pool.apply_async(head_passes_tests, args=(v,))
+            for v in tqdm(df.iterrows(), total=len(df))
         ]
         for result in results:
             try:
