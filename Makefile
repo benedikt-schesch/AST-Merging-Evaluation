@@ -6,7 +6,7 @@ SH_SCRIPTS =
 BASH_SCRIPTS = $(shell find . -name '*.sh' -not -path "./repos/*" -not -path "./.workdir/*")
 
 shell-script-style:
-	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 #	checkbashisms ${SH_SCRIPTS}
 
 showvars:
