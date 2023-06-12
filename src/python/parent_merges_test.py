@@ -21,7 +21,7 @@ import argparse
 from pathlib import Path
 import traceback
 
-from validate_repos import repo_test, clone_repo
+from validate_repos import repo_test, clone_repo, write_cache, read_cache
 from tqdm import tqdm
 import pandas as pd
 import git.repo
@@ -43,13 +43,10 @@ def pass_test(repo_name, commit):
     cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit + ".csv")
 
     if os.path.isfile(cache_file):
-        df = pd.read_csv(cache_file)
-        return df.iloc[0]["Test result"]
+        status, _ = read_cache(cache_file)
+        return status
 
-    df = pd.DataFrame(
-        {"Test result": ["Not tested"], "Explanation": ["Process started"]}
-    )
-    df.to_csv(cache_file)
+    write_cache("Not tested", "Process started", cache_file)
 
     try:
         process = multiprocessing.current_process()
@@ -99,8 +96,7 @@ def pass_test(repo_name, commit):
                 result = "Failure exception during testing"
                 explanation = str(e)
 
-        df = pd.DataFrame({"Test result": [result], "Explanation": [explanation]})
-        df.to_csv(cache_file)
+        write_cache(result, explanation, cache_file)
         if os.path.isdir(repo_dir_copy):
             shutil.rmtree(repo_dir_copy)
 
