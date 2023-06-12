@@ -28,7 +28,9 @@ fi
 
 for i in $JAVA_8_HOME $JAVA_11_HOME $JAVA_17_HOME
 do
+  export PATH=$(getconf PATH)
   export JAVA_HOME=$i
+  export PATH=$JAVA_HOME/bin:$PATH
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
   ${command}
   rc=$?
