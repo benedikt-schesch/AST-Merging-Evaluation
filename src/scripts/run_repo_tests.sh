@@ -5,8 +5,6 @@
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
-## TODO: Try different JVMs.
-
 set -e
 set -o nounset
 
@@ -18,7 +16,7 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  command="./gradlew test --parallel"
+  command="./gradlew test -g ../.gradle/"
 elif [ -f "mvnw" ] ; then
   command="./mvnw test"
 elif [ -f pom.xml ] ; then
@@ -28,12 +26,23 @@ else
   exit 1
 fi
 
-${command}
-rc=$?
-if $rc ; then
-  echo "Test success: ${command}"
-else
-  echo "Test failure: ${command}"
-fi
-
-exit $rc
+for i in $JAVA_8 $JAVA_11 $JAVA_17
+do
+  if [ ! -d "$i" ] ; then
+    echo "No JDK $i"
+    continue
+  fi
+  export JAVA_HOME=$i
+  export PATH="$JAVA_HOME:$PATH"
+  echo "Running tests with JAVA_HOME=$JAVA_HOME"
+  ${command}
+  rc=$?
+  if [ $rc -eq 0 ] ; then
+    echo "Test success: ${command}"
+    exit $rc
+  else
+    echo "Test failure: ${command}"
+  fi
+done
+echo 
+exit 1
