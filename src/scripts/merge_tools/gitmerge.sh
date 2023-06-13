@@ -24,7 +24,7 @@ strategy=$4
 # perform merge
 pushd "$clone_dir"
 git checkout "$branch1" --force
-git merge --no-edit "$branch2" -s $strategy
+eval "git merge --no-edit \"$branch2\" -s \"$strategy\""
 retVal=$?
 
 # report conflicts

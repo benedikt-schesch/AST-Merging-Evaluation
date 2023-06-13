@@ -7,5 +7,4 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy="resolve"
-command='$MERGE_DIR/gitmerge.sh $clone_dir $branch1 $branch2 "$strategy"'
-eval $command
+eval "$MERGE_DIR/gitmerge.sh $clone_dir $branch1 $branch2 \"$strategy\""
