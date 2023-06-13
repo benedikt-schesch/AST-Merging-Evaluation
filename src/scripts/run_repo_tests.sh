@@ -16,7 +16,7 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  command="./gradlew test"
+  command="./gradlew test -g ../.gradle/"
 elif [ -f "mvnw" ] ; then
   command="./mvnw test"
 elif [ -f pom.xml ] ; then
