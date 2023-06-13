@@ -14,6 +14,7 @@ import signal
 import subprocess
 import shutil
 import os
+import glob
 import time
 import multiprocessing
 import argparse
@@ -40,7 +41,11 @@ TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
-MERGE_TOOLS = ["gitmerge", "spork", "intellimerge"]
+MERGE_TOOLS = [
+    os.path.basename(file)[:-3]
+    for file in glob.glob("src/scripts/merge_tools/*")
+    if file[-3:] == ".sh"
+]
 
 
 def write_cache(status, runtime, explanation, cache_file):
