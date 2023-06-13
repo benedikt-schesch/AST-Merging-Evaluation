@@ -8,13 +8,13 @@ Input: a csv of repos.  It must contain a header, one of whose columns is "repos
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output:  the rows of the input for which the head of the default branch passes tests.
 """
-import csv
 import subprocess
 import shutil
 import os
 import multiprocessing
 import argparse
 from pathlib import Path
+import stat
 
 from tqdm import tqdm
 import pandas as pd
@@ -117,6 +117,18 @@ def read_cache(cache_file):
     return status, explanation
 
 
+def del_rw(action, name, exc):
+    """Delete read-only files. Some repos contain read-only
+    files which cannot be deleted.
+    Args:
+        action (str): The action to be taken.
+        name (str): The name of the file.
+        exc (str): The exception.
+    """
+    os.chmod(name, stat.S_IWRITE)
+    os.remove(name)
+
+
 def head_passes_tests(arg):
     """Checks if the head of main passes test.
     Args:
@@ -143,7 +155,7 @@ def head_passes_tests(arg):
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy)
+        shutil.rmtree(repo_dir_copy, onerror=del_rw)
     try:
         print(repo_name, ": Cloning repo")
         _ = clone_repo(repo_name)
@@ -152,9 +164,6 @@ def head_passes_tests(arg):
         print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
-        ## TODO: Why is it necessary to fetch and update?  We don't care about new commits that have
-        ## been recently added to the repository, because our experiments ignore all commits after a
-        ## certain date.
         repo.remote().fetch()
         repo.submodule_update()
         repo.git.checkout(row["Validation hash"], force=True)
@@ -166,7 +175,7 @@ def head_passes_tests(arg):
         write_cache(status, str(e), target_file)
         print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
     if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy)
+        shutil.rmtree(repo_dir_copy, onerror=del_rw)
     print(
         repo_name,
         "Finished head_passes_tests, result : ",

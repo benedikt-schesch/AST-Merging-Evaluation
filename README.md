@@ -1,5 +1,9 @@
 # ASTMerging
 
+![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
+
+![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
+
 To delete all cached results: `make clean-cache`
 
 ## Requirements
