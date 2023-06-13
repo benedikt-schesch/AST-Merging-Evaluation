@@ -28,6 +28,10 @@ fi
 
 for i in $JAVA_8_HOME $JAVA_11_HOME $JAVA_17_HOME
 do
+  if [ ! -d "$i" ] ; then
+    echo "No JDK $i"
+    continue
+  fi
   PATH=$(getconf PATH)
   export PATH=$PATH
   export JAVA_HOME=$i
