@@ -26,20 +26,18 @@ else
   exit 1
 fi
 
-for i in $JAVA_8_HOME $JAVA_11_HOME $JAVA_17_HOME
+for i in $JAVA_8 $JAVA_11 $JAVA_17
 do
   if [ ! -d "$i" ] ; then
     echo "No JDK $i"
     continue
   fi
-  PATH=$(getconf PATH)
-  export PATH=$PATH
   export JAVA_HOME=$i
-  export PATH=$JAVA_HOME/bin:$PATH
+  export PATH="$JAVA_HOME:$PATH"
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
   ${command}
   rc=$?
-  if $rc ; then
+  if [ $rc -eq 0 ] ; then
     echo "Test success: ${command}"
     exit $rc
   else

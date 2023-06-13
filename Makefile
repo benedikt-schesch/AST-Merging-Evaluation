@@ -44,7 +44,7 @@ clean-stored-hashes:
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
-	${MAKE} clean-cache
+	${MAKE} clean
 	./run_small.sh
 	${MAKE} small-test-diff
 
@@ -63,7 +63,7 @@ small-test-diff:
 	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
 
 gradle-assemble:
-	./gradlew assemble
+	./gradlew assemble -g ../.gradle/
 
 download-merge-tools: download-intellimerge download-spork
 
