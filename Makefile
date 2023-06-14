@@ -68,8 +68,12 @@ download-merge-tools: download-intellimerge download-spork
 
 download-intellimerge:
 	mkdir -p jars
-	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
+	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/ --no-verbose
 
 download-spork:
 	mkdir -p jars
-	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
+
+TAGS: tags
+tags:
+	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}

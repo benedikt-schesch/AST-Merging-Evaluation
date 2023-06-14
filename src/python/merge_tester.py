@@ -20,11 +20,15 @@ import multiprocessing
 import argparse
 import traceback
 from pathlib import Path
+from functools import partialmethod
 
 from validate_repos import repo_test, del_rw
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
+
+if os.getenv("TERM", "dumb") == "dumb":
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 
 SCRATCH_DIR = "scratch/"

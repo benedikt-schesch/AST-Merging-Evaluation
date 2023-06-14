@@ -16,10 +16,15 @@ import argparse
 from pathlib import Path
 import stat
 import sys
+from functools import partialmethod
 
 from tqdm import tqdm
 import pandas as pd
 import git.repo
+
+if os.getenv("TERM", "dumb") == "dumb":
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
+
 
 CACHE = "cache/repos_result/"
 WORKDIR = ".workdir/"
@@ -148,7 +153,7 @@ def head_passes_tests(arg):
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Done, result is cached in " + target_file + ": " + status,
+            ": Cached result from " + target_file + ": " + status,
         )
         return status
 
@@ -180,9 +185,11 @@ def head_passes_tests(arg):
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     print(
         repo_name,
-        "Finished head_passes_tests, result : ",
+        ": Finished head_passes_tests, result : ",
         status,
     )
+    if status != "Success":
+        print("Output is cached in", target_file)
     return status
 
 
