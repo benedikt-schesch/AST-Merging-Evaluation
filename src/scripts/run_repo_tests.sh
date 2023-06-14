@@ -16,30 +16,38 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  ./gradlew test --parallel
-  rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Gradle Test Failure
-    exit 1
-  fi
-  if [ $rc -eq 0 ] ; then
-    echo Gradle Test Success
-    exit 0
-  fi
+  command="./gradlew test -g ../.gradle/"
+elif [ -f "mvnw" ] ; then
+  command="./mvnw test"
+elif [ -f pom.xml ] ; then
+  command="mvn test"
+else
+  echo "No Gradle or Maven buildfile"
+  exit 1
 fi
 
-if [[ -f pom.xml || -f mvnw ]] ; then
-  mvn test
-  rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Maven Test Failure
-    exit 1
-  fi
-  if [ $rc -eq 0 ] ; then
-    echo Maven Test Success
-    exit 0
-  fi
-fi
+if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
+if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
+if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
 
-echo "No Gradle or Maven buildfile"
+# shellcheck disable=SC2153 # Not a typo of JAVA_HOME.
+for javaX_home in $JAVA8_HOME $JAVA11_HOME $JAVA17_HOME
+do
+  if [ ! -d "${javaX_home}" ] ; then
+    echo "No JDK ${javaX_home}"
+    continue
+  fi
+  export JAVA_HOME=${javaX_home}
+  export PATH="$JAVA_HOME:$PATH"
+  echo "Running tests with JAVA_HOME=$JAVA_HOME"
+  ${command}
+  rc=$?
+  if [ $rc -eq 0 ] ; then
+    echo "Test success: ${command}"
+    exit $rc
+  else
+    echo "Test failure: ${command}"
+  fi
+done
+echo 
 exit 1
