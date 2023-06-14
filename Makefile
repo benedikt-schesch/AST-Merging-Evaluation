@@ -73,3 +73,7 @@ download-intellimerge:
 download-spork:
 	mkdir -p jars
 	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+
+TAGS: tags
+tags:
+	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
