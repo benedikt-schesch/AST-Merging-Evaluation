@@ -217,9 +217,6 @@ public class FindMergeCommits {
       return;
     }
 
-    /** The SHA ids of the merge commits that have already been written to the file. */
-    Set<ObjectId> written = new HashSet<>();
-
     String repoDirName =
         "/tmp/"
             + System.getProperty("user.name")
@@ -258,7 +255,7 @@ public class FindMergeCommits {
       writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit");
       writer.newLine();
 
-      writeMergeCommitsForBranches(git, repo, orgName, repoName, writer, written);
+      writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
     }
   }
 
@@ -270,18 +267,11 @@ public class FindMergeCommits {
    * @param orgName the organization (owner) name
    * @param repoName the repository name
    * @param writer where to write the merge commits
-   * @param written a set of refs that have already been written, to prevent duplicates in the
-   *     output
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForBranches(
-      Git git,
-      FileRepository repo,
-      String orgName,
-      String repoName,
-      BufferedWriter writer,
-      Set<ObjectId> written)
+      Git git, FileRepository repo, String orgName, String repoName, BufferedWriter writer)
       throws IOException, GitAPIException {
     // github-api.kohsuke.org gives no way to get the commits of a branch, so use JGit instead.
     // (But there is GHRepository.getSHA1(); would that have done the trick?)
@@ -290,6 +280,9 @@ public class FindMergeCommits {
 
     List<Ref> branches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
     branches = withoutDuplicateBranches(branches);
+
+    // The SHA ids of the merge commits that have already been output.
+    Set<ObjectId> written = new HashSet<>();
 
     for (Ref branch : branches) {
       writeMergeCommitsForBranch(git, repo, branch, writer, written);
