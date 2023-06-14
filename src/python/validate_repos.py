@@ -15,13 +15,13 @@ import multiprocessing
 import argparse
 from pathlib import Path
 import stat
+from functools import partialmethod
 
 from tqdm import tqdm
-from functools import partialmethod
 import pandas as pd
 import git.repo
 
-if os.getenv('TERM', 'dumb') == 'dumb':
+if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 

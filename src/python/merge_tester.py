@@ -20,14 +20,14 @@ import multiprocessing
 import argparse
 import traceback
 from pathlib import Path
+from functools import partialmethod
 
 from validate_repos import repo_test, del_rw
 from tqdm import tqdm  # shows a progress meter as a loop runs
-from functools import partialmethod
 import pandas as pd
 import git.repo
 
-if os.getenv('TERM', 'dumb') == 'dumb':
+if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 

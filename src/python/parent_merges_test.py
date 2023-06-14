@@ -20,14 +20,14 @@ from multiprocessing import Manager
 import argparse
 from pathlib import Path
 import traceback
+from functools import partialmethod
 
 from validate_repos import repo_test, clone_repo, write_cache, read_cache, del_rw
 from tqdm import tqdm
-from functools import partialmethod
 import pandas as pd
 import git.repo
 
-if os.getenv('TERM', 'dumb') == 'dumb':
+if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 
