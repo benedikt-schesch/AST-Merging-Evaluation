@@ -219,5 +219,7 @@ if __name__ == "__main__":
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
     print("validate_repos: Number of valid repos:", len(out))
+    if len(out) == 0:
+        sys.exit(1)
     out.to_csv(args.output_path)
     print("validate_repos: Done")
