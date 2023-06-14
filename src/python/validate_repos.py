@@ -147,7 +147,7 @@ def head_passes_tests(arg):
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Done, result is cached in " + target_file + ": " + status,
+            ": Cached result from " + target_file + ": " + status,
         )
         return status
 
