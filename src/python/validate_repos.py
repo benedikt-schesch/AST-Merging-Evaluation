@@ -125,8 +125,8 @@ def del_rw(action, name, exc):
         name (str): The name of the file.
         exc (str): The exception.
     """
-    os.chmod(name, stat.S_IWRITE)
-    os.remove(name)
+    subprocess.call(['chmod', '-R', '777', name])
+    shutil.rmtree(name,ignore_errors=True)
 
 
 def head_passes_tests(arg):
@@ -175,6 +175,7 @@ def head_passes_tests(arg):
         write_cache(status, str(e), target_file)
         print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
     if os.path.isdir(repo_dir_copy):
+        # Remove all permision restrictions from repo_dir_copy
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     print(
         repo_name,
@@ -201,9 +202,9 @@ if __name__ == "__main__":
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
             pool.apply_async(head_passes_tests, args=(v,))
-            for v in tqdm(df.iterrows(), total=len(df))
+            for v in df.iterrows()
         ]
-        for result in results:
+        for result in tqdm(results, total=len(results)):
             try:
                 return_value = result.get(2 * TIMEOUT_TESTING)
             except multiprocessing.TimeoutError:

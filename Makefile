@@ -27,7 +27,6 @@ clean: clean-workspace clean-cache
 
 # This target deletes files that are committed to version control.
 clean-workspace:
-	rm -rf cache
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
