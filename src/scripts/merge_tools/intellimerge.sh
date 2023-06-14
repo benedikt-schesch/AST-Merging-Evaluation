@@ -4,7 +4,7 @@
 # <clone_dir> must contain a clone of a repository.
 # Merges branch2 into branch1, in <clone_dir>.
 # Return code is 0 for merge success, 1 for merge failure.
-# For merge failure, also outputs "Conflict".
+# For merge failure, also outputs "Conflict" and aborts the merge.
 
 set -e
 set -o nounset
@@ -14,33 +14,39 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-INTELLIMERGE=./jars/IntelliMerge-1.0.9-all.jar
+SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
+ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
+intellimergefullpath="${ROOT_PATH}/jars/IntelliMerge-1.0.9-all.jar"
+
+# If file ${intellimergefullpath} does not exist, call make download-intellimerge
+if [ ! -f "${intellimergefullpath}" ]; then
+    make download-intellimerge
+fi
 
 clone_dir=$1
 branch1=$2
 branch2=$3
 temp_dir=".workdir/intelli_temp_$$/"
 mkdir $temp_dir
-wd=$(pwd)
 
 # run intellimerge
-java -jar $INTELLIMERGE -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
+java -jar "$intellimergefullpath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
-cd "$clone_dir"
+pushd "$clone_dir"
 git checkout "$branch1" --force
 # collect initial counts of strings that are conflict markers, but appear in the clone.
 m1a=$(grep -ro "^<<<<<<<$" . | wc -l)
 m2a=$(grep -ro "^=======$" . | wc -l)
 m3a=$(grep -ro "^>>>>>>>$" . | wc -l)
 git merge --no-edit "$branch2"
+popd
 
 # move files
-cd "$wd"
 find $temp_dir -type f | while read -r f; do
     # construct paths
     suffix=${f#"$temp_dir"}
-    mv "$f" "$clone_dir$suffix"
+    mv "$f" "$clone_dir/$suffix"
 done
 rm -rf $temp_dir
 

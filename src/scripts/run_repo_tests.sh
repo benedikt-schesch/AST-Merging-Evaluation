@@ -16,30 +16,33 @@ fi
 cd "$1"
 
 if [ -f "gradlew" ] ; then
-  ./gradlew test --parallel
-  rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Gradle Test Failure
-    exit 1
-  fi
-  if [ $rc -eq 0 ] ; then
-    echo Gradle Test Success
-    exit 0
-  fi
+  command="./gradlew test -g ../.gradle/"
+elif [ -f "mvnw" ] ; then
+  command="./mvnw test"
+elif [ -f pom.xml ] ; then
+  command="mvn test"
+else
+  echo "No Gradle or Maven buildfile"
+  exit 1
 fi
 
-if [[ -f pom.xml || -f mvnw ]] ; then
-  mvn test
+for i in $JAVA_8 $JAVA_11 $JAVA_17
+do
+  if [ ! -d "$i" ] ; then
+    echo "No JDK $i"
+    continue
+  fi
+  export JAVA_HOME=$i
+  export PATH="$JAVA_HOME:$PATH"
+  echo "Running tests with JAVA_HOME=$JAVA_HOME"
+  ${command}
   rc=$?
-  if [ $rc -ne 0 ] ; then
-    echo Maven Test Failure
-    exit 1
-  fi
   if [ $rc -eq 0 ] ; then
-    echo Maven Test Success
-    exit 0
+    echo "Test success: ${command}"
+    exit $rc
+  else
+    echo "Test failure: ${command}"
   fi
-fi
-
-echo "No Gradle or Maven buildfile"
+done
+echo 
 exit 1

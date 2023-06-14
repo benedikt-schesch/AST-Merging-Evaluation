@@ -1,10 +1,12 @@
+all: style  gradle-assemble
+
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
-BASH_SCRIPTS = $(shell find . -name '*.sh' -not -path "./repos/*" -not -path "./.workdir/*")
+BASH_SCRIPTS = $(shell find . -type d \( -path ./cache -o -path ./.workdir -o -path ./repos \) -prune -false -o -name '*.sh')
 
 shell-script-style:
-	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 #	checkbashisms ${SH_SCRIPTS}
 
 showvars:
@@ -20,21 +22,28 @@ check-python-style:
 	black ${PYTHON_FILES} --check
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
-clean:
-	rm -rf small/
+#This target cleans up the workspace and the cache.
+clean: clean-workspace clean-cache
 
-clean-cache:
-	rm -rf cache
+# This target deletes files that are committed to version control.
+clean-workspace:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
+	rm -rf small
+
+# This target deletes files in the cache.
+clean-cache:
+	rm -rf cache
 
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
 	rm -f data/repos_small_with_hashes.csv
 	rm -f data/repos_with_hashes.csv
 
+# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
+	${MAKE} clean
 	./run_small.sh
 	${MAKE} small-test-diff
 
@@ -51,3 +60,16 @@ small-test-diff:
 	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
 	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
 	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
+
+gradle-assemble:
+	./gradlew assemble -g ../.gradle/
+
+download-merge-tools: download-intellimerge download-spork
+
+download-intellimerge:
+	mkdir -p jars
+	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
+
+download-spork:
+	mkdir -p jars
+	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar

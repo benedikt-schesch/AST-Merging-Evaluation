@@ -1,7 +1,10 @@
 # ASTMerging
 
-To delete all cached results:
-  make clean-cache
+![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
+
+![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
+
+To delete all cached results: `make clean-cache`
 
 ## Requirements
 
@@ -18,8 +21,7 @@ pip install -r requirements.txt
 To download the Intellimerge and Spork jar:
 
 ```bash
-wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/
-wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar
+make download-merge-tools
 ```
 
 ### Alternative Python installation
@@ -38,7 +40,7 @@ If you did the previous step make sure the virtual environemnt is activated when
 
 ```bash
 sudo apt-get install -y jq
-type -p curl >/dev/null || sudo apt install curl -y
+command -v curl >/dev/null || sudo apt install curl -y
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
 && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
 && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
@@ -65,10 +67,7 @@ brew install git-lfs
 To test the stack, execute:
 
 ```bash
-make clean
-make clean-cache
-sh run_small.sh
-make small-test-diff
+make small-test
 ```
 
 This will run the entire code on two small repos.
@@ -95,6 +94,10 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 
 To clean the cache run `make clean-cache`.
 
+### Clean Workspace
+
+To cleanup the workspace:`make clean-workspace`
+
 ### Style Checking
 
 To run style checking run `make style`.
@@ -103,41 +106,13 @@ To run style checking run `make style`.
 
 ## Directory structure
 
+### Commited files
+
 * run.sh -> This file executes each step of the stack.
 
 * run_small.sh -> This file executes the stack on two repositories.
 
 * run_full.sh -> This file executes the stack on all the repositories.
-
-* .workdir/ -> This folder is used for the local computations of each process.
-
-* .cache/ -> This folder is a cache for each computation. contains:
-
-  * repos_result/ -> Caches the validation of each repository.
-
-  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
-
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
-
-* repos/ -> In this folder each repo is cloned.
-
-* jars/ -> Location for the Intellimerge and Spork jars.
-
-* scratch/ -> If enabled each merge will be stored in this location.
-
-* results/ -> Stores the results for the full analysis.
-
-* small/ -> Stores the results for the small analysis.
-
-* data/ -> contains:
-
-  * repos.csv -> List of all repos that fulfill the initial selection criterion.
-
-  * repos_small.csv -> List of only 2 repos.
-
-* results/ -> contains:
-
-  * valid_repos.csv -> Repos whose main branch passes its "test" buildfile target.
 
 * src/ -> contains the following scripts:
 
@@ -156,9 +131,41 @@ To run style checking run `make style`.
   * scripts/ -> contains the following scripts:
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
-    * find_merge_commits.sh -> Finds all the merges in a project.
-
     * merge_tools/ -> contains the following scripts:
       * gitmerge.sh -> Executes git merge on a specific merge.
       * intellimerge.sh -> Executes intellimerge on a specific merge.
       * spork.sh -> Executes spork on a specific merge.
+
+  * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
+
+* cache/ -> This folder is a cache for each computation. contains:
+
+  * repos_result/ -> Caches the validation of each repository.
+
+  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
+
+* data/ -> All input data, contains:
+
+  * repos.csv -> List of all repos that fulfill the initial selection criterion.
+
+  * repos_with_hashes.csv -> repos.csv but with the tested commit for repository validation
+
+  * repos_small.csv -> List of only 2 repos.
+
+  * repos_small_with_hashes.csv -> repos_small.csv but with the tested commit for repository validation
+
+### Uncommited Files
+
+* .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
+
+* repos/ -> In this folder each repo is cloned.
+
+* results/ -> Contains all the results for the full analysis.
+
+* small/ -> Contains all the results for the small analysis.
+
+* jars/ -> Location for the Intellimerge and Spork jars.
+
+* scratch/ -> If enabled each merge will be stored in this location.
