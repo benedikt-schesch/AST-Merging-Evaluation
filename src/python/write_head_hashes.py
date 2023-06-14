@@ -20,7 +20,11 @@ from pathlib import Path
 import multiprocessing
 from validate_repos import clone_repo
 from tqdm import tqdm
+from functools import partialmethod
 import pandas as pd
+
+if os.getenv('TERM', 'dumb') == 'dumb':
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 
 def get_latest_hash(args):
