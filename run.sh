@@ -48,7 +48,7 @@ if [ ! -f "${intellimergefullpath}" ]; then
     make download-intellimerge
 fi
 
-./gradlew assemble
+./gradlew assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
 

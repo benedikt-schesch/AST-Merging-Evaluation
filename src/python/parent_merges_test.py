@@ -21,7 +21,7 @@ import argparse
 from pathlib import Path
 import traceback
 
-from validate_repos import repo_test, clone_repo, write_cache, read_cache
+from validate_repos import repo_test, clone_repo, write_cache, read_cache, del_rw
 from tqdm import tqdm
 import pandas as pd
 import git.repo
@@ -58,7 +58,7 @@ def pass_test(repo_name, commit):
         repo = clone_repo(repo_name)
 
         if os.path.isdir(repo_dir_copy):
-            shutil.rmtree(repo_dir_copy)
+            shutil.rmtree(repo_dir_copy, onerror=del_rw)
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
         repo.remote().fetch()
@@ -98,7 +98,7 @@ def pass_test(repo_name, commit):
 
         write_cache(result, explanation, cache_file)
         if os.path.isdir(repo_dir_copy):
-            shutil.rmtree(repo_dir_copy)
+            shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
         return result
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     df = pd.read_csv(args.repos_csv)
     if os.path.isdir(args.output_dir):
-        shutil.rmtree(args.output_dir)
+        shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
 
     multiprocessing_manager = Manager()

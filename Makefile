@@ -6,7 +6,7 @@ SH_SCRIPTS =
 BASH_SCRIPTS = $(shell find . -name '*.sh' -not -path "./repos/*" -not -path "./.workdir/*")
 
 shell-script-style:
-	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 #	checkbashisms ${SH_SCRIPTS}
 
 showvars:
@@ -44,7 +44,7 @@ clean-stored-hashes:
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
-	${MAKE} clean-cache
+	${MAKE} clean
 	./run_small.sh
 	${MAKE} small-test-diff
 
@@ -63,7 +63,7 @@ small-test-diff:
 	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
 
 gradle-assemble:
-	./gradlew assemble
+	./gradlew assemble -g ../.gradle/
 
 download-merge-tools: download-intellimerge download-spork
 

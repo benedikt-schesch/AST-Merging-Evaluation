@@ -14,13 +14,14 @@ import signal
 import subprocess
 import shutil
 import os
+import glob
 import time
 import multiprocessing
 import argparse
 import traceback
 from pathlib import Path
 
-from validate_repos import repo_test
+from validate_repos import repo_test, del_rw
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
@@ -40,17 +41,13 @@ TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
-MERGE_TOOLS = [
-    "gitmerge_ort",
-    "gitmerge_ort-ignorespace",
-    "gitmerge-recursive-patience",
-    "gitmerge-recursive-minimal",
-    "gitmerge-recursive-histogram",
-    "gitmerge-recursive-myers",
-    "gitmerge-resolve",
-    "spork",
-    "intellimerge",
-]
+MERGE_TOOLS = sorted(
+    [
+        os.path.basename(file)[:-3]
+        for file in glob.glob("src/scripts/merge_tools/*")
+        if file[-3:] == ".sh"
+    ]
+)
 
 
 def write_cache(status, runtime, explanation, cache_file):
@@ -122,7 +119,7 @@ def merge_and_test(
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     try:
         if os.path.isdir(repo_dir_copy):
-            shutil.rmtree(repo_dir_copy)
+            shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
         shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
         repo = git.repo.Repo(repo_dir_copy + "/" + merging_method)
@@ -202,13 +199,13 @@ def merge_and_test(
             SCRATCH_DIR, "_".join([repo_name, left, right, base, merging_method])
         )
         if os.path.isdir(dst_name):
-            shutil.rmtree(dst_name)
+            shutil.rmtree(dst_name, onerror=del_rw)
         repo_dir_copy_merging_method = os.path.join(repo_dir_copy, merging_method)
         if os.path.isdir(repo_dir_copy_merging_method):
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
 
     if not STORE_WORKDIR:
-        shutil.rmtree(repo_dir_copy, ignore_errors=True)
+        shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
     write_cache(merge_status, runtime, explanation, cache_file)
     return merge, runtime
