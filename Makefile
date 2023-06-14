@@ -3,7 +3,7 @@ all: style  gradle-assemble
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
-BASH_SCRIPTS = $(shell find . -name '*.sh' -not -path "./repos/*" -not -path "./.workdir/*")
+BASH_SCRIPTS = $(shell find . -type d \( -path ./cache -o -path ./.workdir -o -path ./repos \) -prune -false -o -name '*.sh')
 
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
