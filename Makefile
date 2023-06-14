@@ -1,6 +1,6 @@
-all: style  gradle-assemble
+all: style gradle-assemble
 
-style: shell-script-style python-style
+style: shell-script-style python-style java-style
 
 SH_SCRIPTS = 
 BASH_SCRIPTS = $(shell find . -type d \( -path ./cache -o -path ./.workdir -o -path ./repos \) -prune -false -o -name '*.sh')
@@ -63,6 +63,9 @@ small-test-diff:
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/
+
+java-style:
+	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
 download-merge-tools: download-intellimerge download-spork
 
