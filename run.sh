@@ -20,6 +20,10 @@ N_MERGES=$3
 machine_id="${4:-0}"
 num_machines="${5:-1}"
 
+if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
+if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
+if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
+
 JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
 # This project has been eecuted with Java 8 and might yield different results with other versions.
