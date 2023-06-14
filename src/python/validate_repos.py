@@ -179,7 +179,7 @@ def head_passes_tests(arg):
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     print(
         repo_name,
-        "Finished head_passes_tests, result : ",
+        ": Finished head_passes_tests, result : ",
         status,
     )
     if status != "Success":
