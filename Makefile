@@ -1,3 +1,8 @@
+all: style gradle-assemble
+
+gradle-assemble:
+	./gradlew assemble
+
 style: shell-script-style python-style
 
 SH_SCRIPTS = 
