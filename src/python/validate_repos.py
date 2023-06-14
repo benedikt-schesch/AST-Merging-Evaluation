@@ -182,6 +182,8 @@ def head_passes_tests(arg):
         "Finished head_passes_tests, result : ",
         status,
     )
+    if status != "Success":
+        print("Output is cached in", target_file)
     return status
 
 
