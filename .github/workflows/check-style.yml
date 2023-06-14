@@ -10,15 +10,11 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run python style check
-      run: make check-python-style
     - name: Install shellcheck
       run: sudo apt install shellcheck
-    - name: Run shell style check
-      run: make shell-script-style
-    - name: Ensure Java code is documented
-      run: ./gradlew requireJavadoc
+    - name: Check style
+      run: make style
