@@ -64,7 +64,8 @@ def repo_test(repo_dir_copy, timeout):
         timeout (int): Test Timeout limit.
     Returns:
         str: The result of the test.
-        str: explanation.
+        str: explanation. The explanation of the result. Can be
+            "Success", "Timeout", or "Failure".
     """
     explanation = ""
     rc = 1  # Failure
@@ -140,7 +141,11 @@ def head_passes_tests(arg):
     Args:
         arg (idx, row): Information regarding that repo.
     Returns:
-        str: Valid repo result (main head passes tests)
+        str: Valid repo result (main head passes tests). Can be
+            "Success": if the head of main passes tests.
+            "Failure": if the head of main does not pass tests.
+            "Timeout": if the head of main times out.
+            "Failure Exception": if an exception occurs.
     """
     _, row = arg
     repo_name = row["repository"]

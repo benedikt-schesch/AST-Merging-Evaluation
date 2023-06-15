@@ -43,7 +43,12 @@ def pass_test(repo_name, commit):
         repo_name (str): Name of the repo to test.
         commit (str): Commit to test.
     Returns:
-        str: Test result.
+        str: Test result. Can be:
+            "Success": The commit passes tests.
+            "Failure git checkout": Exception during checkout.
+            "Failure commit date too new": The commit is too new and thus ignored.
+            "Failure test timeout": The test timed out.
+            "Failure test error": The commit failed for some other reason.
     """
     cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit)
 
@@ -132,9 +137,9 @@ def parent_pass_test(args):
         valid_merge_counter (str): Thread safe counter, counting number of valid merges.
         n_sampled (str): Number of sampled merges.
     Returns:
-        str: Test result of left parent.
-        str: Test result of right parent.
-        str: Test result of the merge.
+        str: Test result of left parent. (see pass_test)
+        str: Test result of right parent. (see pass_test)
+        str: Test result of the merge. (see pass_test)
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if valid_merge_counter[repo_name] > n_sampled:

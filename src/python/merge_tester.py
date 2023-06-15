@@ -94,7 +94,16 @@ def merge_and_test(
         base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
     Returns:
-        int: Test result of merge.  0 means success, non-zero means failure.
+        str: Test result of merge. Possible values are:
+            "Failure merge" if the merge failed.
+            "Timeout merge" if the merge timed out.
+            "Failure tests" if the tests failed.
+            "Success tests" if the merge and tests succeeded.
+            "Timeout tests" if the tests timed out.
+            "Failure merge general exception" if an exception occurred during the merge.
+            "Failure testing exception" if an exception occurred during the tests.
+            "Failure general exception during handling of the repository" if an exception
+                occurred during the handling of the repository.
         float: Runtime to execute the merge.
     """
     merging_method, repo_name, left, right, base, merge = args
@@ -152,7 +161,7 @@ def merge_and_test(
         except subprocess.TimeoutExpired:
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
             runtime = time.time() - start
-            merge_status = "Timeout"
+            merge_status = "Timeout merge"
             explanation = "Timeout during merge"
         except Exception as e:
             merge_status = "Failure merge general exception"
@@ -212,7 +221,7 @@ def merge_and_test(
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
     write_cache(merge_status, runtime, explanation, cache_file)
-    return merge, runtime
+    return merge_status, runtime
 
 
 if __name__ == "__main__":
