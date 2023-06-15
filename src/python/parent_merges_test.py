@@ -72,9 +72,6 @@ def pass_test(repo_name, commit):
         result = "Success"
         explanation = ""
 
-        result = 0
-        explanation = ""
-
         try:
             repo.git.checkout(commit, force=True)
         except Exception as e:
