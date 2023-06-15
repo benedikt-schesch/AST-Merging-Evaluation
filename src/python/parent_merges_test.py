@@ -45,7 +45,7 @@ def pass_test(repo_name, commit):
     Returns:
         str: Test result.
     """
-    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit + ".csv")
+    cache_file = os.path.join(CACHE, repo_name.split("/")[1] + "_" + commit)
 
     if os.path.isfile(cache_file):
         status, _ = read_cache(cache_file)
