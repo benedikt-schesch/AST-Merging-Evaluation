@@ -103,9 +103,9 @@ def write_cache(status, explanation, cache_file):
         explanation (str): The explanation of the result.
         cache_file (str): The path of the cache file.
     """
-    with open(cache_file+".txt", "w") as f:
+    with open(cache_file + ".txt", "w") as f:
         f.write(status)
-    with open(cache_file+"_explanation.txt", "w") as f:
+    with open(cache_file + "_explanation.txt", "w") as f:
         f.write(explanation)
 
 
