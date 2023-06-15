@@ -45,13 +45,17 @@ TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
-MERGE_TOOLS = sorted(
-    [
-        os.path.basename(file)[:-3]
-        for file in glob.glob("src/scripts/merge_tools/*")
-        if file[-3:] == ".sh"
-    ]
-)
+MERGE_TOOLS = [
+    "gitmerge-ort",
+    "gitmerge-ort-ignorespace",
+    "gitmerge-recursive-patience",
+    "gitmerge-recursive-minimal",
+    "gitmerge-recursive-histogram",
+    "gitmerge-recursive-myers",
+    "gitmerge-resolve",
+    "spork",
+    "intellimerge",
+]
 
 
 def write_cache(status, runtime, explanation, cache_file):
