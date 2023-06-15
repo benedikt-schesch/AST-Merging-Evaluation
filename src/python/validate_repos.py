@@ -103,9 +103,9 @@ def write_cache(status, explanation, cache_file):
         explanation (str): The explanation of the result.
         cache_file (str): The path of the cache file.
     """
-    with open(cache_file, "w") as f:
+    with open(cache_file+".txt", "w") as f:
         f.write(status)
-        f.write("\n")
+    with open(cache_file+"_explanation.txt", "w") as f:
         f.write(explanation)
 
 
@@ -119,7 +119,7 @@ def read_cache(cache_file):
     """
     with open(cache_file, "r") as f:
         status = f.readline().strip()
-        explanation = f.readlines()
+        explanation = "".join(f.readlines())
     return status, explanation
 
 
@@ -147,7 +147,7 @@ def head_passes_tests(arg):
     print(repo_name, ": Started head_passes_tests")
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + ".csv")
+    target_file = os.path.join(CACHE, repo_name.replace("/", "_"))
     # Check if result is cached
     if os.path.isfile(target_file):
         status, _ = read_cache(target_file)
