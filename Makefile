@@ -22,11 +22,8 @@ check-python-style:
 	black ${PYTHON_FILES} --check
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
-#This target cleans up the workspace and the cache.
-clean: clean-workspace clean-cache
-
-# This target deletes files that are committed to version control.
-clean-workspace:
+# This target deletes files that are not committed to version control.
+clean:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
