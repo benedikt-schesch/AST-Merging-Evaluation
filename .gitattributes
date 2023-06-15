@@ -1,2 +1,0 @@
-cache/** filter=lfs diff=lfs merge=lfs -text
-cache !text !filter !merge !diff
