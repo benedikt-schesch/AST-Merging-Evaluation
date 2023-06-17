@@ -20,12 +20,12 @@ import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
+from enum import Enum
+from typing import Tuple
 
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
-from enum import Enum
-from typing import Tuple
 from validate_repos import repo_test, del_rw, TEST_STATE
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -99,11 +99,9 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
     return status, runtime, explanation
 
 
-def merge_and_test(
+def merge_and_test(  # pylint: disable=too-many-locals, disable=too-many-statements
     args: Tuple[str, str, str, str, str, str]
-) -> Tuple[
-    MERGE_STATES, float
-]:  # pylint: disable=too-many-locals, disable=too-many-statements
+) -> Tuple[MERGE_STATES, float]:
     """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
@@ -314,7 +312,6 @@ if __name__ == "__main__":
         for merge_tool in MERGE_TOOLS:
             merges[merge_tool + " runtime"] = [-10 for i in merges.iterrows()]
 
-        merge_data: pd.Series[str]
         for merge_idx, merge_data in merges.iterrows():
             if merge_data["parent test"] != "Success":
                 continue

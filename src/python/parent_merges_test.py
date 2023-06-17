@@ -17,14 +17,14 @@ import os
 import itertools
 import multiprocessing
 from multiprocessing import Manager
+from multiprocessing.managers import DictProxy
 import argparse
 from pathlib import Path
 from functools import partialmethod
 from typing import Tuple, Union
-from tqdm import tqdm
 import pandas as pd
-from multiprocessing.managers import DictProxy
 
+from tqdm import tqdm
 from validate_repos import commit_pass_test, del_rw, TEST_STATE
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -127,7 +127,6 @@ if __name__ == "__main__":
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
-    repository_data: pd.Series[str]
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
@@ -139,7 +138,7 @@ if __name__ == "__main__":
                 + merge_list_file
             )
 
-        merges: pd.DataFrame = pd.read_csv(
+        merges = pd.read_csv(
             merge_list_file,
             names=["branch_name", "merge", "left", "right", "base"],
             header=0,
@@ -151,7 +150,6 @@ if __name__ == "__main__":
 
         result = []
         merges_counter = 0
-        merge_data: pd.Series[str]
         for merge_idx, merge_data in merges.iterrows():
             result = parent_pass_test(
                 (

@@ -18,7 +18,6 @@ import sys
 from functools import partialmethod
 from enum import Enum
 from typing import Tuple
-from pandas._typing import Label
 
 from tqdm import tqdm
 import pandas as pd
@@ -151,6 +150,7 @@ def del_rw(action, name, exc):
 
 
 def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
+    # TODO: Write
     print(repo_name, ": Started testing commit: ", commit)
 
     repo_dir = os.path.join("repos/", repo_name)
@@ -209,7 +209,7 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
     return status
 
 
-def head_passes_tests(arg: Tuple[Label, pd.Series]) -> TEST_STATE:
+def head_passes_tests(arg) -> TEST_STATE:
     """Checks if the head of main passes test.
     Args:
         arg (idx, row): Information regarding that repo.
