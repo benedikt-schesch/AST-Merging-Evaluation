@@ -24,7 +24,7 @@ from tqdm import tqdm
 import pandas as pd
 
 if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True) # type: ignore
 
 
 def get_latest_hash(args):
