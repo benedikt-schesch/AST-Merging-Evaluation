@@ -156,29 +156,31 @@ if __name__ == "__main__":
         mergem = main[merge_tool]
         mergef = feature[merge_tool]
 
-        correct_main = sum(val == "Success test" for val in mergem)
+        correct_main = sum(val == MERGE_STATES.Success_test.name for val in mergem)
         correct_main_percentage = (
             100 * correct_main / len(main) if len(main) != 0 else 0
         )
-        correct_feature = sum(val == "Success test" for val in mergef)
+        correct_feature = sum(val == MERGE_STATES.Success_test.name for val in mergef)
         correct_feature_percentage = (
             100 * correct_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        unhandled_main = sum(val == "Failure test" for val in mergem)
+        unhandled_main = sum(val == MERGE_STATES.Failure_merge.name for val in mergem)
         unhandled_main_percentage = (
             100 * unhandled_main / len(main) if len(main) != 0 else 0
         )
-        unhandled_feature = sum(val == "Failure test" for val in mergef)
+        unhandled_feature = sum(
+            val == MERGE_STATES.Failure_merge.name for val in mergef
+        )
         unhandled_feature_percentage = (
             100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        incorrect_main = sum(val in FAILURE_STRINGS for val in mergem)
+        incorrect_main = sum(val in FAILURE_NAMES for val in mergem)
         incorrect_main_percentage = (
             100 * incorrect_main / len(main) if len(main) != 0 else 0
         )
-        incorrect_feature = sum(val in FAILURE_STRINGS for val in mergef)
+        incorrect_feature = sum(val in FAILURE_NAMES for val in mergef)
         incorrect_feature_percentage = (
             100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
         )
