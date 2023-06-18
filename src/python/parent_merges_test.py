@@ -17,11 +17,10 @@ import os
 import itertools
 import multiprocessing
 from multiprocessing import Manager
-from multiprocessing.managers import DictProxy
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple, Union
+from typing import Tuple, Union, Dict
 import pandas as pd
 
 from tqdm import tqdm
@@ -36,14 +35,19 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def parent_pass_test(
-    args: Tuple[str, str, str, str, Union[None, DictProxy[str, int]], int]
+    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int]
 ) -> Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]:
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
-        #TODO: Write
+        args (Tuple[str, str, str, str, Union[None, Dict[str, int]], int]): A tuple containing
+            the repository name, the left parent, the right parent, the merge commit, a dictionary
+            containing the number of merges with passing parents for each repository, and the
+            maximum number of merges to sample.
     Returns:
-        #TODO: Write
+        Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]: A tuple containing the test
+            results for the left parent, the right parent, and the merge commit, or None if
+            enough merges have been sampled.
     """
     repo_name, left, right, merge, valid_merge_counter, n_sampled = args
     if not valid_merge_counter is None:
@@ -77,7 +81,7 @@ if __name__ == "__main__":
     os.mkdir(args.output_dir)
 
     multiprocessing_manager = Manager()
-    valid_merge_counter: DictProxy[str, int] = multiprocessing_manager.dict()
+    valid_merge_counter = multiprocessing_manager.dict()
 
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []

@@ -49,7 +49,7 @@ def clone_repo(repo_name: str) -> git.repo.Repo:
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
-        The repository
+        git.repo.Repo: The repository
     """
     repo_dir = os.path.join("repos/", repo_name)
     if os.path.isdir(repo_dir):
@@ -76,7 +76,7 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
         repo_dir_copy (str): The path of the working copy (the clone).
         timeout (int): Test Timeout limit.
     Returns:
-        str: The result of the test.
+        TEST_STATE: The result of the test.
         str: explanation. The explanation of the result.
     """
     explanation = ""
@@ -112,7 +112,7 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
 def write_cache(status: TEST_STATE, explanation: str, cache_file: str):
     """Writes the result of the test to a cache file.
     Args:
-        status (str): The result of the test.
+        status (TEST_STATE): The result of the test.
         explanation (str): The explanation of the result.
         cache_file (str): The path of the cache file.
     """
@@ -122,16 +122,17 @@ def write_cache(status: TEST_STATE, explanation: str, cache_file: str):
         f.write(explanation)
 
 
-def read_cache(cache_file: str) -> Tuple[str, str]:
+def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
     """Reads the result of the test from a cache file.
     Args:
         cache_file (str): The path of the cache file.
     Returns:
-        str: The result of the test.
+        TEST_STATE: The result of the test.
         str: The explanation of the result.
     """
     with open(cache_file + ".txt", "r") as f:
-        status = f.readline().strip()
+        status_name = f.readline().strip()
+        status = TEST_STATE[status_name]
     with open(cache_file + "_explanation.txt", "r") as f:
         explanation = "".join(f.readlines())
     return status, explanation
@@ -150,18 +151,23 @@ def del_rw(action, name, exc):
 
 
 def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
-    # TODO: Write
+    """Tests a commit of a repository.
+    Args:
+        repo_name (str): The name of the repository.
+        commit (str): The commit to be tested.
+    Returns:
+        TEST_STATE: The result of the test.
+    """
     print(repo_name, ": Started testing commit: ", commit)
 
     repo_dir = os.path.join("repos/", repo_name)
     target_file = os.path.join(CACHE, repo_name.replace("/", "_"))
     # Check if result is cached
     if os.path.isfile(target_file):
-        status_name, _ = read_cache(target_file)
-        status = TEST_STATE[status_name]
+        status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Cached result from " + target_file + ": " + status_name,
+            ": Cached result from " + target_file + ": " + status.name,
         )
         return status
 
@@ -214,7 +220,7 @@ def head_passes_tests(arg) -> TEST_STATE:
     Args:
         arg (idx, row): Information regarding that repo.
     Returns:
-        #TODO: Here write
+        TEST_STATE: The result of the test.
     """
     _, row = arg
     repo_name = row["repository"]
