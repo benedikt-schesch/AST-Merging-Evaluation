@@ -155,7 +155,7 @@ if __name__ == "__main__":
         result = []
         merges_counter = 0
         for merge_idx, merge_data in merges.iterrows():
-            result = parent_pass_test(
+            parents_result = parent_pass_test(
                 (
                     repo_name,
                     merge_data["left"],
@@ -165,9 +165,9 @@ if __name__ == "__main__":
                     0,
                 )
             )
-            if result is None:
+            if parents_result is None:
                 continue
-            left_test, right_test, merge_test = result
+            left_test, right_test, merge_test = parents_result
             merges.at[merge_idx, "merge test"] = merge_test.name
             if left_test == TEST_STATE.Success and right_test == TEST_STATE.Success:
                 merges.at[merge_idx, "parent test"] = TEST_STATE.Success.name

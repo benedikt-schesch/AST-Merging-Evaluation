@@ -57,8 +57,10 @@ def clone_repo(repo_name: str) -> git.repo.Repo:
     else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
+        print(repo_name, " : Cloning repo")
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.repo.Repo.clone_from(git_url, repo_dir)
+        print(repo_name, " : Finished cloning")
     try:
         repo.remote().fetch()
         repo.submodule_update()
@@ -161,9 +163,9 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
     print(repo_name, ": Started testing commit: ", commit)
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(CACHE, repo_name.replace("/", "_"))
+    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
     # Check if result is cached
-    if os.path.isfile(target_file):
+    if os.path.isfile(target_file + ".txt"):
         status, _ = read_cache(target_file)
         print(
             repo_name,
@@ -180,16 +182,13 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     try:
-        print(repo_name, ": Cloning repo")
         try:
             _ = clone_repo(repo_name)
         except Exception as e:
             status = TEST_STATE.Failure_git_clone
             explanation = str(e)
             raise
-        print(repo_name, ": Finished cloning")
 
-        print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
         try:

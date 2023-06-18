@@ -81,7 +81,7 @@ def write_cache(
     """
     with open(cache_file + ".txt", "w") as f:
         f.write(status.name + "\n" + str(runtime))
-    with open(cache_file + "_explanation.txt", "w"):
+    with open(cache_file + "_explanation.txt", "w") as f:
         f.write(explanation)
 
 
@@ -94,7 +94,7 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
         float: The runtime of the merge.
         str: The explanation of the merge.
     """
-    with open(cache_file + ".ttx", "r") as f:
+    with open(cache_file + ".txt", "r") as f:
         status_name = f.readline().strip()
         status = MERGE_STATES[status_name]
         runtime = float(f.readline().strip())
@@ -190,7 +190,7 @@ def merge_and_test(  # pylint: disable=too-many-locals
         + "_"
         + merging_method,
     )
-    if os.path.isfile(cache_file):
+    if os.path.isfile(cache_file + ".txt"):
         status, runtime, _ = read_cache(cache_file)
         return status, runtime
     # Variable `merge_status` is returned by this routine.
@@ -299,11 +299,7 @@ if __name__ == "__main__":
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(
-            tqdm(
-                pool.imap(merge_and_test, args_merges),
-                total=len(args_merges),
-                miniters=1,
-            )
+            pool.imap(merge_and_test, tqdm(args_merges, total=len(args_merges))),
         )
     print("merge_tester: Finished Testing")
     print("merge_tester: Building Output")

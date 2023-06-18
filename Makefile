@@ -40,7 +40,7 @@ clean-stored-hashes:
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
-	${MAKE} clean
+	${MAKE} clean-cache clean
 	./run_small.sh
 	${MAKE} small-test-diff
 
