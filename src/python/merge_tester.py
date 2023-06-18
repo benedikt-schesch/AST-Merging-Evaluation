@@ -18,17 +18,18 @@ import glob
 import time
 import multiprocessing
 import argparse
-import traceback
 from pathlib import Path
 from functools import partialmethod
+from enum import Enum
+from typing import Tuple
 
-from validate_repos import repo_test, del_rw
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
+from validate_repos import repo_test, del_rw, TEST_STATE
 
 if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
 SCRATCH_DIR = "scratch/"
@@ -36,7 +37,7 @@ SCRATCH_DIR = "scratch/"
 # Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
 WORKDIR = ".workdir/"
-# If true, the working directories in WORKDIR will be deleted.
+# If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_WORKDIR = False
 CACHE = "cache/merge_test_results/"
@@ -53,38 +54,115 @@ MERGE_TOOLS = sorted(
     ]
 )
 
+MERGE_STATES = Enum(
+    "MERGE_STATES",
+    [
+        "Failure_merge",
+        "Failure_merge_exception",
+        "Failure_timeout_merge",
+        "Success_merge",
+        "Success_test",
+        "Failure_timeout_test",
+        "Failure_test",
+        "Failure_test_exception",
+        "Merge_running",
+    ],
+)
 
-def write_cache(status, runtime, explanation, cache_file):
+
+def write_cache(
+    status: MERGE_STATES, runtime: float, explanation: str, cache_file: str
+):
     """Writes the result of a test to a cache file.
     Args:
-        status (str): Test result.
-        runtime (float): Runtime of the test.
-        explanation (str): Explanation of the test result.
-        cache_file (str): Path to the cache file.
+        status (MERGE_STATES): The status of the merge.
+        runtime (float): The runtime of the merge.
+        explanation (str): The explanation of the merge.
     """
-    with open(cache_file, "w") as f:
-        f.write(status + "\n" + str(runtime) + "\n" + explanation)
+    with open(cache_file + ".txt", "w") as f:
+        f.write(status.name + "\n" + str(runtime))
+    with open(cache_file + "_explanation.txt", "w") as f:
+        f.write(explanation)
 
 
-def read_cache(cache_file):
+def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
     """Reads the result of a test from a cache file.
     Args:
         cache_file (str): Path to the cache file.
     Returns:
-        str: Test result.
-        float: Runtime of the test.
-        str: Explanation of the test result.
+        MERGE_STATES: The status of the merge.
+        float: The runtime of the merge.
+        str: The explanation of the merge.
     """
-    with open(cache_file, "r") as f:
-        status = f.readline().strip()
+    with open(cache_file + ".txt", "r") as f:
+        status_name = f.readline().strip()
+        status = MERGE_STATES[status_name]
         runtime = float(f.readline().strip())
-        explanation = f.readline().strip()
+    with open(cache_file + "_explanation.txt", "r") as f:
+        explanation = "".join(f.readlines())
     return status, runtime, explanation
 
 
-def merge_and_test(
-    args,
-):  # pylint: disable=too-many-locals, disable=too-many-statements
+def merge_commits(
+    repo_dir: str, left: str, right: str, merging_method: str
+) -> Tuple[MERGE_STATES, float, str]:
+    """Merges two commits in a repository.
+    Args:
+        repo_dir (str): Path to the directory containing the repo.
+        left (str): Left commit.
+        right (str): Right commit.
+        merging_method (str): Name of the merging method to use.
+    Returns:
+        MERGE_STATES: The status of the merge.
+        float: The runtime of the merge.
+        str: The explanation of the merge.
+    """
+    repo = git.repo.Repo(repo_dir + "/" + merging_method)
+    repo.remote().fetch()
+    repo.git.checkout(left, force=True)
+    repo.submodule_update()
+    repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+    repo.git.checkout(right, force=True)
+    repo.submodule_update()
+    repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
+    merge_status = MERGE_STATES.Merge_running
+    explanation = "Merge running"
+    runtime = -1
+    start = time.time()
+    try:
+        p = subprocess.run(
+            [
+                "src/scripts/merge_tools/" + merging_method + ".sh",
+                repo_dir + "/" + merging_method,
+                LEFT_BRANCH_NAME,
+                RIGHT_BRANCH_NAME,
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=TIMEOUT_MERGE,
+        )
+        if p.returncode:
+            merge_status = MERGE_STATES.Failure_merge
+            explanation = "Merge Failed"
+        else:
+            merge_status = MERGE_STATES.Success_merge
+            explanation = ""
+        runtime = time.time() - start
+    except subprocess.TimeoutExpired:
+        os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
+        merge_status = MERGE_STATES.Failure_timeout_merge
+        explanation = "Timeout during merge"
+        runtime = -1
+    except Exception as e:
+        merge_status = MERGE_STATES.Failure_merge_exception
+        explanation = str(e)
+        runtime = -1
+    return merge_status, runtime, explanation
+
+
+def merge_and_test(  # pylint: disable=too-many-locals
+    args: Tuple[str, str, str, str, str, str]
+) -> Tuple[MERGE_STATES, float]:
     """Merges a repo and executes its tests.
     Args:
         merging_method (str): Name of the merging method to use.
@@ -94,7 +172,7 @@ def merge_and_test(
         base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
     Returns:
-        int: Test result of merge.  0 means success, non-zero means failure.
+        MERGE_STATES: The status of the merge.
         float: Runtime to execute the merge.
     """
     merging_method, repo_name, left, right, base, merge = args
@@ -112,7 +190,7 @@ def merge_and_test(
         + "_"
         + merging_method,
     )
-    if os.path.isfile(cache_file):
+    if os.path.isfile(cache_file + ".txt"):
         status, runtime, _ = read_cache(cache_file)
         return status, runtime
     # Variable `merge_status` is returned by this routine.
@@ -121,62 +199,32 @@ def merge_and_test(
     pid = str(process.pid)
     # The repo will be copied here, then work done in the copy.
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    try:
-        if os.path.isdir(repo_dir_copy):
-            shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    if os.path.isdir(repo_dir_copy):
+        shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
-        shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
-        repo = git.repo.Repo(repo_dir_copy + "/" + merging_method)
-        repo.remote().fetch()
-        repo.submodule_update()
-        repo.git.checkout(left, force=True)
-        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
-        repo.git.checkout(right, force=True)
-        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
-        start = time.time()
+    shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
+
+    merge_status, runtime, explanation = merge_commits(
+        repo_dir_copy, left, right, merging_method
+    )
+
+    if merge_status == MERGE_STATES.Success_merge:
         try:
-            p = subprocess.run(
-                [
-                    "src/scripts/merge_tools/" + merging_method + ".sh",
-                    repo_dir_copy + "/" + merging_method,
-                    LEFT_BRANCH_NAME,
-                    RIGHT_BRANCH_NAME,
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=TIMEOUT_MERGE,
+            test_status, explanation = repo_test(
+                repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
             )
-            merge_status = "Failure merge" if p.returncode else "Success merge"
-            explanation = ""
-            runtime = time.time() - start
-        except subprocess.TimeoutExpired:
-            os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
-            runtime = time.time() - start
-            merge_status = "Timeout"
-            explanation = "Timeout during merge"
-        except Exception as e:
-            merge_status = "Failure merge general exception"
-            explanation = str(e)
-            runtime = -1
+            if test_status == TEST_STATE.Success:
+                merge_status = MERGE_STATES.Success_test
+            elif test_status == TEST_STATE.Timeout:
+                merge_status = MERGE_STATES.Failure_timeout_test
+            else:
+                merge_status = MERGE_STATES.Failure_test
             print(
-                repo_name,
-                merging_method,
-                base,
-                "Exception during merge. Exception:\n",
-                e,
+                repo_name + " " + merging_method + " testing with result:",
+                merge_status.name,
             )
-        try:
-            if merge_status == "Success merge":
-                merge_status, explanation = repo_test(
-                    repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
-                )
-                print(
-                    repo_name + " " + merging_method + " testing with result:",
-                    merge_status,
-                )
-                merge_status += " test"
         except Exception as e:
-            merge_status = "Failure testing exception"
+            merge_status = MERGE_STATES.Failure_test_exception
             explanation = str(e)
             print(
                 repo_name,
@@ -185,18 +233,6 @@ def merge_and_test(
                 "Exception during testing of the merge. Exception:\n",
                 e,
             )
-    except Exception as e:
-        merge_status = "Failure general exception during handling of the repository"
-        explanation = str(e)
-        runtime = -1
-        print(
-            repo_name,
-            merging_method,
-            base,
-            "General exception during the handling of the repository. Exception:\n",
-            e,
-        )
-        print(traceback.format_exc())
 
     if STORE_SCRATCH:
         dst_name = os.path.join(
@@ -212,7 +248,7 @@ def merge_and_test(
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
 
     write_cache(merge_status, runtime, explanation, cache_file)
-    return merge, runtime
+    return merge_status, runtime
 
 
 if __name__ == "__main__":
@@ -263,11 +299,7 @@ if __name__ == "__main__":
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(
-            tqdm(
-                pool.imap(merge_and_test, args_merges),
-                total=len(args_merges),
-                miniters=1,
-            )
+            pool.imap(merge_and_test, tqdm(args_merges, total=len(args_merges))),
         )
     print("merge_tester: Finished Testing")
     print("merge_tester: Building Output")
@@ -304,7 +336,7 @@ if __name__ == "__main__":
                         merge_data["merge"],
                     )
                 )
-                merges.at[merge_idx, merge_tool] = status
+                merges.at[merge_idx, merge_tool] = status.name
                 merges.at[merge_idx, merge_tool + " runtime"] = runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)

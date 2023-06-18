@@ -96,7 +96,7 @@ To clean the cache run `make clean-cache`.
 
 ### Clean Workspace
 
-To cleanup the workspace:`make clean-workspace`
+To cleanup the workspace:`make clean`
 
 ### Style Checking
 
