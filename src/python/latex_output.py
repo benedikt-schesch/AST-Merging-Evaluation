@@ -19,13 +19,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
-from merge_tester import MERGE_TOOLS
+from merge_tester import MERGE_TOOLS, MERGE_STATES
 
-FAILURE_STRINGS = [
-    "Failure merge general exception",
-    "Failure testing exception",
-    "Failure general exception during handling of the repository",
+FAILURE_NAMES = [
+    MERGE_STATES.Failure_merge.name,
+    MERGE_STATES.Failure_test_exception.name,
+    MERGE_STATES.Failure_timeout_merge.name,
+    MERGE_STATES.Failure_timeout_test.name,
+    MERGE_STATES.Failure_merge_exception.name,
 ]
+
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
@@ -46,10 +49,10 @@ if __name__ == "__main__":
     failure = []
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
-        correct.append(sum(val == "Success test" for val in merge_tool_status))
-        incorrect.append(sum(val == "Failure test" for val in merge_tool_status))
-        unhandled.append(sum(val == "Failure merge" for val in merge_tool_status))
-        failure.append(sum(val in FAILURE_STRINGS for val in merge_tool_status))
+        correct.append(sum(val == MERGE_STATES.Success_test.name for val in merge_tool_status))
+        incorrect.append(sum(val == MERGE_STATES.Failure_test.name for val in merge_tool_status))
+        unhandled.append(sum(val == MERGE_STATES.Failure_merge.name for val in merge_tool_status))
+        failure.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
         )
