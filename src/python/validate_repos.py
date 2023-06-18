@@ -14,29 +14,42 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-import stat
 import sys
 from functools import partialmethod
+from enum import Enum
+from typing import Tuple
 
 from tqdm import tqdm
 import pandas as pd
 import git.repo
 
 if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
+    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-CACHE = "cache/repos_result/"
+CACHE = "cache/commit_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
+TEST_STATE = Enum(
+    "TEST_STATE",
+    [
+        "Success",
+        "Failure",
+        "Failure_git_checkout",
+        "Failure_git_clone",
+        "Failure_test_exception",
+        "Timeout",
+        "Not_tested",
+    ],
+)
 
 
-def clone_repo(repo_name):
+def clone_repo(repo_name: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
     Returns:
-        The repository
+        git.repo.Repo: The repository
     """
     repo_dir = os.path.join("repos/", repo_name)
     if os.path.isdir(repo_dir):
@@ -44,18 +57,20 @@ def clone_repo(repo_name):
     else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
+        print(repo_name, " : Cloning repo")
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.repo.Repo.clone_from(git_url, repo_dir)
+        print(repo_name, " : Finished cloning")
     try:
         repo.remote().fetch()
         repo.submodule_update()
     except Exception as e:
         print(repo_name, "Exception during cloning. Exception:\n", e)
-        pass
+        raise
     return repo
 
 
-def repo_test(repo_dir_copy, timeout):
+def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
     """Returns the result of trying 3 times to run run_repo_tests.sh on the given working copy.
     If one test passes then the entire test is marked as passed.
     If one test timeouts then the entire test is marked as timeout.
@@ -63,9 +78,8 @@ def repo_test(repo_dir_copy, timeout):
         repo_dir_copy (str): The path of the working copy (the clone).
         timeout (int): Test Timeout limit.
     Returns:
-        str: The result of the test.
-        str: explanation. The explanation of the result. Can be
-            "Success", "Timeout", or "Failure".
+        TEST_STATE: The result of the test.
+        str: explanation. The explanation of the result.
     """
     explanation = ""
     rc = 1  # Failure
@@ -91,35 +105,37 @@ def repo_test(repo_dir_copy, timeout):
             + stderr
         )
         if rc == 0:  # Success
-            return "Success", explanation
+            return TEST_STATE.Success, explanation
         if rc == 128:
-            return "Timeout", explanation
-    return "Failure", explanation  # Failure
+            return TEST_STATE.Timeout, explanation
+    return TEST_STATE.Failure, explanation  # Failure
 
 
-def write_cache(status, explanation, cache_file):
+def write_cache(status: TEST_STATE, explanation: str, cache_file: str):
     """Writes the result of the test to a cache file.
     Args:
-        status (str): The result of the test.
+        status (TEST_STATE): The result of the test.
         explanation (str): The explanation of the result.
         cache_file (str): The path of the cache file.
     """
     with open(cache_file + ".txt", "w") as f:
-        f.write(status)
+        f.write(status.name)
     with open(cache_file + "_explanation.txt", "w") as f:
         f.write(explanation)
 
 
-def read_cache(cache_file):
+def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
     """Reads the result of the test from a cache file.
     Args:
         cache_file (str): The path of the cache file.
     Returns:
-        str: The result of the test.
+        TEST_STATE: The result of the test.
         str: The explanation of the result.
     """
-    with open(cache_file, "r") as f:
-        status = f.readline().strip()
+    with open(cache_file + ".txt", "r") as f:
+        status_name = f.readline().strip()
+        status = TEST_STATE[status_name]
+    with open(cache_file + "_explanation.txt", "r") as f:
         explanation = "".join(f.readlines())
     return status, explanation
 
@@ -136,65 +152,86 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
-def head_passes_tests(arg):
-    """Checks if the head of main passes test.
+def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
+    """Tests a commit of a repository.
     Args:
-        arg (idx, row): Information regarding that repo.
+        repo_name (str): The name of the repository.
+        commit (str): The commit to be tested.
     Returns:
-        str: Valid repo result (main head passes tests). Can be
-            "Success": if the head of main passes tests.
-            "Failure": if the head of main does not pass tests.
-            "Timeout": if the head of main times out.
-            "Failure Exception": if an exception occurs.
+        TEST_STATE: The result of the test.
     """
-    _, row = arg
-    repo_name = row["repository"]
-    print(repo_name, ": Started head_passes_tests")
+    print(repo_name, ": Started testing commit: ", commit)
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(CACHE, repo_name.replace("/", "_"))
+    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
     # Check if result is cached
-    if os.path.isfile(target_file):
+    if os.path.isfile(target_file + ".txt"):
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Cached result from " + target_file + ": " + status,
+            ": Cached result from " + target_file + ": " + status.name,
         )
         return status
 
-    write_cache("Not tested", "Process started", target_file)
+    status = TEST_STATE.Not_tested
+    explanation = "Process started"
+    write_cache(status, explanation, target_file)
+
     pid = str(multiprocessing.current_process().pid)
     repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
     if os.path.isdir(repo_dir_copy):
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     try:
-        print(repo_name, ": Cloning repo")
-        _ = clone_repo(repo_name)
-        print(repo_name, ": Finished cloning")
+        try:
+            _ = clone_repo(repo_name)
+        except Exception as e:
+            status = TEST_STATE.Failure_git_clone
+            explanation = str(e)
+            raise
 
-        print(repo_name, ": Testing")
         shutil.copytree(repo_dir, repo_dir_copy)
         repo = git.repo.Repo(repo_dir_copy)
-        repo.remote().fetch()
-        repo.submodule_update()
-        repo.git.checkout(row["Validation hash"], force=True)
-        status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
-        write_cache(status, explanation, target_file)
-        print(repo_name, ": Finished testing, result =", status)
-    except Exception as e:
-        status = "Failure Exception"
-        write_cache(status, str(e), target_file)
-        print(repo_name, ": Finished testing, result = exception, Exception:\n", e)
+        try:
+            repo.remote().fetch()
+            repo.git.checkout(commit, force=True)
+            repo.submodule_update()
+        except Exception as e:
+            status = TEST_STATE.Failure_git_checkout
+            explanation = str(e)
+            raise
+        try:
+            status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
+        except Exception as e:
+            status = TEST_STATE.Failure_test_exception
+            explanation = str(e)
+            raise
+    except Exception:
+        pass
+    write_cache(status, explanation, target_file)
     if os.path.isdir(repo_dir_copy):
         # Remove all permision restrictions from repo_dir_copy
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    return status
+
+
+def head_passes_tests(arg) -> TEST_STATE:
+    """Checks if the head of main passes test.
+    Args:
+        arg (idx, row): Information regarding that repo.
+    Returns:
+        TEST_STATE: The result of the test.
+    """
+    _, row = arg
+    repo_name = row["repository"]
+    print(repo_name, ": Started head_passes_tests")
+
+    status = commit_pass_test(repo_name, row["Validation hash"])
+
     print(
         repo_name,
         ": Finished head_passes_tests, result : ",
-        status,
+        status.name,
     )
-    if status != "Success":
-        print("Output is cached in", target_file)
     return status
 
 
@@ -226,7 +263,7 @@ if __name__ == "__main__":
     print("validate_repos: Building Output")
     out = []
     valid_repos_mask = [
-        head_passes_tests((repo_idx, row)) == "Success"
+        head_passes_tests((repo_idx, row)) == TEST_STATE.Success
         for repo_idx, row in tqdm(df.iterrows(), total=len(df))
     ]
     out = df[valid_repos_mask]
