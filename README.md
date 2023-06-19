@@ -16,14 +16,6 @@ To install all the python requirements:
 pip install -r requirements.txt
 ```
 
-### Spork and Intellimerge
-
-To download the Intellimerge and Spork jar:
-
-```bash
-make download-merge-tools
-```
-
 ### Alternative Python installation
 
 If you don't want to mess with your local python installation you can create a python virtual environment to install all dependencies with the following commands:

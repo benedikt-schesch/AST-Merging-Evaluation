@@ -19,11 +19,6 @@ ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
 spork_relativepath=jars/spork.jar
 spork_fullpath="${ROOT_PATH}/${spork_relativepath}"
 
-# If file ${spork_fullpath} does not exist, create it.
-if [ ! -f "${spork_fullpath}" ]; then
-    make -C "${ROOT_PATH}" "${spork_relativepath}"
-fi
-
 clone_dir=$1
 branch1=$2
 branch2=$3

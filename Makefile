@@ -60,16 +60,6 @@ gradle-assemble:
 java-style:
 	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
-download-merge-tools: jars/IntelliMerge-1.0.9-all.jar jars/spork.jar
-
-jars/IntelliMerge-1.0.9-all.jar:
-	mkdir -p jars
-	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/ --no-verbose
-
-jars/spork.jar:
-	mkdir -p jars
-	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
-
 TAGS: tags
 tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}

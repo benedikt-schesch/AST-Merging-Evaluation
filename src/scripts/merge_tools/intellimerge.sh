@@ -19,11 +19,6 @@ ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
 intellimerge_relativepath=jars/IntelliMerge-1.0.9-all.jar
 intellimerge_fullpath="${ROOT_PATH}/${intellimerge_relativepath}"
 
-# If file ${intellimerge_fullpath} does not exist, create it.
-if [ ! -f "${intellimerge_fullpath}" ]; then
-    make -C "${ROOT_PATH}" "${intellimerge_relativepath}"
-fi
-
 clone_dir=$1
 branch1=$2
 branch2=$3
