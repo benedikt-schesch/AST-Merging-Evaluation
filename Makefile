@@ -55,10 +55,10 @@ small-test-diff:
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
-	./gradlew assemble -g ../.gradle-cache/
+	./gradlew assemble -g ../.gradle/
 
 java-style:
-	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle-cache/
+	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
 TAGS: tags
 tags:
