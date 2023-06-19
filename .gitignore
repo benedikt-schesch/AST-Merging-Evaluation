@@ -9,7 +9,7 @@ merge_repo/
 data/result.csv
 merges_small_valid_subsamples/
 repos/
-small/
+results-small/
 .workdir/
 scratch/
 data/repos.csv.gz
@@ -21,7 +21,7 @@ cf/
 test/tmp1.txt
 test/tmp2.txt
 test/small-goal-files/result-without-times.txt
-small/result-without-times.txt
+results-small/result-without-times.txt
 
 # Compiled class file
 *.class

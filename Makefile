@@ -27,7 +27,7 @@ clean:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
-	rm -rf small
+	rm -rf results-small
 
 # This target deletes files in the cache.
 clean-cache:
@@ -45,18 +45,14 @@ small-test:
 	${MAKE} small-test-diff
 
 small-test-diff:
-	cat small/local_repos.csv
-	cat small/merges/Algorithms.csv
-	cat small/merges/ez-vcard.csv
-	cat small/merges_valid/Algorithms.csv
-	cat small/merges_valid/ez-vcard.csv
-	cat small/result.csv
-	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
-	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
+# Print file names followed by file content.
+	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
+	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
+	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
-	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
+	(cd results-small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
+	diff -r -U3 test/small-goal-files results-small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
+	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/
