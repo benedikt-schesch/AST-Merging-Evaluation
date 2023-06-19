@@ -27,7 +27,7 @@ if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-CACHE = "cache/commit_result/"
+CACHE = "cache/test_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
 TEST_STATE = Enum(
@@ -152,11 +152,12 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
-def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
+def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE:
     """Tests a commit of a repository.
     Args:
         repo_name (str): The name of the repository.
         commit (str): The commit to be tested.
+        diagnostic (str): A string printed in diagnostics.
     Returns:
         TEST_STATE: The result of the test.
     """
@@ -169,7 +170,7 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Cached result from " + target_file + ": " + status.name,
+            ": Cached result from " + target_file + ".txt: " + status.name,
         )
         return status
 
@@ -197,7 +198,7 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
             repo.submodule_update()
         except Exception as e:
             status = TEST_STATE.Failure_git_checkout
-            explanation = str(e)
+            explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
         try:
             status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
@@ -225,7 +226,7 @@ def head_passes_tests(arg) -> TEST_STATE:
     repo_name = row["repository"]
     print(repo_name, ": Started head_passes_tests")
 
-    status = commit_pass_test(repo_name, row["Validation hash"])
+    status = commit_pass_test(repo_name, row["Validation hash"], "Validation hash")
 
     print(
         repo_name,

@@ -6,13 +6,12 @@ venv
 jars/*
 output/
 merge_repo/
-data/result.csv
 merges_small_valid_subsamples/
 repos/
 results-small/
 .workdir/
 scratch/
-data/repos.csv.gz
+input_data/repos.csv.gz
 .pytest_cache/
 cf/
 .gradle/

@@ -146,15 +146,7 @@ To run style checking run `make style`.
 
   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
 
-* data/ -> All input data, contains:
-
-  * repos.csv -> List of all repos that fulfill the initial selection criterion.
-
-  * repos_with_hashes.csv -> repos.csv but with the tested commit for repository validation
-
-  * repos_small.csv -> List of only 2 repos.
-
-  * repos_small_with_hashes.csv -> repos_small.csv but with the tested commit for repository validation
+* input_data/ -> Input data, which is a list of repositories; see its README.md.
 
 ### Uncommited Files
 
