@@ -35,8 +35,8 @@ clean-cache:
 
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
-	rm -f data/repos_small_with_hashes.csv
-	rm -f data/repos_with_hashes.csv
+	rm -f input_data/repos_small_with_hashes.csv
+	rm -f input_data/repos_with_hashes.csv
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:

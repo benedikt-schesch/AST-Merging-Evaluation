@@ -169,7 +169,7 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Cached result from " + target_file + ": " + status.name,
+            ": Cached result from " + target_file + ".txt: " + status.name,
         )
         return status
 
