@@ -47,9 +47,9 @@ if __name__ == "__main__":
     correct = []
     unhandled = []
     failure = []
-    print(result_df)
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
+        print(merge_tool_status)
         correct.append(
             sum(val == MERGE_STATES.Success_test.name for val in merge_tool_status)
         )
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             sum(val == MERGE_STATES.Failure_test.name for val in merge_tool_status)
         )
         unhandled.append(
-            sum(val == MERGE_STATES.Failure_merge.name for val in merge_tool_status)
+            sum(val in MERGE_STATES.Failure_merge.name for val in merge_tool_status)
         )
         failure.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
