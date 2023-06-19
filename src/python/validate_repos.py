@@ -33,12 +33,12 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 TEST_STATE = Enum(
     "TEST_STATE",
     [
-        "Success",
-        "Failure",
+        "Tests_passed",
+        "Tests_failed",
         "Failure_git_checkout",
         "Failure_git_clone",
         "Failure_test_exception",
-        "Timeout",
+        "Tests_timedout",
         "Not_tested",
     ],
 )
@@ -105,10 +105,10 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
             + stderr
         )
         if rc == 0:  # Success
-            return TEST_STATE.Success, explanation
+            return TEST_STATE.Tests_passed, explanation
         if rc == 128:
-            return TEST_STATE.Timeout, explanation
-    return TEST_STATE.Failure, explanation  # Failure
+            return TEST_STATE.Tests_timedout, explanation
+    return TEST_STATE.Tests_failed, explanation  # Failure
 
 
 def write_cache(status: TEST_STATE, explanation: str, cache_file: str):
@@ -186,7 +186,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
         try:
             _ = clone_repo(repo_name)
         except Exception as e:
-            status = TEST_STATE.Failure_git_clone
+            status = TEST_STATE.Tests_failed_git_clone
             explanation = str(e)
             raise
 
@@ -197,13 +197,13 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
             repo.git.checkout(commit, force=True)
             repo.submodule_update()
         except Exception as e:
-            status = TEST_STATE.Failure_git_checkout
+            status = TEST_STATE.Tests_failed_git_checkout
             explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
         try:
             status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
         except Exception as e:
-            status = TEST_STATE.Failure_test_exception
+            status = TEST_STATE.Tests_failed_test_exception
             explanation = str(e)
             raise
     except Exception:
@@ -264,7 +264,7 @@ if __name__ == "__main__":
     print("validate_repos: Building Output")
     out = []
     valid_repos_mask = [
-        head_passes_tests((repo_idx, row)) == TEST_STATE.Success
+        head_passes_tests((repo_idx, row)) == TEST_STATE.Tests_passed
         for repo_idx, row in tqdm(df.iterrows(), total=len(df))
     ]
     out = df[valid_repos_mask]

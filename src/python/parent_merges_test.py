@@ -56,7 +56,7 @@ def parent_pass_test(
     left_test = commit_pass_test(repo_name, left, "left_test")
     right_test = commit_pass_test(repo_name, right, "right_test")
     if not valid_merge_counter is None:
-        if left_test == TEST_STATE.Success and right_test == TEST_STATE.Success:
+        if left_test == TEST_STATE.Tests_passed and right_test == TEST_STATE.Tests_passed:
             valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
     merge_test = commit_pass_test(repo_name, merge, f"merge of {left} and {right}")
     return left_test, right_test, merge_test
@@ -169,8 +169,8 @@ if __name__ == "__main__":
                 continue
             left_test, right_test, merge_test = parents_result
             merges.at[merge_idx, "merge test"] = merge_test.name
-            if left_test == TEST_STATE.Success and right_test == TEST_STATE.Success:
-                merges.at[merge_idx, "parent test"] = TEST_STATE.Success.name
+            if left_test == TEST_STATE.Tests_passed and right_test == TEST_STATE.Tests_passed:
+                merges.at[merge_idx, "parent test"] = TEST_STATE.Tests_passed.name
                 merges_counter += 1
                 result.append(merges.loc[merge_idx])  # type: ignore
             if merges_counter >= args.n_merges:
