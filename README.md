@@ -71,10 +71,10 @@ make small-test
 ```
 
 This will run the entire code on two small repos.
-All the output data can be found in `small/`.
-The final result is found in `small/result.csv`.
-Directory `small/merges_small` contains all the merges.
-Directory `small/merges_small_valid` contains all the merges and also stores if the parents of a merge pass tests.
+All the output data can be found in `results-small/`.
+The final result is found in `results-small/result.csv`.
+Directory `results-small/merges_small/` contains all the merges.
+Directory `results-small/merges_small_valid/` contains all the merges and also stores if the parents of a merge pass tests.
 
 ### Perform full analysis
 
@@ -156,7 +156,7 @@ To run style checking run `make style`.
 
 * results/ -> Contains all the results for the full analysis.
 
-* small/ -> Contains all the results for the small analysis.
+* results-small/ -> Contains all the results for the small analysis.
 
 * jars/ -> Location for the Intellimerge and Spork jars.
 
