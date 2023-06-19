@@ -19,12 +19,14 @@ jobs:
       with:
         java-version: 17
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
+    - run: java -version
     - uses: actions/checkout@v3
     - uses: fregante/setup-git-user@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - run: python --version
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
