@@ -229,7 +229,7 @@ def head_passes_tests(arg) -> TEST_STATE:
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result : ",
+        ": Finished head_passes_tests, result:",
         status.name,
     )
     return status
