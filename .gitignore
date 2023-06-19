@@ -34,7 +34,6 @@ results-small/result-without-times.txt
 .mtj.tmp/
 
 # Package Files #
-*.jar
 !gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
