@@ -49,7 +49,6 @@ if __name__ == "__main__":
     failure = []
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
-        print(merge_tool_status)
         correct.append(
             sum(val == MERGE_STATES.Success_test.name for val in merge_tool_status)
         )
