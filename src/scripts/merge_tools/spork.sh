@@ -16,11 +16,12 @@ fi
 
 SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
 ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
-sporkfullpath="${ROOT_PATH}/jars/spork.jar"
+spork_relativepath=jars/spork.jar
+spork_fullpath="${ROOT_PATH}/${spork_relativepath}"
 
-# If file ${sporkfullpath} does not exist, call make download-spork
-if [ ! -f "${sporkfullpath}" ]; then
-    make download-spork
+# If file ${spork_fullpath} does not exist, create it.
+if [ ! -f "${spork_fullpath}" ]; then
+    make -C "${ROOT_PATH}" "${spork_relativepath}"
 fi
 
 clone_dir=$1
@@ -30,7 +31,7 @@ branch2=$3
 # set up spork driver
 (echo "[merge \"spork\"]";
     echo "    name = spork";
-    echo "    driver = java -jar $sporkfullpath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
+    echo "    driver = java -jar $spork_fullpath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
 echo "*.java merge=spork" >> "$clone_dir/.gitattributes"
 
 # perform merge

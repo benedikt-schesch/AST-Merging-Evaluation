@@ -16,11 +16,12 @@ fi
 
 SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
 ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
-intellimergefullpath="${ROOT_PATH}/jars/IntelliMerge-1.0.9-all.jar"
+intellimerge_relativepath=jars/IntelliMerge-1.0.9-all.jar
+intellimerge_fullpath="${ROOT_PATH}/${intellimerge_relativepath}"
 
-# If file ${intellimergefullpath} does not exist, call make download-intellimerge
-if [ ! -f "${intellimergefullpath}" ]; then
-    make download-intellimerge
+# If file ${intellimerge_fullpath} does not exist, create it.
+if [ ! -f "${intellimerge_fullpath}" ]; then
+    make -C "${ROOT_PATH}" "${intellimerge_relativepath}"
 fi
 
 clone_dir=$1
@@ -30,7 +31,7 @@ temp_dir=".workdir/intelli_temp_$$/"
 mkdir $temp_dir
 
 # run intellimerge
-java -jar "$intellimergefullpath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
+java -jar "$intellimerge_fullpath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
 pushd "$clone_dir"
