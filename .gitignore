@@ -3,16 +3,14 @@
 venv
 **/*_explanation.txt
 
-jars/*
 output/
 merge_repo/
-data/result.csv
 merges_small_valid_subsamples/
 repos/
-small/
+results-small/
 .workdir/
 scratch/
-data/repos.csv.gz
+input_data/repos.csv.gz
 .pytest_cache/
 cf/
 .gradle/
@@ -21,7 +19,7 @@ cf/
 test/tmp1.txt
 test/tmp2.txt
 test/small-goal-files/result-without-times.txt
-small/result-without-times.txt
+results-small/result-without-times.txt
 
 # Compiled class file
 *.class
@@ -36,7 +34,6 @@ small/result-without-times.txt
 .mtj.tmp/
 
 # Package Files #
-*.jar
 !gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar

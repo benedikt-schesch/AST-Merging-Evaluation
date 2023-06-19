@@ -30,24 +30,10 @@ echo "Output directory: $OUT_DIR"
 
 length=${#REPOS_CSV}
 REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
-intellimergefullpath="jars/IntelliMerge-1.0.9-all.jar"
-sporkfullpath="jars/spork.jar"
-
-# If file ${sporkfullpath} does not exist download spork
-if [ ! -f "${sporkfullpath}" ]; then
-    make download-spork
-fi
-
-# If file ${intellimergefullpath} does not exist download intellimerge
-if [ ! -f "${intellimergefullpath}" ]; then
-    make download-intellimerge
-fi
 
 ./gradlew assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
-
-python3 src/python/get_repos.py
 
 python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "$REPOS_CSV_WITH_HASHES"
 
