@@ -47,6 +47,7 @@ if __name__ == "__main__":
     correct = []
     unhandled = []
     failure = []
+    print(result_df)
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
         correct.append(
