@@ -14,6 +14,7 @@ scratch/
 input_data/repos.csv.gz
 .pytest_cache/
 cf/
+.gradle/
 
 # Test output
 test/tmp1.txt
