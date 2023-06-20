@@ -9,17 +9,17 @@ jobs:
     steps:
     - uses: actions/setup-java@v3
       with:
-        distrbution: "oracle"
+        distribution: "oracle"
         java-version: 8
     - run: echo "JAVA8_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - uses: actions/setup-java@v3
       with:
-        distrbution: "oracle"
+        distribution: "oracle"
         java-version: 11
     - run: echo "JAVA11_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - uses: actions/setup-java@v3
       with:
-        distrbution: "oracle"
+        distribution: "oracle"
         java-version: 17
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: java -version
