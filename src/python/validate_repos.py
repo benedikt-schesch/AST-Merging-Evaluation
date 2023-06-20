@@ -161,7 +161,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
     Returns:
         TEST_STATE: The result of the test.
     """
-    print(repo_name, commit, ": Started testing commit: ")
+    print(repo_name, commit, ": Started testing commit")
 
     repo_dir = os.path.join("repos/", repo_name)
     target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
