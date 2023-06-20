@@ -1,0 +1,147 @@
+Machine ID: 0
+Number of machines: 1
+Output directory: results-small
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :startScripts UP-TO-DATE
+> Task :distTar UP-TO-DATE
+> Task :distZip UP-TO-DATE
+> Task :shadowJar UP-TO-DATE
+> Task :startShadowScripts UP-TO-DATE
+> Task :shadowDistTar UP-TO-DATE
+> Task :shadowDistZip UP-TO-DATE
+> Task :assemble UP-TO-DATE
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 9 up-to-date
+Started Storing Repos Hashes
+validate_repos: Cached
+Number of local repos in input_data/repos_small_with_hashes.csv = 3
+validate_repos: Started Testing
+pedrovgs/Algorithms : Started head_passes_tests
+pedrovgs/Algorithms c108e3a4b4fa2556b8c88d7ab6803084b01a4364 : Started testing commit: 
+pedrovgs/Algorithms c108e3a4b4fa2556b8c88d7ab6803084b01a4364 : Cached result from cache/test_result/pedrovgs_Algorithms_c108e3a4b4fa2556b8c88d7ab6803084b01a4364.txt: Tests_passed
+pedrovgs/Algorithms : Finished head_passes_tests, result: Tests_passed
+mangstadt/ez-vcard : Started head_passes_tests
+mangstadt/ez-vcard 95298de036f1df38fd7ca7e3225c4fd5ad5c44e6 : Started testing commit: 
+mangstadt/ez-vcard 95298de036f1df38fd7ca7e3225c4fd5ad5c44e6 : Cached result from cache/test_result/mangstadt_ez-vcard_95298de036f1df38fd7ca7e3225c4fd5ad5c44e6.txt: Tests_passed
+mangstadt/ez-vcard : Finished head_passes_tests, result: Tests_passed
+tntim96/JSCover : Started head_passes_tests
+tntim96/JSCover fff7a84ce12a037518e3c58e1d941a4d3dabb7e2 : Started testing commit: 
+tntim96/JSCover fff7a84ce12a037518e3c58e1d941a4d3dabb7e2 : Cached result from cache/test_result/tntim96_JSCover_fff7a84ce12a037518e3c58e1d941a4d3dabb7e2.txt: Tests_passed
+tntim96/JSCover : Finished head_passes_tests, result: Tests_passed
+validate_repos: Finished Testing
+validate_repos: Building Output
+mangstadt/ez-vcard : Started head_passes_tests
+mangstadt/ez-vcard 95298de036f1df38fd7ca7e3225c4fd5ad5c44e6 : Started testing commit: 
+mangstadt/ez-vcard 95298de036f1df38fd7ca7e3225c4fd5ad5c44e6 : Cached result from cache/test_result/mangstadt_ez-vcard_95298de036f1df38fd7ca7e3225c4fd5ad5c44e6.txt: Tests_passed
+mangstadt/ez-vcard : Finished head_passes_tests, result: Tests_passed
+pedrovgs/Algorithms : Started head_passes_tests
+pedrovgs/Algorithms c108e3a4b4fa2556b8c88d7ab6803084b01a4364 : Started testing commit: 
+pedrovgs/Algorithms c108e3a4b4fa2556b8c88d7ab6803084b01a4364 : Cached result from cache/test_result/pedrovgs_Algorithms_c108e3a4b4fa2556b8c88d7ab6803084b01a4364.txt: Tests_passed
+pedrovgs/Algorithms : Finished head_passes_tests, result: Tests_passed
+tntim96/JSCover : Started head_passes_tests
+tntim96/JSCover fff7a84ce12a037518e3c58e1d941a4d3dabb7e2 : Started testing commit: 
+tntim96/JSCover fff7a84ce12a037518e3c58e1d941a4d3dabb7e2 : Cached result from cache/test_result/tntim96_JSCover_fff7a84ce12a037518e3c58e1d941a4d3dabb7e2.txt: Tests_passed
+tntim96/JSCover : Finished head_passes_tests, result: Tests_passed
+validate_repos: Finished Building Output
+validate_repos: Number of valid repos: 3
+validate_repos: Done
+parent_merges_test: Start
+parent_merges_test: Constructing Inputs
+parent_merges_test: Finished Constructing Inputs
+parent_merges_test: Number of tested commits: 62
+parent_merges_test: Started Testing
+parent_merges_test: Finished Testing
+parent_merges_test: Constructing Output
+mangstadt/ez-vcard 24476c206b8df9f5458e2ec57fa16d3ebe23f898 : Started testing commit: 
+mangstadt/ez-vcard 24476c206b8df9f5458e2ec57fa16d3ebe23f898 : Cached result from cache/test_result/mangstadt_ez-vcard_24476c206b8df9f5458e2ec57fa16d3ebe23f898.txt: Failure_git_checkout
+mangstadt/ez-vcard 64164540fa269cd1ed14f04236a88b8a3ac22dcb : Started testing commit: 
+mangstadt/ez-vcard 64164540fa269cd1ed14f04236a88b8a3ac22dcb : Cached result from cache/test_result/mangstadt_ez-vcard_64164540fa269cd1ed14f04236a88b8a3ac22dcb.txt: Tests_passed
+mangstadt/ez-vcard 72e37df9ec88656844758c7303e8e1f9234295c3 : Started testing commit: 
+mangstadt/ez-vcard 72e37df9ec88656844758c7303e8e1f9234295c3 : Cached result from cache/test_result/mangstadt_ez-vcard_72e37df9ec88656844758c7303e8e1f9234295c3.txt: Failure_git_checkout
+mangstadt/ez-vcard 72e37df9ec88656844758c7303e8e1f9234295c3 failed left: 24476c206b8df9f5458e2ec57fa16d3ebe23f898 result: TEST_STATE.Failure_git_checkout right: 64164540fa269cd1ed14f04236a88b8a3ac22dcb result: TEST_STATE.Tests_passed
+mangstadt/ez-vcard 345934e15e82c9cbffb5b297aab51ad105b9ad82 : Started testing commit: 
+mangstadt/ez-vcard 345934e15e82c9cbffb5b297aab51ad105b9ad82 : Cached result from cache/test_result/mangstadt_ez-vcard_345934e15e82c9cbffb5b297aab51ad105b9ad82.txt: Tests_passed
+mangstadt/ez-vcard 541f59d09b5232b68cda87ee2abba7c62d33ee32 : Started testing commit: 
+mangstadt/ez-vcard 541f59d09b5232b68cda87ee2abba7c62d33ee32 : Cached result from cache/test_result/mangstadt_ez-vcard_541f59d09b5232b68cda87ee2abba7c62d33ee32.txt: Tests_passed
+mangstadt/ez-vcard a2a632bba203ee71191e71e11058726f2f030b00 : Started testing commit: 
+mangstadt/ez-vcard a2a632bba203ee71191e71e11058726f2f030b00 : Cached result from cache/test_result/mangstadt_ez-vcard_a2a632bba203ee71191e71e11058726f2f030b00.txt: Tests_passed
+mangstadt/ez-vcard a2a632bba203ee71191e71e11058726f2f030b00 passed left: 345934e15e82c9cbffb5b297aab51ad105b9ad82 result: TEST_STATE.Tests_passed right: 541f59d09b5232b68cda87ee2abba7c62d33ee32 result: TEST_STATE.Tests_passed
+mangstadt/ez-vcard b8b0b0c8e1dff237975942022a42c6c25b9d9741 : Started testing commit: 
+mangstadt/ez-vcard b8b0b0c8e1dff237975942022a42c6c25b9d9741 : Cached result from cache/test_result/mangstadt_ez-vcard_b8b0b0c8e1dff237975942022a42c6c25b9d9741.txt: Not_tested
+mangstadt/ez-vcard 3c10bf587f097be3e2a77b0d2d556e6f9efd97b1 : Started testing commit: 
+mangstadt/ez-vcard 3c10bf587f097be3e2a77b0d2d556e6f9efd97b1 : Cached result from cache/test_result/mangstadt_ez-vcard_3c10bf587f097be3e2a77b0d2d556e6f9efd97b1.txt: Tests_passed
+mangstadt/ez-vcard 0637f5fc19cf6ad79cd2c58981facc3678d5bbff : Started testing commit: 
+mangstadt/ez-vcard 0637f5fc19cf6ad79cd2c58981facc3678d5bbff : Cached result from cache/test_result/mangstadt_ez-vcard_0637f5fc19cf6ad79cd2c58981facc3678d5bbff.txt: Tests_passed
+mangstadt/ez-vcard 0637f5fc19cf6ad79cd2c58981facc3678d5bbff failed left: b8b0b0c8e1dff237975942022a42c6c25b9d9741 result: TEST_STATE.Not_tested right: 3c10bf587f097be3e2a77b0d2d556e6f9efd97b1 result: TEST_STATE.Tests_passed
+mangstadt/ez-vcard 03bd6bf2c9873b23344b31ca7c39524ad9ee5756 : Started testing commit: 
+mangstadt/ez-vcard 03bd6bf2c9873b23344b31ca7c39524ad9ee5756 : Cached result from cache/test_result/mangstadt_ez-vcard_03bd6bf2c9873b23344b31ca7c39524ad9ee5756.txt: Tests_passed
+mangstadt/ez-vcard c824e9fabecc54d431d4c860b95a2ad13794556c : Started testing commit: 
+mangstadt/ez-vcard c824e9fabecc54d431d4c860b95a2ad13794556c : Cached result from cache/test_result/mangstadt_ez-vcard_c824e9fabecc54d431d4c860b95a2ad13794556c.txt: Tests_passed
+mangstadt/ez-vcard f238de6e66d3e5d03715aa88dccc660d0ab89318 : Started testing commit: 
+mangstadt/ez-vcard f238de6e66d3e5d03715aa88dccc660d0ab89318 : Cached result from cache/test_result/mangstadt_ez-vcard_f238de6e66d3e5d03715aa88dccc660d0ab89318.txt: Tests_passed
+mangstadt/ez-vcard f238de6e66d3e5d03715aa88dccc660d0ab89318 passed left: 03bd6bf2c9873b23344b31ca7c39524ad9ee5756 result: TEST_STATE.Tests_passed right: c824e9fabecc54d431d4c860b95a2ad13794556c result: TEST_STATE.Tests_passed
+pedrovgs/Algorithms e121b3943958ba1558d8828db6f13c632e99f298 : Started testing commit: 
+pedrovgs/Algorithms e121b3943958ba1558d8828db6f13c632e99f298 : Cached result from cache/test_result/pedrovgs_Algorithms_e121b3943958ba1558d8828db6f13c632e99f298.txt: Tests_passed
+pedrovgs/Algorithms 58129e828567fac52e821ca147feeab87a95d780 : Started testing commit: 
+pedrovgs/Algorithms 58129e828567fac52e821ca147feeab87a95d780 : Cached result from cache/test_result/pedrovgs_Algorithms_58129e828567fac52e821ca147feeab87a95d780.txt: Tests_passed
+pedrovgs/Algorithms 44ce61beeb8bb5c5c1289db02f1da53f6bff6d8a : Started testing commit: 
+pedrovgs/Algorithms 44ce61beeb8bb5c5c1289db02f1da53f6bff6d8a : Cached result from cache/test_result/pedrovgs_Algorithms_44ce61beeb8bb5c5c1289db02f1da53f6bff6d8a.txt: Tests_passed
+pedrovgs/Algorithms 44ce61beeb8bb5c5c1289db02f1da53f6bff6d8a passed left: e121b3943958ba1558d8828db6f13c632e99f298 result: TEST_STATE.Tests_passed right: 58129e828567fac52e821ca147feeab87a95d780 result: TEST_STATE.Tests_passed
+pedrovgs/Algorithms b636ef254a97ae830baa6d783121de7890818785 : Started testing commit: 
+pedrovgs/Algorithms b636ef254a97ae830baa6d783121de7890818785 : Cached result from cache/test_result/pedrovgs_Algorithms_b636ef254a97ae830baa6d783121de7890818785.txt: Failure_git_checkout
+pedrovgs/Algorithms 9497e2f66d7af3feedd3106faa6e8b0aa6118b41 : Started testing commit: 
+pedrovgs/Algorithms 9497e2f66d7af3feedd3106faa6e8b0aa6118b41 : Cached result from cache/test_result/pedrovgs_Algorithms_9497e2f66d7af3feedd3106faa6e8b0aa6118b41.txt: Failure_git_checkout
+pedrovgs/Algorithms d1279d1b59ecba7f01de8b2c1995562f92b2e255 : Started testing commit: 
+pedrovgs/Algorithms d1279d1b59ecba7f01de8b2c1995562f92b2e255 : Cached result from cache/test_result/pedrovgs_Algorithms_d1279d1b59ecba7f01de8b2c1995562f92b2e255.txt: Failure_git_checkout
+pedrovgs/Algorithms d1279d1b59ecba7f01de8b2c1995562f92b2e255 failed left: b636ef254a97ae830baa6d783121de7890818785 result: TEST_STATE.Failure_git_checkout right: 9497e2f66d7af3feedd3106faa6e8b0aa6118b41 result: TEST_STATE.Failure_git_checkout
+pedrovgs/Algorithms 37e80741a853a6626a77aed38caa07f4e44d85b2 : Started testing commit: 
+pedrovgs/Algorithms 37e80741a853a6626a77aed38caa07f4e44d85b2 : Cached result from cache/test_result/pedrovgs_Algorithms_37e80741a853a6626a77aed38caa07f4e44d85b2.txt: Failure_git_checkout
+pedrovgs/Algorithms 8b2e3b06185e4a111ae987db7fa01901974036cd : Started testing commit: 
+pedrovgs/Algorithms 8b2e3b06185e4a111ae987db7fa01901974036cd : Cached result from cache/test_result/pedrovgs_Algorithms_8b2e3b06185e4a111ae987db7fa01901974036cd.txt: Tests_passed
+pedrovgs/Algorithms 8ef7da30196fba8e55947acf6168d8cd4a82f2b8 : Started testing commit: 
+pedrovgs/Algorithms 8ef7da30196fba8e55947acf6168d8cd4a82f2b8 : Cached result from cache/test_result/pedrovgs_Algorithms_8ef7da30196fba8e55947acf6168d8cd4a82f2b8.txt: Failure_git_checkout
+pedrovgs/Algorithms 8ef7da30196fba8e55947acf6168d8cd4a82f2b8 failed left: 37e80741a853a6626a77aed38caa07f4e44d85b2 result: TEST_STATE.Failure_git_checkout right: 8b2e3b06185e4a111ae987db7fa01901974036cd result: TEST_STATE.Tests_passed
+pedrovgs/Algorithms ae5dac889d19edd6c773e60420f00d4e7177f31f : Started testing commit: 
+pedrovgs/Algorithms ae5dac889d19edd6c773e60420f00d4e7177f31f : Cached result from cache/test_result/pedrovgs_Algorithms_ae5dac889d19edd6c773e60420f00d4e7177f31f.txt: Tests_passed
+pedrovgs/Algorithms 4342b16e18da9082b32d5b8e9b5b6e3378461ce4 : Started testing commit: 
+pedrovgs/Algorithms 4342b16e18da9082b32d5b8e9b5b6e3378461ce4 : Cached result from cache/test_result/pedrovgs_Algorithms_4342b16e18da9082b32d5b8e9b5b6e3378461ce4.txt: Tests_passed
+pedrovgs/Algorithms e866ae7916d6b763f7d32f72f54edd735b5ea6bc : Started testing commit: 
+pedrovgs/Algorithms e866ae7916d6b763f7d32f72f54edd735b5ea6bc : Cached result from cache/test_result/pedrovgs_Algorithms_e866ae7916d6b763f7d32f72f54edd735b5ea6bc.txt: Tests_passed
+pedrovgs/Algorithms e866ae7916d6b763f7d32f72f54edd735b5ea6bc passed left: ae5dac889d19edd6c773e60420f00d4e7177f31f result: TEST_STATE.Tests_passed right: 4342b16e18da9082b32d5b8e9b5b6e3378461ce4 result: TEST_STATE.Tests_passed
+tntim96/JSCover 4ba5c58dfb6bf266259b80ab2fe19057910b6dba : Started testing commit: 
+tntim96/JSCover 4ba5c58dfb6bf266259b80ab2fe19057910b6dba : Cached result from cache/test_result/tntim96_JSCover_4ba5c58dfb6bf266259b80ab2fe19057910b6dba.txt: Tests_passed
+tntim96/JSCover 7d6f336981e2d3c0a3e81fc663b6e4590f8aab0b : Started testing commit: 
+tntim96/JSCover 7d6f336981e2d3c0a3e81fc663b6e4590f8aab0b : Cached result from cache/test_result/tntim96_JSCover_7d6f336981e2d3c0a3e81fc663b6e4590f8aab0b.txt: Tests_passed
+tntim96/JSCover 9ed0dc2b5892b2b2a782435b0a5dd42f90737b97 : Started testing commit: 
+tntim96/JSCover 9ed0dc2b5892b2b2a782435b0a5dd42f90737b97 : Cached result from cache/test_result/tntim96_JSCover_9ed0dc2b5892b2b2a782435b0a5dd42f90737b97.txt: Tests_passed
+tntim96/JSCover 9ed0dc2b5892b2b2a782435b0a5dd42f90737b97 passed left: 4ba5c58dfb6bf266259b80ab2fe19057910b6dba result: TEST_STATE.Tests_passed right: 7d6f336981e2d3c0a3e81fc663b6e4590f8aab0b result: TEST_STATE.Tests_passed
+tntim96/JSCover b387036e5d7bba871c330469f2143c242f12a0d5 : Started testing commit: 
+tntim96/JSCover b387036e5d7bba871c330469f2143c242f12a0d5 : Cached result from cache/test_result/tntim96_JSCover_b387036e5d7bba871c330469f2143c242f12a0d5.txt: Tests_passed
+tntim96/JSCover 95d545f377cf84ccd52b54dc0c644d18daa447a6 : Started testing commit: 
+tntim96/JSCover 95d545f377cf84ccd52b54dc0c644d18daa447a6 : Cached result from cache/test_result/tntim96_JSCover_95d545f377cf84ccd52b54dc0c644d18daa447a6.txt: Tests_passed
+tntim96/JSCover ba5decc5f42a1fd11825415612eaf104b8879c9a : Started testing commit: 
+tntim96/JSCover ba5decc5f42a1fd11825415612eaf104b8879c9a : Cached result from cache/test_result/tntim96_JSCover_ba5decc5f42a1fd11825415612eaf104b8879c9a.txt: Tests_passed
+tntim96/JSCover ba5decc5f42a1fd11825415612eaf104b8879c9a passed left: b387036e5d7bba871c330469f2143c242f12a0d5 result: TEST_STATE.Tests_passed right: 95d545f377cf84ccd52b54dc0c644d18daa447a6 result: TEST_STATE.Tests_passed
+parent_merges_test: Finished Constructing Output
+parent_merges_test: Done
+merge_tester: Start
+merge_tester: Building Function Arguments
+merge_tester: Finished Building Function Arguments
+merge_tester: Number of merges: 18
+merge_tester: Started Testing
+merge_tester: Finished Testing
+merge_tester: Building Output
+merge_tester: Finished Building Output
+merge_tester: Number of analyzed merges  6
+merge_tester: Done
++--------------+----------------+------------------+------------------+
+|  Merge Tool  | Correct Merges | Unhandled Merges | Incorrect Merges |
++--------------+----------------+------------------+------------------+
+|   gitmerge   |       6        |        0         |        0         |
+| intellimerge |       6        |        0         |        0         |
+|    spork     |       6        |        0         |        0         |
++--------------+----------------+------------------+------------------+

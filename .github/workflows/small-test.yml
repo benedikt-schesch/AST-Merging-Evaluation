@@ -51,3 +51,7 @@ jobs:
         make small-test
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+    - name: Debug
+      if: always()
+      run: |
+        cat cache/test_result/tntim96_JSCover_ba5decc5f42a1fd11825415612eaf104b8879c9a_explanation.txt

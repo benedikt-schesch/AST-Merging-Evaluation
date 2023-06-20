@@ -38,7 +38,7 @@ do
     continue
   fi
   export JAVA_HOME=${javaX_home}
-  export PATH="$JAVA_HOME:$PATH"
+  export PATH="$JAVA_HOME/bin:$PATH"
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
   ${command}
   rc=$?
