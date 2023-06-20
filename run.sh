@@ -26,13 +26,6 @@ if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; 
 
 JAVA_VER=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1)
 
-# This project has been eecuted with Java 8 and might yield different results with other versions.
-# Java 8 returned the largest amount of valid repositories.
-if [ "$JAVA_VER" != "8" ]; then
-  echo "Wrong Java version $JAVA_VER. Please use Java 8."
-  exit 1
-fi
-
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"

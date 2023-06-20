@@ -61,7 +61,7 @@ MERGE_STATES = Enum(
         "Merge_exception",
         "Merge_timedout",
         "Merge_success",
-        "Tests_success",
+        "Tests_passed",
         "Tests_timedout",
         "Tests_failed",
         "Tests_exception",
@@ -214,7 +214,7 @@ def merge_and_test(  # pylint: disable=too-many-locals
                 repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
             )
             if test_status == TEST_STATE.Tests_passed:
-                merge_status = MERGE_STATES.Tests_success
+                merge_status = MERGE_STATES.Tests_passed
             elif test_status == TEST_STATE.Tests_timedout:
                 merge_status = MERGE_STATES.Tests_timedout
             else:
@@ -277,7 +277,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(merge_list_file, index_col=0)
         for _, merge_data in merges.iterrows():
-            if merge_data["parent test"] != "Success":
+            if merge_data["parent test"] != TEST_STATE.Tests_passed.name:
                 continue
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
                 args_merges.append(

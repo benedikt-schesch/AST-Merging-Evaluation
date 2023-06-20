@@ -49,7 +49,7 @@ if __name__ == "__main__":
     for merge_tool in MERGE_TOOLS:
         merge_tool_status = result_df[merge_tool]
         correct.append(
-            sum(val == MERGE_STATES.Tests_success.name for val in merge_tool_status)
+            sum(val == MERGE_STATES.Tests_passed.name for val in merge_tool_status)
         )
         incorrect.append(
             sum(val == MERGE_STATES.Tests_failed.name for val in merge_tool_status)
@@ -155,11 +155,11 @@ if __name__ == "__main__":
         mergem = main[merge_tool]
         mergef = feature[merge_tool]
 
-        correct_main = sum(val == MERGE_STATES.Tests_success.name for val in mergem)
+        correct_main = sum(val == MERGE_STATES.Tests_passed.name for val in mergem)
         correct_main_percentage = (
             100 * correct_main / len(main) if len(main) != 0 else 0
         )
-        correct_feature = sum(val == MERGE_STATES.Tests_success.name for val in mergef)
+        correct_feature = sum(val == MERGE_STATES.Tests_passed.name for val in mergef)
         correct_feature_percentage = (
             100 * correct_feature / len(feature) if len(feature) > 0 else -1
         )
@@ -177,9 +177,7 @@ if __name__ == "__main__":
         unhandled_main_percentage = (
             100 * unhandled_main / len(main) if len(main) != 0 else 0
         )
-        unhandled_feature = sum(
-            val in FAILURE_NAMES for val in mergef
-        )
+        unhandled_feature = sum(val in FAILURE_NAMES for val in mergef)
         unhandled_feature_percentage = (
             100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
         )
