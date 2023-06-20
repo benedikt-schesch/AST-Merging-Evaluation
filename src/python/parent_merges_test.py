@@ -179,6 +179,33 @@ if __name__ == "__main__":
                 merges.at[merge_idx, "parent test"] = TEST_STATE.Tests_passed.name
                 merges_counter += 1
                 result.append(merges.loc[merge_idx])  # type: ignore
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "passed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
+            else:
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "failed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
             if merges_counter >= args.n_merges:
                 break
         result = pd.DataFrame(result)
