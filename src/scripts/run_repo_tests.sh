@@ -20,7 +20,7 @@ if [ -f "gradlew" ] ; then
 elif [ -f "mvnw" ] ; then
   command="./mvnw test"
 elif [ -f pom.xml ] ; then
-  echo mvn -version
+  mvn -version
   command="mvn test"
 else
   echo "No Gradle or Maven buildfile"
@@ -41,7 +41,7 @@ do
   export JAVA_HOME=${javaX_home}
   export PATH="$JAVA_HOME/bin:$PATH"
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
-  echo mvn -version
+  mvn -version
   ${command}
   rc=$?
   if [ $rc -eq 0 ] ; then
