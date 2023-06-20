@@ -186,7 +186,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
         try:
             _ = clone_repo(repo_name)
         except Exception as e:
-            status = TEST_STATE.Tests_failed_git_clone
+            status = TEST_STATE.Failure_git_clone
             explanation = str(e)
             raise
 
@@ -197,13 +197,13 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
             repo.git.checkout(commit, force=True)
             repo.submodule_update()
         except Exception as e:
-            status = TEST_STATE.Tests_failed_git_checkout
+            status = TEST_STATE.Failure_git_checkout
             explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
         try:
             status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
         except Exception as e:
-            status = TEST_STATE.Tests_failed_test_exception
+            status = TEST_STATE.Failure_test_exception
             explanation = str(e)
             raise
     except Exception:
