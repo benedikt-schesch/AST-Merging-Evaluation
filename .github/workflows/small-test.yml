@@ -2,6 +2,9 @@ name: Run Small test
 on: [push, pull_request]
 jobs:
   test:
+    strategy:
+      matrix:
+        maven: [ '3.8.6']
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,9 +40,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Install maven
-      run: |
-        sudo apt update
-        sudo apt install maven=3.8.6
+      uses: s4u/setup-maven-action@v1.8.0
+      with:
+        java-version: 17
+        maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
     - name: Build Java programs
