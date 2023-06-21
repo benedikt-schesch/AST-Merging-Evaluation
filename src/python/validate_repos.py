@@ -272,5 +272,5 @@ if __name__ == "__main__":
     print("validate_repos: Number of valid repos:", len(out))
     if len(out) == 0:
         sys.exit(1)
-    out.to_csv(args.output_path,index_label="idx")
+    out.to_csv(args.output_path, index_label="idx")
     print("validate_repos: Done")

@@ -78,7 +78,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv,index_col="idx")
+    df = pd.read_csv(args.repos_csv, index_col="idx")
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
@@ -186,6 +186,6 @@ if __name__ == "__main__":
                 break
         result = pd.DataFrame(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
-        result.to_csv(output_file,index_label="idx")
+        result.to_csv(output_file, index_label="idx")
     print("parent_merges_test: Finished Constructing Output")
     print("parent_merges_test: Done")
