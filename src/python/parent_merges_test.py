@@ -73,12 +73,12 @@ if __name__ == "__main__":
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv, index_col="idx")
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
