@@ -39,7 +39,7 @@ jobs:
     - name: Install maven
       run: |
         sudo apt update
-        sudo apt install maven==3.8.6
+        sudo apt install maven=3.8.6
     - name: Clean caches & workspace
       run: make clean
     - name: Build Java programs
