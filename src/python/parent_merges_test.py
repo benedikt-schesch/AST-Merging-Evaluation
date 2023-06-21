@@ -98,8 +98,11 @@ if __name__ == "__main__":
         if not os.path.isfile(merge_list_file):
             continue
 
-        merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
+        merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"],header=0)
         merges = merges.sample(frac=1, random_state=42)
+        print(repo_name,merges["merge"])
+        print("COLS:",merges.columns)
+
 
         for _, merge_data in merges.iterrows():
             merges_repo.append(
@@ -149,9 +152,9 @@ if __name__ == "__main__":
             merge_list_file,
             names=["branch_name", "merge", "left", "right", "base"],
             header=0,
-            index_col=False,
         )
         merges = merges.sample(frac=1, random_state=42)
+        print(repo_name,merges["merge"])
         merges["parent test"] = ["Failure" for i in merges.iterrows()]
         merges["merge test"] = ["Failure" for i in merges.iterrows()]
 
