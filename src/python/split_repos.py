@@ -25,4 +25,4 @@ if __name__ == "__main__":
     df = np.array_split(df, args.num_machines)[args.machine_id]
 
     df.to_csv(args.output_file, index_label="idx")
-    print("Number of local Repos:", len(df))
+    print("Number of local repos in", args.repos_csv, "=", len(df))

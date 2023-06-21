@@ -161,7 +161,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
     Returns:
         TEST_STATE: The result of the test.
     """
-    print(repo_name, ": Started testing commit: ", commit)
+    print(repo_name, commit, ": Started testing commit")
 
     repo_dir = os.path.join("repos/", repo_name)
     target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
@@ -170,6 +170,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
         status, _ = read_cache(target_file)
         print(
             repo_name,
+            commit,
             ": Cached result from " + target_file + ".txt: " + status.name,
         )
         return status
@@ -209,6 +210,7 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
     except Exception:
         pass
     write_cache(status, explanation, target_file)
+    print(repo_name, commit, ": Finished testing commit: ", status.name)
     if os.path.isdir(repo_dir_copy):
         # Remove all permision restrictions from repo_dir_copy
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
@@ -230,7 +232,7 @@ def head_passes_tests(arg) -> TEST_STATE:
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result : ",
+        ": Finished head_passes_tests, result:",
         status.name,
     )
     return status
