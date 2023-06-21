@@ -98,7 +98,9 @@ if __name__ == "__main__":
         if not os.path.isfile(merge_list_file):
             continue
 
-        merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
+        merges = pd.read_csv(
+            merge_list_file, names=["merge", "left", "right", "base"], header=0
+        )
         merges = merges.sample(frac=1, random_state=42)
 
         for _, merge_data in merges.iterrows():
@@ -149,7 +151,6 @@ if __name__ == "__main__":
             merge_list_file,
             names=["branch_name", "merge", "left", "right", "base"],
             header=0,
-            index_col=False,
         )
         merges = merges.sample(frac=1, random_state=42)
         merges["parent test"] = ["Failure" for i in merges.iterrows()]
@@ -179,6 +180,33 @@ if __name__ == "__main__":
                 merges.at[merge_idx, "parent test"] = TEST_STATE.Tests_passed.name
                 merges_counter += 1
                 result.append(merges.loc[merge_idx])  # type: ignore
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "passed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
+            else:
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "failed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
             if merges_counter >= args.n_merges:
                 break
         result = pd.DataFrame(result)

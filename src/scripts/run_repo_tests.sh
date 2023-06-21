@@ -12,14 +12,18 @@ if [ "$#" -ne 1 ]; then
   echo "Usage: $0 REPO_DIR" >&2
   exit 1
 fi
-
-cd "$1"
+REPO_DIR=$1
+cd "$REPO_DIR"
 
 if [ -f "gradlew" ] ; then
   command="./gradlew test -g ../.gradle/"
 elif [ -f "mvnw" ] ; then
+  mvn -version
+  export MAVEN_OPTS="-Dmaven.repo.local=$REPO_DIR/.m2"
   command="./mvnw test"
 elif [ -f pom.xml ] ; then
+  mvn -version
+  export MAVEN_OPTS="-Dmaven.repo.local=$REPO_DIR/.m2"
   command="mvn test"
 else
   echo "No Gradle or Maven buildfile"
@@ -38,7 +42,7 @@ do
     continue
   fi
   export JAVA_HOME=${javaX_home}
-  export PATH="$JAVA_HOME:$PATH"
+  export PATH="$JAVA_HOME/bin:$PATH"
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
   ${command}
   rc=$?

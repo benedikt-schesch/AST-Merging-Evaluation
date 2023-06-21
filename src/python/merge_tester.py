@@ -340,6 +340,8 @@ if __name__ == "__main__":
                 merges.at[merge_idx, merge_tool + " runtime"] = runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
+    output.sort_values(by=["repo_name", "left", "right", "base", "merge"], inplace=True)
+    output.reset_index(drop=True, inplace=True)
     output.to_csv(args.output_file)
     print("merge_tester: Finished Building Output")
     print("merge_tester: Number of analyzed merges ", len(output))
