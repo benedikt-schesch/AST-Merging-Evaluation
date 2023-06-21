@@ -263,7 +263,7 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv)
+    df = pd.read_csv(args.repos_csv,index_col="idx")
 
     print("merge_tester: Building Function Arguments")
     # Function arguments: (repo_name, left, right, base, merge)
@@ -340,7 +340,7 @@ if __name__ == "__main__":
                 merges.at[merge_idx, merge_tool + " runtime"] = runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
-    output.to_csv(args.output_file)
+    output.to_csv(args.output_file,index_label="idx")
     print("merge_tester: Finished Building Output")
     print("merge_tester: Number of analyzed merges ", len(output))
     print("merge_tester: Done")

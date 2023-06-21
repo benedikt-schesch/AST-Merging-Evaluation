@@ -31,6 +31,6 @@ if __name__ == "__main__":
     df = df[df["stars"].astype(int) > 10]
     df = df[df["unit_test"] > 0.25]
 
-    df.to_csv(repos_csv)
+    df.to_csv(repos_csv,index_label="idx")
 
     print("Number of repos written to", repos_csv, ":", len(df))

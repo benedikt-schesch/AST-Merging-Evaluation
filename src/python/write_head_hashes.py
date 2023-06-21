@@ -80,5 +80,5 @@ if __name__ == "__main__":
     ## Introduce a new variable if the type changes.
     result_df = pd.DataFrame([i for i in result if i is not None])
     result_df = result_df.set_index(result_df.columns[0]).reset_index(drop=True)
-    result_df.to_csv(args.output_path)
+    result_df.to_csv(args.output_path,index_label='idx')
     print("Finished Storing Repos Hashes")

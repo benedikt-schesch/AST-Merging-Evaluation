@@ -39,7 +39,7 @@ if __name__ == "__main__":
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     # open results file
-    result_df = pd.read_csv(args.input_csv)
+    result_df = pd.read_csv(args.input_csv,index_col="idx")
 
     # figure 1 (stacked area)
     incorrect = []
