@@ -13,4 +13,4 @@ set -e
 set -o nounset
 
 
-./run.sh input_data/repos_small.csv results-small 2 "$machine_id" "$num_machines"
+./run.sh input_data/repos_small.csv results-small 2 test_cache "$machine_id" "$num_machines"

@@ -28,6 +28,14 @@ source venv/bin/activate
 
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
+### Maven
+Make sure you use maven version 3.9.2. To download this version of maven run the following commands:
+
+```bash
+make download-maven-3.9.2
+echo "export PATH=\$PATH:$(pwd)/apache-maven-3.9.2/bin" >> ~/.bashrc
+```
+
 ### Ubuntu
 
 ```bash
@@ -39,7 +47,6 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 && sudo apt update \
 && sudo apt install gh -y
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-sudo apt-get install git-lfs
 ```
 
 ### MacOS
@@ -47,7 +54,6 @@ sudo apt-get install git-lfs
 ```bash
 brew install jq
 brew install gh
-brew install git-lfs
 ```
 
 ---
@@ -132,15 +138,19 @@ To run style checking run `make style`.
 
 * cache/ -> This folder is a cache for each computation. contains:
 
-  * repos_result/ -> Caches the validation of each repository.
-
-  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+  * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
 
 ### Uncommited Files
+
+* test_cache/ -> This folder is a cache for each test computation. contains:
+
+  * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
+
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
 
 * .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
 

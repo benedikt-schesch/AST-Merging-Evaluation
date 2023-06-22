@@ -40,7 +40,6 @@ WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_WORKDIR = False
-CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
@@ -161,7 +160,7 @@ def merge_commits(
 
 
 def merge_and_test(  # pylint: disable=too-many-locals
-    args: Tuple[str, str, str, str, str, str]
+    args: Tuple[str, str, str, str, str, str, str]
 ) -> Tuple[MERGE_STATES, float]:
     """Merges a repo and executes its tests.
     Args:
@@ -171,13 +170,14 @@ def merge_and_test(  # pylint: disable=too-many-locals
         right (str): Right parent hash of the merge.
         base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
+        cache_dir (str): Path to the cache directory.
     Returns:
         MERGE_STATES: The status of the merge.
         float: Runtime to execute the merge.
     """
-    merging_method, repo_name, left, right, base, merge = args
+    merging_method, repo_name, left, right, base, merge, cache_dir = args
     cache_file = os.path.join(
-        CACHE,
+        cache_dir,
         repo_name.split("/")[1]
         + "_"
         + left
@@ -254,7 +254,6 @@ def merge_and_test(  # pylint: disable=too-many-locals
 if __name__ == "__main__":
     print("merge_tester: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
-    Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
 
@@ -262,7 +261,9 @@ if __name__ == "__main__":
     parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
+    parser.add_argument("--cache_dir", type=str, default="cache/merge_test_results/")
     args = parser.parse_args()
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_tester: Building Function Arguments")
@@ -288,6 +289,7 @@ if __name__ == "__main__":
                         merge_data["right"],
                         merge_data["base"],
                         merge_data["merge"],
+                        args.cache_dir,
                     )
                 )
 
@@ -327,13 +329,14 @@ if __name__ == "__main__":
 
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
                 status, runtime = merge_and_test(
-                    (
+                    (  # type: ignore
                         merge_tool,
                         repository_data["repository"],
                         merge_data["left"],
                         merge_data["right"],
                         merge_data["base"],
                         merge_data["merge"],
+                        args.cache_dir,
                     )
                 )
                 merges.at[merge_idx, merge_tool] = status.name

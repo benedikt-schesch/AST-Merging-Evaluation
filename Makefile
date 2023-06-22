@@ -33,6 +33,10 @@ clean:
 clean-cache:
 	rm -rf cache
 
+# This target deletes files in the test cache.
+clean-test-cache:
+	rm -rf test_cache
+
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
 	rm -f input_data/repos_small_with_hashes.csv
@@ -40,7 +44,7 @@ clean-stored-hashes:
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
-	${MAKE} clean-cache clean
+	${MAKE} clean-test-cache clean
 	./run_small.sh
 	${MAKE} small-test-diff
 

@@ -26,8 +26,6 @@ import git.repo
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-
-CACHE = "cache/test_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
 TEST_STATE = Enum(
@@ -152,19 +150,22 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
-def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE:
+def commit_pass_test(
+    repo_name: str, commit: str, diagnostic: str, cache: str
+) -> TEST_STATE:
     """Tests a commit of a repository.
-    Args:
+    Args:commit_pass_test
         repo_name (str): The name of the repository.
         commit (str): The commit to be tested.
         diagnostic (str): A string printed in diagnostics.
+        cache (str): The path of the cache directory.
     Returns:
         TEST_STATE: The result of the test.
     """
     print(repo_name, commit, ": Started testing commit")
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
+    target_file = os.path.join(cache, repo_name.replace("/", "_") + "_" + commit)
     # Check if result is cached
     if os.path.isfile(target_file + ".txt"):
         status, _ = read_cache(target_file)
@@ -217,18 +218,20 @@ def commit_pass_test(repo_name: str, commit: str, diagnostic: str) -> TEST_STATE
     return status
 
 
-def head_passes_tests(arg) -> TEST_STATE:
+def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
     """Checks if the head of main passes test.
     Args:
-        arg (idx, row): Information regarding that repo.
+        repo_info (pd.Series): The information of the repository.
+        cache (str): The path of the cache directory.
     Returns:
         TEST_STATE: The result of the test.
     """
-    _, row = arg
-    repo_name = row["repository"]
+    repo_name = repo_info["repository"]
     print(repo_name, ": Started head_passes_tests")
 
-    status = commit_pass_test(repo_name, row["Validation hash"], "Validation hash")
+    status = commit_pass_test(
+        repo_name, repo_info["Validation hash"], "Validation hash", cache
+    )
 
     print(
         repo_name,
@@ -239,14 +242,16 @@ def head_passes_tests(arg) -> TEST_STATE:
 
 
 if __name__ == "__main__":
-    Path("repos").mkdir(parents=True, exist_ok=True)
-    Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
-
+    Path("repos").mkdir(parents=True, exist_ok=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_csv_with_hashes", type=str)
     parser.add_argument("--output_path", type=str)
+    parser.add_argument("--cache_dir", type=str, default="cache/test_result/")
     args = parser.parse_args()
+
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
     print("validate_repos: Started Testing")
@@ -254,7 +259,8 @@ if __name__ == "__main__":
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
-            pool.apply_async(head_passes_tests, args=(v,)) for v in df.iterrows()
+            pool.apply_async(head_passes_tests, args=((v[1], args.cache_dir)))
+            for v in df.iterrows()
         ]
         for result in tqdm(results, total=len(results)):
             try:
@@ -266,8 +272,8 @@ if __name__ == "__main__":
     print("validate_repos: Building Output")
     out = []
     valid_repos_mask = [
-        head_passes_tests((repo_idx, row)) == TEST_STATE.Tests_passed
-        for repo_idx, row in tqdm(df.iterrows(), total=len(df))
+        head_passes_tests(row, args.cache_dir) == TEST_STATE.Tests_passed
+        for _, row in tqdm(df.iterrows(), total=len(df))
     ]
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
