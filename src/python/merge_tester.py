@@ -218,9 +218,10 @@ def merge_and_test(  # pylint: disable=too-many-locals
     process = multiprocessing.current_process()
     pid = str(process.pid)
     # The repo will be copied here, then work done in the copy.
-    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    work_dir = os.path.join(WORKDIR, pid)
+    repo_dir_copy = os.path.join(work_dir, "repo")
+    if os.path.isdir(work_dir):
+        shutil.rmtree(work_dir, onerror=del_rw)
 
     shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
 
@@ -265,7 +266,7 @@ def merge_and_test(  # pylint: disable=too-many-locals
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
 
     if not STORE_WORKDIR:
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+        shutil.rmtree(work_dir, onerror=del_rw)
 
     write_cache(merge_status, runtime, explanation, cache_file)
     return merge_status, runtime

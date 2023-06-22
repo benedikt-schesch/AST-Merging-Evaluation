@@ -233,7 +233,7 @@ def commit_pass_test(  # pylint: disable=too-many-statements
     write_cache(status, explanation, target_file)
     print(repo_name, commit, ": Finished testing commit: ", status.name)
     if os.path.isdir(work_dir):
-        # Remove all permision restrictions from repo_dir_copy
+        # Remove all permision restrictions from work_dir
         shutil.rmtree(work_dir, onerror=del_rw)
     return status
 

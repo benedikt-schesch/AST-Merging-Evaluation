@@ -29,11 +29,12 @@ source venv/bin/activate
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
 ### Maven
+
 Make sure you use maven version 3.9.2. To download this version of maven run the following commands:
 
 ```bash
 make download-maven-3.9.2
-echo "export PATH=\$PATH:$(pwd)/apache-maven-3.9.2/bin" >> ~/.bashrc
+echo "export PATH=$(pwd)/apache-maven-3.9.2/bin:\$PATH:" >> ~/.bashrc
 ```
 
 ### Ubuntu
