@@ -51,7 +51,7 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd results-small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.csv)
 	diff -r -U3 test/small-goal-files results-small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
-	rm -f results-small/result-without-times.csv
+	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/
@@ -68,6 +68,13 @@ jars/IntelliMerge-1.0.9-all.jar:
 jars/spork.jar:
 	mkdir -p jars
 	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
+
+# Download Maven 3.9.2, make sure it is in your PATH.
+download-maven-3.9.2:
+	if [ -d apache-maven-3.9.2 ]; then exit 0; fi
+	wget https://dlcdn.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.tar.gz --no-verbose
+	tar -xzf apache-maven-3.9.2-bin.tar.gz
+	rm apache-maven-3.9.2-bin.tar.gz
 
 TAGS: tags
 tags:

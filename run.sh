@@ -20,6 +20,7 @@ N_MERGES=$3
 machine_id="${4:-0}"
 num_machines="${5:-1}"
 
+mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9.2 || { echo "Maven 3.9.2 is required"; exit 1; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
 if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
