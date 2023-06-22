@@ -35,47 +35,53 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def parent_pass_test(
-    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int]
+    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int, str]
 ) -> Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]:
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
         args (Tuple[str, str, str, str, Union[None, Dict[str, int]], int]): A tuple containing
             the repository name, the left parent, the right parent, the merge commit, a dictionary
-            containing the number of merges with passing parents for each repository, and the
-            maximum number of merges to sample.
+            containing the number of merges with passing parents for each repository, the
+            maximum number of merges to sample, and the cache directory.
     Returns:
         Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]: A tuple containing the test
             results for the left parent, the right parent, and the merge commit, or None if
             enough merges have been sampled.
     """
-    repo_name, left, right, merge, valid_merge_counter, n_sampled = args
+    repo_name, left, right, merge, valid_merge_counter, n_sampled, cache_dir = args
     if not valid_merge_counter is None:
         if valid_merge_counter[repo_name] > n_sampled:
             return None
-    left_test = commit_pass_test(repo_name, left)
-    right_test = commit_pass_test(repo_name, right)
+    left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
+    right_test = commit_pass_test(repo_name, right, "right_test", cache_dir)
     if not valid_merge_counter is None:
-        if left_test == TEST_STATE.Success and right_test == TEST_STATE.Success:
+        if (
+            left_test == TEST_STATE.Tests_passed
+            and right_test == TEST_STATE.Tests_passed
+        ):
             valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
-    merge_test = commit_pass_test(repo_name, merge)
+    merge_test = commit_pass_test(
+        repo_name, merge, f"merge of {left} and {right}", cache_dir
+    )
     return left_test, right_test, merge_test
 
 
 if __name__ == "__main__":
     print("parent_merges_test: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
-    Path("cache").mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
+    parser.add_argument("--cache_dir", type=str, default="cache/test_result/")
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv)
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
@@ -95,7 +101,11 @@ if __name__ == "__main__":
         if not os.path.isfile(merge_list_file):
             continue
 
-        merges = pd.read_csv(merge_list_file, names=["merge", "left", "right", "base"])
+        merges = pd.read_csv(
+            merge_list_file,
+            names=["branch_name", "merge", "left", "right", "base"],
+            header=0,
+        )
         merges = merges.sample(frac=1, random_state=42)
 
         for _, merge_data in merges.iterrows():
@@ -107,6 +117,7 @@ if __name__ == "__main__":
                     merge_data["merge"],
                     valid_merge_counter,
                     args.n_merges,
+                    args.cache_dir,
                 )
             )
         tested_merges.append(merges_repo)
@@ -146,7 +157,6 @@ if __name__ == "__main__":
             merge_list_file,
             names=["branch_name", "merge", "left", "right", "base"],
             header=0,
-            index_col=False,
         )
         merges = merges.sample(frac=1, random_state=42)
         merges["parent test"] = ["Failure" for i in merges.iterrows()]
@@ -156,27 +166,58 @@ if __name__ == "__main__":
         merges_counter = 0
         for merge_idx, merge_data in merges.iterrows():
             parents_result = parent_pass_test(
-                (
+                (  # type: ignore
                     repo_name,
                     merge_data["left"],
                     merge_data["right"],
                     merge_data["merge"],
                     None,
                     0,
+                    str(args.cache_dir),
                 )
             )
             if parents_result is None:
                 continue
             left_test, right_test, merge_test = parents_result
             merges.at[merge_idx, "merge test"] = merge_test.name
-            if left_test == TEST_STATE.Success and right_test == TEST_STATE.Success:
-                merges.at[merge_idx, "parent test"] = TEST_STATE.Success.name
+            if (
+                left_test == TEST_STATE.Tests_passed
+                and right_test == TEST_STATE.Tests_passed
+            ):
+                merges.at[merge_idx, "parent test"] = TEST_STATE.Tests_passed.name
                 merges_counter += 1
                 result.append(merges.loc[merge_idx])  # type: ignore
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "passed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
+            else:
+                print(
+                    repo_name,
+                    merge_data["merge"],
+                    "failed",
+                    "left:",
+                    merge_data["left"],
+                    "result:",
+                    left_test,
+                    "right:",
+                    merge_data["right"],
+                    "result:",
+                    right_test,
+                )
             if merges_counter >= args.n_merges:
                 break
         result = pd.DataFrame(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
-        result.to_csv(output_file)
+        result.to_csv(output_file, index_label="idx")
     print("parent_merges_test: Finished Constructing Output")
     print("parent_merges_test: Done")

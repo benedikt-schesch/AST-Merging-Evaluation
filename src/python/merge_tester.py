@@ -40,7 +40,6 @@ WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_WORKDIR = False
-CACHE = "cache/merge_test_results/"
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
@@ -57,14 +56,14 @@ MERGE_TOOLS = sorted(
 MERGE_STATES = Enum(
     "MERGE_STATES",
     [
-        "Failure_merge",
-        "Failure_merge_exception",
-        "Failure_timeout_merge",
-        "Success_merge",
-        "Success_test",
-        "Failure_timeout_test",
-        "Failure_test",
-        "Failure_test_exception",
+        "Merge_failed",
+        "Merge_exception",
+        "Merge_timedout",
+        "Merge_success",
+        "Tests_passed",
+        "Tests_timedout",
+        "Tests_failed",
+        "Tests_exception",
         "Merge_running",
     ],
 )
@@ -142,26 +141,26 @@ def merge_commits(
             timeout=TIMEOUT_MERGE,
         )
         if p.returncode:
-            merge_status = MERGE_STATES.Failure_merge
+            merge_status = MERGE_STATES.Merge_failed
             explanation = "Merge Failed"
         else:
-            merge_status = MERGE_STATES.Success_merge
+            merge_status = MERGE_STATES.Merge_success
             explanation = ""
         runtime = time.time() - start
     except subprocess.TimeoutExpired:
         os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
-        merge_status = MERGE_STATES.Failure_timeout_merge
+        merge_status = MERGE_STATES.Merge_timedout
         explanation = "Timeout during merge"
         runtime = -1
     except Exception as e:
-        merge_status = MERGE_STATES.Failure_merge_exception
+        merge_status = MERGE_STATES.Merge_exception
         explanation = str(e)
         runtime = -1
     return merge_status, runtime, explanation
 
 
 def merge_and_test(  # pylint: disable=too-many-locals
-    args: Tuple[str, str, str, str, str, str]
+    args: Tuple[str, str, str, str, str, str, str]
 ) -> Tuple[MERGE_STATES, float]:
     """Merges a repo and executes its tests.
     Args:
@@ -171,13 +170,14 @@ def merge_and_test(  # pylint: disable=too-many-locals
         right (str): Right parent hash of the merge.
         base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
+        cache_dir (str): Path to the cache directory.
     Returns:
         MERGE_STATES: The status of the merge.
         float: Runtime to execute the merge.
     """
-    merging_method, repo_name, left, right, base, merge = args
+    merging_method, repo_name, left, right, base, merge, cache_dir = args
     cache_file = os.path.join(
-        CACHE,
+        cache_dir,
         repo_name.split("/")[1]
         + "_"
         + left
@@ -208,23 +208,23 @@ def merge_and_test(  # pylint: disable=too-many-locals
         repo_dir_copy, left, right, merging_method
     )
 
-    if merge_status == MERGE_STATES.Success_merge:
+    if merge_status == MERGE_STATES.Merge_success:
         try:
             test_status, explanation = repo_test(
                 repo_dir_copy + "/" + merging_method, TIMEOUT_TESTING
             )
-            if test_status == TEST_STATE.Success:
-                merge_status = MERGE_STATES.Success_test
-            elif test_status == TEST_STATE.Timeout:
-                merge_status = MERGE_STATES.Failure_timeout_test
+            if test_status == TEST_STATE.Tests_passed:
+                merge_status = MERGE_STATES.Tests_passed
+            elif test_status == TEST_STATE.Tests_timedout:
+                merge_status = MERGE_STATES.Tests_timedout
             else:
-                merge_status = MERGE_STATES.Failure_test
+                merge_status = MERGE_STATES.Tests_failed
             print(
                 repo_name + " " + merging_method + " testing with result:",
                 merge_status.name,
             )
         except Exception as e:
-            merge_status = MERGE_STATES.Failure_test_exception
+            merge_status = MERGE_STATES.Tests_exception
             explanation = str(e)
             print(
                 repo_name,
@@ -254,16 +254,17 @@ def merge_and_test(  # pylint: disable=too-many-locals
 if __name__ == "__main__":
     print("merge_tester: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
-    Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
+    parser.add_argument("--cache_dir", type=str, default="cache/merge_test_results/")
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv)
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_tester: Building Function Arguments")
     # Function arguments: (repo_name, left, right, base, merge)
@@ -277,7 +278,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(merge_list_file, index_col=0)
         for _, merge_data in merges.iterrows():
-            if merge_data["parent test"] != "Success":
+            if merge_data["parent test"] != TEST_STATE.Tests_passed.name:
                 continue
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
                 args_merges.append(
@@ -288,6 +289,7 @@ if __name__ == "__main__":
                         merge_data["right"],
                         merge_data["base"],
                         merge_data["merge"],
+                        args.cache_dir,
                     )
                 )
 
@@ -322,25 +324,28 @@ if __name__ == "__main__":
             merges[merge_tool + " runtime"] = [-10 for i in merges.iterrows()]
 
         for merge_idx, merge_data in merges.iterrows():
-            if merge_data["parent test"] != "Success":
+            if merge_data["parent test"] != TEST_STATE.Tests_passed.name:
                 continue
 
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
                 status, runtime = merge_and_test(
-                    (
+                    (  # type: ignore
                         merge_tool,
                         repository_data["repository"],
                         merge_data["left"],
                         merge_data["right"],
                         merge_data["base"],
                         merge_data["merge"],
+                        args.cache_dir,
                     )
                 )
                 merges.at[merge_idx, merge_tool] = status.name
                 merges.at[merge_idx, merge_tool + " runtime"] = runtime
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
-    output.to_csv(args.output_file)
+    output.sort_values(by=["repo_name", "left", "right", "base", "merge"], inplace=True)
+    output.reset_index(drop=True, inplace=True)
+    output.to_csv(args.output_file, index_label="idx")
     print("merge_tester: Finished Building Output")
     print("merge_tester: Number of analyzed merges ", len(output))
     print("merge_tester: Done")
