@@ -136,7 +136,7 @@ To run style checking run `make style`.
 
   * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
 

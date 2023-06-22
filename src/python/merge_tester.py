@@ -259,11 +259,11 @@ if __name__ == "__main__":
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv)
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_tester: Building Function Arguments")
     # Function arguments: (repo_name, left, right, base, merge)
@@ -342,7 +342,7 @@ if __name__ == "__main__":
     output = pd.concat(output, ignore_index=True)
     output.sort_values(by=["repo_name", "left", "right", "base", "merge"], inplace=True)
     output.reset_index(drop=True, inplace=True)
-    output.to_csv(args.output_file)
+    output.to_csv(args.output_file, index_label="idx")
     print("merge_tester: Finished Building Output")
     print("merge_tester: Number of analyzed merges ", len(output))
     print("merge_tester: Done")

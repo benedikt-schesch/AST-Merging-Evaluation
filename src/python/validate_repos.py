@@ -244,10 +244,10 @@ if __name__ == "__main__":
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--repos_csv_with_hashes", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv, index_col=0).reset_index(drop=True)
+    df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
@@ -274,5 +274,5 @@ if __name__ == "__main__":
     print("validate_repos: Number of valid repos:", len(out))
     if len(out) == 0:
         sys.exit(1)
-    out.to_csv(args.output_path)
+    out.to_csv(args.output_path, index_label="idx")
     print("validate_repos: Done")
