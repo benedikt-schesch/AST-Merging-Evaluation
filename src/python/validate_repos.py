@@ -183,9 +183,10 @@ def commit_pass_test(  # pylint: disable=too-many-statements
     write_cache(status, explanation, target_file)
 
     pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    work_dir = os.path.join(WORKDIR, pid)
+    repo_dir_copy = os.path.join(work_dir, "repo")
+    if os.path.isdir(work_dir):
+        shutil.rmtree(work_dir, onerror=del_rw)
     try:
         try:
             _ = clone_repo(repo_name)
@@ -204,14 +205,15 @@ def commit_pass_test(  # pylint: disable=too-many-statements
             status = TEST_STATE.Failure_git_checkout
             explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
-        if os.path.isfile(
-            os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1] + ".sh")
-        ):
+        setup_script_path = os.path.join(
+            REPO_SETUP_SCRIPTS, repo_name.split("/")[1] + ".sh"
+        )
+        if os.path.isfile(setup_script_path):
             try:
                 print(repo_name, ": Running setup script for repo")
                 subprocess.run(
                     [
-                        os.path.join(REPO_SETUP_SCRIPTS, repo_name + ".sh"),
+                        setup_script_path,
                         repo_dir_copy,
                     ],
                     capture_output=True,
@@ -230,9 +232,9 @@ def commit_pass_test(  # pylint: disable=too-many-statements
         pass
     write_cache(status, explanation, target_file)
     print(repo_name, commit, ": Finished testing commit: ", status.name)
-    if os.path.isdir(repo_dir_copy):
+    if os.path.isdir(work_dir):
         # Remove all permision restrictions from repo_dir_copy
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+        shutil.rmtree(work_dir, onerror=del_rw)
     return status
 
 

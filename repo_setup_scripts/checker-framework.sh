@@ -76,6 +76,9 @@
  # # To enable debugging, uncomment the following line.
  # # DEBUG=1
 
+ REPO_PATH=$1
+ cd "${REPO_PATH}"
+
  echo "Entering checker/bin-devel/checkout-historical.sh in $(pwd)"
 
  commit_sha=$(git rev-parse HEAD)

@@ -144,6 +144,8 @@ To run style checking run `make style`.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
 
+* repo_setup_scripts/ -> Scripts to setup the repos. The script is automatically executed after checking out a certain hash if the script has the name "repo_name.sh". As arugment the path of the repository to setup is passed.
+
 ### Uncommited Files
 
 * test_cache/ -> This folder is a cache for each test computation. contains:
