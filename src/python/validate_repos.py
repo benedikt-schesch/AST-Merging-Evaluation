@@ -152,7 +152,7 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
-def commit_pass_test(
+def commit_pass_test( # pylint: disable=too-many-statements
     repo_name: str, commit: str, diagnostic: str, cache: str
 ) -> TEST_STATE:
     """Tests a commit of a repository.
