@@ -16,14 +16,6 @@ To install all the python requirements:
 pip install -r requirements.txt
 ```
 
-### Spork and Intellimerge
-
-To download the Intellimerge and Spork jar:
-
-```bash
-make download-merge-tools
-```
-
 ### Alternative Python installation
 
 If you don't want to mess with your local python installation you can create a python virtual environment to install all dependencies with the following commands:
@@ -36,6 +28,14 @@ source venv/bin/activate
 
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
+### Maven
+Make sure you use maven version 3.9.2. To download this version of maven run the following commands:
+
+```bash
+make download-maven-3.9.2
+echo "export PATH=\$PATH:$(pwd)/apache-maven-3.9.2/bin" >> ~/.bashrc
+```
+
 ### Ubuntu
 
 ```bash
@@ -47,7 +47,6 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 && sudo apt update \
 && sudo apt install gh -y
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-sudo apt-get install git-lfs
 ```
 
 ### MacOS
@@ -55,7 +54,6 @@ sudo apt-get install git-lfs
 ```bash
 brew install jq
 brew install gh
-brew install git-lfs
 ```
 
 ---
@@ -71,10 +69,10 @@ make small-test
 ```
 
 This will run the entire code on two small repos.
-All the output data can be found in `small/`.
-The final result is found in `small/result.csv`.
-Directory `small/merges_small` contains all the merges.
-Directory `small/merges_small_valid` contains all the merges and also stores if the parents of a merge pass tests.
+All the output data can be found in `results-small/`.
+The final result is found in `results-small/result.csv`.
+Directory `results-small/merges_small/` contains all the merges.
+Directory `results-small/merges_small_valid/` contains all the merges and also stores if the parents of a merge pass tests.
 
 ### Perform full analysis
 
@@ -140,23 +138,19 @@ To run style checking run `make style`.
 
 * cache/ -> This folder is a cache for each computation. contains:
 
-  * repos_result/ -> Caches the validation of each repository.
+  * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
-  * commit_test_result/ -> Caches the test results for a specific commit. Used for parent testing.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing.
-
-* data/ -> All input data, contains:
-
-  * repos.csv -> List of all repos that fulfill the initial selection criterion.
-
-  * repos_with_hashes.csv -> repos.csv but with the tested commit for repository validation
-
-  * repos_small.csv -> List of only 2 repos.
-
-  * repos_small_with_hashes.csv -> repos_small.csv but with the tested commit for repository validation
+* input_data/ -> Input data, which is a list of repositories; see its README.md.
 
 ### Uncommited Files
+
+* test_cache/ -> This folder is a cache for each test computation. contains:
+
+  * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
+
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
 
 * .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
 
@@ -164,7 +158,7 @@ To run style checking run `make style`.
 
 * results/ -> Contains all the results for the full analysis.
 
-* small/ -> Contains all the results for the small analysis.
+* results-small/ -> Contains all the results for the small analysis.
 
 * jars/ -> Location for the Intellimerge and Spork jars.
 

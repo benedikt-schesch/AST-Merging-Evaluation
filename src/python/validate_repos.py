@@ -26,19 +26,17 @@ import git.repo
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-
-CACHE = "cache/commit_result/"
 WORKDIR = ".workdir/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
 TEST_STATE = Enum(
     "TEST_STATE",
     [
-        "Success",
-        "Failure",
+        "Tests_passed",
+        "Tests_failed",
         "Failure_git_checkout",
         "Failure_git_clone",
         "Failure_test_exception",
-        "Timeout",
+        "Tests_timedout",
         "Not_tested",
     ],
 )
@@ -105,10 +103,10 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
             + stderr
         )
         if rc == 0:  # Success
-            return TEST_STATE.Success, explanation
+            return TEST_STATE.Tests_passed, explanation
         if rc == 128:
-            return TEST_STATE.Timeout, explanation
-    return TEST_STATE.Failure, explanation  # Failure
+            return TEST_STATE.Tests_timedout, explanation
+    return TEST_STATE.Tests_failed, explanation  # Failure
 
 
 def write_cache(status: TEST_STATE, explanation: str, cache_file: str):
@@ -152,24 +150,29 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
-def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
+def commit_pass_test(
+    repo_name: str, commit: str, diagnostic: str, cache: str
+) -> TEST_STATE:
     """Tests a commit of a repository.
-    Args:
+    Args:commit_pass_test
         repo_name (str): The name of the repository.
         commit (str): The commit to be tested.
+        diagnostic (str): A string printed in diagnostics.
+        cache (str): The path of the cache directory.
     Returns:
         TEST_STATE: The result of the test.
     """
-    print(repo_name, ": Started testing commit: ", commit)
+    print(repo_name, commit, ": Started testing commit")
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(CACHE, repo_name.replace("/", "_") + "_" + commit)
+    target_file = os.path.join(cache, repo_name.replace("/", "_") + "_" + commit)
     # Check if result is cached
     if os.path.isfile(target_file + ".txt"):
         status, _ = read_cache(target_file)
         print(
             repo_name,
-            ": Cached result from " + target_file + ": " + status.name,
+            commit,
+            ": Cached result from " + target_file + ".txt: " + status.name,
         )
         return status
 
@@ -197,7 +200,7 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
             repo.submodule_update()
         except Exception as e:
             status = TEST_STATE.Failure_git_checkout
-            explanation = str(e)
+            explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
         try:
             status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
@@ -208,50 +211,56 @@ def commit_pass_test(repo_name: str, commit: str) -> TEST_STATE:
     except Exception:
         pass
     write_cache(status, explanation, target_file)
+    print(repo_name, commit, ": Finished testing commit: ", status.name)
     if os.path.isdir(repo_dir_copy):
         # Remove all permision restrictions from repo_dir_copy
         shutil.rmtree(repo_dir_copy, onerror=del_rw)
     return status
 
 
-def head_passes_tests(arg) -> TEST_STATE:
+def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
     """Checks if the head of main passes test.
     Args:
-        arg (idx, row): Information regarding that repo.
+        repo_info (pd.Series): The information of the repository.
+        cache (str): The path of the cache directory.
     Returns:
         TEST_STATE: The result of the test.
     """
-    _, row = arg
-    repo_name = row["repository"]
+    repo_name = repo_info["repository"]
     print(repo_name, ": Started head_passes_tests")
 
-    status = commit_pass_test(repo_name, row["Validation hash"])
+    status = commit_pass_test(
+        repo_name, repo_info["Validation hash"], "Validation hash", cache
+    )
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result : ",
+        ": Finished head_passes_tests, result:",
         status.name,
     )
     return status
 
 
 if __name__ == "__main__":
-    Path("repos").mkdir(parents=True, exist_ok=True)
-    Path(CACHE).mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
-
+    Path("repos").mkdir(parents=True, exist_ok=True)
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
+    parser.add_argument("--repos_csv_with_hashes", type=str)
     parser.add_argument("--output_path", type=str)
+    parser.add_argument("--cache_dir", type=str, default="cache/test_result/")
     args = parser.parse_args()
-    df = pd.read_csv(args.repos_csv, index_col=0).reset_index(drop=True)
+
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+
+    df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
-            pool.apply_async(head_passes_tests, args=(v,)) for v in df.iterrows()
+            pool.apply_async(head_passes_tests, args=((v[1], args.cache_dir)))
+            for v in df.iterrows()
         ]
         for result in tqdm(results, total=len(results)):
             try:
@@ -263,13 +272,13 @@ if __name__ == "__main__":
     print("validate_repos: Building Output")
     out = []
     valid_repos_mask = [
-        head_passes_tests((repo_idx, row)) == TEST_STATE.Success
-        for repo_idx, row in tqdm(df.iterrows(), total=len(df))
+        head_passes_tests(row, args.cache_dir) == TEST_STATE.Tests_passed
+        for _, row in tqdm(df.iterrows(), total=len(df))
     ]
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
     print("validate_repos: Number of valid repos:", len(out))
     if len(out) == 0:
         sys.exit(1)
-    out.to_csv(args.output_path)
+    out.to_csv(args.output_path, index_label="idx")
     print("validate_repos: Done")

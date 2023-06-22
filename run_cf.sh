@@ -12,4 +12,4 @@ num_machines="${2:-1}"
 set -e
 set -o nounset
 
-./run.sh data/repos_cf.csv cf 2 "$machine_id" "$num_machines"
+./run.sh data/repos_cf.csv cf 2 test_cache "$machine_id" "$num_machines"
