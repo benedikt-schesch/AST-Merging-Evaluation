@@ -218,11 +218,11 @@ def commit_pass_test(
     return status
 
 
-def head_passes_tests(repo_info:pd.Series, cache:str) -> TEST_STATE:
+def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
     """Checks if the head of main passes test.
     Args:
         repo_info (pd.Series): The information of the repository.
-        cache (str): The path of the cache directory.   
+        cache (str): The path of the cache directory.
     Returns:
         TEST_STATE: The result of the test.
     """
