@@ -204,11 +204,16 @@ def commit_pass_test(
             status = TEST_STATE.Failure_git_checkout
             explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
-        if os.path.isfile(os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1] + ".sh")):
+        if os.path.isfile(
+            os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1] + ".sh")
+        ):
             try:
-                print(repo_name,": Running setup script for repo")
+                print(repo_name, ": Running setup script for repo")
                 subprocess.run(
-                    [os.path.join(REPO_SETUP_SCRIPTS, repo_name + ".sh"), repo_dir_copy],
+                    [
+                        os.path.join(REPO_SETUP_SCRIPTS, repo_name + ".sh"),
+                        repo_dir_copy,
+                    ],
                     capture_output=True,
                 )
             except Exception as e:

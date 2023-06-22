@@ -106,7 +106,7 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
 
 
 def merge_commits(
-    repo_name:str, repo_dir: str, left: str, right: str, merging_method: str
+    repo_name: str, repo_dir: str, left: str, right: str, merging_method: str
 ) -> Tuple[MERGE_STATES, float, str]:
     """Merges two commits in a repository.
     Args:
@@ -160,11 +160,13 @@ def merge_commits(
         merge_status = MERGE_STATES.Merge_exception
         explanation = str(e)
         runtime = -1
-    if merge_status == MERGE_STATES.Merge_success and os.path.isfile(os.path.join(REPO_SETUP_SCRIPTS,repo_name.split("/")[1])+".sh"):
+    if merge_status == MERGE_STATES.Merge_success and os.path.isfile(
+        os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1]) + ".sh"
+    ):
         try:
             subprocess.run(
                 [
-                    os.path.join(REPO_SETUP_SCRIPTS,repo_name.split("/")[1])+".sh",
+                    os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1]) + ".sh",
                     repo_dir + "/" + merging_method,
                 ],
                 stdout=subprocess.DEVNULL,
