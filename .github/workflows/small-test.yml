@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        maven: [ '3.8.6']
+        maven: [ '3.9.2']
     runs-on: ubuntu-latest
     defaults:
       run:

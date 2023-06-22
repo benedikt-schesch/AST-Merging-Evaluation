@@ -33,6 +33,7 @@ Make sure you use maven version 3.9.2. To download this version of maven run the
 
 ```bash
 make download-maven-3.9.2
+echo "export PATH=\$PATH:$(pwd)/apache-maven-3.9.2/bin" >> ~/.bashrc
 ```
 
 ### Ubuntu
