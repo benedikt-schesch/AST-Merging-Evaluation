@@ -17,8 +17,9 @@ set -o nounset
 REPOS_CSV="$1"
 OUT_DIR="$2"
 N_MERGES=$3
-machine_id="${4:-0}"
-num_machines="${5:-1}"
+CACHE_DIR="${4}"
+machine_id="${5:0}"
+num_machines="${6:-1}"
 
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
@@ -39,12 +40,12 @@ python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "
 
 python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/validate_repos.py --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv"
+python3 src/python/validate_repos.py --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv" --cache_dir "$CACHE_DIR/test_result"
 
 java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
 
-python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES"
+python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES" --cache_dir "$CACHE_DIR/test_result"
 
-python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv"
+python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR/merge_test_results/"
 
 python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"

@@ -35,40 +35,41 @@ TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
 def parent_pass_test(
-    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int]
+    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int, str]
 ) -> Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]:
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
         args (Tuple[str, str, str, str, Union[None, Dict[str, int]], int]): A tuple containing
             the repository name, the left parent, the right parent, the merge commit, a dictionary
-            containing the number of merges with passing parents for each repository, and the
-            maximum number of merges to sample.
+            containing the number of merges with passing parents for each repository, the
+            maximum number of merges to sample, and the cache directory.
     Returns:
         Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]: A tuple containing the test
             results for the left parent, the right parent, and the merge commit, or None if
             enough merges have been sampled.
     """
-    repo_name, left, right, merge, valid_merge_counter, n_sampled = args
+    repo_name, left, right, merge, valid_merge_counter, n_sampled, cache_dir = args
     if not valid_merge_counter is None:
         if valid_merge_counter[repo_name] > n_sampled:
             return None
-    left_test = commit_pass_test(repo_name, left, "left_test")
-    right_test = commit_pass_test(repo_name, right, "right_test")
+    left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
+    right_test = commit_pass_test(repo_name, right, "right_test", cache_dir)
     if not valid_merge_counter is None:
         if (
             left_test == TEST_STATE.Tests_passed
             and right_test == TEST_STATE.Tests_passed
         ):
             valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
-    merge_test = commit_pass_test(repo_name, merge, f"merge of {left} and {right}")
+    merge_test = commit_pass_test(
+        repo_name, merge, f"merge of {left} and {right}", cache_dir
+    )
     return left_test, right_test, merge_test
 
 
 if __name__ == "__main__":
     print("parent_merges_test: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
-    Path("cache").mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
 
     pwd = os.getcwd()
@@ -77,7 +78,9 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--n_merges", type=int)
+    parser.add_argument("--cache_dir", type=str, default="cache/test_result/")
     args = parser.parse_args()
+    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
     if os.path.isdir(args.output_dir):
         shutil.rmtree(args.output_dir, onerror=del_rw)
@@ -114,6 +117,7 @@ if __name__ == "__main__":
                     merge_data["merge"],
                     valid_merge_counter,
                     args.n_merges,
+                    args.cache_dir,
                 )
             )
         tested_merges.append(merges_repo)
@@ -162,13 +166,14 @@ if __name__ == "__main__":
         merges_counter = 0
         for merge_idx, merge_data in merges.iterrows():
             parents_result = parent_pass_test(
-                (
+                (  # type: ignore
                     repo_name,
                     merge_data["left"],
                     merge_data["right"],
                     merge_data["merge"],
                     None,
                     0,
+                    str(args.cache_dir),
                 )
             )
             if parents_result is None:
