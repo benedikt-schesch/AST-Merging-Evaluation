@@ -5,7 +5,6 @@
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
-set -e
 set -o nounset
 
 if [ "$#" -ne 1 ]; then
