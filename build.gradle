@@ -45,9 +45,8 @@ dependencies {
   compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
 
   // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
-  // JGit 6.0 and later requires Java 11 to run, so use the 5.x version.
-  // implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.5.0.202303070854-r'
-  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
+  // JGit 6.0 and later requires Java 11 to run.  JGit 5.13 contains a bug in `loadConfiguration()`.
+  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.6.0.202305301015-r'
 }
 
 application {

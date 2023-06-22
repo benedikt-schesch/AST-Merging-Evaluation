@@ -27,36 +27,35 @@ clean:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
-	rm -rf small
+	rm -rf results-small
 
 # This target deletes files in the cache.
 clean-cache:
 	rm -rf cache
 
+# This target deletes files in the test cache.
+clean-test-cache:
+	rm -rf test_cache
+
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
-	rm -f data/repos_small_with_hashes.csv
-	rm -f data/repos_with_hashes.csv
+	rm -f input_data/repos_small_with_hashes.csv
+	rm -f input_data/repos_with_hashes.csv
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
-	${MAKE} clean-cache clean
+	${MAKE} clean-test-cache clean
 	./run_small.sh
 	${MAKE} small-test-diff
 
 small-test-diff:
-	cat small/local_repos.csv
-	cat small/merges/Algorithms.csv
-	cat small/merges/ez-vcard.csv
-	cat small/merges_valid/Algorithms.csv
-	cat small/merges_valid/ez-vcard.csv
-	cat small/result.csv
-	if grep -Fqvf small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
-	if grep -Fqvf small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
-	(cd test/small-goal-files && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	(cd small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.txt)
-	diff -r -U3 test/small-goal-files small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
-	rm -f test/small-goal-files/result-without-times.txt small/result-without-times.txt
+# Print file names followed by file content.
+	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
+	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
+	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
+	(cd results-small && cat result.csv | rev | cut -d, -f4-15 | rev > result-without-times.csv)
+	diff -r -U3 test/small-goal-files results-small -x merges -x .gitignore -x result.csv -x stacked.pdf -x table_runtime.txt -x .DS_Store
+	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/
@@ -64,15 +63,22 @@ gradle-assemble:
 java-style:
 	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
-download-merge-tools: download-intellimerge download-spork
+download-merge-tools: jars/IntelliMerge-1.0.9-all.jar jars/spork.jar
 
-download-intellimerge:
+jars/IntelliMerge-1.0.9-all.jar:
 	mkdir -p jars
 	wget https://github.com/Symbolk/IntelliMerge/releases/download/1.0.9/IntelliMerge-1.0.9-all.jar -P jars/ --no-verbose
 
-download-spork:
+jars/spork.jar:
 	mkdir -p jars
 	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
+
+# Download Maven 3.9.2, make sure it is in your PATH.
+download-maven-3.9.2:
+	if [ -d apache-maven-3.9.2 ]; then exit 0; fi
+	wget https://dlcdn.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.tar.gz --no-verbose
+	tar -xzf apache-maven-3.9.2-bin.tar.gz
+	rm apache-maven-3.9.2-bin.tar.gz
 
 TAGS: tags
 tags:
