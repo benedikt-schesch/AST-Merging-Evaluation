@@ -42,7 +42,7 @@ python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "
 python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
 
 python3 src/python/validate_repos.py --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv" --cache_dir "$CACHE_DIR/test_result"
-exit 0
+
 java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
 
 python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES" --cache_dir "$CACHE_DIR/test_result"
