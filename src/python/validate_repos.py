@@ -28,6 +28,7 @@ if os.getenv("TERM", "dumb") == "dumb":
 
 WORKDIR = ".workdir/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
+REPO_SETUP_SCRIPTS = "repo_setup_scripts"
 TEST_STATE = Enum(
     "TEST_STATE",
     [
@@ -37,6 +38,7 @@ TEST_STATE = Enum(
         "Failure_git_clone",
         "Failure_test_exception",
         "Tests_timedout",
+        "Failure_repo_setup_script_exception",
         "Not_tested",
     ],
 )
@@ -202,6 +204,17 @@ def commit_pass_test(
             status = TEST_STATE.Failure_git_checkout
             explanation = f"commit_pass_test({str}, {commit}, {diagnostic})\n" + str(e)
             raise
+        if os.path.isfile(os.path.join(REPO_SETUP_SCRIPTS, repo_name.split("/")[1] + ".sh")):
+            try:
+                print(repo_name,": Running setup script for repo")
+                subprocess.run(
+                    [os.path.join(REPO_SETUP_SCRIPTS, repo_name + ".sh"), repo_dir_copy],
+                    capture_output=True,
+                )
+            except Exception as e:
+                status = TEST_STATE.Failure_repo_setup_script_exception
+                explanation = str(e)
+                raise
         try:
             status, explanation = repo_test(repo_dir_copy, TIMEOUT_TESTING)
         except Exception as e:

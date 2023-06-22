@@ -37,10 +37,12 @@ SCRATCH_DIR = "scratch/"
 # Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
 WORKDIR = ".workdir/"
+REPO_SETUP_SCRIPTS = "repo_setup_scripts/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_WORKDIR = False
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
+# We allow more testing time than merging time because testing is important in these cases.
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
@@ -65,6 +67,7 @@ MERGE_STATES = Enum(
         "Tests_failed",
         "Tests_exception",
         "Merge_running",
+        "Setup_repo_exception",
     ],
 )
 
@@ -103,10 +106,11 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
 
 
 def merge_commits(
-    repo_dir: str, left: str, right: str, merging_method: str
+    repo_name:str, repo_dir: str, left: str, right: str, merging_method: str
 ) -> Tuple[MERGE_STATES, float, str]:
     """Merges two commits in a repository.
     Args:
+        repo_name (str): Name of the repository.
         repo_dir (str): Path to the directory containing the repo.
         left (str): Left commit.
         right (str): Right commit.
@@ -156,6 +160,20 @@ def merge_commits(
         merge_status = MERGE_STATES.Merge_exception
         explanation = str(e)
         runtime = -1
+    if merge_status == MERGE_STATES.Merge_success and os.path.isfile(os.path.join(REPO_SETUP_SCRIPTS,repo_name.split("/")[1])+".sh"):
+        try:
+            subprocess.run(
+                [
+                    os.path.join(REPO_SETUP_SCRIPTS,repo_name.split("/")[1])+".sh",
+                    repo_dir + "/" + merging_method,
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception as e:
+            merge_status = MERGE_STATES.Setup_repo_exception
+            explanation = str(e)
+            runtime = -1
     return merge_status, runtime, explanation
 
 
@@ -205,7 +223,7 @@ def merge_and_test(  # pylint: disable=too-many-locals
     shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
 
     merge_status, runtime, explanation = merge_commits(
-        repo_dir_copy, left, right, merging_method
+        repo_name, repo_dir_copy, left, right, merging_method
     )
 
     if merge_status == MERGE_STATES.Merge_success:
