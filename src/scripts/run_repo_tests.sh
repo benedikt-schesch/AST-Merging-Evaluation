@@ -12,7 +12,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 REPO_DIR=$1
-cd "$REPO_DIR" || return
+cd "$REPO_DIR" || exit 1
 
 if [ -f "gradlew" ] ; then
   command="./gradlew test -g ../.gradle/"
