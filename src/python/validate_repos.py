@@ -167,7 +167,7 @@ def commit_pass_test(  # pylint: disable=too-many-statements
     print(repo_name, commit, ": Started testing commit")
 
     repo_dir = os.path.join("repos/", repo_name)
-    target_file = os.path.join(cache, repo_name.replace("/", "_") + "_" + commit)
+    target_file = os.path.join(cache, repo_name.replace("/", "_") + "_" + str(commit))
     # Check if result is cached
     if os.path.isfile(target_file + ".txt"):
         status, _ = read_cache(target_file)
@@ -218,7 +218,9 @@ def commit_pass_test(  # pylint: disable=too-many-statements
                     ],
                     capture_output=True,
                 )
+                print(repo_name, commit, ": Finished running setup script for repo")
             except Exception as e:
+                print(repo_name, commit,": Setup script failed with exception:", str(e))
                 status = TEST_STATE.Failure_repo_setup_script_exception
                 explanation = str(e)
                 raise
