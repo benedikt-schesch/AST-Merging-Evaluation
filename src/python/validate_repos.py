@@ -181,9 +181,10 @@ def commit_pass_test(
     write_cache(status, explanation, target_file)
 
     pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    work_dir = os.path.join(WORKDIR, pid)
+    repo_dir_copy = os.path.join(work_dir, "repo")
+    if os.path.isdir(work_dir):
+        shutil.rmtree(work_dir, onerror=del_rw)
     try:
         try:
             _ = clone_repo(repo_name)
@@ -212,9 +213,9 @@ def commit_pass_test(
         pass
     write_cache(status, explanation, target_file)
     print(repo_name, commit, ": Finished testing commit: ", status.name)
-    if os.path.isdir(repo_dir_copy):
-        # Remove all permision restrictions from repo_dir_copy
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    if os.path.isdir(work_dir):
+        # Remove all permision restrictions from work_dir
+        shutil.rmtree(work_dir, onerror=del_rw)
     return status
 
 

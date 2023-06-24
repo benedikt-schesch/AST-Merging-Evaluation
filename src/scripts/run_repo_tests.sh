@@ -5,7 +5,6 @@
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
-set -e
 set -o nounset
 
 if [ "$#" -ne 1 ]; then
@@ -13,7 +12,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 REPO_DIR=$1
-cd "$REPO_DIR"
+cd "$REPO_DIR" || exit 1
 
 if [ -f "gradlew" ] ; then
   command="./gradlew test -g ../.gradle/"
