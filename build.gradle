@@ -27,6 +27,8 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
+  implementation 'org.plumelib:plume-util:1.8.1'
+
   // https://mvnrepository.com/artifact/com.opencsv/opencsv
   implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
 
@@ -42,7 +44,7 @@ dependencies {
   compileOnly 'com.google.code.findbugs:annotations:3.0.0'
   compileOnly 'com.google.code.findbugs:jsr305:3.0.0'
   compileOnly group: 'com.infradna.tool', name: 'bridge-method-injector', version: '1.24'
-  compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
+  compileOnly group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
 
   // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
   // JGit 6.0 and later requires Java 11 to run.  JGit 5.13 contains a bug in `loadConfiguration()`.
