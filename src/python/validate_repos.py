@@ -220,7 +220,9 @@ def commit_pass_test(  # pylint: disable=too-many-statements
                 )
                 print(repo_name, commit, ": Finished running setup script for repo")
             except Exception as e:
-                print(repo_name, commit,": Setup script failed with exception:", str(e))
+                print(
+                    repo_name, commit, ": Setup script failed with exception:", str(e)
+                )
                 status = TEST_STATE.Failure_repo_setup_script_exception
                 explanation = str(e)
                 raise
