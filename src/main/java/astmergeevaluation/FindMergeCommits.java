@@ -38,6 +38,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.plumelib.util.StringsPlume;
 
 /**
  * Given a list of repositories, outputs a list of merge commits. The merge commits may be on the
@@ -187,6 +188,7 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
+    System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
     repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
 
@@ -203,6 +205,7 @@ public class FindMergeCommits {
         System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
+      System.out.println(StringsPlume.rpad("Finding merge commits for " + orgAndRepo, 60) + "DONE");
     } catch (Throwable e) {
       throw new Error(e);
     }
