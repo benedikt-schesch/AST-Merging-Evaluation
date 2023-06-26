@@ -187,13 +187,24 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
-    for (String orgAndRepo : repos) {
+    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
+  }
+
+  /**
+   * Writes all merge commits for the given repository to a file.
+   *
+   * @param orgAndRepo the GitHub organization name and repository name, separated by "/"
+   */
+  void writeMergeCommitsForRepo(String orgAndRepo) {
+    try {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepo);
         System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
+    } catch (Throwable e) {
+      throw new Error(e);
     }
   }
 
