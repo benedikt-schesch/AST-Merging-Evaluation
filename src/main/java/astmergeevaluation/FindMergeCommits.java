@@ -188,6 +188,7 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
+    System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
     for (String orgAndRepo : repos) {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
