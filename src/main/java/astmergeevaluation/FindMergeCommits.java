@@ -38,6 +38,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.plumelib.util.StringsPlume;
 
 /**
  * Given a list of repositories, outputs a list of merge commits. The merge commits may be on the
@@ -187,13 +188,26 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
-    for (String orgAndRepo : repos) {
+    System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
+    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
+  }
+
+  /**
+   * Writes all merge commits for the given repository to a file.
+   *
+   * @param orgAndRepo the GitHub organization name and repository name, separated by "/"
+   */
+  void writeMergeCommitsForRepo(String orgAndRepo) {
+    try {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepo);
         System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
+      System.out.println(StringsPlume.rpad("Finding merge commits for " + orgAndRepo, 60) + "DONE");
+    } catch (Throwable e) {
+      throw new Error(e);
     }
   }
 
