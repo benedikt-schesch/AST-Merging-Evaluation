@@ -135,8 +135,12 @@ def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
     with open(cache_file + ".txt", "r") as f:
         status_name = f.readline().strip()
         status = TEST_STATE[status_name]
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    explanation_file = cache_file + "_explanation.txt"
+    if Path(explanation_file).exists():
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = ""
     return status, explanation
 
 
@@ -251,7 +255,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
         TEST_STATE: The result of the test.
     """
     repo_name = repo_info["repository"]
-    print(repo_name, ": Started head_passes_tests")
+    print(repo_name, ": head_passes_tests : started")
 
     status = commit_pass_test(
         repo_name, repo_info["Validation hash"], "Validation hash", cache
@@ -259,7 +263,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result:",
+        ": head_passes_tests : finished with result:",
         status.name,
     )
     return status
