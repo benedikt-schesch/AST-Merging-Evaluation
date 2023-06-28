@@ -29,7 +29,7 @@ clean:
 	rm -rf scratch
 	rm -rf results-small
 
-# This target deletes files in the cache.
+# This target deletes files in the cache, which is commited to version control.
 clean-cache:
 	rm -rf cache
 
