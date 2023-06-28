@@ -198,6 +198,8 @@ public class FindMergeCommits {
    * @param orgAndRepo the GitHub organization name and repository name, separated by "/"
    */
   void writeMergeCommitsForRepo(String orgAndRepo) {
+    String msgPrefix = StringsPlume.rpad("Find merge commits: " + orgAndRepo + " ", 69) + " ";
+    System.out.println(msgPrefix + "STARTED");
     try {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
@@ -205,7 +207,7 @@ public class FindMergeCommits {
         System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
-      System.out.println(StringsPlume.rpad("Finding merge commits for " + orgAndRepo, 60) + "DONE");
+      System.out.println(msgPrefix + "DONE");
     } catch (Throwable e) {
       throw new Error(e);
     }
@@ -408,7 +410,8 @@ public class FindMergeCommits {
     if (commit1.equals(commit2)) {
       throw new Error(
           String.format(
-              "Same commit passed twice: getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+              "Same commit passed twice: getMergeBaseCommit(%s, \"%s\", \"%s\")",
+              repo, commit1, commit2));
     }
 
     try {
@@ -442,7 +445,8 @@ public class FindMergeCommits {
       } else if (commonPrefixLength == -1) {
         throw new Error(
             String.format(
-                "Histories are equal for getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+                "Histories are equal for getMergeBaseCommit(%s, \"%s\", \"%s\")",
+                repo, commit1, commit2));
       }
 
       return history1.get(commonPrefixLength - 1);
@@ -481,7 +485,7 @@ public class FindMergeCommits {
       }
       throw new Error(
           String.format(
-              "Wrong number of base commits for getMergeBaseCommit(%s, %s, %s): %s",
+              "Wrong number of base commits for getMergeBaseCommit(%s, \"%s\", \"%s\"): %s",
               repo, commit1, commit2, baseCommits));
     } catch (IOException e) {
       throw new Error(e);
@@ -518,7 +522,8 @@ public class FindMergeCommits {
       if (baseCommit == null) {
         throw new Error(
             String.format(
-                "null baseCommit for getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+                "null baseCommit for getMergeBaseCommit(%s, \"%s\", \"%s\")",
+                repo, commit1, commit2));
       }
       return baseCommit;
     } catch (Exception e) {

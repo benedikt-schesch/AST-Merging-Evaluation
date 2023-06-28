@@ -232,7 +232,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
         TEST_STATE: The result of the test.
     """
     repo_name = repo_info["repository"]
-    print(repo_name, ": Started head_passes_tests")
+    print(repo_name, ": head_passes_tests : started")
 
     status = commit_pass_test(
         repo_name, repo_info["Validation hash"], "Validation hash", cache
@@ -240,7 +240,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result:",
+        ": head_passes_tests : finished with result:",
         status.name,
     )
     return status
