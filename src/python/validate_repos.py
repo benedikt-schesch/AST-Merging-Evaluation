@@ -240,7 +240,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
 
     print(
         repo_name,
-        ": head_passes_tests : finished with result:",
+        ": head_passes_tests : finished : result =",
         status.name,
     )
     return status

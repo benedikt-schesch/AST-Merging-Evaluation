@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.checkerframework.checker.lock.qual.GuardSatisfied;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -338,9 +339,7 @@ public class FindMergeCommits {
       ObjectId mergeId = commit.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
       if (mergeBase == null) {
-        throw new Error(
-            String.format(
-                "no merge base for repo %s, parent1=%s, parent2=%s", repo, parent1, parent2));
+        continue;
       }
       boolean newMerge = written.add(mergeId);
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
@@ -395,18 +394,21 @@ public class FindMergeCommits {
 
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
+   * If there is none (because the two commits have different initial commits!), then this returns
+   * null.
    *
-   * <p>Since only two commits are passed in, this always returns an existing commit, never a
-   * synthetic one. When a criss-cross merge exists in the history, this outputs an arbitrary one of
-   * the best merge bases.
+   * <p>Since only two commits are passed in, this always returns an existing commit (or null),
+   * never a synthetic one. When a criss-cross merge exists in the history, this outputs an
+   * arbitrary one of the best merge bases.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
    * @param commit1 the first parent commit
    * @param commit2 the second parent commit
-   * @return the merge base of the two commits
+   * @return the merge base of the two commits, or null if none exists
    */
-  RevCommit getMergeBaseCommit(Git git, Repository repo, RevCommit commit1, RevCommit commit2) {
+  @Nullable RevCommit getMergeBaseCommit(
+      Git git, Repository repo, RevCommit commit1, RevCommit commit2) {
     if (commit1.equals(commit2)) {
       throw new Error(
           String.format(
@@ -438,10 +440,9 @@ public class FindMergeCommits {
       }
 
       if (commonPrefixLength == 0) {
-        throw new Error(
-            String.format(
-                "Histories are unrelated for getMergeBaseCommit(%s, %s, %s)",
-                repo, commit1, commit2));
+        // Sometimes, a repository contains multiple initial commits.  (Or, they may result from a
+        // mistake while squashing commits.)  Ignore merges that involve two initial commits.
+        return null;
       } else if (commonPrefixLength == -1) {
         throw new Error(
             String.format(
