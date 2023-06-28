@@ -13,8 +13,7 @@ plugins {
   id('net.ltgt.errorprone') version '3.0.1'
 
   // Checker Framework pluggable type-checking
-  // TODO: when updating to 0.6.26, remove "skipCheckerFramework = true" below
-  id 'org.checkerframework' version '0.6.25'
+  id 'org.checkerframework' version '0.6.28'
 }
 
 repositories {
@@ -99,11 +98,6 @@ tasks.withType(JavaCompile).configureEach {
 /// Checker Framework pluggable type-checking
 
 apply plugin: 'org.checkerframework'
-
-// TEMPORARY, until upgrading to Checker Framework plugin 0.6.26.
-checkerFramework {
-  skipCheckerFramework = true
-}
 
 checkerFramework {
   checkers = [
