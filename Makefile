@@ -42,6 +42,9 @@ clean-stored-hashes:
 	rm -f input_data/repos_small_with_hashes.csv
 	rm -f input_data/repos_with_hashes.csv
 
+# This target deletes files that are committed to version control.
+clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
+
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
