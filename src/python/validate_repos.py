@@ -133,8 +133,12 @@ def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
     with open(cache_file + ".txt", "r") as f:
         status_name = f.readline().strip()
         status = TEST_STATE[status_name]
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    explanation_file = cache_file + "_explanation.txt"
+    if Path(explanation_file).exists():
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = ""
     return status, explanation
 
 
