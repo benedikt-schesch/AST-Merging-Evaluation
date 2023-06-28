@@ -234,7 +234,9 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
         repo_name, repo_info["Validation hash"], "Validation hash", cache
     )
 
-    print(repo_name, ": head_passes_tests : finished with result:",
+    print(
+        repo_name,
+        ": head_passes_tests : finished with result:",
         status.name,
     )
     return status
