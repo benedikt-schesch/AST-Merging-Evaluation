@@ -97,8 +97,11 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
         status_name = f.readline().strip()
         status = MERGE_STATES[status_name]
         runtime = float(f.readline().strip())
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    if os.path.isfile(cache_file + "_explanation.txt"):
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = "No explanation file found."
     return status, runtime, explanation
 
 
