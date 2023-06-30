@@ -140,7 +140,7 @@ def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
         with open(cache_file + "_explanation.txt", "r") as f:
             explanation = "".join(f.readlines())
     else:
-        explanation = ""
+        explanation = "No explanation file found."
     return status, explanation
 
 
