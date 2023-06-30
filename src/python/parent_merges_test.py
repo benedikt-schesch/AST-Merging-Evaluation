@@ -54,13 +54,13 @@ def parent_pass_test(
         if valid_merge_counter[repo_name] > n_sampled:
             return None
     left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
+    if left_test != TEST_STATE.Tests_passed:
+        return left_test, TEST_STATE.Not_tested, TEST_STATE.Not_tested
     right_test = commit_pass_test(repo_name, right, "right_test", cache_dir)
+    if right_test != TEST_STATE.Tests_passed:
+        return left_test, right_test, TEST_STATE.Not_tested
     if not valid_merge_counter is None:
-        if (
-            left_test == TEST_STATE.Tests_passed
-            and right_test == TEST_STATE.Tests_passed
-        ):
-            valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
+        valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
     merge_test = commit_pass_test(
         repo_name, merge, f"merge of {left} and {right}", cache_dir
     )
