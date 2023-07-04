@@ -142,6 +142,7 @@ if __name__ == "__main__":
     print("parent_merges_test: Finished Testing")
 
     print("parent_merges_test: Constructing Output")
+    counter = 0
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
@@ -217,7 +218,9 @@ if __name__ == "__main__":
             if merges_counter >= args.n_merges:
                 break
         result = pd.DataFrame(result)
+        counter += len(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         result.to_csv(output_file, index_label="idx")
+    print("parent_merges_test: Number of correct merges:", counter)
     print("parent_merges_test: Finished Constructing Output")
     print("parent_merges_test: Done")
