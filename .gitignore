@@ -16,7 +16,6 @@ input_data/repos.csv.gz
 .pytest_cache/
 cf/
 .gradle/
-**/local_repos.csv
 
 # Test output
 test/tmp1.txt
