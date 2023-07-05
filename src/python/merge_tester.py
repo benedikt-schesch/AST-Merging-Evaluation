@@ -132,7 +132,7 @@ def merge_commits(
         explanation = "Merge running"
         runtime = -1
         start = time.time()
-        p = subprocess.Popen(
+        p = subprocess.Popen(  # pylint: disable=consider-using-with
             [
                 "src/scripts/merge_tools/" + merging_method + ".sh",
                 repo_dir + "/" + merging_method,
