@@ -119,20 +119,20 @@ def merge_commits(
         float: The runtime of the merge.
         str: The explanation of the merge.
     """
-    repo = git.repo.Repo(repo_dir + "/" + merging_method)
-    repo.remote().fetch()
-    repo.git.checkout(left, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
-    repo.git.checkout(right, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
-    merge_status = MERGE_STATES.Merge_running
-    explanation = "Merge running"
-    runtime = -1
-    start = time.time()
     try:
-        p = subprocess.run(
+        repo = git.repo.Repo(repo_dir + "/" + merging_method)
+        repo.remote().fetch()
+        repo.git.checkout(left, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        repo.git.checkout(right, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
+        merge_status = MERGE_STATES.Merge_running
+        explanation = "Merge running"
+        runtime = -1
+        start = time.time()
+        p = subprocess.Popen(
             [
                 "src/scripts/merge_tools/" + merging_method + ".sh",
                 repo_dir + "/" + merging_method,
@@ -141,8 +141,9 @@ def merge_commits(
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            timeout=TIMEOUT_MERGE,
+            start_new_session=True,
         )
+        p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
             merge_status = MERGE_STATES.Merge_failed
             explanation = "Merge Failed"
