@@ -54,9 +54,7 @@ if __name__ == "__main__":
         incorrect.append(
             sum(val == MERGE_STATES.Tests_failed.name for val in merge_tool_status)
         )
-        unhandled.append(
-            sum(val == MERGE_STATES.Merge_failed.name for val in merge_tool_status)
-        )
+        unhandled.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
         failure.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
@@ -113,8 +111,8 @@ if __name__ == "__main__":
     my_table.field_names = [
         "Merge Tool",
         "Correct Merges",
-        "Unhandled Merges",
         "Incorrect Merges",
+        "Unhandled Merges",
     ]
     for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
         my_table.add_row(
