@@ -97,8 +97,11 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
         status_name = f.readline().strip()
         status = MERGE_STATES[status_name]
         runtime = float(f.readline().strip())
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    if os.path.isfile(cache_file + "_explanation.txt"):
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = "No explanation file found."
     return status, runtime, explanation
 
 
@@ -116,20 +119,20 @@ def merge_commits(
         float: The runtime of the merge.
         str: The explanation of the merge.
     """
-    repo = git.repo.Repo(repo_dir + "/" + merging_method)
-    repo.remote().fetch()
-    repo.git.checkout(left, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
-    repo.git.checkout(right, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
-    merge_status = MERGE_STATES.Merge_running
-    explanation = "Merge running"
-    runtime = -1
-    start = time.time()
     try:
-        p = subprocess.run(
+        repo = git.repo.Repo(repo_dir + "/" + merging_method)
+        repo.remote().fetch()
+        repo.git.checkout(left, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        repo.git.checkout(right, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
+        merge_status = MERGE_STATES.Merge_running
+        explanation = "Merge running"
+        runtime = -1
+        start = time.time()
+        p = subprocess.Popen(  # pylint: disable=consider-using-with
             [
                 "src/scripts/merge_tools/" + merging_method + ".sh",
                 repo_dir + "/" + merging_method,
@@ -138,8 +141,9 @@ def merge_commits(
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            timeout=TIMEOUT_MERGE,
+            start_new_session=True,
         )
+        p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
             merge_status = MERGE_STATES.Merge_failed
             explanation = "Merge Failed"

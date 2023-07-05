@@ -76,13 +76,6 @@ jars/spork.jar:
 	mkdir -p jars
 	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
 
-# Download Maven 3.9.2, make sure it is in your PATH.
-download-maven-3.9.2:
-	if [ -d apache-maven-3.9.2 ]; then exit 0; fi
-	wget https://dlcdn.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.tar.gz --no-verbose
-	tar -xzf apache-maven-3.9.2-bin.tar.gz
-	rm apache-maven-3.9.2-bin.tar.gz
-
 TAGS: tags
 tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
