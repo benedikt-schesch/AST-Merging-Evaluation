@@ -21,11 +21,15 @@ import pandas as pd
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOLS, MERGE_STATES
 
-FAILURE_NAMES = [
-    MERGE_STATES.Merge_exception.name,
-    MERGE_STATES.Merge_timedout.name,
+MERGE_FAILURE_NAMES = [
     MERGE_STATES.Tests_exception.name,
     MERGE_STATES.Tests_timedout.name,
+]
+
+MERGE_UNHANDLED_NAMES = [
+    MERGE_STATES.Merge_failed.name,
+    MERGE_STATES.Merge_timedout.name,
+    MERGE_STATES.Merge_exception.name,
 ]
 
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
@@ -54,8 +58,8 @@ if __name__ == "__main__":
         incorrect.append(
             sum(val == MERGE_STATES.Tests_failed.name for val in merge_tool_status)
         )
-        unhandled.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
-        failure.append(sum(val in FAILURE_NAMES for val in merge_tool_status))
+        unhandled.append(sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status))
+        failure.append(sum(val in MERGE_FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
         )
@@ -171,11 +175,11 @@ if __name__ == "__main__":
             100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        unhandled_main = sum(val in FAILURE_NAMES for val in mergem)
+        unhandled_main = sum(val in MERGE_UNHANDLED_NAMES for val in mergem)
         unhandled_main_percentage = (
             100 * unhandled_main / len(main) if len(main) != 0 else 0
         )
-        unhandled_feature = sum(val in FAILURE_NAMES for val in mergef)
+        unhandled_feature = sum(val in MERGE_UNHANDLED_NAMES for val in mergef)
         unhandled_feature_percentage = (
             100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
         )

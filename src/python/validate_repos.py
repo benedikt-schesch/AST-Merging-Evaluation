@@ -9,6 +9,7 @@ That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output:  the rows of the input for which the head of the default branch passes tests.
 """
 import subprocess
+import signal
 import shutil
 import os
 import multiprocessing
@@ -86,14 +87,22 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
             "src/scripts/run_repo_tests.sh",
             repo_dir_copy,
         ]
-        p = subprocess.run(  # pylint: disable=consider-using-with
-            command,
-            timeout=timeout,
-            capture_output=True,
-        )
+        try:
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
+                command,
+                start_new_session=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            p.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
+            explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+            return TEST_STATE.Tests_timedout, explanation
         rc = p.returncode
-        stdout = p.stdout.decode("utf-8")
-        stderr = p.stderr.decode("utf-8")
+        stdout, stderr = p.communicate()
+        stdout = stdout.decode("utf-8")
+        stderr = stderr.decode("utf-8")
         explanation = (
             "Run Command: "
             + " ".join(command)
