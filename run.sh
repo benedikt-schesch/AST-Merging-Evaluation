@@ -44,7 +44,7 @@ python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine
 python3 src/python/validate_repos.py --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv" --cache_dir "$CACHE_DIR/test_result"
 
 java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
-
+exit 0 
 python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES" --cache_dir "$CACHE_DIR/test_result"
 
 python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR/merge_test_results/"
