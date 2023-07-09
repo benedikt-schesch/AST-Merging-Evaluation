@@ -97,9 +97,8 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
             explanation = "Run Command: " + " ".join(command) + "\nTimed out"
             return TEST_STATE.Tests_timedout, explanation
         rc = p.returncode
-        stdout, stderr = p.communicate()
-        stdout = stdout.decode("utf-8")
-        stderr = stderr.decode("utf-8")
+        stdout = p.stdout.decode("utf-8")
+        stderr = p.stderr.decode("utf-8")
         explanation = (
             "Run Command: "
             + " ".join(command)
