@@ -58,9 +58,7 @@ if __name__ == "__main__":
         incorrect.append(
             sum(val == MERGE_STATES.Tests_failed.name for val in merge_tool_status)
         )
-        unhandled.append(
-            sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status)
-        )
+        unhandled.append(sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status))
         failure.append(sum(val in MERGE_FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
