@@ -89,7 +89,7 @@ def parent_pass_test(
     repo_name, left, right, merge, n_sampled, cache_dir = args
     repo_file_name = repo_name.replace("/", "_")
     if num_valid_merges(repo_file_name) >= n_sampled:
-        return TEST_STATE.Not_tested, TEST_STATE.Not_tested, TEST_STATE.Not_tested
+        return None
     left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
     if left_test != TEST_STATE.Tests_passed:
         return left_test, TEST_STATE.Not_tested, TEST_STATE.Not_tested
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
         except Exception as e:
-            print("Failed to delete %s. Reason: %s" % (file_path, e))
+            print("Failed to delete {file_path}. Reason: {e}")
 
     print("parent_merges_test: Constructing Output")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                     merge_data["left"],
                     merge_data["right"],
                     merge_data["merge"],
-                    0,
+                    args.n_merges,
                     str(args.cache_dir),
                 )
             )
