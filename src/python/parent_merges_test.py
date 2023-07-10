@@ -44,10 +44,10 @@ def num_valid_merges(repo_name: str) -> int:
         int: The number of merges that have passing parents for the repository.
     """
     lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
-    valid_repo_count_dir = os.path.join(VALID_MERGE_COUNTERS, repo_name)
+    valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
     with lockfile.LockFile(lock_file, timeout=60):
-        if os.path.isdir(valid_repo_count_dir):
-            with open(valid_repo_count_dir, "r") as f:
+        if os.path.isfile(valid_repo_count_file):
+            with open(valid_repo_count_file, "r") as f:
                 valid_merge_counter = int(f.read())
                 return valid_merge_counter
         else:
@@ -60,15 +60,15 @@ def increment_valid_merges(repo_name: str) -> None:
         repo_name (str): The name of the repository.
     """
     lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
-    valid_repo_count_dir = os.path.join(VALID_MERGE_COUNTERS, repo_name)
+    valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
     with lockfile.LockFile(lock_file, timeout=60):
-        if os.path.isdir(valid_repo_count_dir):
-            with open(valid_repo_count_dir, "r") as f:
+        if os.path.isfile(valid_repo_count_file):
+            with open(valid_repo_count_file, "r") as f:
                 valid_merge_counter = int(f.read())
-            with open(valid_repo_count_dir, "w") as f:
+            with open(valid_repo_count_file, "w") as f:
                 f.write(str(valid_merge_counter + 1))
         else:
-            with open(valid_repo_count_dir, "w") as f:
+            with open(valid_repo_count_file, "w") as f:
                 f.write("1")
 
 
@@ -87,7 +87,8 @@ def parent_pass_test(
             enough merges have been sampled.
     """
     repo_name, left, right, merge, n_sampled, cache_dir = args
-    if num_valid_merges(repo_name) >= n_sampled:
+    repo_file_name = repo_name.replace("/", "_")
+    if num_valid_merges(repo_file_name) >= n_sampled:
         return TEST_STATE.Not_tested, TEST_STATE.Not_tested, TEST_STATE.Not_tested
     left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
     if left_test != TEST_STATE.Tests_passed:
@@ -95,7 +96,7 @@ def parent_pass_test(
     right_test = commit_pass_test(repo_name, right, "right_test", cache_dir)
     if right_test != TEST_STATE.Tests_passed:
         return left_test, right_test, TEST_STATE.Not_tested
-    increment_valid_merges(repo_name)
+    increment_valid_merges(repo_file_name)
     merge_test = commit_pass_test(
         repo_name, merge, f"merge of {left} and {right}", cache_dir
     )
