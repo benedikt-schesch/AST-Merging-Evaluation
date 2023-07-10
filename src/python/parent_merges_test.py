@@ -175,7 +175,16 @@ if __name__ == "__main__":
         r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
-    shutil.rmtree(VALID_MERGE_COUNTERS, onerror=del_rw)
+    
+    # Delet all files in the valid merge counters directory
+    for filename in os.listdir(VALID_MERGE_COUNTERS):
+        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print("Failed to delete %s. Reason: %s" % (file_path, e))
+
     print("parent_merges_test: Constructing Output")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         repo_name = repository_data["repository"]
