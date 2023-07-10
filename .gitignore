@@ -5,6 +5,7 @@ venv
 test_cache/
 apache-maven-3.9.2/
 results/local_repos.csv
+machines.txt
 
 output/
 merge_repo/
