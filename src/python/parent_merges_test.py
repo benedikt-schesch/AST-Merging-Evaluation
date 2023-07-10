@@ -175,7 +175,6 @@ if __name__ == "__main__":
         r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
-    
     # Delet all files in the valid merge counters directory
     for filename in os.listdir(VALID_MERGE_COUNTERS):
         file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
