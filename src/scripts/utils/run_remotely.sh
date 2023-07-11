@@ -24,4 +24,4 @@ echo "Running branch $BRANCH on machine $MACHINE_SSH with id $MACHINE_ID out of 
 echo "Executing: ssh -t $MACHINE_SSH \"cd $ROOT_PATH_ON_MACHINE; git checkout $BRANCH; git pull; screen -d -m ./run_full.sh $MACHINE_ID $NUM_MACHINES\""
 
 # Connect to machine and execute code using a screen session
-ssh -t "$MACHINE_SSH" "cd $ROOT_PATH_ON_MACHINE; pwd; git checkout $BRANCH; git pull; screen -m ./run_full.sh $MACHINE_ID $NUM_MACHINES"
+ssh -t "$MACHINE_SSH" "cd $ROOT_PATH_ON_MACHINE; pwd; git checkout $BRANCH; git pull; pip install -r requirements.txt; screen -m ./run_full.sh $MACHINE_ID $NUM_MACHINES"
