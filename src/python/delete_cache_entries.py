@@ -10,7 +10,7 @@ from validate_repos import TEST_STATE, read_cache
 
 
 STATE_TO_DELETE = [
-    TEST_STATE.Failure_test_exception,
+    TEST_STATE.Not_tested,
 ]
 
 if __name__ == "__main__":
