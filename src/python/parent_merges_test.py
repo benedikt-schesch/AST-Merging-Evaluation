@@ -167,6 +167,15 @@ if __name__ == "__main__":
     ]
     assert len(arguments) == sum(len(l) for l in tested_merges)
 
+    # Delete all files in the valid merge counters directory
+    for filename in os.listdir(VALID_MERGE_COUNTERS):
+        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print("Failed to delete {file_path}. Reason: {e}")
+
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
@@ -175,7 +184,7 @@ if __name__ == "__main__":
         r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
-    # Delet all files in the valid merge counters directory
+    # Delete all files in the valid merge counters directory
     for filename in os.listdir(VALID_MERGE_COUNTERS):
         file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
         try:
