@@ -1,11 +1,21 @@
-# usage: python3 compare_dirs.py <path1> <path2>
+#!/usr/bin/env python3
+"""Compare the contents of two directories
+
+usage: python3 compare_dirs.py <path_to_dir1> <path_to_dir2>
+
+Exits with 1 if the lists of contained files don't match
+Exits with 1 and prints the first file whose contents don't 
+match if one exists
+Exits with 0 if the contents of the directories are identical (in 
+terms of files - empty subdirectories are not considered)
+"""
 
 import sys
 import os
 
 if len(sys.argv) != 3:
-    sys.stderr.write("Error: script takes 2 paths as parameters");
-    exit(1)
+    sys.stderr.write("Error: script takes 2 paths as parameters")
+    sys.exit(1)
 
 path1 = sys.argv[1]
 path2 = sys.argv[2]
@@ -53,18 +63,16 @@ while dirs:
 # file lists for equal dirs
 if files1 != files2:
     print("files lists don't match")
-    exit(1)
+    sys.exit(1)
 
 # compare files one by one
 for entry in files1:
-    file1 = open(os.path.join(path1, entry), "r")
-    file2 = open(os.path.join(path2, entry), "r")
-    lines1 = file1.readlines()
-    lines2 = file2.readlines()
-    file1.close()
-    file2.close()
-    if lines1 != lines2:
-        print(entry)
-        exit(1)
+    with open(os.path.join(path1, entry), "r") as file1:
+        with open(os.path.join(path2, entry), "r") as file2:
+            lines1 = file1.readlines()
+            lines2 = file2.readlines()
+            if lines1 != lines2:
+                print(entry)
+                sys.exit(1)
 
-exit(0)
+sys.exit(0)
