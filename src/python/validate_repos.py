@@ -9,10 +9,10 @@ That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output:  the rows of the input for which the head of the default branch passes tests.
 """
 import subprocess
-import signal
+import multiprocessing
+import uuid
 import shutil
 import os
-import multiprocessing
 import argparse
 from pathlib import Path
 import sys
@@ -39,6 +39,7 @@ TEST_STATE = Enum(
         "Failure_test_exception",
         "Tests_timedout",
         "Not_tested",
+        "Failure_repo_copy",
     ],
 )
 
@@ -189,8 +190,7 @@ def commit_pass_test(
     explanation = "Process started"
     write_cache(status, explanation, target_file)
 
-    pid = str(multiprocessing.current_process().pid)
-    work_dir = os.path.join(WORKDIR, pid)
+    work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
     repo_dir_copy = os.path.join(work_dir, "repo")
     if os.path.isdir(work_dir):
         shutil.rmtree(work_dir, onerror=del_rw)
@@ -201,9 +201,13 @@ def commit_pass_test(
             status = TEST_STATE.Failure_git_clone
             explanation = str(e)
             raise
-
-        shutil.copytree(repo_dir, repo_dir_copy)
-        repo = git.repo.Repo(repo_dir_copy)
+        try:
+            shutil.copytree(repo_dir, repo_dir_copy)
+            repo = git.repo.Repo(repo_dir_copy)
+        except Exception as e:
+            status = TEST_STATE.Failure_repo_copy
+            explanation = str(e)
+            raise
         try:
             repo.remote().fetch()
             repo.git.checkout(commit, force=True)
@@ -218,9 +222,10 @@ def commit_pass_test(
             status = TEST_STATE.Failure_test_exception
             explanation = str(e)
             raise
-    except Exception:
+    except Exception as e:
         pass
     write_cache(status, explanation, target_file)
+    assert status != TEST_STATE.Not_tested
     print(repo_name, commit, ": Finished testing commit: ", status.name)
     if os.path.isdir(work_dir):
         # Remove all permision restrictions from work_dir

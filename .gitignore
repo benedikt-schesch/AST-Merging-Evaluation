@@ -4,7 +4,10 @@ venv
 **/*_explanation.txt
 test_cache/
 apache-maven-3.9.2/
+results/local_repos.csv
+results/merges_valid/
 machines.txt
+.valid_merges/
 
 output/
 merge_repo/

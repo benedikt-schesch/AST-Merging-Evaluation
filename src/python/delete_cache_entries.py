@@ -10,12 +10,12 @@ from validate_repos import TEST_STATE, read_cache
 
 
 STATE_TO_DELETE = [
-    TEST_STATE.Failure_test_exception,
+    TEST_STATE.Not_tested,
 ]
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("--cache_path", type=str, required=True)
+    arg_parser.add_argument("--cache_path", type=str, default="cache/test_result")
     args = arg_parser.parse_args()
 
     files_to_delete = []

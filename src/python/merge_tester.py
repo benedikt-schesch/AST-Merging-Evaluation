@@ -22,6 +22,7 @@ from pathlib import Path
 from functools import partialmethod
 from enum import Enum
 from typing import Tuple
+import uuid
 
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
@@ -200,9 +201,8 @@ def merge_and_test(  # pylint: disable=too-many-locals
     # Variable `merge_status` is returned by this routine.
     repo_dir = os.path.join("repos/", repo_name)
     process = multiprocessing.current_process()
-    pid = str(process.pid)
     # The repo will be copied here, then work done in the copy.
-    work_dir = os.path.join(WORKDIR, pid)
+    work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
     repo_dir_copy = os.path.join(work_dir, "repo")
     if os.path.isdir(work_dir):
         shutil.rmtree(work_dir, onerror=del_rw)

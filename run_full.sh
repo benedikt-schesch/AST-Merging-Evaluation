@@ -13,4 +13,4 @@ num_machines="${2:-1}"
 set -e
 set -o nounset
 
-./run.sh input_data/repos.csv results 25 cache "$machine_id" "$num_machines"
+./run.sh input_data/repos.csv results 20 cache "$machine_id" "$num_machines"
