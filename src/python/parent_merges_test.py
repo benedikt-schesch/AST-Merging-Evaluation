@@ -16,11 +16,10 @@ import shutil
 import os
 import itertools
 import multiprocessing
-from multiprocessing import Manager
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple, Union, Dict
+from typing import Tuple, Union
 import pandas as pd
 import lockfile
 
