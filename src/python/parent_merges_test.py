@@ -175,6 +175,7 @@ if __name__ == "__main__":
         merges = merges.sample(frac=1, random_state=42)
 
         verify_cache_entry = True
+        n_valid_merges = 0
         for _, merge_data in merges.iterrows():
             if verify_cache_entry and check_cache(
                 repo_name,
