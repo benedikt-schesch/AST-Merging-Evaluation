@@ -13,8 +13,7 @@ plugins {
   id('net.ltgt.errorprone') version '3.0.1'
 
   // Checker Framework pluggable type-checking
-  // TODO: when updating to 0.6.26, remove "skipCheckerFramework = true" below
-  id 'org.checkerframework' version '0.6.25'
+  id 'org.checkerframework' version '0.6.28'
 }
 
 repositories {
@@ -27,6 +26,8 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
+  implementation 'org.plumelib:plume-util:1.8.1'
+
   // https://mvnrepository.com/artifact/com.opencsv/opencsv
   implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
 
@@ -42,7 +43,7 @@ dependencies {
   compileOnly 'com.google.code.findbugs:annotations:3.0.0'
   compileOnly 'com.google.code.findbugs:jsr305:3.0.0'
   compileOnly group: 'com.infradna.tool', name: 'bridge-method-injector', version: '1.24'
-  compileOnly  group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
+  compileOnly group: 'org.jenkins-ci', name: 'annotation-indexer', version: '1.15'
 
   // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
   // JGit 6.0 and later requires Java 11 to run.  JGit 5.13 contains a bug in `loadConfiguration()`.
@@ -97,11 +98,6 @@ tasks.withType(JavaCompile).configureEach {
 /// Checker Framework pluggable type-checking
 
 apply plugin: 'org.checkerframework'
-
-// TEMPORARY, until upgrading to Checker Framework plugin 0.6.26.
-checkerFramework {
-  skipCheckerFramework = true
-}
 
 checkerFramework {
   checkers = [

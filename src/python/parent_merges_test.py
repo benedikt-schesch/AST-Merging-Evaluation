@@ -16,51 +16,136 @@ import shutil
 import os
 import itertools
 import multiprocessing
-from multiprocessing import Manager
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple, Union, Dict
+from typing import Tuple, Union
 import pandas as pd
+import lockfile
 
 from tqdm import tqdm
-from validate_repos import commit_pass_test, del_rw, TEST_STATE
+from validate_repos import commit_pass_test, del_rw, TEST_STATE, read_cache
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
 WORKDIR = ".workdir/"
+VALID_MERGE_COUNTERS = ".valid_merges/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
+def read_valid_merges_counter(repo_name: str) -> int:
+    """Returns the number of merges that have passing parents for a repository.
+    Args:
+        repo_name (str): The name of the repository.
+    Returns:
+        int: The number of merges that have passing parents for the repository.
+    """
+    lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
+    valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
+    with lockfile.LockFile(lock_file, timeout=240):
+        if os.path.isfile(valid_repo_count_file):
+            with open(valid_repo_count_file, "r") as f:
+                valid_merge_counter = int(f.read())
+                return valid_merge_counter
+        else:
+            return 0
+
+
+def increment_valid_merges(repo_name: str) -> None:
+    """Increments the number of merges that have passing parents for a repository.
+    Args:
+        repo_name (str): The name of the repository.
+    """
+    lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
+    valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
+    with lockfile.LockFile(lock_file, timeout=240):
+        if os.path.isfile(valid_repo_count_file):
+            with open(valid_repo_count_file, "r") as f:
+                valid_merge_counter = int(f.read())
+            with open(valid_repo_count_file, "w") as f:
+                f.write(str(valid_merge_counter + 1))
+        else:
+            with open(valid_repo_count_file, "w") as f:
+                f.write("1")
+
+
+def delete_valid_merges_counters():
+    """Deletes the files that contain the number of merges
+    that have passing parents for each repository.
+    """
+    for filename in os.listdir(VALID_MERGE_COUNTERS):
+        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print("Failed to delete {file_path}. Reason: {e}")
+
+
+def check_cache(repo_name: str, left: str, right: str, merge: str, cache_dir: str):
+    """Checks if the result of the test is cached.
+    Args:
+        repo_name (str): The name of the repository.
+        left (str): The left parent of the merge.
+        right (str): The right parent of the merge.
+        merge (str): The merge commit.
+        cache_dir (str): The path
+    Returns:
+        int: 0 if the test is not cached, 1 if the test is cached and the parents do not pass tests,
+            and 2 if the test is cached and the parents pass tests.
+    """
+    left_cache_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + left)
+    if not os.path.isfile(left_cache_file + ".txt"):
+        return 0
+    left_test = read_cache(left_cache_file)[0]
+    if left_test != TEST_STATE.Tests_passed:
+        return 1
+    right_cache_file = os.path.join(
+        cache_dir, repo_name.replace("/", "_") + "_" + right
+    )
+    if not os.path.isfile(right_cache_file + ".txt"):
+        return 0
+    right_test = read_cache(right_cache_file)[0]
+    if right_test != TEST_STATE.Tests_passed:
+        return 1
+    merge_cache_file = os.path.join(
+        cache_dir, repo_name.replace("/", "_") + "_" + merge
+    )
+    if not os.path.isfile(merge_cache_file + ".txt"):
+        return 0
+    assert (
+        right_test == TEST_STATE.Tests_passed and left_test == TEST_STATE.Tests_passed
+    )
+    return 2
+
+
 def parent_pass_test(
-    args: Tuple[str, str, str, str, Union[None, Dict[str, int]], int, str]
+    args: Tuple[str, str, str, str, int, str]
 ) -> Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]:
     """Indicates whether the two parents of a merge pass tests. Only operates if no more than
         n_sampled other merges have passing parents.
     Args:
-        args (Tuple[str, str, str, str, Union[None, Dict[str, int]], int]): A tuple containing
-            the repository name, the left parent, the right parent, the merge commit, a dictionary
-            containing the number of merges with passing parents for each repository, the
-            maximum number of merges to sample, and the cache directory.
+        args (Tuple[str, str, str, str, int]): A tuple containing
+            the repository name, the left parent, the right parent, the merge commit,
+            the maximum number of merges to sample, and the cache directory.
     Returns:
         Union[Tuple[TEST_STATE, TEST_STATE, TEST_STATE], None]: A tuple containing the test
             results for the left parent, the right parent, and the merge commit, or None if
             enough merges have been sampled.
     """
-    repo_name, left, right, merge, valid_merge_counter, n_sampled, cache_dir = args
-    if not valid_merge_counter is None:
-        if valid_merge_counter[repo_name] > n_sampled:
-            return None
+    repo_name, left, right, merge, n_sampled, cache_dir = args
+    repo_file_name = repo_name.replace("/", "_")
+    if read_valid_merges_counter(repo_file_name) >= n_sampled:
+        return None
     left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
+    if left_test != TEST_STATE.Tests_passed:
+        return left_test, TEST_STATE.Not_tested, TEST_STATE.Not_tested
     right_test = commit_pass_test(repo_name, right, "right_test", cache_dir)
-    if not valid_merge_counter is None:
-        if (
-            left_test == TEST_STATE.Tests_passed
-            and right_test == TEST_STATE.Tests_passed
-        ):
-            valid_merge_counter[repo_name] = valid_merge_counter[repo_name] + 1
+    if right_test != TEST_STATE.Tests_passed:
+        return left_test, right_test, TEST_STATE.Not_tested
+    increment_valid_merges(repo_file_name)
     merge_test = commit_pass_test(
         repo_name, merge, f"merge of {left} and {right}", cache_dir
     )
@@ -71,6 +156,7 @@ if __name__ == "__main__":
     print("parent_merges_test: Start")
     Path("repos").mkdir(parents=True, exist_ok=True)
     Path(WORKDIR).mkdir(parents=True, exist_ok=True)
+    Path(VALID_MERGE_COUNTERS).mkdir(parents=True, exist_ok=True)
 
     pwd = os.getcwd()
     parser = argparse.ArgumentParser()
@@ -86,15 +172,12 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
 
-    multiprocessing_manager = Manager()
-    valid_merge_counter = multiprocessing_manager.dict()
-
+    delete_valid_merges_counters()
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merges_repo = []
         repo_name = repository_data["repository"]
-        valid_merge_counter[repo_name] = 0
         merge_list_file = os.path.join(
             args.merges_path, repo_name.split("/")[1] + ".csv"
         )
@@ -107,20 +190,40 @@ if __name__ == "__main__":
             header=0,
         )
         merges = merges.sample(frac=1, random_state=42)
+        merges = merges.dropna()
 
+        verify_cache_entry = True
+        n_valid_merges = 0
         for _, merge_data in merges.iterrows():
+            if read_valid_merges_counter(repo_name.replace("/", "_")) >= args.n_merges:
+                break
+            if verify_cache_entry:
+                test = check_cache(
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_data["merge"],
+                    args.cache_dir,
+                )
+                if test == 0:
+                    verify_cache_entry = False
+                if test == 1:
+                    continue
+                if test == 2:
+                    increment_valid_merges(repo_name.replace("/", "_"))
+                    continue
             merges_repo.append(
                 (
                     repo_name,
                     merge_data["left"],
                     merge_data["right"],
                     merge_data["merge"],
-                    valid_merge_counter,
                     args.n_merges,
                     args.cache_dir,
                 )
             )
-        tested_merges.append(merges_repo)
+        if len(merges_repo) > 0:
+            tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
     # `zip_longest` interleaves testing to reduce probability
@@ -135,13 +238,17 @@ if __name__ == "__main__":
 
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
+
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
+    delete_valid_merges_counters()
+
     print("parent_merges_test: Constructing Output")
+    counter = 0
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
@@ -171,8 +278,7 @@ if __name__ == "__main__":
                     merge_data["left"],
                     merge_data["right"],
                     merge_data["merge"],
-                    None,
-                    0,
+                    args.n_merges,
                     str(args.cache_dir),
                 )
             )
@@ -217,7 +323,9 @@ if __name__ == "__main__":
             if merges_counter >= args.n_merges:
                 break
         result = pd.DataFrame(result)
+        counter += len(result)
         output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         result.to_csv(output_file, index_label="idx")
+    print("parent_merges_test: Number of correct merges:", counter)
     print("parent_merges_test: Finished Constructing Output")
     print("parent_merges_test: Done")

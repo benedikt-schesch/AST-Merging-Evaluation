@@ -9,9 +9,10 @@ That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output:  the rows of the input for which the head of the default branch passes tests.
 """
 import subprocess
+import multiprocessing
+import uuid
 import shutil
 import os
-import multiprocessing
 import argparse
 from pathlib import Path
 import sys
@@ -38,6 +39,7 @@ TEST_STATE = Enum(
         "Failure_test_exception",
         "Tests_timedout",
         "Not_tested",
+        "Failure_repo_copy",
     ],
 )
 
@@ -86,11 +88,15 @@ def repo_test(repo_dir_copy: str, timeout: int) -> Tuple[TEST_STATE, str]:
             "src/scripts/run_repo_tests.sh",
             repo_dir_copy,
         ]
-        p = subprocess.run(  # pylint: disable=consider-using-with
-            command,
-            timeout=timeout,
-            capture_output=True,
-        )
+        try:
+            p = subprocess.run(  # pylint: disable=consider-using-with
+                command,
+                capture_output=True,
+                timeout=timeout,
+            )
+        except subprocess.TimeoutExpired:
+            explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+            return TEST_STATE.Tests_timedout, explanation
         rc = p.returncode
         stdout = p.stdout.decode("utf-8")
         stderr = p.stderr.decode("utf-8")
@@ -133,8 +139,12 @@ def read_cache(cache_file: str) -> Tuple[TEST_STATE, str]:
     with open(cache_file + ".txt", "r") as f:
         status_name = f.readline().strip()
         status = TEST_STATE[status_name]
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    explanation_file = cache_file + "_explanation.txt"
+    if Path(explanation_file).exists():
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = "No explanation file found."
     return status, explanation
 
 
@@ -180,10 +190,10 @@ def commit_pass_test(
     explanation = "Process started"
     write_cache(status, explanation, target_file)
 
-    pid = str(multiprocessing.current_process().pid)
-    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
+    repo_dir_copy = os.path.join(work_dir, "repo")
+    if os.path.isdir(work_dir):
+        shutil.rmtree(work_dir, onerror=del_rw)
     try:
         try:
             _ = clone_repo(repo_name)
@@ -191,9 +201,13 @@ def commit_pass_test(
             status = TEST_STATE.Failure_git_clone
             explanation = str(e)
             raise
-
-        shutil.copytree(repo_dir, repo_dir_copy)
-        repo = git.repo.Repo(repo_dir_copy)
+        try:
+            shutil.copytree(repo_dir, repo_dir_copy)
+            repo = git.repo.Repo(repo_dir_copy)
+        except Exception as e:
+            status = TEST_STATE.Failure_repo_copy
+            explanation = str(e)
+            raise
         try:
             repo.remote().fetch()
             repo.git.checkout(commit, force=True)
@@ -208,13 +222,14 @@ def commit_pass_test(
             status = TEST_STATE.Failure_test_exception
             explanation = str(e)
             raise
-    except Exception:
+    except Exception as e:
         pass
     write_cache(status, explanation, target_file)
+    assert status != TEST_STATE.Not_tested
     print(repo_name, commit, ": Finished testing commit: ", status.name)
-    if os.path.isdir(repo_dir_copy):
-        # Remove all permision restrictions from repo_dir_copy
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    if os.path.isdir(work_dir):
+        # Remove all permision restrictions from work_dir
+        shutil.rmtree(work_dir, onerror=del_rw)
     return status
 
 
@@ -227,7 +242,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
         TEST_STATE: The result of the test.
     """
     repo_name = repo_info["repository"]
-    print(repo_name, ": Started head_passes_tests")
+    print(repo_name, ": head_passes_tests : started")
 
     status = commit_pass_test(
         repo_name, repo_info["Validation hash"], "Validation hash", cache
@@ -235,7 +250,7 @@ def head_passes_tests(repo_info: pd.Series, cache: str) -> TEST_STATE:
 
     print(
         repo_name,
-        ": Finished head_passes_tests, result:",
+        ": head_passes_tests : finished : result =",
         status.name,
     )
     return status

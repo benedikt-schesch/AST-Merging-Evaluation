@@ -5,15 +5,18 @@
 # This script runs the Maven or Gradle tests of a given repo.
 # The exit status is 0 for test success or 1 for test failure.
 
-set -e
 set -o nounset
+
+# Test side effects can be seen in the /tmp directory. 
+# We delete all the files older than 2h and owned by the current user.
+find /tmp -maxdepth 1 -user "$(whoami)" -mmin +120 -exec rm -rf {} \;
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 REPO_DIR" >&2
   exit 1
 fi
 REPO_DIR=$1
-cd "$REPO_DIR"
+cd "$REPO_DIR" || exit 1
 
 if [ -f "gradlew" ] ; then
   command="./gradlew test -g ../.gradle/"

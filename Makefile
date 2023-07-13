@@ -29,7 +29,7 @@ clean:
 	rm -rf scratch
 	rm -rf results-small
 
-# This target deletes files in the cache.
+# This target deletes files in the cache, which is commited to version control.
 clean-cache:
 	rm -rf cache
 
@@ -41,6 +41,9 @@ clean-test-cache:
 clean-stored-hashes:
 	rm -f input_data/repos_small_with_hashes.csv
 	rm -f input_data/repos_with_hashes.csv
+
+# This target deletes files that are committed to version control.
+clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
@@ -72,13 +75,6 @@ jars/IntelliMerge-1.0.9-all.jar:
 jars/spork.jar:
 	mkdir -p jars
 	wget https://github.com/KTH/spork/releases/download/v0.5.0/spork-0.5.0.jar -O jars/spork.jar --no-verbose
-
-# Download Maven 3.9.2, make sure it is in your PATH.
-download-maven-3.9.2:
-	if [ -d apache-maven-3.9.2 ]; then exit 0; fi
-	wget https://dlcdn.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.tar.gz --no-verbose
-	tar -xzf apache-maven-3.9.2-bin.tar.gz
-	rm apache-maven-3.9.2-bin.tar.gz
 
 TAGS: tags
 tags:

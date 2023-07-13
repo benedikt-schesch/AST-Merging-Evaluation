@@ -22,6 +22,7 @@ from pathlib import Path
 from functools import partialmethod
 from enum import Enum
 from typing import Tuple
+import uuid
 
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
@@ -101,8 +102,11 @@ def read_cache(cache_file: str) -> Tuple[MERGE_STATES, float, str]:
         status_name = f.readline().strip()
         status = MERGE_STATES[status_name]
         runtime = float(f.readline().strip())
-    with open(cache_file + "_explanation.txt", "r") as f:
-        explanation = "".join(f.readlines())
+    if os.path.isfile(cache_file + "_explanation.txt"):
+        with open(cache_file + "_explanation.txt", "r") as f:
+            explanation = "".join(f.readlines())
+    else:
+        explanation = "No explanation file found."
     return status, runtime, explanation
 
 
@@ -120,20 +124,20 @@ def merge_commits(
         float: The runtime of the merge.
         str: The explanation of the merge.
     """
-    repo = git.repo.Repo(repo_dir + "/" + merging_method)
-    repo.remote().fetch()
-    repo.git.checkout(left, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
-    repo.git.checkout(right, force=True)
-    repo.submodule_update()
-    repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
-    merge_status = MERGE_STATES.Merge_running
-    explanation = "Merge running"
-    runtime = -1
-    start = time.time()
     try:
-        p = subprocess.run(
+        repo = git.repo.Repo(repo_dir + "/" + merging_method)
+        repo.remote().fetch()
+        repo.git.checkout(left, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        repo.git.checkout(right, force=True)
+        repo.submodule_update()
+        repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
+        merge_status = MERGE_STATES.Merge_running
+        explanation = "Merge running"
+        runtime = -1
+        start = time.time()
+        p = subprocess.Popen(  # pylint: disable=consider-using-with
             [
                 "src/scripts/merge_tools/" + merging_method + ".sh",
                 repo_dir + "/" + merging_method,
@@ -142,8 +146,9 @@ def merge_commits(
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            timeout=TIMEOUT_MERGE,
+            start_new_session=True,
         )
+        p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
             merge_status = MERGE_STATES.Merge_failed
             explanation = "Merge Failed"
@@ -200,11 +205,11 @@ def merge_and_test(  # pylint: disable=too-many-locals
     # Variable `merge_status` is returned by this routine.
     repo_dir = os.path.join("repos/", repo_name)
     process = multiprocessing.current_process()
-    pid = str(process.pid)
     # The repo will be copied here, then work done in the copy.
-    repo_dir_copy = os.path.join(WORKDIR, pid, "repo")
-    if os.path.isdir(repo_dir_copy):
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+    work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
+    repo_dir_copy = os.path.join(work_dir, "repo")
+    if os.path.isdir(work_dir):
+        shutil.rmtree(work_dir, onerror=del_rw)
 
     shutil.copytree(repo_dir, repo_dir_copy + "/" + merging_method)
 
@@ -249,7 +254,7 @@ def merge_and_test(  # pylint: disable=too-many-locals
             shutil.copytree(repo_dir_copy_merging_method, dst_name)
 
     if not STORE_WORKDIR:
-        shutil.rmtree(repo_dir_copy, onerror=del_rw)
+        shutil.rmtree(work_dir, onerror=del_rw)
 
     write_cache(merge_status, runtime, explanation, cache_file)
     return merge_status, runtime

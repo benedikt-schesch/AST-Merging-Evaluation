@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.checkerframework.checker.lock.qual.GuardSatisfied;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -38,6 +39,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.plumelib.util.StringsPlume;
 
 /**
  * Given a list of repositories, outputs a list of merge commits. The merge commits may be on the
@@ -187,13 +189,28 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
-    for (String orgAndRepo : repos) {
+    System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
+    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
+  }
+
+  /**
+   * Writes all merge commits for the given repository to a file.
+   *
+   * @param orgAndRepo the GitHub organization name and repository name, separated by "/"
+   */
+  void writeMergeCommitsForRepo(String orgAndRepo) {
+    String msgPrefix = StringsPlume.rpad("Find merge commits: " + orgAndRepo + " ", 69) + " ";
+    System.out.println(msgPrefix + "STARTED");
+    try {
       String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepo);
         System.exit(4);
       }
       writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
+      System.out.println(msgPrefix + "DONE");
+    } catch (Throwable e) {
+      throw new Error(e);
     }
   }
 
@@ -322,9 +339,7 @@ public class FindMergeCommits {
       ObjectId mergeId = commit.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
       if (mergeBase == null) {
-        throw new Error(
-            String.format(
-                "no merge base for repo %s, parent1=%s, parent2=%s", repo, parent1, parent2));
+        continue;
       }
       boolean newMerge = written.add(mergeId);
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
@@ -379,22 +394,26 @@ public class FindMergeCommits {
 
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
+   * If there is none (because the two commits have different initial commits!), then this returns
+   * null.
    *
-   * <p>Since only two commits are passed in, this always returns an existing commit, never a
-   * synthetic one. When a criss-cross merge exists in the history, this outputs an arbitrary one of
-   * the best merge bases.
+   * <p>Since only two commits are passed in, this always returns an existing commit (or null),
+   * never a synthetic one. When a criss-cross merge exists in the history, this outputs an
+   * arbitrary one of the best merge bases.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
    * @param commit1 the first parent commit
    * @param commit2 the second parent commit
-   * @return the merge base of the two commits
+   * @return the merge base of the two commits, or null if none exists
    */
-  RevCommit getMergeBaseCommit(Git git, Repository repo, RevCommit commit1, RevCommit commit2) {
+  @Nullable RevCommit getMergeBaseCommit(
+      Git git, Repository repo, RevCommit commit1, RevCommit commit2) {
     if (commit1.equals(commit2)) {
       throw new Error(
           String.format(
-              "Same commit passed twice: getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+              "Same commit passed twice: getMergeBaseCommit(%s, \"%s\", \"%s\")",
+              repo, commit1, commit2));
     }
 
     try {
@@ -421,14 +440,14 @@ public class FindMergeCommits {
       }
 
       if (commonPrefixLength == 0) {
-        throw new Error(
-            String.format(
-                "Histories are unrelated for getMergeBaseCommit(%s, %s, %s)",
-                repo, commit1, commit2));
+        // Sometimes, a repository contains multiple initial commits.  (Or, they may result from a
+        // mistake while squashing commits.)  Ignore merges that involve two initial commits.
+        return null;
       } else if (commonPrefixLength == -1) {
         throw new Error(
             String.format(
-                "Histories are equal for getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+                "Histories are equal for getMergeBaseCommit(%s, \"%s\", \"%s\")",
+                repo, commit1, commit2));
       }
 
       return history1.get(commonPrefixLength - 1);
@@ -467,7 +486,7 @@ public class FindMergeCommits {
       }
       throw new Error(
           String.format(
-              "Wrong number of base commits for getMergeBaseCommit(%s, %s, %s): %s",
+              "Wrong number of base commits for getMergeBaseCommit(%s, \"%s\", \"%s\"): %s",
               repo, commit1, commit2, baseCommits));
     } catch (IOException e) {
       throw new Error(e);
@@ -504,7 +523,8 @@ public class FindMergeCommits {
       if (baseCommit == null) {
         throw new Error(
             String.format(
-                "null baseCommit for getMergeBaseCommit(%s, %s, %s)", repo, commit1, commit2));
+                "null baseCommit for getMergeBaseCommit(%s, \"%s\", \"%s\")",
+                repo, commit1, commit2));
       }
       return baseCommit;
     } catch (Exception e) {

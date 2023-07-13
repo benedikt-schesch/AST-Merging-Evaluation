@@ -29,12 +29,8 @@ source venv/bin/activate
 If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
 
 ### Maven
-Make sure you use maven version 3.9.2. To download this version of maven run the following commands:
 
-```bash
-make download-maven-3.9.2
-echo "export PATH=\$PATH:$(pwd)/apache-maven-3.9.2/bin" >> ~/.bashrc
-```
+Make sure you use maven version 3.9.*.
 
 ### Ubuntu
 
@@ -88,6 +84,12 @@ The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
+To execute the code on multiple machines in parallel create a machine list in `machines.txt` and run:
+
+```bash
+./run_multiple_machine.sh main machines.txt <project_path_on_machine>
+```
+
 ### Clean Cache
 
 To clean the cache run `make clean-cache`.
@@ -133,6 +135,10 @@ To run style checking run `make style`.
       * gitmerge.sh -> Executes git merge on a specific merge.
       * intellimerge.sh -> Executes intellimerge on a specific merge.
       * spork.sh -> Executes spork on a specific merge.
+
+    * utils/
+      * run_remotely.sh -> Runs the full stack on a remote machine.
+      * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
 
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
