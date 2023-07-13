@@ -45,7 +45,7 @@ def num_valid_merges(repo_name: str) -> int:
     """
     lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
     valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
-    with lockfile.LockFile(lock_file, timeout=60):
+    with lockfile.LockFile(lock_file, timeout=240):
         if os.path.isfile(valid_repo_count_file):
             with open(valid_repo_count_file, "r") as f:
                 valid_merge_counter = int(f.read())
@@ -61,7 +61,7 @@ def increment_valid_merges(repo_name: str) -> None:
     """
     lock_file = os.path.join(VALID_MERGE_COUNTERS, repo_name + ".lock")
     valid_repo_count_file = os.path.join(VALID_MERGE_COUNTERS, repo_name)
-    with lockfile.LockFile(lock_file, timeout=60):
+    with lockfile.LockFile(lock_file, timeout=240):
         if os.path.isfile(valid_repo_count_file):
             with open(valid_repo_count_file, "r") as f:
                 valid_merge_counter = int(f.read())
@@ -70,6 +70,38 @@ def increment_valid_merges(repo_name: str) -> None:
         else:
             with open(valid_repo_count_file, "w") as f:
                 f.write("1")
+
+
+def delete_valid_merges_counters():
+    """Deletes the files that contain the number of merges that have passing parents for each repository."""
+    for filename in os.listdir(VALID_MERGE_COUNTERS):
+        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print("Failed to delete {file_path}. Reason: {e}")
+
+
+def check_cache(repo_name: str, left: str, right: str, merge: str, cache_dir: str):
+    """Checks if the result of the test is cached.
+    Args:
+        repo_name (str): The name of the repository.
+        left (str): The left parent of the merge.
+        right (str): The right parent of the merge.
+        merge (str): The merge commit.
+        cache_dir (str): The path
+    Returns:
+        bool: True if the result of the test is cached, False otherwise.
+    """
+    left_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + left)
+    right_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + right)
+    merge_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + merge)
+    return (
+        os.path.isfile(left_file + ".txt")
+        and os.path.isfile(right_file + ".txt")
+        and os.path.isfile(merge_file + ".txt")
+    )
 
 
 def parent_pass_test(
@@ -123,8 +155,7 @@ if __name__ == "__main__":
         shutil.rmtree(args.output_dir, onerror=del_rw)
     os.mkdir(args.output_dir)
 
-    multiprocessing_manager = Manager()
-
+    delete_valid_merges_counters()
     print("parent_merges_test: Constructing Inputs")
     tested_merges = []
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
@@ -143,7 +174,19 @@ if __name__ == "__main__":
         )
         merges = merges.sample(frac=1, random_state=42)
 
+        verify_cache_entry = True
         for _, merge_data in merges.iterrows():
+            if verify_cache_entry and check_cache(
+                repo_name,
+                merge_data["left"],
+                merge_data["right"],
+                merge_data["merge"],
+                args.cache_dir,
+            ):
+                increment_valid_merges(repo_name.replace("/", "_"))
+                continue
+            else:
+                verify_cache_entry = False
             merges_repo.append(
                 (
                     repo_name,
@@ -167,15 +210,6 @@ if __name__ == "__main__":
     ]
     assert len(arguments) == sum(len(l) for l in tested_merges)
 
-    # Delete all files in the valid merge counters directory
-    for filename in os.listdir(VALID_MERGE_COUNTERS):
-        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print("Failed to delete {file_path}. Reason: {e}")
-
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
@@ -184,14 +218,7 @@ if __name__ == "__main__":
         r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
     print("parent_merges_test: Finished Testing")
 
-    # Delete all files in the valid merge counters directory
-    for filename in os.listdir(VALID_MERGE_COUNTERS):
-        file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print("Failed to delete {file_path}. Reason: {e}")
+    delete_valid_merges_counters()
 
     print("parent_merges_test: Constructing Output")
     counter = 0
