@@ -25,7 +25,7 @@ import pandas as pd
 import lockfile
 
 from tqdm import tqdm
-from validate_repos import commit_pass_test, del_rw, TEST_STATE
+from validate_repos import commit_pass_test, del_rw, TEST_STATE, read_cache
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -36,7 +36,7 @@ VALID_MERGE_COUNTERS = ".valid_merges/"
 TIMEOUT_TESTING = 30 * 60  # 30 minutes
 
 
-def num_valid_merges(repo_name: str) -> int:
+def read_valid_merges_counter(repo_name: str) -> int:
     """Returns the number of merges that have passing parents for a repository.
     Args:
         repo_name (str): The name of the repository.
@@ -120,7 +120,7 @@ def parent_pass_test(
     """
     repo_name, left, right, merge, n_sampled, cache_dir = args
     repo_file_name = repo_name.replace("/", "_")
-    if num_valid_merges(repo_file_name) >= n_sampled:
+    if read_valid_merges_counter(repo_file_name) >= n_sampled:
         return None
     left_test = commit_pass_test(repo_name, left, "left_test", cache_dir)
     if left_test != TEST_STATE.Tests_passed:
@@ -177,17 +177,22 @@ if __name__ == "__main__":
         verify_cache_entry = True
         n_valid_merges = 0
         for _, merge_data in merges.iterrows():
-            if verify_cache_entry and check_cache(
-                repo_name,
-                merge_data["left"],
-                merge_data["right"],
-                merge_data["merge"],
-                args.cache_dir,
-            ):
-                increment_valid_merges(repo_name.replace("/", "_"))
-                continue
-            else:
-                verify_cache_entry = False
+            # if read_valid_merges_counter(repo_name.replace("/", "_")) >= args.n_merges:
+            #     break
+            # if check_cache(
+            #     repo_name,
+            #     merge_data["left"],
+            #     merge_data["right"],
+            #     merge_data["merge"],
+            #     args.cache_dir,
+            # ):
+            #     left_cache = os.path.join(args.cache_dir, repo_name.replace("/", "_") + "_" + merge_data["left"])
+            #     right_cache = os.path.join(args.cache_dir, repo_name.replace("/", "_") + "_" + merge_data["right"])
+            #     if read_cache(left_cache)[0] == TEST_STATE.Tests_passed and read_cache(right_cache)[0] == TEST_STATE.Tests_passed:
+            #         increment_valid_merges(repo_name.replace("/", "_"))
+            #     continue
+            # else:
+            #     verify_cache_entry = False
             merges_repo.append(
                 (
                     repo_name,
@@ -198,7 +203,8 @@ if __name__ == "__main__":
                     args.cache_dir,
                 )
             )
-        tested_merges.append(merges_repo)
+        if len(merges_repo) > 0:
+            tested_merges.append(merges_repo)
     print("parent_merges_test: Finished Constructing Inputs")
 
     # `zip_longest` interleaves testing to reduce probability
@@ -210,13 +216,24 @@ if __name__ == "__main__":
         if val is not None
     ]
     assert len(arguments) == sum(len(l) for l in tested_merges)
+    if os.path.isfile("parent_merges_test_inputs.txt"):
+        with open("parent_merges_test_inputs.txt", "r") as f:
+            old_arguments = f.readlines()
+        for idx, arg in enumerate(old_arguments):
+            arg = arg.replace("\n","")
+            if arg != str(arguments[idx]):
+                print(arg, arguments[idx])
+                assert arg == str(arguments[idx])
 
+    # with open("parent_merges_test_inputs.txt", "w") as f:
+    #     f.write("\n".join([str(arg) for arg in arguments]))
+    exit(0)
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
-        r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments)))
+        r = list(tqdm(pool.imap(parent_pass_test, arguments), total=len(arguments),chunksize=1))
     print("parent_merges_test: Finished Testing")
 
     delete_valid_merges_counters()
