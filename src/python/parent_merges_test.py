@@ -73,7 +73,9 @@ def increment_valid_merges(repo_name: str) -> None:
 
 
 def delete_valid_merges_counters():
-    """Deletes the files that contain the number of merges that have passing parents for each repository."""
+    """Deletes the files that contain the number of merges
+    that have passing parents for each repository.
+    """
     for filename in os.listdir(VALID_MERGE_COUNTERS):
         file_path = os.path.join(VALID_MERGE_COUNTERS, filename)
         try:
@@ -95,24 +97,29 @@ def check_cache(repo_name: str, left: str, right: str, merge: str, cache_dir: st
         int: 0 if the test is not cached, 1 if the test is cached and the parents do not pass tests,
             and 2 if the test is cached and the parents pass tests.
     """
-    left_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + left)
-    if not os.path.isfile(left_file + ".txt"):
+    left_cache_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + left)
+    if not os.path.isfile(left_cache_file + ".txt"):
         return 0
-    left_test = read_cache(left_file)[0]
+    left_test = read_cache(left_cache_file)[0]
     if left_test != TEST_STATE.Tests_passed:
         return 1
-    right_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + right)
-    if not os.path.isfile(right_file + ".txt"):
+    right_cache_file = os.path.join(
+        cache_dir, repo_name.replace("/", "_") + "_" + right
+    )
+    if not os.path.isfile(right_cache_file + ".txt"):
         return 0
-    right_test = read_cache(right_file)[0]
+    right_test = read_cache(right_cache_file)[0]
     if right_test != TEST_STATE.Tests_passed:
         return 1
-    merge_file = os.path.join(cache_dir, repo_name.replace("/", "_") + "_" + merge)
-    if not os.path.isfile(merge_file + ".txt"):
+    merge_cache_file = os.path.join(
+        cache_dir, repo_name.replace("/", "_") + "_" + merge
+    )
+    if not os.path.isfile(merge_cache_file + ".txt"):
         return 0
-    else:
-        assert right_test == TEST_STATE.Tests_passed and left_test == TEST_STATE.Tests_passed
-        return 2
+    assert (
+        right_test == TEST_STATE.Tests_passed and left_test == TEST_STATE.Tests_passed
+    )
+    return 2
 
 
 def parent_pass_test(
@@ -229,7 +236,7 @@ if __name__ == "__main__":
         if val is not None
     ]
     assert len(arguments) == sum(len(l) for l in tested_merges)
-    
+
     print("parent_merges_test: Number of tested commits:", len(arguments))
     print("parent_merges_test: Started Testing")
 
