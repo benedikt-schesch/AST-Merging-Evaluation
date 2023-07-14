@@ -269,6 +269,21 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
+    print("validate_repos: Starting cloning repos")
+    cpu_count = os.cpu_count() or 1
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
+        results = [
+            pool.apply_async(clone_repo, args=(v[1]["repository"],))
+            for v in df.iterrows()
+        ]
+        for result in tqdm(results, total=len(results)):
+            try:
+                return_value = result.get(2 * TIMEOUT_TESTING)
+            except Exception as e:
+                print("Couldn't clone repo", e)
+    print("validate_repos: Finished cloning repos")
+
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
