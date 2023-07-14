@@ -2,7 +2,13 @@
 \begin{tabular}{c|c|c|c}
     Tool & Mean Runtime & Median Runtime & Max runtime\
     \hline
+<<<<<<< HEAD
     Gitmerge & 0.18 & 0.09 & 17.03\\
     Intellimerge & 1.99 & 1.53 & 79.22\\
     Spork & 2.04 & 0.13 & 460.38\\
+=======
+    Gitmerge & 0.29 & 0.09 & 112.27\\
+    Intellimerge & 2.44 & 1.54 & 545.92\\
+    Spork & 2.36 & 0.12 & 298.19\\
+>>>>>>> 07a41fd7adfb7f71bedca47ce4c8291b941b0c62
 \end{tabular}
