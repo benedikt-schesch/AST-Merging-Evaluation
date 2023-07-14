@@ -138,14 +138,14 @@ if __name__ == "__main__":
             Tool & 
             \\multicolumn{4}{|c|}{Correct Merges} & 
             \\multicolumn{4}{|c|}{Unhandled Merges} &
-            \\multicolumn{4}{|c|}{Incorrect Merges}\\\\
+            \\multicolumn{4}{|c|}{Incorrect Merges} \\\\
             &
             \\multicolumn{2}{|c}{Main Branch} & 
             \\multicolumn{2}{c|}{Feature Branch} &
             \\multicolumn{2}{|c}{Main Branch} & 
             \\multicolumn{2}{c|}{Feature Branch} &
             \\multicolumn{2}{|c}{Main Branch} & 
-            \\multicolumn{2}{c|}{Feature Branch} &
+            \\multicolumn{2}{c|}{Feature Branch} \\\\
             \\hline
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\%\\\\ \n"""
 
