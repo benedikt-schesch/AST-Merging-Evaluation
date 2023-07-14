@@ -144,14 +144,15 @@ def merge_commits(
                 LEFT_BRANCH_NAME,
                 RIGHT_BRANCH_NAME,
             ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             start_new_session=True,
         )
         p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
+            explanation = "STDOUT:\n" + p.stdout.read().decode("utf-8")
+            explanation += "\nSTDERR:\n" + p.stderr.read().decode("utf-8")
             merge_status = MERGE_STATES.Merge_failed
-            explanation = "Merge Failed"
         else:
             merge_status = MERGE_STATES.Merge_success
             explanation = ""
@@ -159,7 +160,8 @@ def merge_commits(
     except subprocess.TimeoutExpired:
         os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
         merge_status = MERGE_STATES.Merge_timedout
-        explanation = "Timeout during merge"
+        explanation = "STDOUT:\n" + p.stdout.read().decode("utf-8")
+        explanation += "\nSTDERR:\n" + p.stderr.read().decode("utf-8")
         runtime = -1
     except Exception as e:
         merge_status = MERGE_STATES.Merge_exception
