@@ -57,6 +57,7 @@ def clone_repo(repo_name: str) -> git.repo.Repo:
     else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
+        os.environ["GIT_TERMINAL_PROMPT"] = "0"
         print(repo_name, " : Cloning repo")
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.repo.Repo.clone_from(git_url, repo_dir)
@@ -268,6 +269,31 @@ if __name__ == "__main__":
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
+
+    print("validate_repos: Starting cloning valid repos")
+    cpu_count = os.cpu_count() or 1
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    repos_to_clone = []
+    for v in df.iterrows():
+        cache = os.path.join(
+            args.cache_dir,
+            v[1]["repository"].replace("/", "_") + "_" + v[1]["Validation hash"],
+        )
+        if os.path.isfile(cache + ".txt"):
+            result, _ = read_cache(cache)
+            if result == TEST_STATE.Tests_passed:
+                repos_to_clone.append(v[1]["repository"])
+    with multiprocessing.Pool(processes=processes_used) as pool:
+        results = [
+            pool.apply_async(clone_repo, args=(repo_name,))
+            for repo_name in repos_to_clone
+        ]
+        for result in tqdm(results, total=len(results)):
+            try:
+                return_value = result.get(2 * TIMEOUT_TESTING)
+            except Exception as e:
+                print("Couldn't clone repo", e)
+    print("validate_repos: Finished cloning valid repos")
 
     print("validate_repos: Started Testing")
     cpu_count = os.cpu_count() or 1
