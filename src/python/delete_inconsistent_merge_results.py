@@ -10,10 +10,9 @@ Usage:
 from argparse import ArgumentParser
 import os
 import sys
-import glob
 from tqdm import tqdm
-from latex_output import MERGE_FAILURE_NAMES
-from merge_tester import read_cache, MERGE_TOOLS
+from latex_output import compute_inconsistent_merge_results, MERGE_FAILURE_NAMES
+from merge_tester import MERGE_TOOLS
 import pandas as pd
 
 if __name__ == "__main__":
@@ -24,21 +23,14 @@ if __name__ == "__main__":
     )
     args = arg_parser.parse_args()
 
-    files_to_delete = []
     df = pd.read_csv(args.results)
-    for _, row in tqdm(df.iterrows(), total=len(df)):
-        n_failures = 0
-        for i in MERGE_TOOLS:
-            if row[f"{i}"] in MERGE_FAILURE_NAMES:
-                n_failures += 1
-        if 0 < n_failures < len(MERGE_TOOLS):
-            files_to_delete.append(row)
+    inconsistent_merge_results = compute_inconsistent_merge_results(df)
 
-    print("Number of inconsistent entries to delete:", len(files_to_delete))
+    print("Number of inconsistent entries to delete:", len(inconsistent_merge_results))
     print("Are you sure you want to proceed? (y/n)")
     if input() != "y":
         sys.exit(0)
-    for row in tqdm(files_to_delete):
+    for row in tqdm(inconsistent_merge_results):
         for i in MERGE_TOOLS:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
                 cache_file = os.path.join(
