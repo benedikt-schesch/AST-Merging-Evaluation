@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOLS, MERGE_STATES
+from tqdm import tqdm
 
 MERGE_FAILURE_NAMES = [
     MERGE_STATES.Tests_exception.name,
@@ -32,18 +33,46 @@ MERGE_UNHANDLED_NAMES = [
     MERGE_STATES.Merge_exception.name,
 ]
 
+
+def compute_inconsistent_merge_results(df: pd.DataFrame):
+    """Compute inconsistent merge results.
+    Args:
+        df: dataframe containing the merge results
+    Returns:
+        list of inconsistent merge results
+    """
+    inconsistent_merge_results = []
+    for _, row in tqdm(df.iterrows(), total=len(df)):
+        n_failures = 0
+        for i in MERGE_TOOLS:
+            if row[f"{i}"] in MERGE_FAILURE_NAMES:
+                n_failures += 1
+        if 0 < n_failures < len(MERGE_TOOLS):
+            inconsistent_merge_results.append(row)
+    return inconsistent_merge_results
+
+
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_csv", type=str)
-    parser.add_argument("--output_path", type=str)
+    parser.add_argument("--input_csv", type=str, default="results/result.csv")
+    parser.add_argument("--output_path", type=str, default="results/plots")
     args = parser.parse_args()
     output_path = args.output_path
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     # open results file
     result_df = pd.read_csv(args.input_csv, index_col="idx")
+    old_len = len(result_df)
+    inconsistent_merge_results = compute_inconsistent_merge_results(result_df)
+    print(
+        "Number of inconsistent entries that will be ignored:",
+        len(inconsistent_merge_results),
+    )
+    for row in tqdm(inconsistent_merge_results):
+        result_df.drop(row.name, inplace=True)
+    assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     # figure 1 (stacked area)
     incorrect = []
@@ -62,6 +91,10 @@ if __name__ == "__main__":
         failure.append(sum(val in MERGE_FAILURE_NAMES for val in merge_tool_status))
         assert incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1] == len(
             merge_tool_status
+        )
+        assert (
+            incorrect[0] + correct[0] + unhandled[0] + failure[0]
+            == incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1]
         )
 
     fig, ax = plt.subplots()
