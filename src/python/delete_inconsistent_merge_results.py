@@ -1,5 +1,11 @@
 """
- Delete entries in cache folder that match a certain state.
+Delete entries in cache folder that lead to inconsistent merge results.
+A merge result is considered inconsistent if it fails/pass for some merge tool
+but for some other tool it timeouts or there is an exception during testing.
+Usage:
+    python delete_inconsistent_merge_results.py --results <results_path> --cache_path <cache_path>
+        results_path: path to the csv file containing the merge results
+        cache_path: path to the cache folder containing the merge results
 """
 from argparse import ArgumentParser
 import os

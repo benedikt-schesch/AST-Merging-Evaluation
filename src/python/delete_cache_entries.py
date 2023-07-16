@@ -1,5 +1,8 @@
 """
- Delete entries in cache folder that match a certain state.
+Delete entries in cache folder that match a certain state.
+Usage:
+    python delete_cache_entries.py --cache_path <cache_path>
+        cache_path: path to the cache folder containing the merge results
 """
 from argparse import ArgumentParser
 import os
