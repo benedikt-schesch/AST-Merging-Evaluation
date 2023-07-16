@@ -13,7 +13,9 @@ import pandas as pd
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
     arg_parser.add_argument("--results", type=str, default="results/result.csv")
-    arg_parser.add_argument("--cache_path", type=str, default="cache/merge_test_results")
+    arg_parser.add_argument(
+        "--cache_path", type=str, default="cache/merge_test_results"
+    )
     args = arg_parser.parse_args()
 
     files_to_delete = []
@@ -23,7 +25,7 @@ if __name__ == "__main__":
         for i in MERGE_TOOLS:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
                 n_failures += 1
-        if n_failures > 0 and n_failures < len(MERGE_TOOLS):
+        if 0 < n_failures < len(MERGE_TOOLS):
             files_to_delete.append(row)
 
     print("Number of inconsistent entries to delete:", len(files_to_delete))
@@ -45,13 +47,13 @@ if __name__ == "__main__":
                     + "_"
                     + row["merge"]
                     + "_"
-                    + i
+                    + i,
                 )
-                if os.path.exists(cache_file+".txt"):
-                    os.remove(cache_file+".txt")
-                    if os.path.exists(cache_file+"_explanation.txt"):
-                        os.remove(cache_file+"_explanation.txt")
-                    print("Deleted:", cache_file+".txt")
+                if os.path.exists(cache_file + ".txt"):
+                    os.remove(cache_file + ".txt")
+                    if os.path.exists(cache_file + "_explanation.txt"):
+                        os.remove(cache_file + "_explanation.txt")
+                    print("Deleted:", cache_file + ".txt")
                 else:
                     print("File not found:", cache_file)
     print("Done")

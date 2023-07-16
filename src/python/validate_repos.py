@@ -275,11 +275,14 @@ if __name__ == "__main__":
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
     repos_to_clone = []
     for v in df.iterrows():
-        cache = os.path.join(args.cache_dir, v[1]["repository"].replace("/", "_")+ "_" + v[1]["Validation hash"])
+        cache = os.path.join(
+            args.cache_dir,
+            v[1]["repository"].replace("/", "_") + "_" + v[1]["Validation hash"],
+        )
         if os.path.isfile(cache + ".txt"):
             result, _ = read_cache(cache)
             if result == TEST_STATE.Tests_passed:
-                repos_to_clone.append(v[1]["repository"])            
+                repos_to_clone.append(v[1]["repository"])
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
             pool.apply_async(clone_repo, args=(repo_name,))
