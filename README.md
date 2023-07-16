@@ -128,6 +128,8 @@ To run style checking run `make style`.
 
     * get_repos.py -> Downloads the repos list.
 
+    * compare_dirs.py -> Compares two directories.
+
   * scripts/ -> contains the following scripts:
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
