@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # usage: ./gitmerge.sh <clone_dir> <branch-1> <branch-2> <strategy>
 # <clone_dir> must contain a clone of a repository.
-# <strategy> is the string to the follow the -s option to git merge,
-# including anything passed through -X
+# <strategy> is arguments to `git merge`, including -s and possibly -X.
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <strategy>.
 # Return code is 0 for merge success, 1 for merge failure.
 # For merge failure, also outputs "Conflict" and aborts the merge.
@@ -22,7 +21,7 @@ branch2=$3
 strategy=$4
 
 # perform merge
-pushd "$clone_dir"
+cd "$clone_dir"
 git checkout "$branch1" --force
 echo "Running: git merge --no-edit $strategy \"$branch2\""
 eval "git merge --no-edit $strategy \"$branch2\""
@@ -34,6 +33,6 @@ if [ $retVal -ne 0 ]; then
     git merge --abort
 fi
 
-popd
+cd -
 
 exit $retVal
