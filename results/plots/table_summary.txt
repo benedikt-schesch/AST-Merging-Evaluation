@@ -6,7 +6,13 @@
             \multicolumn{2}{|c}{Incorrect Merges}\\
             \hline
             & \# & \% & \# & \% & \# & \%\\ 
-Gitmerge & 6488 & 87.40\% & 538 & 7.25\% & 323 & 4.35\%\\
-Intellimerge & 6481 & 87.31\% & 540 & 7.27\% & 328 & 4.42\%\\
-Spork & 6578 & 88.62\% & 415 & 5.59\% & 356 & 4.80\%\\
+Gitmerge-ort & 3300 & 83.80\% & 401 & 10.18\% & 224 & 5.69\%\\
+Gitmerge-ort-ignorespace & 3321 & 84.33\% & 385 & 9.78\% & 219 & 5.56\%\\
+Gitmerge-recursive-patience & 3300 & 83.80\% & 393 & 9.98\% & 232 & 5.89\%\\
+Gitmerge-recursive-minimal & 3320 & 84.31\% & 389 & 9.88\% & 216 & 5.49\%\\
+Gitmerge-recursive-histogram & 3300 & 83.80\% & 392 & 9.95\% & 233 & 5.92\%\\
+Gitmerge-recursive-myers & 3313 & 84.13\% & 393 & 9.98\% & 219 & 5.56\%\\
+Gitmerge-resolve & 3299 & 83.77\% & 400 & 10.16\% & 226 & 5.74\%\\
+Spork & 3482 & 88.42\% & 232 & 5.89\% & 211 & 5.36\%\\
+Intellimerge & 3436 & 87.25\% & 298 & 7.57\% & 191 & 4.85\%\\
 \end{tabular}

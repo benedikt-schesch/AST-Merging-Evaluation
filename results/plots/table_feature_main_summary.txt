@@ -3,17 +3,23 @@
             Tool & 
             \multicolumn{4}{|c|}{Correct Merges} & 
             \multicolumn{4}{|c|}{Unhandled Merges} &
-            \multicolumn{4}{|c|}{Incorrect Merges}\\
+            \multicolumn{4}{|c|}{Incorrect Merges} \\
             &
             \multicolumn{2}{|c}{Main Branch} & 
             \multicolumn{2}{c|}{Feature Branch} &
             \multicolumn{2}{|c}{Main Branch} & 
             \multicolumn{2}{c|}{Feature Branch} &
             \multicolumn{2}{|c}{Main Branch} & 
-            \multicolumn{2}{c|}{Feature Branch} &
+            \multicolumn{2}{c|}{Feature Branch} \\
             \hline
             & \# & \% & \# & \% & \# & \% & \# & \% & \# & \% & \# & \%\\ 
-            Gitmerge & 5685 & 88.00\% & 803 & 83.39\% & 434 & 6.72\% & 104 & 10.80\% & 267 & 4.13\% & 56 & 5.82\%\\ 
-            Intellimerge & 5675 & 87.85\% & 806 & 83.70\% & 436 & 6.75\% & 104 & 10.80\% & 275 & 4.26\% & 53 & 5.50\%\\ 
-            Spork & 5761 & 89.18\% & 817 & 84.84\% & 328 & 5.08\% & 87 & 9.03\% & 297 & 4.60\% & 59 & 6.13\%\\ 
+            Gitmerge-ort & 2927 & 84.57\% & 373 & 78.20\% & 320 & 9.25\% & 81 & 16.98\% & 201 & 5.81\% & 23 & 4.82\%\\ 
+            Gitmerge-ort-ignorespace & 2939 & 84.92\% & 382 & 80.08\% & 308 & 8.90\% & 77 & 16.14\% & 201 & 5.81\% & 18 & 3.77\%\\ 
+            Gitmerge-recursive-patience & 2921 & 84.40\% & 379 & 79.45\% & 316 & 9.13\% & 77 & 16.14\% & 211 & 6.10\% & 21 & 4.40\%\\ 
+            Gitmerge-recursive-minimal & 2939 & 84.92\% & 381 & 79.87\% & 314 & 9.07\% & 75 & 15.72\% & 195 & 5.63\% & 21 & 4.40\%\\ 
+            Gitmerge-recursive-histogram & 2925 & 84.51\% & 375 & 78.62\% & 315 & 9.10\% & 77 & 16.14\% & 208 & 6.01\% & 25 & 5.24\%\\ 
+            Gitmerge-recursive-myers & 2940 & 84.95\% & 373 & 78.20\% & 314 & 9.07\% & 79 & 16.56\% & 194 & 5.61\% & 25 & 5.24\%\\ 
+            Gitmerge-resolve & 2927 & 84.57\% & 372 & 77.99\% & 319 & 9.22\% & 81 & 16.98\% & 202 & 5.84\% & 24 & 5.03\%\\ 
+            Spork & 3073 & 88.79\% & 409 & 85.74\% & 183 & 5.29\% & 49 & 10.27\% & 192 & 5.55\% & 19 & 3.98\%\\ 
+            Intellimerge & 3027 & 87.46\% & 409 & 85.74\% & 245 & 7.08\% & 53 & 11.11\% & 176 & 5.09\% & 15 & 3.14\%\\ 
 \end{tabular}
