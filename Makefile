@@ -2,12 +2,12 @@ all: style gradle-assemble
 
 style: shell-script-style python-style java-style
 
-SH_SCRIPTS = 
-BASH_SCRIPTS = $(shell find . -type d \( -path ./cache -o -path ./.workdir -o -path ./repos \) -prune -false -o -name '*.sh')
+SH_SCRIPTS   = $(shell grep -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+BASH_SCRIPTS = $(shell grep -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
 
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
-#	checkbashisms ${SH_SCRIPTS}
+	checkbashisms ${SH_SCRIPTS}
 
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # usage: ./intellimerge.sh <clone_dir> <branch-1> <branch-2>
 # <clone_dir> must contain a clone of a repository.
@@ -14,10 +14,10 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
-ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
+SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"
+ROOT_PATH="$(realpath "${SCRIPT_PATH}/../../../")"
 intellimerge_relativepath=jars/IntelliMerge-1.0.9-all.jar
-intellimerge_fullpath="${ROOT_PATH}/${intellimerge_relativepath}"
+intellimerge_absolutepath="${ROOT_PATH}/${intellimerge_relativepath}"
 
 clone_dir=$1
 branch1=$2
@@ -26,17 +26,17 @@ temp_dir=".workdir/intelli_temp_$$/"
 mkdir $temp_dir
 
 # run intellimerge
-java -jar "$intellimerge_fullpath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
+java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
-pushd "$clone_dir"
+cd "$clone_dir"
 git checkout "$branch1" --force
 # collect initial counts of strings that are conflict markers, but appear in the clone.
-m1a=$(grep -ro "^<<<<<<<$" . | wc -l)
-m2a=$(grep -ro "^=======$" . | wc -l)
-m3a=$(grep -ro "^>>>>>>>$" . | wc -l)
+m1a=$(grep -ro '^<<<<<<<$' . | wc -l)
+m2a=$(grep -ro '^=======$' . | wc -l)
+m3a=$(grep -ro 'n^>>>>>>>$' . | wc -l)
 git merge --no-edit "$branch2"
-popd
+cd -
 
 # move files
 find $temp_dir -type f | while read -r f; do
@@ -47,9 +47,9 @@ done
 rm -rf $temp_dir
 
 # report conflicts
-m1b=$(grep -ro "^<<<<<<<$" "$clone_dir" | wc -l)
-m2b=$(grep -ro "^=======$" "$clone_dir" | wc -l)
-m3b=$(grep -ro "^>>>>>>>$" "$clone_dir" | wc -l)
+m1b=$(grep -ro '^<<<<<<<$' "$clone_dir" | wc -l)
+m2b=$(grep -ro '^=======$' "$clone_dir" | wc -l)
+m3b=$(grep -ro '^>>>>>>>$' "$clone_dir" | wc -l)
 if [ "$m1a" -ne "$m1b" ] && [ "$m2a" -ne "$m2b" ] && [ "$m3a" -ne "$m3b" ]; then
     echo "Conflict"
     exit 1
