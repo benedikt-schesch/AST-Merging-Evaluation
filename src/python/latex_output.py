@@ -139,7 +139,7 @@ if __name__ == "__main__":
         table += f" & {incorrect[merge_tool_idx]} & {incorrect_percentage:.2f}\\%\\\\\n"
     table += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_summary.txt"), "w") as file:
+    with open(os.path.join(output_path, "table_summary.tex"), "w") as file:
         file.write(table)
 
     # Printed Table
@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
     table2 += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_feature_main_summary.txt"), "w") as file:
+    with open(os.path.join(output_path, "table_feature_main_summary.tex"), "w") as file:
         file.write(table2)
 
     # Table 3 (Runtime)
@@ -247,5 +247,5 @@ if __name__ == "__main__":
         table3 += "\\\\\n"
     table3 += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_runtime.txt"), "w") as file:
+    with open(os.path.join(output_path, "table_runtime.tex"), "w") as file:
         file.write(table3)
