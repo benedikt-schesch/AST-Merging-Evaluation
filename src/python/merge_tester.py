@@ -7,7 +7,7 @@ usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
 
 This script takes a csv of repos and a csv of merges and performs the merges with
 the different merging tools. Each merge is then tested.
-An output file is generated with all the results for each merge.
+An output file is generated with the results for each merge.
 """
 
 import signal
