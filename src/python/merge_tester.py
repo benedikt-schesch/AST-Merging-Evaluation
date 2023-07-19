@@ -6,8 +6,18 @@ usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
                                --output_path <output_path>
 
 This script takes a csv of repos and a csv of merges and performs the merges with
-the different merging tools. Each merge is then tested.
-An output file is generated with the results for each merge.
+the different merging tools. The input repositories should contain a repo_name 
+column in format "ORGANIZATION/REPO". The merges csv should contain the following
+columns: "left", "right", "base", "merge", "parent test". The "parent test" column
+should contain the result of the test of the parent merge. The script will then
+perform the merges and test the resulting repositories. The results of the merges
+and the tests are stored in the output csv. The output csv will contain the same
+columns as the input csv, plus the following columns: "repo_name", "merge_tool",
+"merge_state", "run_time", "Equivalent merge_tool merge_tool2",
+"merge_tool run_time". The "merge_state" column contains the result of the merge
+and the "run_time" column contains the run time of the merge, in seconds. The
+"Equivalent merge_tool merge_tool2" column contains the result of the diff between
+the repositories resulting from the merge_tool and merge_tool2.
 """
 
 import signal
@@ -71,7 +81,9 @@ MERGE_STATES = Enum(
 )
 
 
-class MergeEntry:
+class MergeEntry:  # pylint: disable=R0903
+    """Class to store the result of a merge."""
+
     merge_tool: str = ""
     merge_state_cache_path: str = ""
     merge_path: str = ""
@@ -112,7 +124,7 @@ def write_cache_merge_status(merge_entry: MergeEntry):
         run_time (float): The run_time of the merge.
         explanation (str): The explanation of the merge.
     """
-    with open(merge_entry.merge_state_cache_path,"w") as f:
+    with open(merge_entry.merge_state_cache_path, "w") as f:
         f.write(merge_entry.merge_state.name + "\n" + str(merge_entry.run_time))
     with open(merge_entry.merge_state_explanation_cache_path, "w") as f:
         f.write(merge_entry.explanation)
@@ -304,8 +316,9 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
                 result[merge_tool1].merge_state == MERGE_STATES.Merge_success
                 and result[merge_tool2].merge_state == MERGE_STATES.Merge_success
             ):
-                command = f"diff -x .git* -r {result[merge_tool1].merge_path} {result[merge_tool2].merge_path}"
-                process =  subprocess.run(command.split(),capture_output=True)
+                command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
+                      {result[merge_tool2].merge_path}"
+                process = subprocess.run(command.split(), capture_output=True)
                 status = process.returncode == 0
                 if not status:
                     print(f"Diff {process.stdout} {process.stderr}")
@@ -318,7 +331,10 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     # Test the merged repos.
     for merging_method in MERGE_TOOLS:
         if read_cache_merge_status(result[merging_method]):
-            print(f"Read from cache {repo_name} {left} {right} {merging_method} result: {result[merging_method].merge_state.name}")
+            print(
+                f"Read from cache {repo_name} {left} {right}\
+                     {merging_method} result: {result[merging_method].merge_state.name}"
+            )
             continue
         if result[merging_method].merge_state == MERGE_STATES.Merge_success:
             print(f"Testing Merge {repo_name} {left} {right} {merging_method}")
@@ -335,7 +351,10 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             except Exception as e:
                 result[merging_method].merge_state = MERGE_STATES.Tests_exception
                 explanation = str(e)
-            print(f"Finished Testing Merge {repo_name} {left} {right} {merging_method} result: {result[merging_method].merge_state}")
+            print(
+                f"Finished Testing Merge {repo_name} {left}\
+                      {right} {merging_method} result: {result[merging_method].merge_state}"
+            )
 
         if STORE_SCRATCH:
             dst_name = os.path.join(SCRATCH_DIR, merge_id + merging_method)
@@ -346,7 +365,10 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             )
             if os.path.isdir(repo_dir_copy_merging_method):
                 shutil.copytree(repo_dir_copy_merging_method, dst_name)
-        print(f"Writing Testing Merge {repo_name} {left} {right} {merging_method} result: {result[merging_method].merge_state}")
+        print(
+            f"Writing Testing Merge {repo_name} {left} \
+                {right} {merging_method} result: {result[merging_method].merge_state}"
+        )
         write_cache_merge_status(result[merging_method])
     if not STORE_WORKDIR:
         shutil.rmtree(work_dir, onerror=del_rw)
