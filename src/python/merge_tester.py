@@ -165,7 +165,7 @@ class MergeEntry:
             self.diff_merge_result[merge_tool] = bool(status)
             return True
         return False
-    
+
     def check_missing_cache_entry(self) -> bool:
         """Checks if a cache entry is missing for a given merge.
         Args:
@@ -181,6 +181,7 @@ class MergeEntry:
             ):
                 return True
         return False
+
 
 def merge_commits(
     repo_dir: str, left: str, right: str, merging_method: str
@@ -280,7 +281,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     }
     # Merge the commits using the different merging methods.
     for merging_method in MERGE_TOOL:
-        if check_missing_cache_entry(result[merging_method]):
+        if result[merging_method].check_missing_cache_entry():
             # The repo will be copied here, then work done in the copy.
             print(f"Merging {repo_name} {left} {right} with {merging_method}")
             repo_dir_copy = os.path.join(work_dir, merging_method, "repo")
