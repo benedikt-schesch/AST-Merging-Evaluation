@@ -12,7 +12,7 @@ import os
 import sys
 from tqdm import tqdm
 from latex_output import compute_inconsistent_merge_results, MERGE_FAILURE_NAMES
-from merge_tester import MERGE_TOOLS
+from merge_tester import MERGE_TOOL
 import pandas as pd
 
 if __name__ == "__main__":
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     if input() != "y":
         sys.exit(0)
     for row in tqdm(inconsistent_merge_results):
-        for i in MERGE_TOOLS:
+        for i in MERGE_TOOL:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
                 cache_file = os.path.join(
                     args.cache_path,

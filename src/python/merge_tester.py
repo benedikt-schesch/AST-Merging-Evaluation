@@ -57,7 +57,7 @@ TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
-MERGE_TOOLS = sorted(
+MERGE_TOOL = sorted(
     [
         os.path.basename(file)[:-3]
         for file in glob.glob("src/scripts/merge_tools/*")
@@ -65,8 +65,8 @@ MERGE_TOOLS = sorted(
     ]
 )
 
-MERGE_STATES = Enum(
-    "MERGE_STATES",
+MERGE_STATE = Enum(
+    "MERGE_STATE",
     [
         "Merge_failed",
         "Merge_exception",
@@ -81,19 +81,19 @@ MERGE_STATES = Enum(
 )
 
 
-class MergeEntry:  # pylint: disable=R0903
+class MergeEntry:
     """Class to store the result of a merge."""
 
     merge_tool: str = ""
-    merge_state_cache_path: str = ""
+    merge_state_cache_path: Path = Path("")
     merge_path: str = ""
-    merge_state: MERGE_STATES = MERGE_STATES.Merge_running
-    merge_state_explanation_cache_path: str = ""
+    merge_state: MERGE_STATE = MERGE_STATE.Merge_running
+    merge_state_explanation_cache_path: Path = Path("")
     explanation: str = ""
     run_time: float = -1
     explanation: str = ""
     diff_merge_result: Dict[str, bool] = {}
-    diff_merge_result_cache_path: Dict[str, str] = {}
+    diff_merge_result_cache_path: Dict[str, Path] = {}
 
     def __init__(
         self,
@@ -102,81 +102,89 @@ class MergeEntry:  # pylint: disable=R0903
         cache_diff_status_prefix: str,
     ):
         self.merge_tool = merge_tool
-        self.merge_state_cache_path = cache_merge_status_prefix + merge_tool + ".txt"
-        self.merge_state_explanation_cache_path = (
+        self.merge_state_cache_path = Path(
+            cache_merge_status_prefix + merge_tool + ".txt"
+        )
+        self.merge_state_explanation_cache_path = Path(
             cache_merge_status_prefix + merge_tool + "_explanation.txt"
         )
-        for merge_tool2 in MERGE_TOOLS:
+        for merge_tool2 in MERGE_TOOL:
             if merge_tool2 < merge_tool:
-                self.diff_merge_result_cache_path[merge_tool2] = (
+                self.diff_merge_result_cache_path[merge_tool2] = Path(
                     cache_diff_status_prefix + merge_tool + "_" + merge_tool2 + ".txt"
                 )
             elif merge_tool2 > merge_tool:
-                self.diff_merge_result_cache_path[merge_tool2] = (
+                self.diff_merge_result_cache_path[merge_tool2] = Path(
                     cache_diff_status_prefix + merge_tool2 + "_" + merge_tool + ".txt"
                 )
 
+    def write_cache_merge_status(self):
+        """Writes the merge status to a cache file."""
+        with open(self.merge_state_cache_path, "w") as f:
+            f.write(self.merge_state.name + "\n" + str(self.run_time))
+        with open(self.merge_state_explanation_cache_path, "w") as f:
+            f.write(self.explanation)
 
-def write_cache_merge_status(merge_entry: MergeEntry):
-    """Writes the result of a test to a cache file.
-    Args:
-        status (MERGE_STATES): The status of the merge.
-        run_time (float): The run_time of the merge.
-        explanation (str): The explanation of the merge.
-    """
-    with open(merge_entry.merge_state_cache_path, "w") as f:
-        f.write(merge_entry.merge_state.name + "\n" + str(merge_entry.run_time))
-    with open(merge_entry.merge_state_explanation_cache_path, "w") as f:
-        f.write(merge_entry.explanation)
+    def read_cache_merge_status(self) -> bool:
+        """Reads the result of a test from a cache file.
+        Returns:
+            bool: True if the cache file exists, False otherwise.
+        """
+        if os.path.isfile(self.merge_state_cache_path):
+            print("IN CACHE:", self.merge_state_cache_path)
+            with open(self.merge_state_cache_path, "r") as f:
+                status_name = f.readline().strip()
+                self.merge_state = MERGE_STATE[status_name]
+                self.run_time = float(f.readline().strip())
+            if os.path.isfile(self.merge_state_explanation_cache_path):
+                with open(self.merge_state_explanation_cache_path, "r") as f:
+                    self.explanation = "".join(f.readlines())
+            else:
+                self.explanation = "No explanation file found."
+            return True
+        return False
 
+    def write_cache_diff_status(self, merge_tool: str):
+        """Writes the result of the diff to a cache file.
+        Args:
+            merge_tool (str): Name of the merge tool of the diff.
+        """
+        with open(self.diff_merge_result_cache_path[merge_tool], "w") as f:
+            f.write(str(self.diff_merge_result[merge_tool]))
 
-def read_cache_merge_status(merge_entry: MergeEntry) -> bool:
-    """Reads the result of a test from a cache file.
-    Args:
-        merge_entry(MergeEntry): The merge entry to read the cache from.
-    Returns:
-        bool: True if the cache file exists, False otherwise.
-    """
-    if os.path.isfile(merge_entry.merge_state_cache_path):
-        print("IN CACHE:", merge_entry.merge_state_cache_path)
-        with open(merge_entry.merge_state_cache_path, "r") as f:
-            status_name = f.readline().strip()
-            merge_entry.merge_state = MERGE_STATES[status_name]
-            merge_entry.run_time = float(f.readline().strip())
-        if os.path.isfile(merge_entry.merge_state_explanation_cache_path):
-            with open(merge_entry.merge_state_explanation_cache_path, "r") as f:
-                merge_entry.explanation = "".join(f.readlines())
-        else:
-            merge_entry.explanation = "No explanation file found."
-        return True
-    return False
-
-
-def write_cache_diff_status(status: bool, cache_file: str):
-    """Writes the result of the diff to a cache file.
-    Args:
-        status (int): The status of the diff.
-    """
-    with open(cache_file, "w") as f:
-        f.write(str(status))
-
-
-def read_cache_diff_status(cache_file: str) -> bool:
-    """Reads the result of the diff in the cache file.
-    Args:
-        cache_file (str): Path to the cache file.
-    Returns:
-        bool: The status of the diff.
-    """
-    with open(cache_file, "r") as f:
-        status = f.readline()
-    status = bool(status)
-    return status
-
+    def read_cache_diff_status(self, merge_tool: str):
+        """Reads the result of the diff in the cache file.
+        Args:
+            merge_tool (str): Name of the merge tool of the diff.
+        Returns:
+            bool: True if the cache file exists, False otherwise.
+        """
+        if os.path.isfile(self.diff_merge_result_cache_path[merge_tool]):
+            with open(self.diff_merge_result_cache_path[merge_tool], "r") as f:
+                status = f.readline()
+            self.diff_merge_result[merge_tool] = bool(status)
+            return True
+        return False
+    
+    def check_missing_cache_entry(self) -> bool:
+        """Checks if a cache entry is missing for a given merge.
+        Args:
+            merge_entry (MergeEntry): The merge entry to check.
+        Returns:
+            bool: True if a cache entry is missing, False otherwise.
+        """
+        if not os.path.isfile(self.merge_state_cache_path):
+            return True
+        for merge_tool2 in MERGE_TOOL:
+            if merge_tool2 != self.merge_tool and not os.path.isfile(
+                self.diff_merge_result_cache_path[merge_tool2]
+            ):
+                return True
+        return False
 
 def merge_commits(
     repo_dir: str, left: str, right: str, merging_method: str
-) -> Tuple[MERGE_STATES, float, str]:
+) -> Tuple[MERGE_STATE, float, str]:
     """Merges two commits in a repository.
     Args:
         repo_dir (str): Path to the directory containing the repo.
@@ -184,7 +192,7 @@ def merge_commits(
         right (str): Right commit.
         merging_method (str): Name of the merging method to use.
     Returns:
-        MERGE_STATES: The status of the merge.
+        MERGE_STATE: The status of the merge.
         float: The run_time of the merge.
         str: The explanation of the merge.
     """
@@ -197,7 +205,7 @@ def merge_commits(
         repo.git.checkout(right, force=True)
         repo.submodule_update()
         repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
-        merge_status = MERGE_STATES.Merge_running
+        merge_status = MERGE_STATE.Merge_running
         explanation = "Merge running"
         run_time = -1
         start = time.time()
@@ -214,39 +222,22 @@ def merge_commits(
         )
         p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
-            merge_status = MERGE_STATES.Merge_failed
+            merge_status = MERGE_STATE.Merge_failed
             explanation = "Merge Failed"
         else:
-            merge_status = MERGE_STATES.Merge_success
+            merge_status = MERGE_STATE.Merge_success
             explanation = ""
         run_time = time.time() - start
     except subprocess.TimeoutExpired:
         os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
-        merge_status = MERGE_STATES.Merge_timedout
+        merge_status = MERGE_STATE.Merge_timedout
         explanation = "Timeout during merge"
         run_time = -1
     except Exception as e:
-        merge_status = MERGE_STATES.Merge_exception
+        merge_status = MERGE_STATE.Merge_exception
         explanation = str(e)
         run_time = -1
     return merge_status, run_time, explanation
-
-
-def check_missing_cache_entry(merge_entry: MergeEntry) -> bool:
-    """Checks if a cache entry is missing for a given merge.
-    Args:
-        merge_entry (MergeEntry): The merge entry to check.
-    Returns:
-        bool: True if a cache entry is missing, False otherwise.
-    """
-    if not os.path.isfile(merge_entry.merge_state_cache_path):
-        return True
-    for merge_tool2 in MERGE_TOOLS:
-        if merge_tool2 != merge_entry.merge_tool and not os.path.isfile(
-            merge_entry.diff_merge_result_cache_path[merge_tool2]
-        ):
-            return True
-    return False
 
 
 def merge_and_test(  # pylint: disable=R0912,R0915,R0914
@@ -285,10 +276,10 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             cache_diff_status_prefix=cache_diff_status_prefix,
             cache_merge_status_prefix=cache_merge_status_prefix,
         )
-        for merge_tool in MERGE_TOOLS
+        for merge_tool in MERGE_TOOL
     }
     # Merge the commits using the different merging methods.
-    for merging_method in MERGE_TOOLS:
+    for merging_method in MERGE_TOOL:
         if check_missing_cache_entry(result[merging_method]):
             # The repo will be copied here, then work done in the copy.
             print(f"Merging {repo_name} {left} {right} with {merging_method}")
@@ -302,19 +293,13 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             result[merging_method].explanation = explanation
             result[merging_method].run_time = run_time
     # Compare the results of the different merging methods.
-    for merge_tool1 in MERGE_TOOLS:
-        for merge_tool2 in MERGE_TOOLS:
-            if os.path.isfile(
-                result[merge_tool1].diff_merge_result_cache_path[merge_tool2]
-            ):
-                status = read_cache_diff_status(
-                    result[merge_tool1].diff_merge_result_cache_path[merge_tool2]
-                )
-                result[merge_tool1].diff_merge_result[merge_tool2] = status
+    for merge_tool1 in MERGE_TOOL:
+        for merge_tool2 in MERGE_TOOL:
+            if result[merge_tool1].read_cache_diff_status(merge_tool2):
                 continue
             if (
-                result[merge_tool1].merge_state == MERGE_STATES.Merge_success
-                and result[merge_tool2].merge_state == MERGE_STATES.Merge_success
+                result[merge_tool1].merge_state == MERGE_STATE.Merge_success
+                and result[merge_tool2].merge_state == MERGE_STATE.Merge_success
             ):
                 command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
                       {result[merge_tool2].merge_path}"
@@ -325,31 +310,29 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             else:
                 status = False
             result[merge_tool1].diff_merge_result[merge_tool2] = status
-            write_cache_diff_status(
-                status, result[merge_tool1].diff_merge_result_cache_path[merge_tool2]
-            )
+            result[merge_tool1].write_cache_diff_status(merge_tool2)
     # Test the merged repos.
-    for merging_method in MERGE_TOOLS:
-        if read_cache_merge_status(result[merging_method]):
+    for merging_method in MERGE_TOOL:
+        if result[merging_method].read_cache_merge_status():
             print(
                 f"Read from cache {repo_name} {left} {right}\
                      {merging_method} result: {result[merging_method].merge_state.name}"
             )
             continue
-        if result[merging_method].merge_state == MERGE_STATES.Merge_success:
+        if result[merging_method].merge_state == MERGE_STATE.Merge_success:
             print(f"Testing Merge {repo_name} {left} {right} {merging_method}")
             try:
                 test_status, explanation = repo_test(
                     result[merging_method].merge_path, TIMEOUT_TESTING
                 )
                 if test_status == TEST_STATE.Tests_passed:
-                    result[merging_method].merge_state = MERGE_STATES.Tests_passed
+                    result[merging_method].merge_state = MERGE_STATE.Tests_passed
                 elif test_status == TEST_STATE.Tests_timedout:
-                    result[merging_method].merge_state = MERGE_STATES.Tests_timedout
+                    result[merging_method].merge_state = MERGE_STATE.Tests_timedout
                 else:
-                    result[merging_method].merge_state = MERGE_STATES.Tests_failed
+                    result[merging_method].merge_state = MERGE_STATE.Tests_failed
             except Exception as e:
-                result[merging_method].merge_state = MERGE_STATES.Tests_exception
+                result[merging_method].merge_state = MERGE_STATE.Tests_exception
                 explanation = str(e)
             print(
                 f"Finished Testing Merge {repo_name} {left}\
@@ -369,7 +352,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             f"Writing Testing Merge {repo_name} {left} \
                 {right} {merging_method} result: {result[merging_method].merge_state}"
         )
-        write_cache_merge_status(result[merging_method])
+        result[merging_method].write_cache_merge_status()
     if not STORE_WORKDIR:
         shutil.rmtree(work_dir, onerror=del_rw)
     return result
@@ -445,18 +428,18 @@ if __name__ == "__main__":
 
         # Initialize new columns
         merges["repo_name"] = [repository_data["repository"] for i in merges.iterrows()]
-        merges = merges.reindex(columns=merges.columns.tolist() + MERGE_TOOLS)
+        merges = merges.reindex(columns=merges.columns.tolist() + MERGE_TOOL)
         merges = merges.reindex(
             columns=merges.columns.tolist()
             + [
                 "Equivalent " + merge_tool + " " + merge_tool2
-                for idx, merge_tool in enumerate(MERGE_TOOLS)
-                for merge_tool2 in MERGE_TOOLS[(idx + 1) :]
+                for idx, merge_tool in enumerate(MERGE_TOOL)
+                for merge_tool2 in MERGE_TOOL[(idx + 1) :]
             ]
         )
         merges = merges.reindex(
             columns=merges.columns.tolist()
-            + [merge_tool + " run_time" for merge_tool in MERGE_TOOLS]
+            + [merge_tool + " run_time" for merge_tool in MERGE_TOOL]
         )
 
         for merge_idx, merge_data in merges.iterrows():
@@ -472,12 +455,12 @@ if __name__ == "__main__":
                     args.cache_dir,
                 )
             )
-            for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+            for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
                 merges.at[merge_idx, merge_tool] = results[merge_tool].merge_state.name
                 merges.at[merge_idx, merge_tool + " run_time"] = results[
                     merge_tool
                 ].run_time
-                for merge_tool2 in MERGE_TOOLS[(merge_tool_idx + 1) :]:
+                for merge_tool2 in MERGE_TOOL[(merge_tool_idx + 1) :]:
                     merges.at[
                         merge_idx, "Equivalent " + merge_tool + " " + merge_tool2
                     ] = results[merge_tool].diff_merge_result[merge_tool2]
