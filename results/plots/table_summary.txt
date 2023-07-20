@@ -6,13 +6,13 @@
             \multicolumn{2}{|c}{Incorrect Merges}\\
             \hline
             & \# & \% & \# & \% & \# & \%\\ 
-Gitmerge-ort & 3300 & 83.80\% & 401 & 10.18\% & 224 & 5.69\%\\
-Gitmerge-ort-ignorespace & 3321 & 84.33\% & 385 & 9.78\% & 219 & 5.56\%\\
-Gitmerge-recursive-patience & 3300 & 83.80\% & 393 & 9.98\% & 232 & 5.89\%\\
-Gitmerge-recursive-minimal & 3320 & 84.31\% & 389 & 9.88\% & 216 & 5.49\%\\
-Gitmerge-recursive-histogram & 3300 & 83.80\% & 392 & 9.95\% & 233 & 5.92\%\\
-Gitmerge-recursive-myers & 3313 & 84.13\% & 393 & 9.98\% & 219 & 5.56\%\\
-Gitmerge-resolve & 3299 & 83.77\% & 400 & 10.16\% & 226 & 5.74\%\\
-Spork & 3482 & 88.42\% & 232 & 5.89\% & 211 & 5.36\%\\
-Intellimerge & 3436 & 87.25\% & 298 & 7.57\% & 191 & 4.85\%\\
+Gitmerge-ort & 6173 & 84.11\% & 714 & 9.73\% & 394 & 5.37\%\\
+Gitmerge-ort-ignorespace & 6209 & 84.60\% & 694 & 9.46\% & 378 & 5.15\%\\
+Gitmerge-recursive-patience & 6170 & 84.07\% & 714 & 9.73\% & 397 & 5.41\%\\
+Gitmerge-recursive-minimal & 6190 & 84.34\% & 705 & 9.61\% & 386 & 5.26\%\\
+Gitmerge-recursive-histogram & 6176 & 84.15\% & 710 & 9.67\% & 395 & 5.38\%\\
+Gitmerge-recursive-myers & 6188 & 84.32\% & 704 & 9.59\% & 389 & 5.30\%\\
+Gitmerge-resolve & 6174 & 84.13\% & 718 & 9.78\% & 389 & 5.30\%\\
+Spork & 6515 & 88.77\% & 415 & 5.65\% & 351 & 4.78\%\\
+Intellimerge & 6419 & 87.46\% & 540 & 7.36\% & 322 & 4.39\%\\
 \end{tabular}
