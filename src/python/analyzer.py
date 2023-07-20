@@ -18,7 +18,7 @@ from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
 from validate_repos import repo_test, del_rw, TEST_STATE
-
+from latex_output import MERGE_FAILURE_NAMES, MERGE_UNHANDLED_NAMES
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
@@ -101,7 +101,8 @@ if __name__ == "__main__":
             except:
                 continue
             result2 = read(cache2)
-            if result1 == "Tests_failed" and result2 == "Tests_passed":
+            if result1 in MERGE_FAILURE_NAMES or result1 in MERGE_UNHANDLED_NAMES:
+                os.remove(cache1)
                 count += 1
     print(count)
     # elif result1 == "Merge_failed" and result2 == "Merge_failed":
