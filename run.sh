@@ -47,6 +47,6 @@ java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommi
 
 python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES" --cache_dir "$CACHE_DIR/test_result"
 
-python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR/merge_test_results/"
+python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR"
 
 python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"
