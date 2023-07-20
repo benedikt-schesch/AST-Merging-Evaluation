@@ -96,11 +96,12 @@ if __name__ == "__main__":
             )
             cache1 = cache_merge_status_prefix + "gitmerge-ort.txt"
             cache2 = cache_merge_status_prefix + "gitmerge.txt"
-
-            result1 = read(cache1)
+            try:
+                result1 = read(cache1)
+            except:
+                continue
             result2 = read(cache2)
-            if result1 == "Merge_timedout" and result2 == "Tests_passed":
-                os.remove(cache1)
+            if result1 == "Tests_failed" and result2 == "Tests_passed":
                 count += 1
     print(count)
     # elif result1 == "Merge_failed" and result2 == "Merge_failed":
