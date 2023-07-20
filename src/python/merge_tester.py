@@ -215,31 +215,30 @@ def merge_commits(
         explanation = "Merge running"
         run_time = -1
         start = time.time()
-        p = subprocess.Popen(  # pylint: disable=consider-using-with
+        p = subprocess.run(  # pylint: disable=consider-using-with
             [
                 "src/scripts/merge_tools/" + merging_method + ".sh",
                 repo_dir,
                 LEFT_BRANCH_NAME,
                 RIGHT_BRANCH_NAME,
             ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            start_new_session=True,
+            capture_output=True,
+            timeout=TIMEOUT_MERGE,
+            check=False,
         )
-        p.wait(timeout=TIMEOUT_MERGE)
         if p.returncode:
-            explanation = "STDOUT:\n" + p.stdout.read().decode("utf-8")
-            explanation += "\nSTDERR:\n" + p.stderr.read().decode("utf-8")
+            explanation = "STDOUT:\n" + p.stdout.decode("utf-8")
+            explanation += "\nSTDERR:\n" + p.stderr.decode("utf-8")
             merge_status = MERGE_STATE.Merge_failed
         else:
             merge_status = MERGE_STATE.Merge_success
             explanation = ""
         run_time = time.time() - start
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as timeErr:
         os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
         merge_status = MERGE_STATE.Merge_timedout
-        explanation = "STDOUT:\n" + p.stdout.read().decode("utf-8")
-        explanation += "\nSTDERR:\n" + p.stderr.read().decode("utf-8")
+        explanation = "STDOUT:\n" + timeErr.stdout.decode("utf-8")
+        explanation += "\nSTDERR:\n" + timeErr.stderr.decode("utf-8")
         runtime = -1
     except Exception as e:
         merge_status = MERGE_STATE.Merge_exception
