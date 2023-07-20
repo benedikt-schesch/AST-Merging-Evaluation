@@ -169,7 +169,7 @@ class MergeEntry:
             return True
         return False
 
-    def check_missing_cache_entry(self) -> bool:
+    def check_missing_cache_entry(self, check_diff: bool) -> bool:
         """Checks if a cache entry is missing for a given merge.
         Args:
             merge_entry (MergeEntry): The merge entry to check.
@@ -178,6 +178,8 @@ class MergeEntry:
         """
         if not os.path.isfile(self.merge_state_cache_path):
             return True
+        if not check_diff:
+            return False
         for merge_tool2 in MERGE_TOOL:
             if merge_tool2 != self.merge_tool and not os.path.isfile(
                 self.diff_merge_result_cache_path[merge_tool2]
@@ -247,7 +249,7 @@ def merge_commits(
 
 
 def merge_and_test(  # pylint: disable=R0912,R0915,R0914
-    args: Tuple[str, str, str, str, str, str]
+    args: Tuple[str, str, str, str, str, str, bool]
 ) -> Dict[str, MergeEntry]:
     """Merges a repo and executes its tests.
     Args:
@@ -261,7 +263,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
         dict: A dictionary containing the results of the tests and the comparison of the
             different merging methods.
     """
-    repo_name, left, right, base, merge, cache_dir = args
+    repo_name, left, right, base, merge, cache_dir, check_diff = args
     merge_id = "_".join([repo_name.split("/")[1], left, right, base, merge, ""])
     repo_dir = os.path.join("repos/", repo_name)
     work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
@@ -286,7 +288,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     }
     # Merge the commits using the different merging methods.
     for merging_method in MERGE_TOOL:
-        if result[merging_method].check_missing_cache_entry():
+        if result[merging_method].check_missing_cache_entry(check_diff=check_diff):
             # The repo will be copied here, then work done in the copy.
             print(f"Merging {repo_name} {left} {right} with {merging_method}")
             repo_dir_copy = os.path.join(work_dir, merging_method, "repo")
@@ -299,24 +301,25 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             result[merging_method].explanation = explanation
             result[merging_method].run_time = run_time
     # Compare the results of the different merging methods.
-    for merge_tool1 in MERGE_TOOL:
-        for merge_tool2 in MERGE_TOOL:
-            if result[merge_tool1].read_cache_diff_status(merge_tool2):
-                continue
-            if (
-                result[merge_tool1].merge_state == MERGE_STATE.Merge_success
-                and result[merge_tool2].merge_state == MERGE_STATE.Merge_success
-            ):
-                command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
-                      {result[merge_tool2].merge_path}"
-                process = subprocess.run(command.split(), capture_output=True)
-                status = process.returncode == 0
-                if not status:
-                    print(f"Diff {process.stdout} {process.stderr}")
-            else:
-                status = False
-            result[merge_tool1].diff_merge_result[merge_tool2] = status
-            result[merge_tool1].write_cache_diff_status(merge_tool2)
+    if check_diff:
+        for merge_tool1 in MERGE_TOOL:
+            for merge_tool2 in MERGE_TOOL:
+                if result[merge_tool1].read_cache_diff_status(merge_tool2):
+                    continue
+                if (
+                    result[merge_tool1].merge_state == MERGE_STATE.Merge_success
+                    and result[merge_tool2].merge_state == MERGE_STATE.Merge_success
+                ):
+                    command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
+                        {result[merge_tool2].merge_path}"
+                    process = subprocess.run(command.split(), capture_output=True)
+                    status = process.returncode == 0
+                    if not status:
+                        print(f"Diff {process.stdout} {process.stderr}")
+                else:
+                    status = False
+                result[merge_tool1].diff_merge_result[merge_tool2] = status
+                result[merge_tool1].write_cache_diff_status(merge_tool2)
     # Test the merged repos.
     for merging_method in MERGE_TOOL:
         if result[merging_method].read_cache_merge_status():
@@ -375,6 +378,8 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_file", type=str)
     parser.add_argument("--cache_dir", type=str, default="cache/")
+    # Check diff flag
+    parser.add_argument("-check_diff", action="store_true")
     args = parser.parse_args()
     Path(os.path.join(args.cache_dir, "merge_test_results")).mkdir(
         parents=True, exist_ok=True
@@ -406,6 +411,7 @@ if __name__ == "__main__":
                     merge_data["base"],
                     merge_data["merge"],
                     args.cache_dir,
+                    args.check_diff,
                 )
             )
 
@@ -466,10 +472,11 @@ if __name__ == "__main__":
                 merges.at[merge_idx, merge_tool + " run_time"] = results[
                     merge_tool
                 ].run_time
-                for merge_tool2 in MERGE_TOOL[(merge_tool_idx + 1) :]:
-                    merges.at[
-                        merge_idx, "Equivalent " + merge_tool + " " + merge_tool2
-                    ] = results[merge_tool].diff_merge_result[merge_tool2]
+                if args.check_diff == "True":
+                    for merge_tool2 in MERGE_TOOL[(merge_tool_idx + 1) :]:
+                        merges.at[
+                            merge_idx, "Equivalent " + merge_tool + " " + merge_tool2
+                        ] = results[merge_tool].diff_merge_result[merge_tool2]
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
     output.sort_values(by=["repo_name", "left", "right", "base", "merge"], inplace=True)
