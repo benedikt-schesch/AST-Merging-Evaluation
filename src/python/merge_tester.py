@@ -131,7 +131,6 @@ class MergeEntry:
             bool: True if the cache file exists, False otherwise.
         """
         if os.path.isfile(self.merge_state_cache_path):
-            print("IN CACHE:", self.merge_state_cache_path)
             with open(self.merge_state_cache_path, "r") as f:
                 status_name = f.readline().strip()
                 self.merge_state = MERGE_STATE[status_name]
