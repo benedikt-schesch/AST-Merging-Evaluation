@@ -19,18 +19,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from prettytable import PrettyTable
-from merge_tester import MERGE_TOOLS, MERGE_STATES
+from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 
 MERGE_FAILURE_NAMES = [
-    MERGE_STATES.Tests_exception.name,
-    MERGE_STATES.Tests_timedout.name,
+    MERGE_STATE.Tests_exception.name,
+    MERGE_STATE.Tests_timedout.name,
 ]
 
 MERGE_UNHANDLED_NAMES = [
-    MERGE_STATES.Merge_failed.name,
-    MERGE_STATES.Merge_timedout.name,
-    MERGE_STATES.Merge_exception.name,
+    MERGE_STATE.Merge_failed.name,
+    MERGE_STATE.Merge_timedout.name,
+    MERGE_STATE.Merge_exception.name,
 ]
 
 
@@ -44,10 +44,10 @@ def compute_inconsistent_merge_results(df: pd.DataFrame):
     inconsistent_merge_results = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
         n_failures = 0
-        for i in MERGE_TOOLS:
+        for i in MERGE_TOOL:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
                 n_failures += 1
-        if 0 < n_failures < len(MERGE_TOOLS):
+        if 0 < n_failures < len(MERGE_TOOL):
             inconsistent_merge_results.append(row)
     return inconsistent_merge_results
 
@@ -79,13 +79,13 @@ if __name__ == "__main__":
     correct = []
     unhandled = []
     failure = []
-    for merge_tool in MERGE_TOOLS:
+    for merge_tool in MERGE_TOOL:
         merge_tool_status = result_df[merge_tool]
         correct.append(
-            sum(val == MERGE_STATES.Tests_passed.name for val in merge_tool_status)
+            sum(val == MERGE_STATE.Tests_passed.name for val in merge_tool_status)
         )
         incorrect.append(
-            sum(val == MERGE_STATES.Tests_failed.name for val in merge_tool_status)
+            sum(val == MERGE_STATE.Tests_failed.name for val in merge_tool_status)
         )
         unhandled.append(sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status))
         failure.append(sum(val in MERGE_FAILURE_NAMES for val in merge_tool_status))
@@ -99,13 +99,13 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots()
 
-    ax.bar(MERGE_TOOLS, incorrect, label="Incorrect", color="#1F77B4")
-    ax.bar(MERGE_TOOLS, unhandled, bottom=incorrect, label="Unhandled", color="#FF7F0E")
+    ax.bar(MERGE_TOOL, incorrect, label="Incorrect", color="#1F77B4")
+    ax.bar(MERGE_TOOL, unhandled, bottom=incorrect, label="Unhandled", color="#FF7F0E")
     ax.bar(
-        MERGE_TOOLS,
+        MERGE_TOOL,
         correct,
         label="Correct",
-        bottom=[incorrect[i] + unhandled[i] for i in range(len(MERGE_TOOLS))],
+        bottom=[incorrect[i] + unhandled[i] for i in range(len(MERGE_TOOL))],
         color="#2CA02C",
     )
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             \\hline
             & \\# & \\% & \\# & \\% & \\# & \\%\\\\ \n"""
     total = len(result_df)
-    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
         correct_percentage = 100 * correct[merge_tool_idx] / total if total != 0 else 0
         unhandled_percentage = (
             100 * unhandled[merge_tool_idx] / total if total != 0 else 0
@@ -151,7 +151,7 @@ if __name__ == "__main__":
         "Incorrect Merges",
         "Unhandled Merges",
     ]
-    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
         my_table.add_row(
             [
                 merge_tool,
@@ -186,24 +186,24 @@ if __name__ == "__main__":
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     args = []
-    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOLS):
+    for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
         mergem = main[merge_tool]
         mergef = feature[merge_tool]
 
-        correct_main = sum(val == MERGE_STATES.Tests_passed.name for val in mergem)
+        correct_main = sum(val == MERGE_STATE.Tests_passed.name for val in mergem)
         correct_main_percentage = (
             100 * correct_main / len(main) if len(main) != 0 else 0
         )
-        correct_feature = sum(val == MERGE_STATES.Tests_passed.name for val in mergef)
+        correct_feature = sum(val == MERGE_STATE.Tests_passed.name for val in mergef)
         correct_feature_percentage = (
             100 * correct_feature / len(feature) if len(feature) > 0 else -1
         )
 
-        incorrect_main = sum(val == MERGE_STATES.Tests_failed.name for val in mergem)
+        incorrect_main = sum(val == MERGE_STATE.Tests_failed.name for val in mergem)
         incorrect_main_percentage = (
             100 * incorrect_main / len(main) if len(main) != 0 else 0
         )
-        incorrect_feature = sum(val == MERGE_STATES.Tests_failed.name for val in mergef)
+        incorrect_feature = sum(val == MERGE_STATE.Tests_failed.name for val in mergef)
         incorrect_feature_percentage = (
             100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
         )
@@ -232,20 +232,20 @@ if __name__ == "__main__":
     with open(os.path.join(output_path, "table_feature_main_summary.tex"), "w") as file:
         file.write(table2)
 
-    # Table 3 (Runtime)
+    # Table 3 (Run-time)
     table3 = """% Do not edit.  This file is automatically generated.
 \\begin{tabular}{c|c|c|c}
-    Tool & Mean Runtime & Median Runtime & Max runtime\\\\
+    Tool & Mean Run-time & Median Run-time & Max Run-time\\\\
     \\hline\n"""
 
     args = []
-    for merge_tool in MERGE_TOOLS:
+    for merge_tool in MERGE_TOOL:
         table3 += f"    {merge_tool.capitalize()}"
         for f in [np.mean, np.median, np.max]:
-            runtime = f(result_df[merge_tool + " runtime"])
-            table3 += f" & {runtime:0.2f}"
+            run_time = f(result_df[merge_tool + " run_time"])
+            table3 += f" & {run_time:0.2f}"
         table3 += "\\\\\n"
     table3 += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_runtime.tex"), "w") as file:
+    with open(os.path.join(output_path, "table_run_time.tex"), "w") as file:
         file.write(table3)
