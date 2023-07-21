@@ -472,7 +472,7 @@ if __name__ == "__main__":
                 merges.at[merge_idx, merge_tool + " run_time"] = results[
                     merge_tool
                 ].run_time
-                if args.diff == "True":
+                if args.diff:
                     for merge_tool2 in MERGE_TOOL[(merge_tool_idx + 1) :]:
                         merges.at[
                             merge_idx, "Equivalent " + merge_tool + " " + merge_tool2
