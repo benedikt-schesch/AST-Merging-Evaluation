@@ -7,4 +7,4 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy="-s recursive -Xdiff-algorithm=histogram"
-eval "$MERGE_DIR/gitmerge.sh $clone_dir $branch1 $branch2 \"$strategy\""
+"$MERGE_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
