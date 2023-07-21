@@ -101,8 +101,8 @@ if __name__ == "__main__":
             except:
                 continue
             result2 = read(cache2)
-            if result1 in MERGE_FAILURE_NAMES or result1 in MERGE_UNHANDLED_NAMES:
-                os.remove(cache1)
+            if result1 in  MERGE_UNHANDLED_NAMES and result2 == "Tests_passed":
+                print(cache1)
                 count += 1
     print(count)
     # elif result1 == "Merge_failed" and result2 == "Merge_failed":
