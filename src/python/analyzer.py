@@ -95,16 +95,18 @@ if __name__ == "__main__":
                 "merge_test_results",
                 "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
             )
-            cache1 = cache_merge_status_prefix + "gitmerge-ort.txt"
-            cache2 = cache_merge_status_prefix + "gitmerge.txt"
-            try:
-                result1 = read(cache1)
-            except:
-                continue
-            result2 = read(cache2)
-            if result1 in MERGE_UNHANDLED_NAMES and result2 == "Tests_passed":
-                print(cache1)
-                count += 1
+            for merge_method in MERGE_TOOL:
+                cache = cache_merge_status_prefix + merge_method+".txt"
+                # print(cache)
+                try:
+                    result1 = read(cache)
+                except:
+                    continue
+                result2 = read(cache)
+                if result1 in MERGE_UNHANDLED_NAMES or result1 in MERGE_FAILURE_NAMES:
+                    # print(cache)
+                    os.remove(cache)
+                    count += 1
     print(count)
     # elif result1 == "Merge_failed" and result2 == "Merge_failed":
     #     print("test")
