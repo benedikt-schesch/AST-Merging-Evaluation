@@ -378,7 +378,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", type=str)
     parser.add_argument("--cache_dir", type=str, default="cache/")
     # Check diff flag
-    parser.add_argument("-check_diff", action="store_true")
+    parser.add_argument("-diff", action="store_true")
     args = parser.parse_args()
     Path(os.path.join(args.cache_dir, "merge_test_results")).mkdir(
         parents=True, exist_ok=True
@@ -410,7 +410,7 @@ if __name__ == "__main__":
                     merge_data["base"],
                     merge_data["merge"],
                     args.cache_dir,
-                    args.check_diff,
+                    args.diff,
                 )
             )
 
@@ -464,7 +464,7 @@ if __name__ == "__main__":
                     merge_data["base"],
                     merge_data["merge"],
                     args.cache_dir,
-                    args.check_diff,
+                    args.diff,
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
@@ -472,7 +472,7 @@ if __name__ == "__main__":
                 merges.at[merge_idx, merge_tool + " run_time"] = results[
                     merge_tool
                 ].run_time
-                if args.check_diff == "True":
+                if args.diff == "True":
                     for merge_tool2 in MERGE_TOOL[(merge_tool_idx + 1) :]:
                         merges.at[
                             merge_idx, "Equivalent " + merge_tool + " " + merge_tool2

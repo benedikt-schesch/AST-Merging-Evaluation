@@ -31,8 +31,8 @@ while [ $# -gt 0 ]; do
     num_machines=$2
     shift
     ;;
-    -d | --diff)
-    flags="$flags --diff"
+    -d | -diff)
+    flags="$flags -diff"
     ;;
   esac
   shift
