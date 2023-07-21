@@ -53,7 +53,7 @@ echo "Options: $flags"
 
 length=${#REPOS_CSV}
 REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
-exit 0
+
 ./gradlew assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
