@@ -18,6 +18,7 @@ from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
 import git.repo
 from validate_repos import repo_test, del_rw, TEST_STATE
+from merge_tester import MERGE_STATE
 from latex_output import MERGE_FAILURE_NAMES, MERGE_UNHANDLED_NAMES
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -102,8 +103,7 @@ if __name__ == "__main__":
                     result1 = read(cache)
                 except:
                     continue
-                result2 = read(cache)
-                if result1 in MERGE_UNHANDLED_NAMES or result1 in MERGE_FAILURE_NAMES:
+                if result1 in (MERGE_STATE.Tests_timedout, MERGE_STATE.Tests_passed):
                     # print(cache)
                     os.remove(cache)
                     count += 1
