@@ -235,7 +235,6 @@ def merge_commits(
             explanation = ""
         run_time = time.time() - start
     except subprocess.TimeoutExpired as timeErr:
-        os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # type: ignore
         merge_status = MERGE_STATE.Merge_timedout
         explanation = "STDOUT:\n" + timeErr.stdout.decode("utf-8")
         explanation += "\nSTDERR:\n" + timeErr.stderr.decode("utf-8")
