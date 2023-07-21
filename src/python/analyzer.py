@@ -96,7 +96,7 @@ if __name__ == "__main__":
                 "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
             )
             for merge_method in MERGE_TOOL:
-                cache = cache_merge_status_prefix + merge_method+".txt"
+                cache = cache_merge_status_prefix + merge_method + ".txt"
                 # print(cache)
                 try:
                     result1 = read(cache)
