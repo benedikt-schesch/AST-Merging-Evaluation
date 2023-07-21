@@ -104,8 +104,8 @@ if __name__ == "__main__":
                 except:
                     continue
                 if result1 not in (
-                    MERGE_STATE.Tests_timedout,
-                    MERGE_STATE.Tests_passed,
+                    MERGE_STATE.Tests_timedout.name,
+                    MERGE_STATE.Tests_passed.name,
                 ):
                     # print(cache)
                     os.remove(cache)
