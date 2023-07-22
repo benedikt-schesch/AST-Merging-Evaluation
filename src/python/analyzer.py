@@ -1,7 +1,5 @@
 """ Analysis tool. """
-import signal
-import subprocess
-import shutil
+import sys
 import os
 import glob
 import time
@@ -71,10 +69,7 @@ if __name__ == "__main__":
     )
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
-    print("merge_tester: Building Function Arguments")
-    # Function arguments: (repo_name, left, right, base, merge)
-    args_merges = []
-    count = 0
+    to_remove = []
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
             args.merges_path, repository_data["repository"].split("/")[1] + ".csv"
@@ -100,15 +95,15 @@ if __name__ == "__main__":
                 cache = cache_merge_status_prefix + merge_method + ".txt"
                 # print(cache)
                 try:
-                    result1 = read(cache)
+                    result = read(cache)
                 except:
                     continue
-                if result1 in (MERGE_STATE.Tests_failed.name,):
-                    # print(cache)
-                    os.remove(cache)
-                    count += 1
-    print(count)
-    # elif result1 == "Merge_failed" and result2 == "Merge_failed":
-    #     print("test")
-
-    print("merge_tester: Finished Building Function Arguments")
+                if result in (MERGE_STATE.Tests_failed.name,):
+                    to_remove.append(cache)
+    print("Number of files to delete:", len(to_remove))
+    print("Are you sure you want to proceed? (y/n)")
+    if input() != "y":
+        sys.exit(0)
+    for path in to_remove:
+        os.remove(path)
+    print("Done")
