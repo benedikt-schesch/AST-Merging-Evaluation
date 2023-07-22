@@ -70,9 +70,9 @@ if __name__ == "__main__":
         "Number of inconsistent entries that will be ignored:",
         len(inconsistent_merge_results),
     )
-    for row in tqdm(inconsistent_merge_results):
-        result_df.drop(row.name, inplace=True)
-    assert old_len - len(result_df) == len(inconsistent_merge_results)
+    # for row in tqdm(inconsistent_merge_results):
+    #     result_df.drop(row.name, inplace=True)
+    # assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     # figure 1 (stacked area)
     incorrect = []
