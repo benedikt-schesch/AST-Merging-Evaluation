@@ -181,7 +181,8 @@ if __name__ == "__main__":
         merge_list_file = os.path.join(
             args.merges_path, repo_name.split("/")[1] + ".csv"
         )
-        if not os.path.isfile(merge_list_file):
+        output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+        if not os.path.isfile(merge_list_file) or os.path.isfile(output_file):
             continue
 
         merges = pd.read_csv(
