@@ -103,9 +103,7 @@ if __name__ == "__main__":
                     result1 = read(cache)
                 except:
                     continue
-                if result1 in (
-                    MERGE_STATE.Tests_failed.name,
-                ):
+                if result1 in (MERGE_STATE.Tests_failed.name,):
                     # print(cache)
                     os.remove(cache)
                     count += 1
