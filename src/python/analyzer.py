@@ -103,9 +103,8 @@ if __name__ == "__main__":
                     result1 = read(cache)
                 except:
                     continue
-                if result1 not in (
-                    MERGE_STATE.Tests_timedout.name,
-                    MERGE_STATE.Tests_passed.name,
+                if result1 in (
+                    MERGE_STATE.Tests_failed.name,
                 ):
                     # print(cache)
                     os.remove(cache)
