@@ -20,20 +20,17 @@ and the "run_time" column contains the run time of the merge, in seconds. The
 the repositories resulting from the merge_tool and merge_tool2.
 """
 
-import signal
 import subprocess
 import shutil
 import os
-import glob
 import time
 import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
 from enum import Enum
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 import uuid
-from dataclasses import dataclass
 
 from tqdm import tqdm  # shows a progress meter as a loop runs
 import pandas as pd
@@ -104,15 +101,17 @@ class MergeEntry:
         merge_tool: str,
         cache_merge_status_prefix: str,
         cache_diff_status_prefix: str,
+        merge_tools: List[str],
     ):
         self.merge_tool = merge_tool
+        self.merge_tools = merge_tools
         self.merge_state_cache_path = Path(
             cache_merge_status_prefix + merge_tool + ".txt"
         )
         self.merge_state_explanation_cache_path = Path(
             cache_merge_status_prefix + merge_tool + "_explanation.txt"
         )
-        for merge_tool2 in MERGE_TOOL:
+        for merge_tool2 in merge_tools:
             if merge_tool2 < merge_tool:
                 self.diff_merge_result_cache_path[merge_tool2] = Path(
                     cache_diff_status_prefix + merge_tool + "_" + merge_tool2 + ".txt"
@@ -180,7 +179,7 @@ class MergeEntry:
             return True
         if not check_diff:
             return False
-        for merge_tool2 in MERGE_TOOL:
+        for merge_tool2 in self.merge_tools:
             if merge_tool2 != self.merge_tool and not os.path.isfile(
                 self.diff_merge_result_cache_path[merge_tool2]
             ):
@@ -247,7 +246,7 @@ def merge_commits(
 
 
 def merge_and_test(  # pylint: disable=R0912,R0915,R0914
-    args: Tuple[str, str, str, str, str, str, bool]
+    args: Tuple[str, str, str, str, str, str, bool, List[str]]
 ) -> Dict[str, MergeEntry]:
     """Merges a repo and executes its tests.
     Args:
@@ -257,11 +256,12 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
         base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
         cache_dir (str): Path to the cache directory.
+        merge_tools (List[str]): List of merge tools to analyze.
     Returns:
         dict: A dictionary containing the results of the tests and the comparison of the
             different merging methods.
     """
-    repo_name, left, right, base, merge, cache_dir, check_diff = args
+    repo_name, left, right, base, merge, cache_dir, check_diff, merge_tools = args
     merge_id = "_".join([repo_name.split("/")[1], left, right, base, merge, ""])
     repo_dir = os.path.join("repos/", repo_name)
     work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
@@ -281,11 +281,12 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             merge_tool=merge_tool,
             cache_diff_status_prefix=cache_diff_status_prefix,
             cache_merge_status_prefix=cache_merge_status_prefix,
+            merge_tools=merge_tools,
         )
-        for merge_tool in MERGE_TOOL
+        for merge_tool in merge_tools
     }
     # Merge the commits using the different merging methods.
-    for merging_method in MERGE_TOOL:
+    for merging_method in merge_tools:
         if result[merging_method].check_missing_cache_entry(check_diff=check_diff):
             # The repo will be copied here, then work done in the copy.
             print(f"Merging {repo_name} {left} {right} with {merging_method}")
@@ -300,8 +301,8 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             result[merging_method].run_time = run_time
     # Compare the results of the different merging methods.
     if check_diff:
-        for merge_tool1 in MERGE_TOOL:
-            for merge_tool2 in MERGE_TOOL:
+        for merge_tool1 in merge_tools:
+            for merge_tool2 in merge_tools:
                 if result[merge_tool1].read_cache_diff_status(merge_tool2):
                     continue
                 if (
@@ -319,7 +320,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
                 result[merge_tool1].diff_merge_result[merge_tool2] = status
                 result[merge_tool1].write_cache_diff_status(merge_tool2)
     # Test the merged repos.
-    for merging_method in MERGE_TOOL:
+    for merging_method in merge_tools:
         if result[merging_method].read_cache_merge_status():
             print(
                 f"Read from cache {repo_name} {left} {right}\
@@ -401,17 +402,33 @@ if __name__ == "__main__":
         for _, merge_data in merges.iterrows():
             if merge_data["parent test"] != TEST_STATE.Tests_passed.name:
                 continue
-            args_merges.append(
-                (
-                    repository_data["repository"],
-                    merge_data["left"],
-                    merge_data["right"],
-                    merge_data["base"],
-                    merge_data["merge"],
-                    args.cache_dir,
-                    args.diff,
+            if args.diff:
+                args_merges.append(
+                    (
+                        repository_data["repository"],
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_data["base"],
+                        merge_data["merge"],
+                        args.cache_dir,
+                        args.diff,
+                        MERGE_TOOL,
+                    )
                 )
-            )
+            else:
+                for merge_tool in MERGE_TOOL:
+                    args_merges.append(
+                        (
+                            repository_data["repository"],
+                            merge_data["left"],
+                            merge_data["right"],
+                            merge_data["base"],
+                            merge_data["merge"],
+                            args.cache_dir,
+                            args.diff,
+                            [merge_tool],
+                        )
+                    )
 
     print("merge_tester: Finished Building Function Arguments")
 
