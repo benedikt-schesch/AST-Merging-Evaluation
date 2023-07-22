@@ -481,6 +481,7 @@ if __name__ == "__main__":
                     merge_data["merge"],
                     args.cache_dir,
                     args.diff,
+                    MERGE_TOOL,
                 )
             )
             for merge_tool_idx, merge_tool in enumerate(MERGE_TOOL):
