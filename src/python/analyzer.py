@@ -103,13 +103,9 @@ if __name__ == "__main__":
                     result1 = read(cache)
                 except:
                     continue
-<<<<<<< Updated upstream
                 if result1 in (
                     MERGE_STATE.Tests_failed.name,
                 ):
-=======
-                if result1 == MERGE_STATE.Tests_failed.name:
->>>>>>> Stashed changes
                     # print(cache)
                     os.remove(cache)
                     count += 1
