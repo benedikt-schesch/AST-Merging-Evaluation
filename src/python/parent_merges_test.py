@@ -168,9 +168,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
-    if os.path.isdir(args.output_dir):
-        shutil.rmtree(args.output_dir, onerror=del_rw)
-    os.mkdir(args.output_dir)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     delete_valid_merges_counters()
     print("parent_merges_test: Constructing Inputs")
@@ -263,6 +261,10 @@ if __name__ == "__main__":
         repo_name = repository_data["repository"]
         merge_list_file = args.merges_path + repo_name.split("/")[1] + ".csv"
 
+        output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+        if not os.path.isfile(merge_list_file) or os.path.isfile(output_file):
+            continue
+
         if not os.path.isfile(merge_list_file):
             raise Exception(
                 repo_name
@@ -334,7 +336,6 @@ if __name__ == "__main__":
                 break
         result = pd.DataFrame(result)
         counter += len(result)
-        output_file = os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         result.to_csv(output_file, index_label="idx")
     print("parent_merges_test: Number of correct merges:", counter)
     print("parent_merges_test: Finished Constructing Output")
