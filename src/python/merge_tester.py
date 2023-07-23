@@ -235,9 +235,12 @@ def merge_commits(
         run_time = time.time() - start
     except subprocess.TimeoutExpired as timeErr:
         merge_status = MERGE_STATE.Merge_timedout
-        explanation = "STDOUT:\n" + timeErr.stdout.decode("utf-8")
-        explanation += "\nSTDERR:\n" + timeErr.stderr.decode("utf-8")
-        runtime = -1
+        explanation = "Timeout\n"
+        if timeErr.stdout:
+            explanation = "STDOUT:\n" + timeErr.stdout.decode("utf-8")
+        if timeErr.stderr:
+            explanation += "\nSTDERR:\n" + timeErr.stderr.decode("utf-8")
+        run_time = -1
     except Exception as e:
         merge_status = MERGE_STATE.Merge_exception
         explanation = str(e)
