@@ -17,7 +17,7 @@ STATE_TO_DELETE = [
     TEST_STATE.Not_tested,
 ]
 
-MERGE_TOOLS_DIFFS = ("gitmerge-ort","gitmerge-ort-ignorespace")
+MERGE_TOOLS_DIFFS = ("gitmerge-ort", "gitmerge-ort-ignorespace")
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         if status:
             continue
         files_to_delete.append(path)
-    
+
     print("Number of files from diff cache to delete:", len(files_to_delete))
     print("Are you sure you want to proceed? (y/n)")
     if input() != "y":
@@ -45,7 +45,6 @@ if __name__ == "__main__":
     for path in files_to_delete:
         os.remove(path)
     print("Done")
-
 
     files_to_delete = []
     for path in tqdm(glob.glob(f"{args.cache_path}/*")):

@@ -11,19 +11,59 @@ from argparse import ArgumentParser
 import os
 import sys
 from tqdm import tqdm
-from latex_output import compute_inconsistent_merge_results, MERGE_FAILURE_NAMES
+from latex_output import (
+    compute_inconsistent_merge_results,
+    MERGE_FAILURE_NAMES,
+    check_triangle_constraint,
+)
 from merge_tester import MERGE_TOOL
 import pandas as pd
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
     arg_parser.add_argument("--results", type=str, default="results/result.csv")
-    arg_parser.add_argument(
-        "--cache_path", type=str, default="cache/merge_test_results"
-    )
+    arg_parser.add_argument("--cache_path", type=str, default="cache")
     args = arg_parser.parse_args()
 
     df = pd.read_csv(args.results)
+
+    to_delete = []
+    for _, row in tqdm(df.iterrows(), total=len(df)):
+        if check_triangle_constraint(row):
+            to_delete.append(row)
+            if len(to_delete) > 4:
+                break
+    print("Number of entries to delete:", len(to_delete))
+    print("Are you sure you want to proceed? (y/n)")
+
+    if input() != "y":
+        sys.exit(0)
+    for row in tqdm(to_delete):
+        for merge_tool1 in MERGE_TOOL:
+            for merge_tool2 in MERGE_TOOL:
+                cache_file = os.path.join(
+                    args.cache_path,
+                    "merge_diff_results",
+                    row["repo_name"].split("/")[1]
+                    + "_"
+                    + row["left"]
+                    + "_"
+                    + row["right"]
+                    + "_"
+                    + row["base"]
+                    + "_"
+                    + row["merge"]
+                    + "_"
+                    + merge_tool1
+                    + "_"
+                    + merge_tool2,
+                )
+                if os.path.exists(cache_file + ".txt"):
+                    os.remove(cache_file + ".txt")
+                    print("Deleted:", cache_file + ".txt")
+                else:
+                    print("File not found:", cache_file)
+
     inconsistent_merge_results = compute_inconsistent_merge_results(df)
     print("Number of inconsistent entries to delete:", len(inconsistent_merge_results))
     print("Are you sure you want to proceed? (y/n)")
