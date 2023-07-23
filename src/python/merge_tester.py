@@ -164,7 +164,8 @@ class MergeEntry:
         if os.path.isfile(self.diff_merge_result_cache_path[merge_tool]):
             with open(self.diff_merge_result_cache_path[merge_tool], "r") as f:
                 status = f.readline()
-            self.diff_merge_result[merge_tool] = bool(status)
+            status = status.strip() == "True"
+            self.diff_merge_result[merge_tool] = status
             return True
         return False
 
