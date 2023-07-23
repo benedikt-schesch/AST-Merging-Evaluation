@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # usage: ./spork.sh <clone_dir> <branch-1> <branch-2>
 # <clone_dir> must contain a clone of a repository.
@@ -14,10 +14,10 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-SCRIPT_PATH=$(dirname "$0"); SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
-ROOT_PATH=$(realpath "${SCRIPT_PATH}/../../../")
+SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"
+ROOT_PATH="$(realpath "${SCRIPT_PATH}/../../../")"
 spork_relativepath=jars/spork.jar
-spork_fullpath="${ROOT_PATH}/${spork_relativepath}"
+spork_absolutepath="${ROOT_PATH}/${spork_relativepath}"
 
 clone_dir=$1
 branch1=$2
@@ -26,11 +26,11 @@ branch2=$3
 # set up spork driver
 (echo "[merge \"spork\"]";
     echo "    name = spork";
-    echo "    driver = java -jar $spork_fullpath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
+    echo "    driver = java -jar $spork_absolutepath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
 echo "*.java merge=spork" >> "$clone_dir/.gitattributes"
 
 # perform merge
-pushd "$clone_dir"
+cd "$clone_dir"
 git checkout "$branch1" --force
 git merge --no-edit "$branch2"
 retVal=$?
@@ -41,5 +41,6 @@ if [ $retVal -ne 0 ]; then
     git merge --abort
 fi
 
-popd
+cd -
+
 exit $retVal

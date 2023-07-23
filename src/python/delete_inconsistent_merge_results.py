@@ -25,7 +25,6 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.results)
     inconsistent_merge_results = compute_inconsistent_merge_results(df)
-
     print("Number of inconsistent entries to delete:", len(inconsistent_merge_results))
     print("Are you sure you want to proceed? (y/n)")
     if input() != "y":
