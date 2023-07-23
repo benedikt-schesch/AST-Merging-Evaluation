@@ -69,6 +69,7 @@ if __name__ == "__main__":
     print("Are you sure you want to proceed? (y/n)")
     if input() != "y":
         sys.exit(0)
+    count = 0
     for row in tqdm(inconsistent_merge_results):
         for i in MERGE_TOOL:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
@@ -88,9 +89,11 @@ if __name__ == "__main__":
                 )
                 if os.path.exists(cache_file + ".txt"):
                     os.remove(cache_file + ".txt")
+                    count += 1
                     if os.path.exists(cache_file + "_explanation.txt"):
                         os.remove(cache_file + "_explanation.txt")
                     print("Deleted:", cache_file + ".txt")
                 else:
                     print("File not found:", cache_file)
+    print("Deleted", count, "files")
     print("Done")
