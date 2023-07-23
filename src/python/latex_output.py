@@ -253,7 +253,9 @@ if __name__ == "__main__":
 
     table2 += "\\end{tabular}\n"
 
-    with open(os.path.join(tables_output_path, "table_feature_main_summary.tex"), "w") as file:
+    with open(
+        os.path.join(tables_output_path, "table_feature_main_summary.tex"), "w"
+    ) as file:
         file.write(table2)
 
     # Table 3 (Run-time)
