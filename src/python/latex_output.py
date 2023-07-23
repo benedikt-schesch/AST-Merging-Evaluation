@@ -10,7 +10,6 @@ should be copied into tables/ of the latex project.
 """
 
 
-import sys
 import os
 import argparse
 from pathlib import Path
@@ -21,6 +20,7 @@ import pandas as pd
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
+import seaborn as sns
 
 MERGE_FAILURE_NAMES = [
     MERGE_STATE.Tests_exception.name,
@@ -73,6 +73,27 @@ if __name__ == "__main__":
     for row in tqdm(inconsistent_merge_results):
         result_df.drop(row.name, inplace=True)
     assert old_len - len(result_df) == len(inconsistent_merge_results)
+
+    # Figure (Heat Map diffing)
+    result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
+    for _, row in result_df.iterrows():
+        for idx, merge_tool1 in enumerate(MERGE_TOOL):
+            for idx2, merge_tool2 in enumerate(MERGE_TOOL[(idx + 1) :]):
+                if not row[f"Equivalent {merge_tool1} {merge_tool2}"]:
+                    result[idx][idx2 + idx + 1] += 1
+                    result[idx2 + idx + 1][idx] += 1
+    fig, ax = plt.subplots()
+    latex_merge_tool = ["$" + i.capitalize() + "$" for i in MERGE_TOOL]
+    heatmap = sns.heatmap(
+        result,
+        annot=True,
+        ax=ax,
+        xticklabels=latex_merge_tool,
+        yticklabels=latex_merge_tool,
+        fmt="g",
+    )
+    heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
+    plt.savefig(os.path.join(output_path, "heatmap.pdf"))
 
     # figure 1 (stacked area)
     incorrect = []
