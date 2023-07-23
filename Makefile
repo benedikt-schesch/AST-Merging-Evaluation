@@ -2,12 +2,12 @@ all: style gradle-assemble
 
 style: shell-script-style python-style java-style
 
-SH_SCRIPTS = 
-BASH_SCRIPTS = $(shell find . -type d \( -path ./cache -o -path ./.workdir -o -path ./repos \) -prune -false -o -name '*.sh')
+SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
 
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
-#	checkbashisms ${SH_SCRIPTS}
+	checkbashisms ${SH_SCRIPTS}
 
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
@@ -48,7 +48,7 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	./run_small.sh
+	./run_small.sh -d
 	${MAKE} small-test-diff
 
 small-test-diff:
@@ -56,7 +56,7 @@ small-test-diff:
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
-	(cd results-small && cat result.csv | rev | cut -d, -f4-18 | rev > result-without-times.csv)
+	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
 	diff -r -U3 test/small-goal-files results-small -x merges -x .gitignore -x result.csv -x "figs*" -x table_run_time.tex -x .DS_Store
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
