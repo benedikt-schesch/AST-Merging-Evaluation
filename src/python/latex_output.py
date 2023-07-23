@@ -47,7 +47,7 @@ def compute_inconsistent_merge_results(df: pd.DataFrame):
         for i in MERGE_TOOL:
             if row[f"{i}"] in MERGE_FAILURE_NAMES:
                 n_failures += 1
-        if 0 < n_failures < len(MERGE_TOOL) and n_failures < 4:
+        if 0 < n_failures < len(MERGE_TOOL) and n_failures >= 4:
             inconsistent_merge_results.append(row)
     return inconsistent_merge_results
 
