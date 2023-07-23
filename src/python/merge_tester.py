@@ -83,7 +83,7 @@ MERGE_STATE = Enum(
 )
 
 
-class MergeEntry:
+class MergeEntry:  # pylint: disable=R0902
     """Class to store the result of a merge."""
 
     def __init__(
