@@ -313,8 +313,12 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
                     result[merge_tool1].merge_state == MERGE_STATE.Merge_success
                     and result[merge_tool2].merge_state == MERGE_STATE.Merge_success
                 ):
-                    command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
-                        {result[merge_tool2].merge_path}"
+                    command = (
+                        "diff -x .git* -r "
+                        + result[merge_tool1].merge_path
+                        + " "
+                        + result[merge_tool2].merge_path
+                    )
                     process = subprocess.run(command.split(), capture_output=True)
                     status = process.returncode == 0
                     if not status:
