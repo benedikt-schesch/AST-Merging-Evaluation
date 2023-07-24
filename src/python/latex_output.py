@@ -44,6 +44,8 @@ def compute_trivial_merges(df: pd.DataFrame):
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
             trivial_merges.append(row)
+            if not row["gitmerge-ort"]:
+                print(row)
     return trivial_merges
 
 
