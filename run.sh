@@ -70,4 +70,4 @@ python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos
 # shellcheck disable=SC2086
 python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR" $flags
 
-python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR/plots"
+python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR"
