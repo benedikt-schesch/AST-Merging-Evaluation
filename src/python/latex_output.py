@@ -68,8 +68,8 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_csv", type=str, default="results-small/result.csv")
-    parser.add_argument("--output_path", type=str, default="results-small/plots")
+    parser.add_argument("--input_csv", type=str, default="results/result.csv")
+    parser.add_argument("--output_path", type=str, default="results/plots")
     args = parser.parse_args()
     output_path = args.output_path
     Path(output_path).mkdir(parents=True, exist_ok=True)
