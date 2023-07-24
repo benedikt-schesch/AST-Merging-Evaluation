@@ -57,7 +57,7 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
-	diff -r -U3 test/small-goal-files results-small -x merges -x .gitignore -x result.csv -x "plots*" -x table_run_time.tex -x .DS_Store
+	diff  -x merges -x .gitignore -x result.csv -x plots -x table_run_time.tex -x .DS_Store -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
