@@ -88,7 +88,7 @@ if __name__ == "__main__":
         result_df.drop(row.name, inplace=True)
     assert old_len - len(result_df) == len(trivial_merges)
 
-    result_df.to_csv(os.path.join(args.output_path, "..", "filtered_results.csv"))
+    result_df.to_csv(os.path.join(args.output_path, "..", "filtered_result.csv"))
 
     # figure 1 (stacked area)
     incorrect = []
