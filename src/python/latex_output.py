@@ -10,7 +10,6 @@ should be copied into tables/ of the latex project.
 """
 
 
-import sys
 import os
 import argparse
 from pathlib import Path
@@ -21,6 +20,7 @@ import pandas as pd
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
+import seaborn as sns
 
 MERGE_FAILURE_NAMES = [
     MERGE_STATE.Tests_exception.name,
@@ -54,13 +54,58 @@ def compute_inconsistent_merge_results(df: pd.DataFrame):
 
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
+
+def check_triangle_constraint(row):
+    """Check triangle constraint.
+    Args:
+        row: row of the dataframe
+    Returns:
+        True if the triangle constraint is broken, False otherwise
+    """
+    for idx1, mt1 in enumerate(MERGE_TOOL):
+        if row[mt1] in (
+            MERGE_STATE.Merge_failed.name,
+            MERGE_STATE.Merge_timedout.name,
+            MERGE_STATE.Merge_exception.name,
+        ):
+            continue
+        for idx2, mt2 in enumerate(MERGE_TOOL[idx1 + 1 :]):
+            if row[mt2] in (
+                MERGE_STATE.Merge_failed.name,
+                MERGE_STATE.Merge_timedout.name,
+                MERGE_STATE.Merge_exception.name,
+            ):
+                continue
+            for idx3, mt3 in enumerate(MERGE_TOOL[idx1 + idx2 + 2 :]):
+                if row[mt3] in (
+                    MERGE_STATE.Merge_failed.name,
+                    MERGE_STATE.Merge_timedout.name,
+                    MERGE_STATE.Merge_exception.name,
+                ):
+                    continue
+                name1 = f"Equivalent {mt1} {mt2}"
+                name2 = f"Equivalent {mt2} {mt3}"
+                name3 = f"Equivalent {mt1} {mt3}"
+                if name1 in row and name2 in row and name3 in row:
+                    if row[name1] and row[name2] and not row[name3]:
+                        return True
+                    if row[name1] and not row[name2] and row[name3]:
+                        return True
+                    if not row[name1] and row[name2] and row[name3]:
+                        return True
+    return False
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_csv", type=str, default="results/result.csv")
-    parser.add_argument("--output_path", type=str, default="results/plots")
+    parser.add_argument("--output_path", type=str, default="results")
     args = parser.parse_args()
     output_path = args.output_path
-    Path(output_path).mkdir(parents=True, exist_ok=True)
+    plots_output_path = os.path.join(output_path, "plots")
+    tables_output_path = os.path.join(output_path, "tables")
+    Path(plots_output_path).mkdir(parents=True, exist_ok=True)
+    Path(tables_output_path).mkdir(parents=True, exist_ok=True)
 
     # open results file
     result_df = pd.read_csv(args.input_csv, index_col="idx")
@@ -73,6 +118,51 @@ if __name__ == "__main__":
     for row in tqdm(inconsistent_merge_results):
         result_df.drop(row.name, inplace=True)
     assert old_len - len(result_df) == len(inconsistent_merge_results)
+
+    # Check triangle equalities
+    count = 0
+    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
+        count += check_triangle_constraint(row)
+    print("Number of triangle broken triangle equalities:", count)
+
+    # Figure (Heat Map diffing)
+    result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
+    for _, row in tqdm(result_df.iterrows()):
+        for idx, merge_tool1 in enumerate(MERGE_TOOL):
+            for idx2, merge_tool2 in enumerate(MERGE_TOOL[(idx + 1) :]):
+                if (
+                    not row[f"Equivalent {merge_tool1} {merge_tool2}"]
+                    and row[merge_tool1]
+                    not in (
+                        MERGE_STATE.Merge_failed.name,
+                        MERGE_STATE.Merge_timedout.name,
+                        MERGE_STATE.Merge_exception.name,
+                    )
+                    and row[merge_tool2]
+                    not in (
+                        MERGE_STATE.Merge_failed.name,
+                        MERGE_STATE.Merge_timedout.name,
+                        MERGE_STATE.Merge_exception.name,
+                    )
+                ):
+                    result[idx][idx2 + idx + 1] += 1
+                    result[idx2 + idx + 1][idx] += 1
+    fig, ax = plt.subplots()
+    result = np.tril(result)
+    latex_merge_tool = ["$" + i.capitalize() + "$" for i in MERGE_TOOL]
+    heatmap = sns.heatmap(
+        result,
+        annot=True,
+        ax=ax,
+        xticklabels=latex_merge_tool,
+        yticklabels=latex_merge_tool,
+        fmt="g",
+        mask=result == 0,
+        cmap="Blues",
+    )
+    heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
+    plt.tight_layout()
+    plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
 
     # figure 1 (stacked area)
     incorrect = []
@@ -113,7 +203,7 @@ if __name__ == "__main__":
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(reversed(handles), reversed(labels))
 
-    plt.savefig(os.path.join(output_path, "stacked.pdf"))
+    plt.savefig(os.path.join(plots_output_path, "stacked.pdf"))
 
     # Table 1 (overall results)
     table = """% Do not edit.  This file is automatically generated.
@@ -139,7 +229,7 @@ if __name__ == "__main__":
         table += f" & {incorrect[merge_tool_idx]} & {incorrect_percentage:.2f}\\%\\\\\n"
     table += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_summary.tex"), "w") as file:
+    with open(os.path.join(tables_output_path, "table_summary.tex"), "w") as file:
         file.write(table)
 
     # Printed Table
@@ -229,7 +319,9 @@ if __name__ == "__main__":
 
     table2 += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_feature_main_summary.tex"), "w") as file:
+    with open(
+        os.path.join(tables_output_path, "table_feature_main_summary.tex"), "w"
+    ) as file:
         file.write(table2)
 
     # Table 3 (Run-time)
@@ -247,5 +339,5 @@ if __name__ == "__main__":
         table3 += "\\\\\n"
     table3 += "\\end{tabular}\n"
 
-    with open(os.path.join(output_path, "table_run_time.tex"), "w") as file:
+    with open(os.path.join(tables_output_path, "table_run_time.tex"), "w") as file:
         file.write(table3)

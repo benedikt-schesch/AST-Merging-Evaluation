@@ -23,6 +23,7 @@ the repositories resulting from the merge_tool and merge_tool2.
 import subprocess
 import shutil
 import os
+import copy
 import time
 import multiprocessing
 import argparse
@@ -48,7 +49,7 @@ STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
-STORE_WORKDIR = False
+STORE_WORKDIR = True
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
@@ -82,19 +83,8 @@ MERGE_STATE = Enum(
 )
 
 
-class MergeEntry:
+class MergeEntry:  # pylint: disable=R0902
     """Class to store the result of a merge."""
-
-    merge_tool: str = ""
-    merge_state_cache_path: Path = Path("")
-    merge_path: str = ""
-    merge_state: MERGE_STATE = MERGE_STATE.Merge_running
-    merge_state_explanation_cache_path: Path = Path("")
-    explanation: str = ""
-    run_time: float = -1
-    explanation: str = ""
-    diff_merge_result: Dict[str, bool] = {}
-    diff_merge_result_cache_path: Dict[str, Path] = {}
 
     def __init__(
         self,
@@ -105,20 +95,43 @@ class MergeEntry:
     ):
         self.merge_tool = merge_tool
         self.merge_tools = merge_tools
+        self.explanation: str = ""
+        self.run_time = -1
         self.merge_state_cache_path = Path(
             cache_merge_status_prefix + merge_tool + ".txt"
         )
         self.merge_state_explanation_cache_path = Path(
             cache_merge_status_prefix + merge_tool + "_explanation.txt"
         )
+        self.merge_path: str = ""
+        self.merge_state: MERGE_STATE = MERGE_STATE.Merge_running
+        self.diff_merge_result: Dict[str, bool] = {}
+        self.diff_merge_result_cache_path: Dict[str, Path] = {}
+        self.diff_merge_explanation: Dict[str, str] = {}
         for merge_tool2 in merge_tools:
+            self.diff_merge_explanation[merge_tool2] = ""
             if merge_tool2 < merge_tool:
                 self.diff_merge_result_cache_path[merge_tool2] = Path(
                     cache_diff_status_prefix + merge_tool + "_" + merge_tool2 + ".txt"
                 )
+                self.diff_merge_explanation_cache_path = str(
+                    cache_diff_status_prefix
+                    + merge_tool
+                    + "_"
+                    + merge_tool2
+                    + "_explanation.txt"
+                )
+
             elif merge_tool2 > merge_tool:
                 self.diff_merge_result_cache_path[merge_tool2] = Path(
                     cache_diff_status_prefix + merge_tool2 + "_" + merge_tool + ".txt"
+                )
+                self.diff_merge_explanation_cache_path = str(
+                    cache_diff_status_prefix
+                    + merge_tool2
+                    + "_"
+                    + merge_tool
+                    + "_explanation.txt"
                 )
 
     def write_cache_merge_status(self):
@@ -153,6 +166,8 @@ class MergeEntry:
         """
         with open(self.diff_merge_result_cache_path[merge_tool], "w") as f:
             f.write(str(self.diff_merge_result[merge_tool]))
+        with open(self.diff_merge_explanation_cache_path, "w") as f:
+            f.write(self.diff_merge_explanation[merge_tool])
 
     def read_cache_diff_status(self, merge_tool: str):
         """Reads the result of the diff in the cache file.
@@ -166,6 +181,9 @@ class MergeEntry:
                 status = f.readline()
             status = status.strip() == "True"
             self.diff_merge_result[merge_tool] = status
+            if os.path.isfile(self.diff_merge_explanation_cache_path):
+                with open(self.diff_merge_explanation_cache_path, "r") as f:
+                    self.diff_merge_explanation[merge_tool] = "".join(f.readlines())
             return True
         return False
 
@@ -277,7 +295,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     cache_diff_status_prefix = os.path.join(
         cache_dir,
         "merge_diff_results",
-        "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
+        "_".join([repo_name.split("/")[1], left, right, merge, ""]),
     )
 
     result: Dict[str, MergeEntry] = {
@@ -307,19 +325,34 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     if check_diff:
         for merge_tool1 in merge_tools:
             for merge_tool2 in merge_tools:
-                if result[merge_tool1].read_cache_diff_status(merge_tool2):
+                if merge_tool1 == merge_tool2 or result[
+                    merge_tool1
+                ].read_cache_diff_status(merge_tool2):
                     continue
                 if (
                     result[merge_tool1].merge_state == MERGE_STATE.Merge_success
                     and result[merge_tool2].merge_state == MERGE_STATE.Merge_success
                 ):
-                    command = f"diff -x .git* -r {result[merge_tool1].merge_path}\
-                        {result[merge_tool2].merge_path}"
+                    command = (
+                        "diff -x .git* -r "
+                        + result[merge_tool1].merge_path
+                        + " "
+                        + result[merge_tool2].merge_path
+                    )
                     process = subprocess.run(command.split(), capture_output=True)
+                    result[merge_tool1].diff_merge_explanation[merge_tool2] = (
+                        "Running command: "
+                        + command
+                        + "\n STDOUT:\n"
+                        + process.stdout.decode("utf-8")
+                        + "\n STDERR:\n"
+                        + process.stderr.decode("utf-8")
+                    )
                     status = process.returncode == 0
-                    if not status:
-                        print(f"Diff {process.stdout} {process.stderr}")
                 else:
+                    result[merge_tool1].diff_merge_explanation[
+                        merge_tool2
+                    ] = "Merge failed for one of the merging methods."
                     status = False
                 result[merge_tool1].diff_merge_result[merge_tool2] = status
                 result[merge_tool1].write_cache_diff_status(merge_tool2)
@@ -377,9 +410,11 @@ if __name__ == "__main__":
     Path(SCRATCH_DIR).mkdir(parents=True, exist_ok=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--valid_repos_csv", type=str)
-    parser.add_argument("--merges_path", type=str)
-    parser.add_argument("--output_file", type=str)
+    parser.add_argument(
+        "--valid_repos_csv", type=str, default="results2/valid_repos.csv"
+    )
+    parser.add_argument("--merges_path", type=str, default="results2/merge_valid")
+    parser.add_argument("--output_file", type=str, default="results2")
     parser.add_argument("--cache_dir", type=str, default="cache/")
     # Check diff flag
     parser.add_argument("-diff", action="store_true")
