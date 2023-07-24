@@ -295,7 +295,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     cache_diff_status_prefix = os.path.join(
         cache_dir,
         "merge_diff_results",
-        "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
+        "_".join([repo_name.split("/")[1], left, right, merge, ""]),
     )
 
     result: Dict[str, MergeEntry] = {
@@ -456,7 +456,7 @@ if __name__ == "__main__":
                 )
             else:
                 for merge_tool in MERGE_TOOL:
-                    merge_and_test(
+                    args_merges.append(
                         (
                             repository_data["repository"],
                             merge_data["left"],
@@ -473,12 +473,12 @@ if __name__ == "__main__":
 
     print("merge_tester: Number of merges:", len(args_merges))
     print("merge_tester: Started Testing")
-    # cpu_count = os.cpu_count() or 1
-    # processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
-    # with multiprocessing.Pool(processes=processes_used) as pool:
-    #     r = list(
-    #         pool.imap(merge_and_test, tqdm(args_merges, total=len(args_merges))),
-    #     )
+    cpu_count = os.cpu_count() or 1
+    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
+    with multiprocessing.Pool(processes=processes_used) as pool:
+        r = list(
+            pool.imap(merge_and_test, tqdm(args_merges, total=len(args_merges))),
+        )
     print("merge_tester: Finished Testing")
     print("merge_tester: Building Output")
 
