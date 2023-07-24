@@ -10,7 +10,6 @@ should be copied into tables/ of the latex project.
 """
 
 
-import sys
 import os
 import argparse
 from pathlib import Path
@@ -32,6 +31,14 @@ MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_timedout.name,
     MERGE_STATE.Merge_exception.name,
 ]
+
+
+def compute_trivial_merges(df: pd.DataFrame):
+    trivial_merges = []
+    for _, row in tqdm(df.iterrows(), total=len(df)):
+        if row["left"] == row["base"] or row["right"] == row["base"]:
+            trivial_merges.append(row)
+    return trivial_merges
 
 
 def compute_inconsistent_merge_results(df: pd.DataFrame):
@@ -73,6 +80,15 @@ if __name__ == "__main__":
     for row in tqdm(inconsistent_merge_results):
         result_df.drop(row.name, inplace=True)
     assert old_len - len(result_df) == len(inconsistent_merge_results)
+
+    trivial_merges = compute_trivial_merges(result_df)
+    print("Number of trivial merges that will be ignored:", len(trivial_merges))
+    old_len = len(result_df)
+    for row in tqdm(trivial_merges):
+        result_df.drop(row.name, inplace=True)
+    assert old_len - len(result_df) == len(trivial_merges)
+
+    result_df.to_csv(os.path.join(args.output_path, "..", "filtered_results.csv"))
 
     # figure 1 (stacked area)
     incorrect = []
