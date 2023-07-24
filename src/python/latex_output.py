@@ -10,7 +10,6 @@ should be copied into tables/ of the latex project.
 """
 
 
-import sys
 import os
 import argparse
 from pathlib import Path
@@ -19,6 +18,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
+from functools import partial
 from prettytable import PrettyTable
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
@@ -112,13 +112,16 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     for idx, merge_tool in enumerate(MERGE_TOOL):
         results = []
-        for cost_factor in np.linspace(0, 10, 100):
+        for cost_factor in np.linspace(1, 20, 1000):
             score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
-            score = score / (10 * (unhandled[idx] + incorrect[idx] + correct[idx]))
+            score = score / (cost_factor * (unhandled[idx] + incorrect[idx] + correct[idx]))
             score = 1 - score
             results.append(score)
-        ax.plot(np.linspace(0, 10, 100), results, label=merge_tool)
-    plt.ylabel("Score")
+        line_style = [':','--','-.'][idx%3]
+        ax.plot(np.linspace(1, 20, 1000), 
+                results, 
+                label=merge_tool, 
+                linestyle=line_style)
     plt.xlabel("Incorrect merges cost factor")
     plt.legend()
     plt.savefig(os.path.join(output_path, "cost.pgf"))
