@@ -139,7 +139,7 @@ if __name__ == "__main__":
         result_df.drop(row.name, inplace=True)
     assert old_len - len(result_df) == len(trivial_merges)
 
-    result_df.to_csv(os.path.join(args.output_path, "..", "filtered_result.csv"))
+    result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
     # Check triangle equalities
     count = 0
     for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
