@@ -34,6 +34,11 @@ MERGE_UNHANDLED_NAMES = [
 
 
 def compute_trivial_merges(df: pd.DataFrame):
+    """Compute trivial merges. A trivial merge is a merge where the base branch
+    is the same as the left or right branch.
+    Args:
+        df: dataframe containing the merge results
+    """
     trivial_merges = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
