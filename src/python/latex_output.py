@@ -216,8 +216,8 @@ if __name__ == "__main__":
         )
     plt.xlabel("Incorrect merges cost factor")
     plt.legend()
-    plt.savefig(os.path.join(output_path, "cost.pgf"))
-    plt.savefig(os.path.join(output_path, "cost.pdf"))
+    plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
+    plt.savefig(os.path.join(output_path, "plots", "cost.pdf"))
     plt.close()
 
     # Table 1 (overall results)
