@@ -295,7 +295,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
     cache_diff_status_prefix = os.path.join(
         cache_dir,
         "merge_diff_results",
-        "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
+        "_".join([repo_name.split("/")[1], left, right, merge, ""]),
     )
 
     result: Dict[str, MergeEntry] = {
