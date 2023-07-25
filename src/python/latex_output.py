@@ -46,6 +46,7 @@ MERGE_UNHANDLED_NAMES = [
 ]
 DELETE_FAILED_TRIVIAL_MERGES = False
 
+
 def compute_trivial_merges(df: pd.DataFrame):
     """Compute trivial merges. A trivial merge is a merge where the base branch
     is the same as the left or right branch.
