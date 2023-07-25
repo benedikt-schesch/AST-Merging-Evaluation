@@ -35,6 +35,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - run: python --version
+    - name: Install PdfLaTeX
+      run: sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
