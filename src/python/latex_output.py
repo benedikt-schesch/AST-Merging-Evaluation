@@ -41,8 +41,8 @@ MERGE_FAILURE_NAMES = [
 
 MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_failed.name,
-    MERGE_STATE.Merge_timedout.name,
     MERGE_STATE.Merge_exception.name,
+    MERGE_STATE.Merge_timedout.name,
 ]
 
 
@@ -53,11 +53,23 @@ def compute_trivial_merges(df: pd.DataFrame):
         df: dataframe containing the merge results
     """
     trivial_merges = []
+    # return []
+    count = 0
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
             trivial_merges.append(row)
-            if not row["gitmerge-ort"]:
-                print(row)
+            for merge_tool in MERGE_TOOL:
+                if row[merge_tool] == MERGE_STATE.Tests_failed.name:
+                    cache_merge_status_prefix = os.path.join(
+                        "cache",
+                        "merge_test_results",
+                        "_".join([row["repo_name"].split("/")[1], row["left"], row["right"], row["base"], row["merge"], ""]),
+                    )
+                    cache_merges_status = cache_merge_status_prefix+merge_tool+".txt"
+                    if os.path.isfile(cache_merges_status):
+                        os.remove(cache_merges_status)
+                        count += 1
+    print(count)
     return trivial_merges
 
 

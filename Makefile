@@ -45,6 +45,10 @@ clean-stored-hashes:
 # This target deletes files that are committed to version control.
 clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 
+# Compresses the cache.
+compress-cache:
+	tar --exclude="*explanation.txt" -czf cache.tar cache
+
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
