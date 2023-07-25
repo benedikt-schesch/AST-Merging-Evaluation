@@ -44,7 +44,7 @@ MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_exception.name,
     MERGE_STATE.Merge_timedout.name,
 ]
-
+DELETE_FAILED_TRIVIAL_MERGES = False
 
 def compute_trivial_merges(df: pd.DataFrame):
     """Compute trivial merges. A trivial merge is a merge where the base branch
@@ -77,9 +77,11 @@ def compute_trivial_merges(df: pd.DataFrame):
                     cache_merges_status = (
                         cache_merge_status_prefix + merge_tool + ".txt"
                     )
-                    if os.path.isfile(cache_merges_status):
+                    count += 1
+                    if DELETE_FAILED_TRIVIAL_MERGES:
                         os.remove(cache_merges_status)
-                        count += 1
+                    else:
+                        break
     print(count)
     return trivial_merges
 
