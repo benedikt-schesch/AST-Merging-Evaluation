@@ -49,6 +49,10 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 compress-cache:
 	tar --exclude="*explanation.txt" -czf cache.tar cache
 
+# Decompresses the cache.
+decompress-cache:
+	tar -xzf cache.tar
+
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean

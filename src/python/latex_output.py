@@ -63,9 +63,20 @@ def compute_trivial_merges(df: pd.DataFrame):
                     cache_merge_status_prefix = os.path.join(
                         "cache",
                         "merge_test_results",
-                        "_".join([row["repo_name"].split("/")[1], row["left"], row["right"], row["base"], row["merge"], ""]),
+                        "_".join(
+                            [
+                                row["repo_name"].split("/")[1],
+                                row["left"],
+                                row["right"],
+                                row["base"],
+                                row["merge"],
+                                "",
+                            ]
+                        ),
                     )
-                    cache_merges_status = cache_merge_status_prefix+merge_tool+".txt"
+                    cache_merges_status = (
+                        cache_merge_status_prefix + merge_tool + ".txt"
+                    )
                     if os.path.isfile(cache_merges_status):
                         os.remove(cache_merges_status)
                         count += 1
