@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./gitmerge-ort.sh <clone_dir> <branch-1> <branch-2>
+# usage: ./gitmerge-meld.sh <clone_dir> <branch-1> <branch-2>
 
 MERGE_DIR="$(dirname "$0")"
 clone_dir=$1
