@@ -1,4 +1,14 @@
 """ Merges the cache files from two different caches.
+Usage:
+    python cache_merger.py --source_cache <source_cache> --target_cache <target_cache>
+        source_cache: path to the source cache folder
+        target_cache: path to the target cache folder
+
+The source cache will be merged into the target cache.
+The merge status of the target cache will be overwritten by the source cache if the 
+source cache has a stronger result. The merge status is ordered as follows:
+    Tests_passed > Tests_failed > Tests_exception > Tests_timedout > 
+    Merge_failed > Merge_exception > Merge_timedout
 """
 
 import os

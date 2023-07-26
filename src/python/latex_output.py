@@ -54,7 +54,6 @@ def compute_trivial_merges(df: pd.DataFrame):
         df: dataframe containing the merge results
     """
     trivial_merges = []
-    # return []
     count = 0
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
@@ -83,7 +82,7 @@ def compute_trivial_merges(df: pd.DataFrame):
                         os.remove(cache_merges_status)
                     else:
                         break
-    print(count)
+    print("Number of failed trivial merges:", count)
     return trivial_merges
 
 
