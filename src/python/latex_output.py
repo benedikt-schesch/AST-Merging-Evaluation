@@ -180,10 +180,10 @@ if __name__ == "__main__":
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
     # Check triangle equalities
-    # count = 0
-    # for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-    #     count += check_triangle_constraint(row)
-    # print("Number of broken triangle equalities in diffing:", count)
+    count = 0
+    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
+        count += check_triangle_constraint(row)
+    print("Number of broken triangle equalities in diffing:", count)
 
     # Figure (Heat Map diffing)
     result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
@@ -232,7 +232,11 @@ if __name__ == "__main__":
     plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
     plt.close()
-
+    with open(os.path.join(plots_output_path, "heatmap.pgf"), "rt") as f:
+        file_content = f.read()
+    file_content = file_content.replace('heatmap-img0.png','plots/heatmap-img0.png')
+    with open(os.path.join(plots_output_path, "heatmap.pgf"), "wt") as f:
+        f.write(file_content)
     # figure 1 (stacked area)
     incorrect = []
     correct = []
