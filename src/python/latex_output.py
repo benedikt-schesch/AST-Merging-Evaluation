@@ -188,11 +188,10 @@ if __name__ == "__main__":
     # Correct the path to the stored image in the pgf file.
     with open(os.path.join(plots_output_path, "heatmap.pgf"), "rt") as f:
         file_content = f.read()
-    file_content = file_content.replace('heatmap-img0.png','plots/heatmap-img0.png')
+    file_content = file_content.replace("heatmap-img0.png", "plots/heatmap-img0.png")
     with open(os.path.join(plots_output_path, "heatmap.pgf"), "wt") as f:
         f.write(file_content)
 
-    
     # figure 1 (stacked area)
     incorrect = []
     correct = []
