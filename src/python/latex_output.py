@@ -180,14 +180,14 @@ if __name__ == "__main__":
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
     # Check triangle equalities
-    count = 0
-    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-        count += check_triangle_constraint(row)
-    print("Number of broken triangle equalities in diffing:", count)
+    # count = 0
+    # for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
+    #     count += check_triangle_constraint(row)
+    # print("Number of broken triangle equalities in diffing:", count)
 
     # Figure (Heat Map diffing)
     result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
-    for _, row in tqdm(result_df.iterrows()):
+    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
         for idx, merge_tool1 in enumerate(MERGE_TOOL):
             for idx2, merge_tool2 in enumerate(MERGE_TOOL[(idx + 1) :]):
                 if (
@@ -207,13 +207,13 @@ if __name__ == "__main__":
                 ):
                     result[idx][idx2 + idx + 1] += 1
                     result[idx2 + idx + 1][idx] += 1
-    fig, ax = plt.subplots()
+    # fig, ax = plt.subplots()
     result = np.tril(result)
     latex_merge_tool = ["$" + i.capitalize() + "$" for i in MERGE_TOOL]
     heatmap = sns.heatmap(
         result,
         annot=True,
-        ax=ax,
+        # ax=ax,
         xticklabels=latex_merge_tool,
         yticklabels=latex_merge_tool,
         fmt="g",
@@ -221,8 +221,17 @@ if __name__ == "__main__":
         cmap="Blues",
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
+    # Rotate x labels by 45 degress
+    heatmap.set_xticklabels(
+        labels=heatmap.get_xticklabels(),
+        rotation=45,
+        ha="right",
+        rotation_mode="anchor",
+    )
     plt.tight_layout()
+    plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
+    plt.close()
 
     # figure 1 (stacked area)
     incorrect = []
@@ -263,6 +272,8 @@ if __name__ == "__main__":
             np.linspace(1, 20, 1000), results, label=merge_tool, linestyle=line_style
         )
     plt.xlabel("Incorrect merges cost factor")
+    plt.ylabel("Score")
+    plt.tight_layout()
     plt.legend()
     plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
     plt.savefig(os.path.join(output_path, "plots", "cost.pdf"))
