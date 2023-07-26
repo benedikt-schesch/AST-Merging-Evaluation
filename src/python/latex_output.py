@@ -132,14 +132,14 @@ if __name__ == "__main__":
     assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     # Check triangle equalities
-    # count = 0
-    # for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-    #     count += check_triangle_constraint(row)
-    # print("Number of triangle broken triangle equalities:", count)
+    count = 0
+    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
+        count += check_triangle_constraint(row)
+    print("Number of triangle broken triangle equalities:", count)
 
     # Figure (Heat Map diffing)
     result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
-    for _, row in tqdm(result_df.iterrows()):
+    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
         for idx, merge_tool1 in enumerate(MERGE_TOOL):
             for idx2, merge_tool2 in enumerate(MERGE_TOOL[(idx + 1) :]):
                 if (
