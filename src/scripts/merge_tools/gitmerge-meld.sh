@@ -10,7 +10,7 @@ git config mergetool.meld.useAutoMerge True
 "$MERGE_DIR"/gitmerge-ort.sh "$clone_dir" "$branch1" "$branch2"
 retVal=$?
 
-cd "$clone_dir"
+cd "$clone_dir" || exit 1
 git mergetool --tool=meld
 
 # report conflicts
@@ -18,7 +18,5 @@ if [ $retVal -ne 0 ]; then
     echo "Conflict"
     git merge --abort
 fi
-
-cd -
 
 exit $retVal
