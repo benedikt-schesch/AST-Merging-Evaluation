@@ -45,6 +45,15 @@ clean-stored-hashes:
 # This target deletes files that are committed to version control.
 clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 
+# Compresses the cache.
+compress-cache:
+	rm -r cache.tar
+	tar --exclude="*explanation.txt" -czf cache.tar cache
+
+# Decompresses the cache.
+decompress-cache:
+	tar -xzf cache.tar
+
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
@@ -57,7 +66,8 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
-	diff  -x merges -x .gitignore -x result.csv -x plots -x table_run_time.tex -x .DS_Store -r -U3 test/small-goal-files results-small
+	(cd results-small && cat filtered_result.csv | rev | cut -d, -f10-65 | rev > filtered_result-without-times.csv)
+	diff -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:

@@ -90,6 +90,14 @@ To execute the code on multiple machines in parallel create a machine list in `m
 ./run_multiple_machine.sh main machines.txt <project_path_on_machine>
 ```
 
+### Load the stored cache
+
+To decompress the cache run `make decompress-cache`.
+
+### Store the cache
+
+To store the cache `make compress-cache`.
+
 ### Clean Cache
 
 To clean the cache run `make clean-cache`.
@@ -142,15 +150,15 @@ To run style checking run `make style`.
 
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
+* input_data/ -> Input data, which is a list of repositories; see its README.md.
+
+### Uncommited Files
+
 * cache/ -> This folder is a cache for each computation. contains:
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
-
-* input_data/ -> Input data, which is a list of repositories; see its README.md.
-
-### Uncommited Files
 
 * test_cache/ -> This folder is a cache for each test computation. contains:
 
