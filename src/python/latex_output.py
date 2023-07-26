@@ -174,6 +174,7 @@ if __name__ == "__main__":
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
     plt.tight_layout()
+    plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
 
     # figure 1 (stacked area)
