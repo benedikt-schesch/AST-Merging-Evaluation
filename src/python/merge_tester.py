@@ -56,6 +56,7 @@ BRANCH_BASE_NAME = "___MERGE_TESTER"
 LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOL = [
+    "gitmerge-meld",
     "gitmerge-ort",
     "gitmerge-ort-ignorespace",
     "gitmerge-recursive-patience",
