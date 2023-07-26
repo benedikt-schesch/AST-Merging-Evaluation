@@ -174,7 +174,12 @@ if __name__ == "__main__":
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
     # Rotate x labels by 45 degress
-    heatmap.set_xticklabels(labels=heatmap.get_xticklabels(), rotation=45, ha='right', rotation_mode='anchor')
+    heatmap.set_xticklabels(
+        labels=heatmap.get_xticklabels(),
+        rotation=45,
+        ha="right",
+        rotation_mode="anchor",
+    )
     plt.tight_layout()
     plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
