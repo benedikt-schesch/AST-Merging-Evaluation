@@ -173,6 +173,7 @@ if __name__ == "__main__":
         cmap="Blues",
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
+    heatmap.set_xticklabels(labels=heatmap.get_xticklabels(), rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
@@ -217,6 +218,7 @@ if __name__ == "__main__":
         )
     plt.xlabel("Incorrect merges cost factor")
     plt.ylabel("Score")
+    plt.tight_layout()
     plt.legend()
     plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
     plt.savefig(os.path.join(output_path, "plots", "cost.pdf"))
