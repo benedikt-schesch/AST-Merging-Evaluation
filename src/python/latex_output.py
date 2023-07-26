@@ -79,7 +79,8 @@ def compute_trivial_merges(df: pd.DataFrame):
                     )
                     count += 1
                     if DELETE_FAILED_TRIVIAL_MERGES:
-                        os.remove(cache_merges_status)
+                        if os.path.exists(cache_merges_status):
+                            os.remove(cache_merges_status)
                     else:
                         break
     print("Number of failed trivial merges:", count)
