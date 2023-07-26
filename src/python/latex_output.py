@@ -107,47 +107,6 @@ def compute_inconsistent_merge_results(df: pd.DataFrame):
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 
-def check_triangle_constraint(row):
-    """Check triangle constraint.
-    Args:
-        row: row of the dataframe
-    Returns:
-        True if the triangle constraint is broken, False otherwise
-    """
-    for idx1, mt1 in enumerate(MERGE_TOOL):
-        if row[mt1] in (
-            MERGE_STATE.Merge_failed.name,
-            MERGE_STATE.Merge_timedout.name,
-            MERGE_STATE.Merge_exception.name,
-        ):
-            continue
-        for idx2, mt2 in enumerate(MERGE_TOOL[idx1 + 1 :]):
-            if row[mt2] in (
-                MERGE_STATE.Merge_failed.name,
-                MERGE_STATE.Merge_timedout.name,
-                MERGE_STATE.Merge_exception.name,
-            ):
-                continue
-            for idx3, mt3 in enumerate(MERGE_TOOL[idx1 + idx2 + 2 :]):
-                if row[mt3] in (
-                    MERGE_STATE.Merge_failed.name,
-                    MERGE_STATE.Merge_timedout.name,
-                    MERGE_STATE.Merge_exception.name,
-                ):
-                    continue
-                name1 = f"Equivalent {mt1} {mt2}"
-                name2 = f"Equivalent {mt2} {mt3}"
-                name3 = f"Equivalent {mt1} {mt3}"
-                if name1 in row and name2 in row and name3 in row:
-                    if row[name1] and row[name2] and not row[name3]:
-                        return True
-                    if row[name1] and not row[name2] and row[name3]:
-                        return True
-                    if not row[name1] and row[name2] and row[name3]:
-                        return True
-    return False
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_csv", type=str, default="results/result.csv")
@@ -179,11 +138,6 @@ if __name__ == "__main__":
     assert old_len - len(result_df) == len(trivial_merges)
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
-    # Check triangle equalities
-    count = 0
-    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-        count += check_triangle_constraint(row)
-    print("Number of broken triangle equalities in diffing:", count)
 
     # Figure (Heat Map diffing)
     result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
@@ -207,13 +161,13 @@ if __name__ == "__main__":
                 ):
                     result[idx][idx2 + idx + 1] += 1
                     result[idx2 + idx + 1][idx] += 1
-    # fig, ax = plt.subplots()
+    fig, ax = plt.subplots()
     result = np.tril(result)
     latex_merge_tool = ["$" + i.capitalize() + "$" for i in MERGE_TOOL]
     heatmap = sns.heatmap(
         result,
         annot=True,
-        # ax=ax,
+        ax=ax,
         xticklabels=latex_merge_tool,
         yticklabels=latex_merge_tool,
         fmt="g",
@@ -221,7 +175,6 @@ if __name__ == "__main__":
         cmap="Blues",
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
-    # Rotate x labels by 45 degress
     heatmap.set_xticklabels(
         labels=heatmap.get_xticklabels(),
         rotation=45,
@@ -232,11 +185,14 @@ if __name__ == "__main__":
     plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
     plt.close()
+    # Correct the path to the stored image in the pgf file.
     with open(os.path.join(plots_output_path, "heatmap.pgf"), "rt") as f:
         file_content = f.read()
     file_content = file_content.replace('heatmap-img0.png','plots/heatmap-img0.png')
     with open(os.path.join(plots_output_path, "heatmap.pgf"), "wt") as f:
         f.write(file_content)
+
+    
     # figure 1 (stacked area)
     incorrect = []
     correct = []
