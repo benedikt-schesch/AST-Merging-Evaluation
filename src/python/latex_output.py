@@ -132,10 +132,10 @@ if __name__ == "__main__":
     assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     # Check triangle equalities
-    count = 0
-    for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-        count += check_triangle_constraint(row)
-    print("Number of triangle broken triangle equalities:", count)
+    # count = 0
+    # for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
+    #     count += check_triangle_constraint(row)
+    # print("Number of triangle broken triangle equalities:", count)
 
     # Figure (Heat Map diffing)
     result = np.zeros((len(MERGE_TOOL), len(MERGE_TOOL)))
@@ -159,13 +159,13 @@ if __name__ == "__main__":
                 ):
                     result[idx][idx2 + idx + 1] += 1
                     result[idx2 + idx + 1][idx] += 1
-    fig, ax = plt.subplots()
+    # fig, ax = plt.subplots()
     result = np.tril(result)
     latex_merge_tool = ["$" + i.capitalize() + "$" for i in MERGE_TOOL]
     heatmap = sns.heatmap(
         result,
         annot=True,
-        ax=ax,
+        # ax=ax,
         xticklabels=latex_merge_tool,
         yticklabels=latex_merge_tool,
         fmt="g",
@@ -173,10 +173,12 @@ if __name__ == "__main__":
         cmap="Blues",
     )
     heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
-    heatmap.set_xticklabels(labels=heatmap.get_xticklabels(), rotation=45, ha="right")
+    # Rotate x labels by 45 degress
+    heatmap.set_xticklabels(labels=heatmap.get_xticklabels(), rotation=45, ha='right', rotation_mode='anchor')
     plt.tight_layout()
     plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
     plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
+    plt.close()
 
     # figure 1 (stacked area)
     incorrect = []
