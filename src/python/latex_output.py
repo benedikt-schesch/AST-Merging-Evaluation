@@ -216,6 +216,7 @@ if __name__ == "__main__":
             np.linspace(1, 20, 1000), results, label=merge_tool, linestyle=line_style
         )
     plt.xlabel("Incorrect merges cost factor")
+    plt.ylabel("Score")
     plt.legend()
     plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
     plt.savefig(os.path.join(output_path, "plots", "cost.pdf"))
