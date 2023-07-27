@@ -11,7 +11,7 @@ git config mergetool.meld.useAutoMerge True
 retVal=$?
 
 cd "$clone_dir" || exit 1
-git mergetool --tool=meld
+git mergetool --tool=meld --no-prompt
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
