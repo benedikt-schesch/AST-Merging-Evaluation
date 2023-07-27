@@ -63,7 +63,7 @@ MERGE_TOOL = [
     "gitmerge-recursive-histogram",
     "gitmerge-recursive-myers",
     "gitmerge-resolve",
-    "spork",
+    "git-hires-merge" "spork",
     "intellimerge",
 ]
 
