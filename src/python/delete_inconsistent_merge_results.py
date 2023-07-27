@@ -21,7 +21,7 @@ import pandas as pd
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
     arg_parser.add_argument("--results", type=str, default="results/result.csv")
-    arg_parser.add_argument("--cache_path", type=str, default="cache")
+    arg_parser.add_argument("--cache_path", type=str, default="cache/merge_test_results")
     args = arg_parser.parse_args()
 
     df = pd.read_csv(args.results)
