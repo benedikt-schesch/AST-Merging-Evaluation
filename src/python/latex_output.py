@@ -218,22 +218,28 @@ if __name__ == "__main__":
         )
 
     # Cost plot
+    MAX_COST = 60
     fig, ax = plt.subplots()
     for idx, merge_tool in enumerate(MERGE_TOOL):
         results = []
-        for cost_factor in np.linspace(1, 20, 1000):
+        for cost_factor in np.linspace(1, MAX_COST, 1000):
             score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
             score = score / (
-                cost_factor * (unhandled[idx] + incorrect[idx] + correct[idx])
+                (unhandled[idx] + incorrect[idx] + correct[idx])
             )
             score = 1 - score
             results.append(score)
         line_style = [":", "--", "-."][idx % 3]
         ax.plot(
-            np.linspace(1, 20, 1000), results, label=merge_tool, linestyle=line_style
+            np.linspace(1, MAX_COST, 1000), results, label=merge_tool, linestyle=line_style
         )
+
+    # Manual merges
+    ax.plot(
+        np.linspace(1, MAX_COST, 1000), np.zeros(1000), label="Manual Merges", color="red"
+    )
     plt.xlabel("Incorrect merges cost factor")
-    plt.ylabel("Score")
+    plt.ylabel("$Merge\_Score$")
     plt.tight_layout()
     plt.legend()
     plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
