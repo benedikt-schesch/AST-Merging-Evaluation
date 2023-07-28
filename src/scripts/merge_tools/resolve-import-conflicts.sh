@@ -18,7 +18,7 @@ SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 status=0
 
 for file in "${files[@]}" ; do
-  if ! "${SCRIPTDIR}"/resolve-import-conflicts-in-file.sh "$file" ; then
+  if ! "${SCRIPTDIR}"/resolve-import-conflicts-in-file.py "$file" ; then
     status=1
   fi
 done
