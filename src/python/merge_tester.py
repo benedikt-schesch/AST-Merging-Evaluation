@@ -58,6 +58,8 @@ RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOL = [
     "gitmerge-ort",
     "gitmerge-ort-ignorespace",
+    "gitmerge-ort-imports",
+    "gitmerge-ort-imports-ignorespace",
     "gitmerge-recursive-patience",
     "gitmerge-recursive-minimal",
     "gitmerge-recursive-histogram",

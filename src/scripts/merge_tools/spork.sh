@@ -10,7 +10,7 @@ set -e
 set -o nounset
 
 if [ "$#" -ne 3 ]; then
-  echo "Usage: $0 MERGE_DIR BRANCH1 BRANCH2" >&2
+  echo "Usage: $0 MERGE_SCRIPTS_DIR BRANCH1 BRANCH2" >&2
   exit 1
 fi
 
