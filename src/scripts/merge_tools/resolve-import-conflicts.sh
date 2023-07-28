@@ -6,6 +6,7 @@
 
 # This is not a git mergetool.  A git mergetool is given the base, parent 1, and
 # parent 2 files, all without conflict markers.
+# However, this can be run instead of a git mergetool, or after a git mergetool.
 
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
