@@ -12,11 +12,8 @@ git checkout "$branch1" --force
 
 export GIT_HIRES_MERGE_NON_INTERACTIVE_MODE=True
 attributes_file=".git/info/attributes"
-if [ -e "$attributes_file" ]; then
-    echo "* merge=git-hires-merge" >> "$attributes_file"
-else
-    echo "* merge=git-hires-merge" > "$attributes_file"
-fi
+echo "* merge=git-hires-merge" >> "$attributes_file"
+
 
 git merge --no-edit "$branch2" 
 retVal=$?
