@@ -134,11 +134,7 @@ if __name__ == "__main__":
     assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     trivial_merges = compute_trivial_merges(result_df)
-    print("Number of trivial merges that will be ignored:", len(trivial_merges))
-    old_len = len(result_df)
-    for row in tqdm(trivial_merges):
-        result_df.drop(row.name, inplace=True)
-    assert old_len - len(result_df) == len(trivial_merges)
+    print("Number of trivial merges:", len(trivial_merges))
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 

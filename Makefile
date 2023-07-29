@@ -54,6 +54,12 @@ compress-cache:
 decompress-cache:
 	tar -xzf cache.tar
 
+# Copy tables and plots to the paper.
+copy-paper:
+	rm -rf ../AST-Merging-Evaluation-Paper/tables ../AST-Merging-Evaluation-Paper/plots
+	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
+	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
+
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
