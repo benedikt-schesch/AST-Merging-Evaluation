@@ -207,7 +207,7 @@ if __name__ == "__main__":
         correct = []
         unhandled = []
         failure = []
-        for merge_tool in merge_tools:
+        for merge_tool in MERGE_TOOL:
             merge_tool_status = result_df[merge_tool]
             correct.append(
                 sum(val == MERGE_STATE.Tests_passed.name for val in merge_tool_status)
@@ -227,30 +227,45 @@ if __name__ == "__main__":
                 == incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1]
             )
 
-        # Cost plot
+        # Cost plot 1
+        MAX_COST = 60
         fig, ax = plt.subplots()
-        for idx, merge_tool in enumerate(merge_tools):
+        for idx, merge_tool in enumerate(MERGE_TOOL):
             results = []
-            for cost_factor in np.linspace(1, 20, 1000):
+            for cost_factor in np.linspace(1, MAX_COST, 1000):
                 score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
-                score = score / (
-                    cost_factor * (unhandled[idx] + incorrect[idx] + correct[idx])
-                )
+                score = score / ((unhandled[idx] + incorrect[idx] + correct[idx]))
                 score = 1 - score
                 results.append(score)
             line_style = [":", "--", "-."][idx % 3]
             ax.plot(
-                np.linspace(1, 20, 1000),
+                np.linspace(1, MAX_COST, 1000),
                 results,
                 label=merge_tool,
                 linestyle=line_style,
             )
         plt.xlabel("Incorrect merges cost factor")
-        plt.ylabel("Score")
-        plt.tight_layout()
+        plt.ylabel("$Merge\_Score$")
+        plt.xlim(0, 20)
+        plt.ylim(0.3, 0.9)
         plt.legend()
-        plt.savefig(os.path.join(plots_output_path, "cost.pgf"))
-        plt.savefig(os.path.join(plots_output_path, "cost.pdf"))
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
+        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pdf"))
+
+        # Plot with manual merges
+        line = ax.plot(
+            np.linspace(1, MAX_COST, 1000),
+            np.zeros(1000),
+            label="Manual Merges",
+            color="red",
+        )
+        plt.xlim(0, MAX_COST)
+        plt.ylim(-0.75, 0.9)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pgf"))
+        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pdf"))
         plt.close()
 
         # Table 1 (overall results)
