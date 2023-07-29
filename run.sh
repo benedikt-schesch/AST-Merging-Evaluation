@@ -40,7 +40,7 @@ done
 
 if ! command -v  git-hires-merge &> /dev/null
 then
-    echo "Git hires merge is not on could not be found"
+    echo "Git hires merge could not be found"
     echo "Run: export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH"
     echo "Alternatively, you can run: echo 'export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH' >> ~/.bashrc"
     exit 1
