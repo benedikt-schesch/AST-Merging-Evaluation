@@ -412,10 +412,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--valid_repos_csv", type=str, default="results2/valid_repos.csv"
+        "--valid_repos_csv", type=str, default="results/valid_repos.csv"
     )
-    parser.add_argument("--merges_path", type=str, default="results2/merge_valid")
-    parser.add_argument("--output_file", type=str, default="results2")
+    parser.add_argument("--merges_path", type=str, default="results/merge_valid")
+    parser.add_argument("--output_file", type=str, default="results")
     parser.add_argument("--cache_dir", type=str, default="cache/")
     # Check diff flag
     parser.add_argument("-diff", action="store_true")
