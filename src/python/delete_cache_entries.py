@@ -33,6 +33,8 @@ if __name__ == "__main__":
             continue
         path = path[:-4]
         status, run_time = read_cache_merge_status(Path(path + ".txt"))
+        if "gitmerge-meld" not in path:
+            continue
         if status in STATE_TO_DELETE:
             files_to_delete.append(path)
 
