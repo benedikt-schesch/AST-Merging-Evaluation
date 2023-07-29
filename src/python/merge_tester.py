@@ -49,7 +49,7 @@ STORE_SCRATCH = False
 WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
-STORE_WORKDIR = True
+STORE_WORKDIR = False
 TIMEOUT_MERGE = 15 * 60  # 15 Minutes
 TIMEOUT_TESTING = 45 * 60  # 45 Minutes
 BRANCH_BASE_NAME = "___MERGE_TESTER"
@@ -412,10 +412,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--valid_repos_csv", type=str, default="results2/valid_repos.csv"
+        "--valid_repos_csv", type=str, default="results/valid_repos.csv"
     )
-    parser.add_argument("--merges_path", type=str, default="results2/merge_valid")
-    parser.add_argument("--output_file", type=str, default="results2")
+    parser.add_argument("--merges_path", type=str, default="results/merge_valid")
+    parser.add_argument("--output_file", type=str, default="results")
     parser.add_argument("--cache_dir", type=str, default="cache/")
     # Check diff flag
     parser.add_argument("-diff", action="store_true")
