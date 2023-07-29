@@ -227,7 +227,7 @@ if __name__ == "__main__":
                 == incorrect[-1] + correct[-1] + unhandled[-1] + failure[-1]
             )
 
-        # Cost plot
+        # Cost plot 1
         MAX_COST = 60
         fig, ax = plt.subplots()
         for idx, merge_tool in enumerate(MERGE_TOOL):
@@ -244,20 +244,28 @@ if __name__ == "__main__":
                 label=merge_tool,
                 linestyle=line_style,
             )
+        plt.xlabel("Incorrect merges cost factor")
+        plt.ylabel("$Merge\_Score$")
+        plt.xlim(0, 20)
+        plt.ylim(0.3, 0.9)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
+        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pdf"))
 
-        # Manual merges
-        ax.plot(
+        # Plot with manual merges
+        line = ax.plot(
             np.linspace(1, MAX_COST, 1000),
             np.zeros(1000),
             label="Manual Merges",
             color="red",
         )
-        plt.xlabel("Incorrect merges cost factor")
-        plt.ylabel("$Merge\_Score$")
-        plt.tight_layout()
+        plt.xlim(0, MAX_COST)
+        plt.ylim(-0.75, 0.9)
         plt.legend()
-        plt.savefig(os.path.join(output_path, "plots", "cost.pgf"))
-        plt.savefig(os.path.join(output_path, "plots", "cost.pdf"))
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pgf"))
+        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pdf"))
         plt.close()
 
         # Cost plot
