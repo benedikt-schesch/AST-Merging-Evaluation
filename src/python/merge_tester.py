@@ -46,6 +46,7 @@ SCRATCH_DIR = "scratch/"
 # If true, the merged repository under SCRATCH_DIR will be retained.
 # Otherwise, it is deleted after its tests are run.
 STORE_SCRATCH = False
+STORE_SCRATCH = True
 WORKDIR = ".workdir/"
 # If true, the working directories in WORKDIR will be retained.
 # Otherwise, it is deleted after its tests are run.
