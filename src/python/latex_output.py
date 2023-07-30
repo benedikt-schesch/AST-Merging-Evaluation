@@ -424,7 +424,7 @@ if __name__ == "__main__":
             table2 += f" & {incorrect_main:5} & {round(incorrect_main_percentage):3}\\%"
             table2 += (
                 f" & {incorrect_feature:5}"
-                + f" & {round(incorrect_feature_percentage):3}\\% \\\\ \n"
+                + f" & {round(incorrect_feature_percentage):3}\\% \\\\\n"
             )
 
         table2 += "\\end{tabular}\n"
