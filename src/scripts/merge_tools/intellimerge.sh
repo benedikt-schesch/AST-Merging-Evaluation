@@ -14,10 +14,10 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"
-ROOT_PATH="$(realpath "${SCRIPT_PATH}/../../../")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+ROOT_DIR="$(realpath "${SCRIPT_DIR}/../../../")"
 intellimerge_relativepath=jars/IntelliMerge-1.0.9-all.jar
-intellimerge_absolutepath="${ROOT_PATH}/${intellimerge_relativepath}"
+intellimerge_absolutepath="${ROOT_DIR}/${intellimerge_relativepath}"
 
 clone_dir=$1
 branch1=$2
