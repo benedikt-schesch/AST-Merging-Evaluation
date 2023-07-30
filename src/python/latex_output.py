@@ -397,9 +397,7 @@ if __name__ == "__main__":
             incorrect_main_percentage = (
                 100 * incorrect_main / len(main) if len(main) != 0 else 0
             )
-            incorrect_feature = sum(
-                val in MERGE_INCORRECT_NAMES for val in mergef
-            )
+            incorrect_feature = sum(val in MERGE_INCORRECT_NAMES for val in mergef)
             incorrect_feature_percentage = (
                 100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
             )
