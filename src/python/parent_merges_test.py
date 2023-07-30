@@ -6,7 +6,7 @@ usage: python3 parent_merges_test.py --repos_csv <path_to_repos.csv>
                                      --output_dir <output_directory>
                                      --n_merges <max_number_of_merges>
 
-This script takes a list of repositories and a path merges_path which contains a list of merges for 
+This script takes a list of repositories and a path merges_path which contains a list of merges for
 each repository. The script verifies that the two parents of each merge has parents that pass tests.
 It subsamples n_merges of merges that have passing parents for each repository.
 The output is produced in <output_directory>.
