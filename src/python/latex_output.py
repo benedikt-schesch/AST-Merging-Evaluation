@@ -32,6 +32,7 @@ import matplotlib
 import pandas as pd
 from prettytable import PrettyTable
 from parent_merges_test import TIMEOUT_TESTING
+from merge_tester import TIMEOUT_TESTING as TIMEOUT_TESTING_MERGE
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 import seaborn as sns
@@ -455,6 +456,7 @@ if __name__ == "__main__":
     df = pd.read_csv(args.full_repos_csv)
     output = add_def("reposInitial", len(df))
     output += add_def("parentTestTimeout", str(TIMEOUT_TESTING // 60))
+    output += add_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
     df = pd.read_csv(args.valid_repos_csv)
     output += add_def("reposValid", len(df))
     output += add_def("mergesPer", args.n_merges)
