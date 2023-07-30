@@ -6,7 +6,7 @@ usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
                                --output_path <output_path>
 
 This script takes a csv of repos and a csv of merges and performs the merges with
-the different merging tools. The input repositories should contain a repo_name 
+the different merging tools. The input repositories should contain a repo_name
 column in format "ORGANIZATION/REPO". The merges csv should contain the following
 columns: "left", "right", "base", "merge", "parent test". The "parent test" column
 should contain the result of the test of the parent merge. The script will then

@@ -7,7 +7,7 @@
 
 set -o nounset
 
-# Test side effects can be seen in the /tmp directory. 
+# Test side effects can be seen in the /tmp directory.
 # We delete all the files older than 2h and owned by the current user.
 find /tmp -maxdepth 1 -user "$(whoami)" -mmin +120 -exec rm -rf {} \;
 
@@ -56,5 +56,5 @@ do
     echo "Test failure: ${command}"
   fi
 done
-echo 
+echo
 exit 1
