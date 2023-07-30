@@ -9,7 +9,7 @@
 # <num_machine> optional argument to specify the total number of machines used.
 # <diff> optional argument to specify whether to diff the merges.
 # Runs the stack.
-# The output appears in <output_folder> .
+# The output appears in <output_folder>.
 
 
 set -e
@@ -58,16 +58,45 @@ REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
 
 mkdir -p "$OUT_DIR"
 
-python3 src/python/write_head_hashes.py --repos_csv "$REPOS_CSV" --output_path "$REPOS_CSV_WITH_HASHES"
+python3 src/python/write_head_hashes.py \
+    --repos_csv "$REPOS_CSV" \
+    --output_path "$REPOS_CSV_WITH_HASHES"
 
-python3 src/python/split_repos.py --repos_csv "$REPOS_CSV_WITH_HASHES" --machine_id "$machine_id" --num_machines "$num_machines" --output_file "$OUT_DIR/local_repos.csv"
+python3 src/python/split_repos.py \
+    --repos_csv "$REPOS_CSV_WITH_HASHES" \
+    --machine_id "$machine_id" \
+    --num_machines "$num_machines" \
+    --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/validate_repos.py --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" --output_path "$OUT_DIR/valid_repos.csv" --cache_dir "$CACHE_DIR/test_result"
+python3 src/python/validate_repos.py \
+    --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
+    --output_path "$OUT_DIR/valid_repos.csv" \
+    --cache_dir "$CACHE_DIR/test_result"
 
-java -cp build/libs/astmergeevaluation-all.jar astmergeevaluation.FindMergeCommits "$OUT_DIR/valid_repos.csv" "$OUT_DIR/merges"
+java -cp build/libs/astmergeevaluation-all.jar \
+    astmergeevaluation.FindMergeCommits \
+    "$OUT_DIR/valid_repos.csv" \
+    "$OUT_DIR/merges"
 
-python3 src/python/parent_merges_test.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges/" --output_dir "$OUT_DIR/merges_valid/" --n_merges "$N_MERGES" --cache_dir "$CACHE_DIR/test_result"
+python3 src/python/parent_merges_test.py \
+    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --merges_path "$OUT_DIR/merges/" \
+    --output_dir "$OUT_DIR/merges_valid/" \
+    --n_merges "$N_MERGES" \
+    --cache_dir "$CACHE_DIR/test_result"
+
 # shellcheck disable=SC2086
-python3 src/python/merge_tester.py --valid_repos_csv "$OUT_DIR/valid_repos.csv" --merges_path "$OUT_DIR/merges_valid/" --output_file "$OUT_DIR/result.csv" --cache_dir "$CACHE_DIR" $flags
+python3 src/python/merge_tester.py \
+    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --merges_path "$OUT_DIR/merges_valid/" \
+    --output_file "$OUT_DIR/result.csv" \
+    --cache_dir "$CACHE_DIR" $flags
 
-python3 src/python/latex_output.py --input_csv "$OUT_DIR/result.csv" --output_path "$OUT_DIR"
+python3 src/python/latex_output.py \
+    --full_repos_csv "$REPOS_CSV" \
+    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --n_merges "$N_MERGES" \
+    --result_csv "$OUT_DIR/result.csv" \
+    --merges_path "$OUT_DIR/merges/" \
+    --merges_valid_path "$OUT_DIR/merges_valid/" \
+    --output_path "$OUT_DIR"
