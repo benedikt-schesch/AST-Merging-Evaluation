@@ -396,6 +396,7 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             )
             if os.path.isdir(repo_dir_copy_merging_method):
                 shutil.copytree(repo_dir_copy_merging_method, dst_name)
+                print(f"Copied {repo_dir_copy_merging_method} to {dst_name}")
         print(
             f"Writing Testing Merge {repo_name} {left} \
                 {right} {merging_method} result: {result[merging_method].merge_state}"
