@@ -288,12 +288,14 @@ if __name__ == "__main__":
             incorrect_percentage = (
                 100 * incorrect[merge_tool_idx] / total if total != 0 else 0
             )
-            table += f"{merge_tool.capitalize()}"
-            table += f" & {correct[merge_tool_idx]} & {round(correct_percentage)}\\%"
+            table += f"{merge_tool.capitalize():30}"
             table += (
-                f" & {unhandled[merge_tool_idx]} & {round(unhandled_percentage)}\\%"
+                f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
             )
-            table += f" & {incorrect[merge_tool_idx]} & {round(incorrect_percentage)}\\%\\\\\n"
+            table += (
+                f" & {unhandled[merge_tool_idx]:5} & {round(unhandled_percentage):3}\\%"
+            )
+            table += f" & {incorrect[merge_tool_idx]:5} & {round(incorrect_percentage):3}\\%\\\\\n"
         table += "\\end{tabular}\n"
 
         with open(os.path.join(tables_output_path, "table_summary.tex"), "w") as file:
@@ -378,13 +380,20 @@ if __name__ == "__main__":
                 100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
             )
 
-            table2 += f"            {merge_tool.capitalize():20}"
-            table2 += f" & {correct_main} & {correct_main_percentage:0.0f}\\%"
-            table2 += f" & {correct_feature} & {correct_feature_percentage:0.0f}\\%"
-            table2 += f" & {unhandled_main} & {unhandled_main_percentage:0.0f}\\%"
-            table2 += f" & {unhandled_feature} & {unhandled_feature_percentage:0.0f}\\%"
-            table2 += f" & {incorrect_main} & {incorrect_main_percentage:0.0f}\\%"
-            table2 += f" & {incorrect_feature} & {incorrect_feature_percentage:0.0f}\\%\\\\ \n"
+            table2 += f"            {merge_tool.capitalize():30}"
+            table2 += f" & {correct_main:5} & {round(correct_main_percentage):3}\\%"
+            table2 += (
+                f" & {correct_feature:5} & {round(correct_feature_percentage):3}\\%"
+            )
+            table2 += f" & {unhandled_main:5} & {round(unhandled_main_percentage):3}\\%"
+            table2 += (
+                f" & {unhandled_feature:5} & {round(unhandled_feature_percentage):3}\\%"
+            )
+            table2 += f" & {incorrect_main:5} & {round(incorrect_main_percentage):3}\\%"
+            table2 += (
+                f" & {incorrect_feature:5}"
+                + f" & {round(incorrect_feature_percentage):3}\\%\\\\ \n"
+            )
 
         table2 += "\\end{tabular}\n"
 
@@ -401,10 +410,10 @@ if __name__ == "__main__":
 
         args = []
         for merge_tool in merge_tools:
-            table3 += f"    {merge_tool.capitalize()}"
+            table3 += f"    {merge_tool.capitalize():30}"
             for f in [np.mean, np.median, np.max]:
                 run_time = f(result_df[merge_tool + " run_time"])
-                table3 += f" & {round(run_time)}"
+                table3 += f" & {round(run_time):5}"
             table3 += "\\\\\n"
         table3 += "\\end{tabular}\n"
 
