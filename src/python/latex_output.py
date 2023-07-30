@@ -75,7 +75,7 @@ MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_exception.name,
     MERGE_STATE.Merge_timedout.name,
 ]
-DELETE_FAILED_TRIVIAL_MERGES = False
+DELETE_FAILED_TRIVIAL_MERGES = True
 
 
 def compute_trivial_merges(df: pd.DataFrame):
