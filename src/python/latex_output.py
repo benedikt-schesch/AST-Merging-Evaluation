@@ -370,8 +370,8 @@ if __name__ == "__main__":
             \\multicolumn{2}{c|}{Feature Branch} &
             \\multicolumn{2}{|c}{Main Branch} & 
             \\multicolumn{2}{c|}{Feature Branch} \\\\
-            \\hline
-            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\ \n"""
+            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\
+            \\hline\n"""
 
         main = result_df[result_df["branch_name"].isin(main_branch_names)]
         feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
