@@ -134,11 +134,7 @@ if __name__ == "__main__":
     assert old_len - len(result_df) == len(inconsistent_merge_results)
 
     trivial_merges = compute_trivial_merges(result_df)
-    print("Number of trivial merges that will be ignored:", len(trivial_merges))
-    old_len = len(result_df)
-    for row in tqdm(trivial_merges):
-        result_df.drop(row.name, inplace=True)
-    assert old_len - len(result_df) == len(trivial_merges)
+    print("Number of trivial merges:", len(trivial_merges))
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
@@ -228,7 +224,7 @@ if __name__ == "__main__":
             )
 
         # Cost plot 1
-        MAX_COST = 60
+        MAX_COST = 95
         fig, ax = plt.subplots()
         for idx, merge_tool in enumerate(MERGE_TOOL):
             results = []
@@ -247,7 +243,7 @@ if __name__ == "__main__":
         plt.xlabel("Incorrect merges cost factor")
         plt.ylabel("$Merge\_Score$")
         plt.xlim(0, 20)
-        plt.ylim(0.3, 0.9)
+        plt.ylim(0.65, 0.95)
         plt.legend()
         plt.tight_layout()
         plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
@@ -261,7 +257,7 @@ if __name__ == "__main__":
             color="red",
         )
         plt.xlim(0, MAX_COST)
-        plt.ylim(-0.75, 0.9)
+        plt.ylim(-0.1, 1.0)
         plt.legend()
         plt.tight_layout()
         plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pgf"))

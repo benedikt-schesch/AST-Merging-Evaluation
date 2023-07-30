@@ -4,6 +4,9 @@ style: shell-script-style python-style java-style
 
 SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+# rwildcard = "recursive wildcard"
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+PYTHON_FILES=$(call rwildcard,.,*.py)
 
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
@@ -12,8 +15,8 @@ shell-script-style:
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
+	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
-PYTHON_FILES=$(wildcard src/python/*.py)
 python-style:
 	black ${PYTHON_FILES}
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
@@ -53,6 +56,12 @@ compress-cache:
 # Decompresses the cache.
 decompress-cache:
 	tar -xzf cache.tar
+
+# Copy tables and plots to the paper.
+copy-paper:
+	rm -rf ../AST-Merging-Evaluation-Paper/tables ../AST-Merging-Evaluation-Paper/plots
+	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
+	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
