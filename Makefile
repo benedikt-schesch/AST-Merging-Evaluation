@@ -62,6 +62,7 @@ copy-paper:
 	rm -rf ../AST-Merging-Evaluation-Paper/tables ../AST-Merging-Evaluation-Paper/plots
 	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
 	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
+	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
 
 # As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
 small-test:
@@ -76,7 +77,7 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
 	(cd results-small && cat filtered_result.csv | rev | cut -d, -f10-65 | rev > filtered_result-without-times.csv)
-	diff -x tools -x git -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -r -U3 test/small-goal-files results-small
+	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:
