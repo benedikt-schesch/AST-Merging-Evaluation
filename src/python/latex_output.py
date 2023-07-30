@@ -284,7 +284,7 @@ if __name__ == "__main__":
             incorrect_percentage = (
                 100 * incorrect[merge_tool_idx] / total if total != 0 else 0
             )
-            table += f"{merge_tool.capitalize():30}"
+            table += f"{merge_tool.capitalize():32}"
             table += (
                 f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
             )
@@ -376,7 +376,7 @@ if __name__ == "__main__":
                 100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
             )
 
-            table2 += f"            {merge_tool.capitalize():30}"
+            table2 += f"            {merge_tool.capitalize():32}"
             table2 += f" & {correct_main:5} & {round(correct_main_percentage):3}\\%"
             table2 += (
                 f" & {correct_feature:5} & {round(correct_feature_percentage):3}\\%"
@@ -406,7 +406,7 @@ if __name__ == "__main__":
 
         args = []
         for merge_tool in merge_tools:
-            table3 += f"    {merge_tool.capitalize():30}"
+            table3 += f"    {merge_tool.capitalize():32}"
             for f in [np.mean, np.median, np.max]:
                 run_time = f(result_df[merge_tool + " run_time"])
                 table3 += f" & {round(run_time):5}"
