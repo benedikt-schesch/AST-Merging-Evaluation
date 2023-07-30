@@ -67,8 +67,13 @@ PLOTS = {
 
 MERGE_FAILURE_NAMES = [
     MERGE_STATE.Tests_exception.name,
+]
+
+MERGE_INCORRECT_NAMES = [
+    MERGE_STATE.Tests_failed.name,
     MERGE_STATE.Tests_timedout.name,
 ]
+
 
 MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_failed.name,
@@ -161,13 +166,9 @@ if __name__ == "__main__":
     old_len = len(result_df)
     inconsistent_merge_results = compute_inconsistent_merge_results(result_df)
     print(
-        "Number of inconsistent entries that will be ignored:",
+        "Number of inconsistent entries:",
         len(inconsistent_merge_results),
     )
-    for row in tqdm(inconsistent_merge_results):
-        result_df.drop(row.name, inplace=True)
-    assert old_len - len(result_df) == len(inconsistent_merge_results)
-
     trivial_merges = compute_trivial_merges(result_df)
     print("Number of trivial merges:", len(trivial_merges))
 
@@ -238,13 +239,13 @@ if __name__ == "__main__":
         correct = []
         unhandled = []
         failure = []
-        for merge_tool in MERGE_TOOL:
+        for merge_tool in merge_tools:
             merge_tool_status = result_df[merge_tool]
             correct.append(
                 sum(val == MERGE_STATE.Tests_passed.name for val in merge_tool_status)
             )
             incorrect.append(
-                sum(val == MERGE_STATE.Tests_failed.name for val in merge_tool_status)
+                sum(val in MERGE_INCORRECT_NAMES for val in merge_tool_status)
             )
             unhandled.append(
                 sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status)
@@ -259,9 +260,9 @@ if __name__ == "__main__":
             )
 
         # Cost plot 1
-        MAX_COST = 95
+        MAX_COST = 70
         fig, ax = plt.subplots()
-        for idx, merge_tool in enumerate(MERGE_TOOL):
+        for idx, merge_tool in enumerate(merge_tools):
             results = []
             for cost_factor in np.linspace(1, MAX_COST, 1000):
                 score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
@@ -392,12 +393,12 @@ if __name__ == "__main__":
                 100 * correct_feature / len(feature) if len(feature) > 0 else -1
             )
 
-            incorrect_main = sum(val == MERGE_STATE.Tests_failed.name for val in mergem)
+            incorrect_main = sum(val in MERGE_INCORRECT_NAMES for val in mergem)
             incorrect_main_percentage = (
                 100 * incorrect_main / len(main) if len(main) != 0 else 0
             )
             incorrect_feature = sum(
-                val == MERGE_STATE.Tests_failed.name for val in mergef
+                val in MERGE_INCORRECT_NAMES for val in mergef
             )
             incorrect_feature_percentage = (
                 100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
