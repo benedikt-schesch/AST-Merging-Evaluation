@@ -36,7 +36,7 @@ if __name__ == "__main__":
     count = 0
     for row in tqdm(inconsistent_merge_results):
         for i in MERGE_TOOL:
-            if row[f"{i}"] in MERGE_FAILURE_NAMES:
+            if row[f"{i}"] not in MERGE_FAILURE_NAMES:
                 cache_file = os.path.join(
                     args.cache_path,
                     row["repo_name"].split("/")[1]
