@@ -100,7 +100,7 @@ if __name__ == "__main__":
     for file in tqdm(os.listdir(test_results_path)):
         if file.endswith(".txt") and not file.endswith("explanation.txt"):
             source_file = Path(os.path.join(test_results_path, file))
-            target_file = Path(os.path.join(args.target_cache, file))
+            target_file = Path(os.path.join(args.cache_path, file))
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     for file in tqdm(os.listdir(merge_diff_results)):
         if file.endswith(".txt") and not file.endswith("explanation.txt"):
             source_file = Path(os.path.join(merge_diff_results, file))
-            target_file = Path(os.path.join(args.target_cache, file))
+            target_file = Path(os.path.join(args.cache_path, file))
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
@@ -129,17 +129,17 @@ if __name__ == "__main__":
             file.endswith("explanation.txt")
         ):  # pylint: disable=C0325
             source_file = Path(os.path.join(merge_test_results_path, file))
-            target_file = Path(os.path.join(args.target_cache, file))
+            target_file = Path(os.path.join(args.cache_path, file))
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
             else:
                 merge_state1, run_time1 = read_cache_merge_status(target_file)
                 merge_state2, run_time2 = read_cache_merge_status(source_file)
-                merge_state = merge_results_merger(
+                merge_state, run_time = merge_results_merger(
                     merge_state1, run_time1, merge_state2, run_time2
                 )
-                write_cache(merge_state, "", target_file)
+                write_cache_merge_status(target_file, merge_state, run_time)
                 print("File already exists:", target_file)
 
     shutil.rmtree(TMP_CACHE)
