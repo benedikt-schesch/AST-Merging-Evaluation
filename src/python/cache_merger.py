@@ -92,44 +92,48 @@ if __name__ == "__main__":
     arg_parser.add_argument("--cache_path", type=str, default="cache/")
     args = arg_parser.parse_args()
 
-    #with tarfile.open(args.zip_cache, "r") as tar:
+    # with tarfile.open(args.zip_cache, "r") as tar:
     #    tar.extractall(path=TMP_CACHE)
 
     # Test results merge status
-    test_results_path = os.path.join(TMP_CACHE, "cache","test_result")
+    test_results_path = os.path.join(TMP_CACHE, "cache", "test_result")
     for file in tqdm(os.listdir(test_results_path)):
         if file.endswith(".txt") and not file.endswith("explanation.txt"):
             source_file = Path(os.path.join(test_results_path, file))
-            target_file = Path(os.path.join(args.cache_path, "test_result",file))
+            target_file = Path(os.path.join(args.cache_path, "test_result", file))
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
             else:
-                test_state1, _ = read_cache(str(target_file).replace(".txt",""))
-                test_state2, _ = read_cache(str(source_file).replace(".txt",""))
+                test_state1, _ = read_cache(str(target_file).replace(".txt", ""))
+                test_state2, _ = read_cache(str(source_file).replace(".txt", ""))
                 test_state = test_results_merger(test_state1, test_state2)
                 target_cache_file = str(target_file).replace(".txt", "")
                 write_cache(test_state, "", target_cache_file)
                 print("File already exists:", target_file)
 
     # Diffing merge test results
-    merge_diff_results = os.path.join(TMP_CACHE,"cache", "merge_diff_results")
+    merge_diff_results = os.path.join(TMP_CACHE, "cache", "merge_diff_results")
     for file in tqdm(os.listdir(merge_diff_results)):
         if file.endswith(".txt") and not file.endswith("explanation.txt"):
             source_file = Path(os.path.join(merge_diff_results, file))
-            target_file = Path(os.path.join(args.cache_path,"merge_diff_results", file))
+            target_file = Path(
+                os.path.join(args.cache_path, "merge_diff_results", file)
+            )
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
 
     # Merge test results
-    merge_test_results_path = os.path.join(TMP_CACHE,"cache","merge_test_results")
+    merge_test_results_path = os.path.join(TMP_CACHE, "cache", "merge_test_results")
     for file in tqdm(os.listdir(merge_test_results_path)):
         if file.endswith(".txt") and not (
             file.endswith("explanation.txt")
         ):  # pylint: disable=C0325
             source_file = Path(os.path.join(merge_test_results_path, file))
-            target_file = Path(os.path.join(args.cache_path, "merge_test_results",file))
+            target_file = Path(
+                os.path.join(args.cache_path, "merge_test_results", file)
+            )
             if not os.path.exists(target_file):
                 print("Copying", source_file, "to", target_file)
                 os.system(f"cp {source_file} {target_file}")
