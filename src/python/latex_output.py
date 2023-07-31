@@ -433,7 +433,12 @@ if __name__ == "__main__":
             table3 += f"    {merge_tool.capitalize():30}"
             for f in [np.mean, np.median, np.max]:
                 run_time = f(result_df[merge_tool + " run_time"])
-                table3 += f" & {round(run_time):5}"
+                if run_time < 10:
+                    table3 += f" & {run_time:0.2f}"
+                elif run_time < 100:
+                    table3 += f" & {run_time:0.1f}"
+                else:
+                    table3 += f" & {round(run_time)}"
             table3 += " \\\\\n"
         table3 += "\\end{tabular}\n"
 
