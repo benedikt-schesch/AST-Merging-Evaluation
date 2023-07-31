@@ -2,8 +2,11 @@ all: style gradle-assemble
 
 style: shell-script-style python-style java-style
 
-SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v 'src/scripts/merge_tools/git-hires-merge' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
-BASH_SCRIPTS = $(shell grep --exclude=src/scripts/merge_tools/git-hires-merge --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v 'src/scripts/merge_tools/git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+# rwildcard = "recursive wildcard"
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+PYTHON_FILES=$(call rwildcard,.,*.py)
 
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
@@ -12,8 +15,8 @@ shell-script-style:
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
+	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
-PYTHON_FILES=$(wildcard src/python/*.py)
 python-style:
 	black ${PYTHON_FILES}
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
@@ -54,7 +57,19 @@ compress-cache:
 decompress-cache:
 	tar -xzf cache.tar
 
-# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
+# Copy tables and plots to the paper.
+copy-paper:
+	rm -rf ../AST-Merging-Evaluation-Paper/tables ../AST-Merging-Evaluation-Paper/plots
+	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
+	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
+	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
+
+# Update cache
+update-cache-results:
+	python3 src/python/cache_merger.py
+	make compress-cache
+
+# As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh -d
@@ -67,7 +82,7 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
 	(cd results-small && cat filtered_result.csv | rev | cut -d, -f10-65 | rev > filtered_result-without-times.csv)
-	diff -x tools -x git -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -r -U3 test/small-goal-files results-small
+	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 
 gradle-assemble:

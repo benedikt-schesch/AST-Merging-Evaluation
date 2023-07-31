@@ -6,7 +6,7 @@ usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
                                --output_path <output_path>
 
 This script takes a csv of repos and a csv of merges and performs the merges with
-the different merging tools. The input repositories should contain a repo_name 
+the different merging tools. The input repositories should contain a repo_name
 column in format "ORGANIZATION/REPO". The merges csv should contain the following
 columns: "left", "right", "base", "merge", "parent test". The "parent test" column
 should contain the result of the test of the parent merge. The script will then
@@ -389,18 +389,16 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
             dst_name = os.path.join(SCRATCH_DIR, merge_id + merging_method)
             if os.path.isdir(dst_name):
                 shutil.rmtree(dst_name, onerror=del_rw)
-            repo_dir_copy_merging_method = os.path.join(
-                result[merging_method].merge_path, merging_method
-            )
-            if os.path.isdir(repo_dir_copy_merging_method):
-                shutil.copytree(repo_dir_copy_merging_method, dst_name)
+            if os.path.isdir(result[merging_method].merge_path):
+                shutil.copytree(result[merging_method].merge_path, dst_name)
         print(
             f"Writing Testing Merge {repo_name} {left} \
                 {right} {merging_method} result: {result[merging_method].merge_state}"
         )
         result[merging_method].write_cache_merge_status()
     if not STORE_WORKDIR:
-        shutil.rmtree(work_dir, onerror=del_rw)
+        if os.path.isdir(work_dir):
+            shutil.rmtree(work_dir, onerror=del_rw)
     return result
 
 
