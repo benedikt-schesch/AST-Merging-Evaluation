@@ -64,7 +64,12 @@ copy-paper:
 	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
 	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
 
-# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
+# Update cache
+update-cache-results:
+	python3 src/python/cache_merger.py
+	make compress-cache
+
+# As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh -d
