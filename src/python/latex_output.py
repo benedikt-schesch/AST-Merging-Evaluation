@@ -74,13 +74,11 @@ MERGE_INCORRECT_NAMES = [
     MERGE_STATE.Tests_timedout.name,
 ]
 
-
 MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_failed.name,
     MERGE_STATE.Merge_exception.name,
     MERGE_STATE.Merge_timedout.name,
 ]
-DELETE_FAILED_TRIVIAL_MERGES = False
 
 
 def compute_trivial_merges(df: pd.DataFrame):
@@ -90,38 +88,26 @@ def compute_trivial_merges(df: pd.DataFrame):
         df: dataframe containing the merge results
     """
     trivial_merges = []
-    count = 0
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
             trivial_merges.append(row)
-            for merge_tool in MERGE_TOOL:
-                if row[merge_tool] == MERGE_STATE.Tests_failed.name:
-                    cache_merge_status_prefix = os.path.join(
-                        "cache",
-                        "merge_test_results",
-                        "_".join(
-                            [
-                                row["repo_name"].split("/")[1],
-                                row["left"],
-                                row["right"],
-                                row["base"],
-                                row["merge"],
-                                "",
-                            ]
-                        ),
-                    )
-                    cache_merges_status = (
-                        cache_merge_status_prefix + merge_tool + ".txt"
-                    )
-                    count += 1
-                    if DELETE_FAILED_TRIVIAL_MERGES and os.path.exists(
-                        cache_merges_status
-                    ):
-                        os.remove(cache_merges_status)
-                    else:
-                        break
-    print("Number of failed trivial merges:", count)
     return trivial_merges
+
+
+def compute_incorrect_trivial_merges(df: pd.DataFrame):
+    """Compute incorrect trivial merges. A incorrect trivial merge is a trivial merge
+    that incorrect.
+    Args:
+        df: dataframe containing the merge results
+    """
+    incorrect_trivial_merges = []
+    trivial_merges = compute_trivial_merges(df)
+    for row in tqdm(trivial_merges, total=len(trivial_merges)):
+        for merge_tool in MERGE_TOOL:
+            if row[f"{merge_tool}"] != MERGE_STATE.Tests_passed.name:
+                incorrect_trivial_merges.append(row)
+                break
+    return incorrect_trivial_merges
 
 
 def compute_inconsistent_merge_results(df: pd.DataFrame):
@@ -171,6 +157,9 @@ if __name__ == "__main__":
     )
     trivial_merges = compute_trivial_merges(result_df)
     print("Number of trivial merges:", len(trivial_merges))
+
+    failed_trivial_merges = compute_incorrect_trivial_merges(result_df)
+    print("Number of failed trivial merges:", len(failed_trivial_merges))
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
