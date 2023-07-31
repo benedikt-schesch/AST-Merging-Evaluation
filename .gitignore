@@ -21,6 +21,7 @@ input_data/repos.csv.gz
 cf/
 .gradle/
 cache-machines/
+.old_cache
 
 # Test output
 test/tmp1.txt
