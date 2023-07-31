@@ -104,3 +104,13 @@ jars/spork.jar:
 TAGS: tags
 tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
+
+# Create a tarball of the artifacts for the paper.
+# Keep this target last in the file.
+create-artifacts:
+	rm -rf artifacts
+	git clone https://github.com/benedikt-schesch/AST-Merging-Evaluation.git artifacts
+	rm -rf artifacts/.git
+	sed -i '' '/^create-artifacts:/q' artifacts/Makefile
+	sed -i '' '/benedikt-schesch/d' artifacts/README.md
+	tar -czf artifacts.tar.gz artifacts
