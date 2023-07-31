@@ -136,6 +136,14 @@ To run style checking run `make style`.
 
     * get_repos.py -> Downloads the repos list.
 
+    * cache_merger.py -> Merges the current cache with the cache.tar
+
+    * delete_cache_entries.py -> Delete specific cache entries.
+
+    * delete_inconsistent_merge_results.py -> Delete inconsistent merge results.
+
+    * delete_failed_trivial_merge_results.py -> Delete failed trivial merge results.
+
   * scripts/ -> contains the following scripts:
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
