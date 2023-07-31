@@ -92,8 +92,8 @@ if __name__ == "__main__":
     arg_parser.add_argument("--cache_path", type=str, default="cache/")
     args = arg_parser.parse_args()
 
-    # with tarfile.open(args.zip_cache, "r") as tar:
-    #    tar.extractall(path=TMP_CACHE)
+    with tarfile.open(args.zip_cache, "r") as tar:
+       tar.extractall(path=TMP_CACHE)
 
     # Test results merge status
     test_results_path = os.path.join(TMP_CACHE, "cache", "test_result")
