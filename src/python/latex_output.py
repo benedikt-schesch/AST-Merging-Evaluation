@@ -515,6 +515,7 @@ if __name__ == "__main__":
     output += add_def("mergesInitial", count)
     output += add_def("mergesPer", args.n_merges)
 
+    repos = 0
     count = 0
     full = 0
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
@@ -525,17 +526,20 @@ if __name__ == "__main__":
         if not os.path.isfile(merge_list_file):
             continue
         merges = pd.read_csv(merge_list_file, index_col=0)
+        if len(merges) > 0:
+            repos += 1
         count += len(merges)
         if len(merges) == args.n_merges:
             full += 1
 
+    output += add_def("reposSampled", repos)
     output += add_def("mergesSampled", count)
     output += add_def("reposYieldedFull", full)
     output += (
-        "% mergesTotal excludes any filtered out merges - we "
-        "currently filter no merges so they are the same, "
-        "but that is subject to change\n"
+        "% reposTotal/mergesTotal excludes any filtered out merges - we "
+        "currently filter out some inconsistent merges\n"
     )
+    output += add_def("reposTotal", len(result_df["repo_name"].unique()))
     output += add_def("mergesTotal", len(result_df))
     output += add_def("mergesTrivial", len(trivial_merges))
 
