@@ -199,11 +199,12 @@ if __name__ == "__main__":
     print("Number of trivial merges:", len(trivial_merges))
 
     failed_trivial_merges = compute_incorrect_trivial_merges(result_df)
-    print("Number of failed trivial merges:", len(failed_trivial_merges))
+    print(
+        "Number of failed trivial merges (will be ignored):", len(failed_trivial_merges)
+    )
 
-    # # Remove trivial merges:
-    # for row in tqdm(trivial_merges, total=len(trivial_merges)):
-    #     result_df = result_df.drop(row.name)
+    for row in tqdm(failed_trivial_merges, total=len(failed_trivial_merges)):
+        result_df = result_df.drop(row.name)
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
@@ -516,12 +517,18 @@ if __name__ == "__main__":
 
     count = 0
     full = 0
-    for i in tqdm(os.listdir(args.merges_valid_path)):
-        if i.endswith(".csv"):
-            df = pd.read_csv(os.path.join(args.merges_valid_path, i), index_col="idx")
-            count += len(df)
-            if len(df) == args.n_merges:
-                full += 1
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
+        merge_list_file = os.path.join(
+            args.merges_valid_path, repository_data["repository"].split("/")[1] + ".csv"
+        )
+        if not os.path.isfile(merge_list_file):
+            continue
+        merges = pd.read_csv(merge_list_file, index_col=0)
+        count += len(merges)
+        if len(merges) == args.n_merges:
+            full += 1
+
     output += add_def("mergesSampled", count)
     output += add_def("reposYieldedFull", full)
     output += (

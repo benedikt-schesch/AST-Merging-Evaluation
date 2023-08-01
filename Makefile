@@ -65,6 +65,8 @@ copy-paper:
 	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
 	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
 	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
+	find ../AST-Merging-Evaluation-Paper/tables -name '*.pdf' -delete
+	find ../AST-Merging-Evaluation-Paper/plots -name '*.pdf' -delete
 
 # Update cache
 update-cache-results:
