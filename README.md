@@ -4,8 +4,6 @@
 
 ![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
 
-To delete all cached results: `make clean-cache`
-
 ## Requirements
 
 ### Python
@@ -51,6 +49,10 @@ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.s
 brew install jq
 brew install gh
 ```
+
+### Java
+
+Make sure you install Java 8, 11 and 17. You need to set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective java installation.
 
 ---
 
@@ -98,11 +100,11 @@ To execute `run_full.sh` on multiple machines in parallel create a machine addre
 
 ### Load the stored cache
 
-To decompress the cache run `make decompress-cache`.
+To decompress the cache run `make decompress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.
 
 ### Store the cache
 
-To store the cache `make compress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.
+To store the cache `make compress-cache`.
 
 ### Clean Cache
 
