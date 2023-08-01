@@ -89,7 +89,7 @@ Directory `results/merges_valid` contains all the merges and also stores if the 
 To delete cache entries on failed merges, inconsistent merges, failed trivial merges and reexecute the stack multiple time over and over:
 
 ```bash
-./run_full_repeated.sh <n_repeat>
+./run_full_restart.sh <n_repeat>
 ```
 
 To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
@@ -130,7 +130,7 @@ To run style checking run `make style`.
 
 * run_full.sh -> This file executes the stack on all the repositories.
 
-* run_full_repeated.sh -> This file executes the stack and repeats failed merges, inconsistent merges and failed trivial multiple times.
+* run_full_restart.sh -> This file executes the stack and repeats failed merges, inconsistent merges and failed trivial multiple times.
 
 * src/ -> contains the following scripts:
 
