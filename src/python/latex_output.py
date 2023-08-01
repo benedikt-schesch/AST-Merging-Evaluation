@@ -296,7 +296,7 @@ if __name__ == "__main__":
             )
 
         # Cost plot 1
-        MAX_COST = 70
+        MAX_COST = 120
         fig, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
@@ -317,7 +317,7 @@ if __name__ == "__main__":
         plt.xlabel("Incorrect merges cost factor $k$")
         plt.ylabel("\mbox{Merge\_Score}")
         plt.xlim(0, 20)
-        plt.ylim(0.65, 0.95)
+        plt.ylim(0.75, 0.95)
         plt.legend()
         plt.tight_layout()
         plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
