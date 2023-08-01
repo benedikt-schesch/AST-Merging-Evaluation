@@ -80,13 +80,19 @@ To run the stack on all repos:
 ./run_full.sh
 ```
 
+To run the stack on all repos and also diff the merges outputs:
+
+```bash
+./run_full.sh -d
+```
+
 This will run the entire code on all the repos and automatically decompress the cache if `cache/` does not exist.
 All the output data can be found in `results/`.
 The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
-To delete cache entries on failed merges, inconsistent merges, failed trivial merges and reexecute the stack multiple time over and over:
+To delete cache entries on failed merges, inconsistent merges, failed trivial merges and reexecute the stack multiple times over and over:
 
 ```bash
 ./run_full_restart.sh <n_repeat>
