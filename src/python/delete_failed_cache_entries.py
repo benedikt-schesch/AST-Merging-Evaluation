@@ -23,6 +23,7 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "--cache_path", type=str, default="cache/merge_test_results/"
     )
+    arg_parser.add_argument("-y", action="store_true", help="Skip confirmation prompt")
     args = arg_parser.parse_args()
 
     files_to_delete = []
@@ -39,9 +40,10 @@ if __name__ == "__main__":
             files_to_delete.append(path)
 
     print("Number of files to delete:", len(files_to_delete))
-    print("Are you sure you want to proceed? (y/n)")
-    if input() != "y":
-        sys.exit(0)
+    if not args.y:
+        print("Are you sure you want to proceed? (y/n)")
+        if input() != "y":
+            sys.exit(0)
     for path in files_to_delete:
         os.remove(path + ".txt")
         if os.path.exists(path + "_explanation.txt"):

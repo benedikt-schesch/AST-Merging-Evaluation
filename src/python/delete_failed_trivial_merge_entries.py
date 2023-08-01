@@ -24,6 +24,7 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "--cache_path", type=str, default="cache/merge_test_results"
     )
+    arg_parser.add_argument("-y", action="store_true", help="Skip confirmation prompt")
     args = arg_parser.parse_args()
 
     df = pd.read_csv(args.results)
@@ -53,9 +54,10 @@ if __name__ == "__main__":
                 to_delete.append(cache_merges_status)
 
     print("Number of failed entries to delete:", len(to_delete))
-    print("Are you sure you want to proceed? (y/n)")
-    if input() != "y":
-        sys.exit(0)
+    if not args.y:
+        print("Are you sure you want to proceed? (y/n)")
+        if input() != "y":
+            sys.exit(0)
     count = 0
     for file in tqdm(to_delete):
         if os.path.exists(file):
