@@ -47,6 +47,23 @@ matplotlib.rcParams.update(
     }
 )
 
+MERGE_TOOL_RENAME = {
+    "spork": "Spork",
+    "intellimerge": "IntelliMerge",
+}
+
+
+def merge_tool_latex_name(name: str) -> str:
+    """Return the LaTeX name of a merge tool.
+    Args:
+        name: name of the merge tool
+    Returns:
+        LaTeX name of the merge tool
+    """
+    if name in MERGE_TOOL_RENAME:
+        return MERGE_TOOL_RENAME[name]
+    return name.capitalize()
+
 
 def filter_outliers_IQR(df):
     """Filter outliers using IQR
@@ -207,7 +224,8 @@ if __name__ == "__main__":
         fig, ax = plt.subplots()
         result = np.tril(result)
         latex_merge_tool = [
-            "\\ensuremath{\\mathit{" + i.capitalize() + "}}" for i in merge_tools
+            "\\ensuremath{\\mathit{" + merge_tool_latex_name(i) + "}}"
+            for i in merge_tools
         ]
         heatmap = sns.heatmap(
             result,
@@ -274,12 +292,14 @@ if __name__ == "__main__":
                 score = score / ((unhandled[idx] + incorrect[idx] + correct[idx]))
                 score = 1 - score
                 results.append(score)
-            line_style = [":", "--", "-."][idx % 3]
+            line_style = [(idx, (1, 1)), "--", "-."][idx % 3]
             ax.plot(
                 np.linspace(1, MAX_COST, 1000),
                 results,
-                label=merge_tool,
+                label=merge_tool_latex_name(merge_tool),
                 linestyle=line_style,
+                linewidth=3,
+                alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
         plt.ylabel("\ensuremath{\mathit{Merge\_Score}}")
@@ -294,7 +314,7 @@ if __name__ == "__main__":
         line = ax.plot(
             np.linspace(1, MAX_COST, 1000),
             np.zeros(1000),
-            label="Manual Merges",
+            label="Manual Merging",
             color="red",
         )
         plt.xlim(0, MAX_COST)
@@ -325,7 +345,7 @@ if __name__ == "__main__":
             incorrect_percentage = (
                 100 * incorrect[merge_tool_idx] / total if total != 0 else 0
             )
-            table += f"{merge_tool.capitalize():30}"
+            table += f"{merge_tool_latex_name(merge_tool):30}"
             table += (
                 f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
             )
@@ -350,7 +370,7 @@ if __name__ == "__main__":
         for merge_tool_idx, merge_tool in enumerate(merge_tools):
             my_table.add_row(
                 [
-                    merge_tool,
+                    merge_tool_latex_name(merge_tool),
                     correct[merge_tool_idx],
                     incorrect[merge_tool_idx],
                     unhandled[merge_tool_idx],
@@ -416,7 +436,7 @@ if __name__ == "__main__":
                 100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
             )
 
-            table2 += f"            {merge_tool.capitalize():30}"
+            table2 += f"            {merge_tool_latex_name(merge_tool):30}"
             table2 += f" & {correct_main:5} & {round(correct_main_percentage):3}\\%"
             table2 += (
                 f" & {correct_feature:5} & {round(correct_feature_percentage):3}\\%"
