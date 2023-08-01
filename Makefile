@@ -2,8 +2,8 @@ all: style gradle-assemble
 
 style: shell-script-style python-style java-style
 
-SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
-BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v addrfilter | grep -v cronic-orig | grep -v gradlew | grep -v mail-stackoverflow.sh)
+SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
+BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 # rwildcard = "recursive wildcard"
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 PYTHON_FILES=$(call rwildcard,.,*.py)
@@ -55,6 +55,8 @@ compress-cache:
 
 # Decompresses the cache.
 decompress-cache:
+	if [ ! -f cache.tar ]; then echo "cache.tar does not exist"; exit 1; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
 	tar -xzf cache.tar
 
 # Copy tables and plots to the paper.
@@ -64,7 +66,12 @@ copy-paper:
 	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
 	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
 
-# As of 2023-06-09, this takes 5-10 minutes to run, depending on your machine.
+# Update cache
+update-cache-results:
+	python3 src/python/cache_merger.py
+	make compress-cache
+
+# As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh -d
@@ -99,3 +106,13 @@ jars/spork.jar:
 TAGS: tags
 tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
+
+# Create a tarball of the artifacts for the paper.
+# Keep this target last in the file.
+create-artifacts:
+	rm -rf artifacts
+	git clone https://github.com/benedikt-schesch/AST-Merging-Evaluation.git artifacts
+	rm -rf artifacts/.git
+	sed -i '' '/^create-artifacts:/q' artifacts/Makefile
+	sed -i '' 's/benedikt-schesch/anonymous-github-user/g' artifacts/README.md
+	tar -czf artifacts.tar.gz artifacts

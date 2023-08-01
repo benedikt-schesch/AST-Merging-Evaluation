@@ -24,19 +24,21 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "--cache_path", type=str, default="cache/merge_test_results"
     )
+    arg_parser.add_argument("-y", action="store_true", help="Skip confirmation prompt")
     args = arg_parser.parse_args()
 
     df = pd.read_csv(args.results)
 
     inconsistent_merge_results = compute_inconsistent_merge_results(df)
     print("Number of inconsistent entries to delete:", len(inconsistent_merge_results))
-    print("Are you sure you want to proceed? (y/n)")
-    if input() != "y":
-        sys.exit(0)
+    if not args.y:
+        print("Are you sure you want to proceed? (y/n)")
+        if input() != "y":
+            sys.exit(0)
     count = 0
     for row in tqdm(inconsistent_merge_results):
         for i in MERGE_TOOL:
-            if row[f"{i}"] in MERGE_FAILURE_NAMES:
+            if row[f"{i}"] not in MERGE_FAILURE_NAMES:
                 cache_file = os.path.join(
                     args.cache_path,
                     row["repo_name"].split("/")[1]
