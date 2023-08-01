@@ -2,7 +2,7 @@ all: style gradle-assemble
 
 style: shell-script-style python-style java-style
 
-SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
+SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 # rwildcard = "recursive wildcard"
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
@@ -82,8 +82,8 @@ small-test-diff:
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
-	(cd results-small && cat result.csv | rev | cut -d, -f10-65 | rev > result-without-times.csv)
-	(cd results-small && cat filtered_result.csv | rev | cut -d, -f10-65 | rev > filtered_result-without-times.csv)
+	(cd results-small && cat result.csv | rev | cut -d, -f11-150 | rev > result-without-times.csv)
+	(cd results-small && cat filtered_result.csv | rev | cut -d, -f11-150 | rev > filtered_result-without-times.csv)
 	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
 

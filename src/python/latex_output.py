@@ -92,8 +92,14 @@ def add_def(name, value) -> str:
 
 PLOTS = {
     "all": MERGE_TOOL,
-    "git": [merge_tool for merge_tool in MERGE_TOOL if "git" in merge_tool],
-    "tools": ["gitmerge-ort", "gitmerge-ort-ignorespace", "spork", "intellimerge"],
+    "git": [merge_tool for merge_tool in MERGE_TOOL if "gitmerge" in merge_tool],
+    "tools": [
+        "gitmerge-ort",
+        "gitmerge-ort-ignorespace",
+        "git-hires-merge",
+        "spork",
+        "intellimerge",
+    ],
 }
 
 MERGE_FAILURE_NAMES = [
