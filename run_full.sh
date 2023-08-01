@@ -12,4 +12,10 @@
 set -e
 set -o nounset
 
+# Check if cache.tar exists and cache is missing
+if [ -f cache.tar ] && [ ! -d cache ]; then
+    echo "Decompressing cache.tar"
+    make decompress-cache
+fi
+
 ./run.sh input_data/repos.csv results 20 cache "$@"
