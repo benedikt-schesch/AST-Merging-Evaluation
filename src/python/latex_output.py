@@ -72,10 +72,13 @@ def filter_outliers_IQR(df):
      Returns:
          dataframe without outliers
     """
+    df = df[df >= 0]
     q1 = df.quantile(0.25)
     q3 = df.quantile(0.75)
     IQR = q3 - q1
-    result = df[~((df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR)))]
+    outliers_mask = (df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR))
+    print(f"Number of outliers {df.name}: {outliers_mask.sum()}")
+    result = df[~outliers_mask]
     return result
 
 
@@ -202,6 +205,10 @@ if __name__ == "__main__":
 
     for row in tqdm(failed_trivial_merges, total=len(failed_trivial_merges)):
         result_df = result_df.drop(row.name)
+
+    # # Remove trivial merges:
+    # for row in tqdm(trivial_merges, total=len(trivial_merges)):
+    #     result_df = result_df.drop(row.name)
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
