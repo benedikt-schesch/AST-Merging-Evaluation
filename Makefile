@@ -55,6 +55,8 @@ compress-cache:
 
 # Decompresses the cache.
 decompress-cache:
+	if [ ! -f cache.tar ]; then echo "cache.tar does not exist"; exit 1; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
 	tar -xzf cache.tar
 
 # Copy tables and plots to the paper.
