@@ -192,7 +192,9 @@ if __name__ == "__main__":
                         result[idx2 + idx + 1][idx] += 1
         fig, ax = plt.subplots()
         result = np.tril(result)
-        latex_merge_tool = ["$" + i.capitalize() + "$" for i in merge_tools]
+        latex_merge_tool = [
+            "\\ensuremath{\\mathit{" + i.capitalize() + "}}" for i in merge_tools
+        ]
         heatmap = sns.heatmap(
             result,
             annot=True,
@@ -265,8 +267,8 @@ if __name__ == "__main__":
                 label=merge_tool,
                 linestyle=line_style,
             )
-        plt.xlabel("Incorrect merges cost factor")
-        plt.ylabel("$Merge\_Score$")
+        plt.xlabel("Incorrect merges cost factor $k$")
+        plt.ylabel("\ensuremath{\mathit{Merge\_Score}}")
         plt.xlim(0, 20)
         plt.ylim(0.65, 0.95)
         plt.legend()
