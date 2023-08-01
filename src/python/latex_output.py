@@ -65,6 +65,20 @@ def merge_tool_latex_name(name: str) -> str:
     return name.capitalize()
 
 
+def filter_outliers_IQR(df):
+    """Filter outliers using IQR
+    Args:
+         df: dataframe containing the data
+     Returns:
+         dataframe without outliers
+    """
+    q1 = df.quantile(0.25)
+    q3 = df.quantile(0.75)
+    IQR = q3 - q1
+    result = df[~((df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR)))]
+    return result
+
+
 def add_def(name, value) -> str:
     """Add a LaTeX definition.
     Args:
@@ -453,8 +467,9 @@ if __name__ == "__main__":
 
         for merge_tool in merge_tools:
             table3 += f"    {merge_tool.capitalize():30}"
+            filtered_runtime = filter_outliers_IQR(result_df[merge_tool + " run_time"])
             for f in [np.mean, np.median, np.max]:
-                run_time = f(result_df[merge_tool + " run_time"])
+                run_time = f(filtered_runtime)
                 if run_time < 10:
                     table3 += f" & {run_time:0.2f}"
                 elif run_time < 100:
