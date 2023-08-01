@@ -32,7 +32,7 @@ import matplotlib
 import pandas as pd
 from prettytable import PrettyTable
 from parent_merges_test import TIMEOUT_TESTING
-from merge_tester import TIMEOUT_TESTING as TIMEOUT_TESTING_MERGE
+from merge_tester import TIMEOUT_MERGE, TIMEOUT_TESTING as TIMEOUT_TESTING_MERGE
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 import seaborn as sns
@@ -56,7 +56,7 @@ def add_def(name, value) -> str:
     Returns:
         LaTeX definition
     """
-    return "\\def\\" + name + "{" + str(value) + " }\n"
+    return "\\def\\" + name + "{" + str(value) + "\\xspace}\n"
 
 
 PLOTS = {
@@ -134,7 +134,7 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--full_repos_csv", type=str, default="input_data/repos_small_with_hashes.csv"
+        "--full_repos_csv", type=str, default="input_data/repos_with_hashes.csv"
     )
     parser.add_argument(
         "--valid_repos_csv", type=str, default="results/valid_repos.csv"
@@ -448,15 +448,12 @@ if __name__ == "__main__":
             file.write(table3)
 
     # Create defs.tex
-    df = pd.read_csv(args.full_repos_csv)
-    output = add_def("reposInitial", len(df))
-    output += add_def("parentTestTimeout", str(TIMEOUT_TESTING // 60))
-    output += add_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
-    df = pd.read_csv(args.valid_repos_csv)
-    output += add_def("reposValid", len(df))
-    output += add_def("mergesPer", args.n_merges)
-    df = pd.read_csv(args.result_csv)
-    output += add_def("mergesTrivial", len(trivial_merges))
+    full_repos_df = pd.read_csv(args.full_repos_csv)
+    valid_repos_df = pd.read_csv(args.valid_repos_csv)
+
+    output = "% Dataset and sample numbers\n"
+    output = add_def("reposInitial", len(full_repos_df))
+    output += add_def("reposValid", len(valid_repos_df))
 
     count = 0
     for i in tqdm(os.listdir(args.merges_path)):
@@ -468,13 +465,53 @@ if __name__ == "__main__":
             )
             count += len(df)
     output += add_def("mergesInitial", count)
+    output += add_def("mergesPer", args.n_merges)
 
     count = 0
+    full = 0
     for i in tqdm(os.listdir(args.merges_valid_path)):
         if i.endswith(".csv"):
             df = pd.read_csv(os.path.join(args.merges_valid_path, i), index_col="idx")
             count += len(df)
+            if len(df) == args.n_merges:
+                full += 1
     output += add_def("mergesSampled", count)
+    output += add_def("reposYieldedFull", full)
+    output += (
+        "% mergesTotal excludes any filtered out merges - we "
+        "currently filter no merges so they are the same, "
+        "but that is subject to change\n"
+    )
+    output += add_def("mergesTotal", len(result_df))
+    output += add_def("mergesTrivial", len(trivial_merges))
+
+    output += "\n% Results\n"
+
+    spork_correct = len(result_df[result_df["spork"] == MERGE_STATE.Tests_passed.name])
+    ort_correct = len(
+        result_df[result_df["gitmerge-ort"] == MERGE_STATE.Tests_passed.name]
+    )
+    output += add_def("sporkOverOrtCorrect", spork_correct - ort_correct)
+
+    spork_incorrect = len(result_df[result_df["spork"].isin(MERGE_INCORRECT_NAMES)])
+    ort_incorrect = len(
+        result_df[result_df["gitmerge-ort"].isin(MERGE_INCORRECT_NAMES)]
+    )
+    output += add_def("sporkOverOrtIncorrect", spork_incorrect - ort_incorrect)
+
+    output += add_def("mainBranchMerges", len(main))
+    output += add_def(
+        "mainBranchMergesPercent", round(len(main) * 100 / len(result_df))
+    )
+    output += add_def("featureBranchMerges", len(feature))
+    output += add_def(
+        "featureBranchMergesPercent", round(len(feature) * 100 / len(result_df))
+    )
+
+    output += "\n% Timeout\n"
+    output += add_def("parentTestTimeout", str(TIMEOUT_TESTING // 60))
+    output += add_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
+    output += add_def("testTimout", str(TIMEOUT_MERGE // 60))
 
     with open(os.path.join(args.output_path, "defs.tex"), "w") as file:
         file.write(output)
