@@ -72,13 +72,13 @@ def filter_outliers_IQR(df):
      Returns:
          dataframe without outliers
     """
-    df = df[df>=0]
+    df = df[df >= 0]
     q1 = df.quantile(0.25)
     q3 = df.quantile(0.75)
     IQR = q3 - q1
     outliers_mask = (df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR))
     print(f"Number of outliers {df.name}: {outliers_mask.sum()}")
-    result = df[~outliers_mask] 
+    result = df[~outliers_mask]
     return result
 
 
