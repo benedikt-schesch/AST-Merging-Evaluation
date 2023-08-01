@@ -84,6 +84,12 @@ The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
+To restart the analysis multiple times on failed merges, inconsistent merges and failed trivial merges run:
+
+```bash
+./run_full_repeated.sh <n_repeat>
+```
+
 To execute the code on multiple machines in parallel create a machine list in `machines.txt` and run:
 
 ```bash
@@ -121,6 +127,8 @@ To run style checking run `make style`.
 * run_small.sh -> This file executes the stack on two repositories.
 
 * run_full.sh -> This file executes the stack on all the repositories.
+
+* run_full_repeated.sh -> This file executes the stack and repeats failed merges, inconsistent merges and failed trivial multiple times.
 
 * src/ -> contains the following scripts:
 
