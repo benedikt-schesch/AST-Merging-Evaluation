@@ -196,7 +196,10 @@ if __name__ == "__main__":
     print("Number of trivial merges:", len(trivial_merges))
 
     failed_trivial_merges = compute_incorrect_trivial_merges(result_df)
-    print("Number of failed trivial merges:", len(failed_trivial_merges))
+    print("Number of failed trivial merges (will be ignored):", len(failed_trivial_merges))
+
+    for row in tqdm(failed_trivial_merges,total=len(failed_trivial_merges)):
+        result_df = result_df.drop(row.name)
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
