@@ -115,6 +115,5 @@ create-artifacts:
 	rm -rf artifacts
 	git clone https://github.com/benedikt-schesch/AST-Merging-Evaluation.git artifacts
 	rm -rf artifacts/.git
-	sed -i '' '/^create-artifacts:/q' artifacts/Makefile
-	sed -i '' 's/benedikt-schesch/anonymous-github-user/g' artifacts/README.md
+	sed -i '' 's/benedikt-schesch/anonymous-github-user/g' artifacts/README.md artifacts/Makefile
 	tar -czf artifacts.tar.gz artifacts
