@@ -26,7 +26,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`)
+If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`).
 
 ### Maven
 
@@ -78,19 +78,19 @@ To run the stack on all repos:
 ./run_full.sh
 ```
 
-This will run the entire code on all the repos.
+This will run the entire code on all the repos and automatically decompress the cache if `cache/` does not exist.
 All the output data can be found in `results/`.
 The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
 
-To restart the analysis multiple times on failed merges, inconsistent merges and failed trivial merges run:
+To delete cache entries on failed merges, inconsistent merges, failed trivial merges and reexecute the stack multiple time over and over:
 
 ```bash
 ./run_full_repeated.sh <n_repeat>
 ```
 
-To execute the code on multiple machines in parallel create a machine list in `machines.txt` and run:
+To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
 ```bash
 ./run_multiple_machine.sh main machines.txt <project_path_on_machine>
@@ -102,7 +102,7 @@ To decompress the cache run `make decompress-cache`.
 
 ### Store the cache
 
-To store the cache `make compress-cache`.
+To store the cache `make compress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.
 
 ### Clean Cache
 
@@ -153,6 +153,7 @@ To run style checking run `make style`.
     * delete_failed_trivial_merge_results.py -> Delete failed trivial merge results.
 
   * scripts/ -> contains the following scripts:
+
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
     * merge_tools/ -> contains the following scripts:
@@ -175,6 +176,8 @@ To run style checking run `make style`.
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
+
+  * merge_diff_results/ -> Caches the diff results for specific merges.
 
 * test_cache/ -> This folder is a cache for each test computation. contains:
 
