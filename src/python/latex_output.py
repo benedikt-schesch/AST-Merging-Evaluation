@@ -514,6 +514,7 @@ if __name__ == "__main__":
             count += len(df)
     output += add_def("mergesInitial", count)
     output += add_def("mergesPer", args.n_merges)
+    output += add_def("failedTrivialMerges", len(failed_trivial_merges))
 
     repos = 0
     count = 0
