@@ -9,7 +9,7 @@
 # <num_machine> optional argument to specify the total number of machines used.
 # <diff> optional argument to specify whether to diff the merges.
 # Runs the stack.
-# The output appears in <output_folder> .
+# The output appears in <output_folder>.
 
 
 set -e
