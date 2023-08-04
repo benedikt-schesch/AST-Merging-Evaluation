@@ -79,7 +79,7 @@ small-test:
 	./run_small.sh -d
 	${MAKE} small-test-diff
 
-# TODO: How are the numbers in "-f11-100" determined?  It would be better to compute them than to hard-code them.
+# TODO: How are the numbers in "-f11-150" determined?  It would be better to compute them than to hard-code them.
 small-test-diff:
 # Print file names followed by file content, in case a diff fails.
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
