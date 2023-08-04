@@ -32,7 +32,7 @@ import matplotlib
 import pandas as pd
 from prettytable import PrettyTable
 from parent_merges_test import TIMEOUT_TESTING
-from merge_tester import TIMEOUT_TESTING as TIMEOUT_TESTING_MERGE
+from merge_tester import TIMEOUT_MERGE, TIMEOUT_TESTING as TIMEOUT_TESTING_MERGE
 from merge_tester import MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 import seaborn as sns
@@ -47,6 +47,40 @@ matplotlib.rcParams.update(
     }
 )
 
+MERGE_TOOL_RENAME = {
+    "spork": "Spork",
+    "intellimerge": "IntelliMerge",
+}
+
+
+def merge_tool_latex_name(name: str) -> str:
+    """Return the LaTeX name of a merge tool.
+    Args:
+        name: name of the merge tool
+    Returns:
+        LaTeX name of the merge tool
+    """
+    if name in MERGE_TOOL_RENAME:
+        return MERGE_TOOL_RENAME[name]
+    return name.capitalize()
+
+
+def filter_outliers_IQR(df):
+    """Filter outliers using IQR
+    Args:
+         df: dataframe containing the data
+     Returns:
+         dataframe without outliers
+    """
+    df = df[df >= 0]
+    q1 = df.quantile(0.25)
+    q3 = df.quantile(0.75)
+    IQR = q3 - q1
+    outliers_mask = (df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR))
+    print(f"Number of outliers {df.name}: {outliers_mask.sum()}")
+    result = df[~outliers_mask]
+    return result
+
 
 def add_def(name, value) -> str:
     """Add a LaTeX definition.
@@ -56,13 +90,19 @@ def add_def(name, value) -> str:
     Returns:
         LaTeX definition
     """
-    return "\\def\\" + name + "{" + str(value) + " }\n"
+    return "\\def\\" + name + "{" + str(value) + "\\xspace}\n"
 
 
 PLOTS = {
     "all": MERGE_TOOL,
-    "git": [merge_tool for merge_tool in MERGE_TOOL if "git" in merge_tool],
-    "tools": ["gitmerge-ort", "gitmerge-ort-ignorespace", "spork", "intellimerge"],
+    "git": [merge_tool for merge_tool in MERGE_TOOL if "gitmerge" in merge_tool],
+    "tools": [
+        "gitmerge-ort",
+        "gitmerge-ort-ignorespace",
+        "git-hires-merge",
+        "spork",
+        "intellimerge",
+    ],
 }
 
 MERGE_FAILURE_NAMES = [
@@ -74,13 +114,11 @@ MERGE_INCORRECT_NAMES = [
     MERGE_STATE.Tests_timedout.name,
 ]
 
-
 MERGE_UNHANDLED_NAMES = [
     MERGE_STATE.Merge_failed.name,
     MERGE_STATE.Merge_exception.name,
     MERGE_STATE.Merge_timedout.name,
 ]
-DELETE_FAILED_TRIVIAL_MERGES = False
 
 
 def compute_trivial_merges(df: pd.DataFrame):
@@ -90,38 +128,26 @@ def compute_trivial_merges(df: pd.DataFrame):
         df: dataframe containing the merge results
     """
     trivial_merges = []
-    count = 0
     for _, row in tqdm(df.iterrows(), total=len(df)):
         if row["left"] == row["base"] or row["right"] == row["base"]:
             trivial_merges.append(row)
-            for merge_tool in MERGE_TOOL:
-                if row[merge_tool] == MERGE_STATE.Tests_failed.name:
-                    cache_merge_status_prefix = os.path.join(
-                        "cache",
-                        "merge_test_results",
-                        "_".join(
-                            [
-                                row["repo_name"].split("/")[1],
-                                row["left"],
-                                row["right"],
-                                row["base"],
-                                row["merge"],
-                                "",
-                            ]
-                        ),
-                    )
-                    cache_merges_status = (
-                        cache_merge_status_prefix + merge_tool + ".txt"
-                    )
-                    count += 1
-                    if DELETE_FAILED_TRIVIAL_MERGES and os.path.exists(
-                        cache_merges_status
-                    ):
-                        os.remove(cache_merges_status)
-                    else:
-                        break
-    print("Number of failed trivial merges:", count)
     return trivial_merges
+
+
+def compute_incorrect_trivial_merges(df: pd.DataFrame):
+    """Compute incorrect trivial merges. A incorrect trivial merge is a trivial merge
+    that incorrect.
+    Args:
+        df: dataframe containing the merge results
+    """
+    incorrect_trivial_merges = []
+    trivial_merges = compute_trivial_merges(df)
+    for row in tqdm(trivial_merges, total=len(trivial_merges)):
+        for merge_tool in MERGE_TOOL:
+            if row[f"{merge_tool}"] != MERGE_STATE.Tests_passed.name:
+                incorrect_trivial_merges.append(row)
+                break
+    return incorrect_trivial_merges
 
 
 def compute_inconsistent_merge_results(df: pd.DataFrame):
@@ -148,7 +174,7 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--full_repos_csv", type=str, default="input_data/repos_small_with_hashes.csv"
+        "--full_repos_csv", type=str, default="input_data/repos_with_hashes.csv"
     )
     parser.add_argument(
         "--valid_repos_csv", type=str, default="results/valid_repos.csv"
@@ -171,6 +197,14 @@ if __name__ == "__main__":
     )
     trivial_merges = compute_trivial_merges(result_df)
     print("Number of trivial merges:", len(trivial_merges))
+
+    failed_trivial_merges = compute_incorrect_trivial_merges(result_df)
+    print(
+        "Number of failed trivial merges (will be ignored):", len(failed_trivial_merges)
+    )
+
+    for row in tqdm(failed_trivial_merges, total=len(failed_trivial_merges)):
+        result_df = result_df.drop(row.name)
 
     result_df.to_csv(os.path.join(args.output_path, "filtered_result.csv"))
 
@@ -203,7 +237,9 @@ if __name__ == "__main__":
                         result[idx2 + idx + 1][idx] += 1
         fig, ax = plt.subplots()
         result = np.tril(result)
-        latex_merge_tool = ["$" + i.capitalize() + "$" for i in merge_tools]
+        latex_merge_tool = [
+            "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
+        ]
         heatmap = sns.heatmap(
             result,
             annot=True,
@@ -260,7 +296,7 @@ if __name__ == "__main__":
             )
 
         # Cost plot 1
-        MAX_COST = 70
+        MAX_COST = 120
         fig, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
@@ -269,17 +305,19 @@ if __name__ == "__main__":
                 score = score / ((unhandled[idx] + incorrect[idx] + correct[idx]))
                 score = 1 - score
                 results.append(score)
-            line_style = [":", "--", "-."][idx % 3]
+            line_style = [(idx, (1, 1)), "--", "-."][idx % 3]
             ax.plot(
                 np.linspace(1, MAX_COST, 1000),
                 results,
-                label=merge_tool,
+                label=merge_tool_latex_name(merge_tool),
                 linestyle=line_style,
+                linewidth=3,
+                alpha=0.8,
             )
-        plt.xlabel("Incorrect merges cost factor")
-        plt.ylabel("$Merge\_Score$")
+        plt.xlabel("Incorrect merges cost factor $k$")
+        plt.ylabel("\mbox{Merge\_Score}")
         plt.xlim(0, 20)
-        plt.ylim(0.65, 0.95)
+        plt.ylim(0.75, 0.95)
         plt.legend()
         plt.tight_layout()
         plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
@@ -289,7 +327,7 @@ if __name__ == "__main__":
         line = ax.plot(
             np.linspace(1, MAX_COST, 1000),
             np.zeros(1000),
-            label="Manual Merges",
+            label="Manual Merging",
             color="red",
         )
         plt.xlim(0, MAX_COST)
@@ -302,11 +340,11 @@ if __name__ == "__main__":
 
         # Table 1 (overall results)
         table = """% Do not edit.  This file is automatically generated.
-\\begin{tabular}{c|c c|c c|c c}
+\\begin{tabular}{l|c c|c c|c c}
             Tool &
-            \\multicolumn{2}{|c|}{Correct Merges} &
-            \\multicolumn{2}{|c|}{Unhandled Merges} &
-            \\multicolumn{2}{|c}{Incorrect Merges} \\\\
+            \\multicolumn{2}{c|}{Correct Merges} &
+            \\multicolumn{2}{c|}{Unhandled Merges} &
+            \\multicolumn{2}{c}{Incorrect Merges} \\\\
             & \\# & \\% & \\# & \\% & \\# & \\% \\\\
             \\hline\n"""
         total = len(result_df)
@@ -320,7 +358,7 @@ if __name__ == "__main__":
             incorrect_percentage = (
                 100 * incorrect[merge_tool_idx] / total if total != 0 else 0
             )
-            table += f"{merge_tool.capitalize():32}"
+            table += f"{merge_tool_latex_name(merge_tool):32}"
             table += (
                 f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
             )
@@ -345,7 +383,7 @@ if __name__ == "__main__":
         for merge_tool_idx, merge_tool in enumerate(merge_tools):
             my_table.add_row(
                 [
-                    merge_tool,
+                    merge_tool_latex_name(merge_tool),
                     correct[merge_tool_idx],
                     incorrect[merge_tool_idx],
                     unhandled[merge_tool_idx],
@@ -362,18 +400,18 @@ if __name__ == "__main__":
         table2 = """% Do not edit.  This file is automatically generated.
 \\begin{tabular}{c|c c c c|c c c c|c c c c}
             Tool &
-            \\multicolumn{4}{|c|}{Correct Merges} &
-            \\multicolumn{4}{|c|}{Unhandled Merges} &
-            \\multicolumn{4}{|c|}{Incorrect Merges} \\\\
+            \\multicolumn{4}{c|}{Correct Merges} &
+            \\multicolumn{4}{c|}{Unhandled Merges} &
+            \\multicolumn{4}{c}{Incorrect Merges} \\\\
             &
-            \\multicolumn{2}{|c}{Main Branch} &
+            \\multicolumn{2}{c}{Main Branch} &
             \\multicolumn{2}{c|}{Feature Branch} &
-            \\multicolumn{2}{|c}{Main Branch} &
+            \\multicolumn{2}{c}{Main Branch} &
             \\multicolumn{2}{c|}{Feature Branch} &
-            \\multicolumn{2}{|c}{Main Branch} &
-            \\multicolumn{2}{c|}{Feature Branch} \\\\
-            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\
-            \\hline\n"""
+            \\multicolumn{2}{c}{Main Branch} &
+            \\multicolumn{2}{c}{Feature Branch} \\\\
+            \\hline
+            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
 
         main = result_df[result_df["branch_name"].isin(main_branch_names)]
         feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
@@ -411,7 +449,7 @@ if __name__ == "__main__":
                 100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
             )
 
-            table2 += f"            {merge_tool.capitalize():32}"
+            table2 += f"            {merge_tool_latex_name(merge_tool):32}"
             table2 += f" & {correct_main:5} & {round(correct_main_percentage):3}\\%"
             table2 += (
                 f" & {correct_feature:5} & {round(correct_feature_percentage):3}\\%"
@@ -442,9 +480,15 @@ if __name__ == "__main__":
 
         for merge_tool in merge_tools:
             table3 += f"    {merge_tool.capitalize():32}"
+            filtered_runtime = filter_outliers_IQR(result_df[merge_tool + " run_time"])
             for f in [np.mean, np.median, np.max]:
-                run_time = f(result_df[merge_tool + " run_time"])
-                table3 += f" & {round(run_time):5}"
+                run_time = f(filtered_runtime)
+                if run_time < 10:
+                    table3 += f" & {run_time:0.2f}"
+                elif run_time < 100:
+                    table3 += f" & {run_time:0.1f}"
+                else:
+                    table3 += f" & {round(run_time)}"
             table3 += " \\\\\n"
         table3 += "\\end{tabular}\n"
 
@@ -452,15 +496,12 @@ if __name__ == "__main__":
             file.write(table3)
 
     # Create defs.tex
-    df = pd.read_csv(args.full_repos_csv)
-    output = add_def("reposInitial", len(df))
-    output += add_def("parentTestTimeout", str(TIMEOUT_TESTING // 60))
-    output += add_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
-    df = pd.read_csv(args.valid_repos_csv)
-    output += add_def("reposValid", len(df))
-    output += add_def("mergesPer", args.n_merges)
-    df = pd.read_csv(args.result_csv)
-    output += add_def("mergesTrivial", len(trivial_merges))
+    full_repos_df = pd.read_csv(args.full_repos_csv)
+    valid_repos_df = pd.read_csv(args.valid_repos_csv)
+
+    output = "% Dataset and sample numbers\n"
+    output = add_def("reposInitial", len(full_repos_df))
+    output += add_def("reposValid", len(valid_repos_df))
 
     count = 0
     for i in tqdm(os.listdir(args.merges_path)):
@@ -472,13 +513,64 @@ if __name__ == "__main__":
             )
             count += len(df)
     output += add_def("mergesInitial", count)
+    output += add_def("mergesPer", args.n_merges)
+    output += add_def("failedTrivialMerges", len(failed_trivial_merges))
 
+    repos = 0
     count = 0
-    for i in tqdm(os.listdir(args.merges_valid_path)):
-        if i.endswith(".csv"):
-            df = pd.read_csv(os.path.join(args.merges_valid_path, i), index_col="idx")
-            count += len(df)
+    full = 0
+    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
+        merge_list_file = os.path.join(
+            args.merges_valid_path, repository_data["repository"].split("/")[1] + ".csv"
+        )
+        if not os.path.isfile(merge_list_file):
+            continue
+        merges = pd.read_csv(merge_list_file, index_col=0)
+        if len(merges) > 0:
+            repos += 1
+        count += len(merges)
+        if len(merges) == args.n_merges:
+            full += 1
+
+    output += add_def("reposSampled", repos)
     output += add_def("mergesSampled", count)
+    output += add_def("reposYieldedFull", full)
+    output += (
+        "% reposTotal/mergesTotal excludes any filtered out merges - we "
+        "currently filter out some inconsistent merges\n"
+    )
+    output += add_def("reposTotal", len(result_df["repo_name"].unique()))
+    output += add_def("mergesTotal", len(result_df))
+    output += add_def("mergesTrivial", len(trivial_merges))
+
+    output += "\n% Results\n"
+
+    spork_correct = len(result_df[result_df["spork"] == MERGE_STATE.Tests_passed.name])
+    ort_correct = len(
+        result_df[result_df["gitmerge-ort"] == MERGE_STATE.Tests_passed.name]
+    )
+    output += add_def("sporkOverOrtCorrect", spork_correct - ort_correct)
+
+    spork_incorrect = len(result_df[result_df["spork"].isin(MERGE_INCORRECT_NAMES)])
+    ort_incorrect = len(
+        result_df[result_df["gitmerge-ort"].isin(MERGE_INCORRECT_NAMES)]
+    )
+    output += add_def("sporkOverOrtIncorrect", spork_incorrect - ort_incorrect)
+
+    output += add_def("mainBranchMerges", len(main))
+    output += add_def(
+        "mainBranchMergesPercent", round(len(main) * 100 / len(result_df))
+    )
+    output += add_def("featureBranchMerges", len(feature))
+    output += add_def(
+        "featureBranchMergesPercent", round(len(feature) * 100 / len(result_df))
+    )
+
+    output += "\n% Timeout\n"
+    output += add_def("parentTestTimeout", str(TIMEOUT_TESTING // 60))
+    output += add_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
+    output += add_def("testTimout", str(TIMEOUT_MERGE // 60))
 
     with open(os.path.join(args.output_path, "defs.tex"), "w") as file:
         file.write(output)

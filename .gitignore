@@ -8,6 +8,8 @@ results/local_repos.csv
 machines.txt
 .valid_merges
 cache/
+artifacts/
+artifacts.tar.gz
 
 output/
 merge_repo/
@@ -21,6 +23,7 @@ input_data/repos.csv.gz
 cf/
 .gradle/
 cache-machines/
+.old_cache
 
 # Test output
 test/tmp1.txt
