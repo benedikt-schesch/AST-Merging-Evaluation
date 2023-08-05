@@ -79,7 +79,6 @@ small-test:
 	./run_small.sh -d
 	${MAKE} small-test-diff
 
-# TODO: How are the numbers in "-f11-150" determined?  It would be better to compute them than to hard-code them.
 small-test-diff:
 	@echo
 	@echo "Here is the file content, in case a diff fails."
