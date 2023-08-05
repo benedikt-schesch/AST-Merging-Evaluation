@@ -48,8 +48,8 @@ import org.plumelib.util.StringsPlume;
  * <p>The input is a .csv file, one of whose columns is named "repository" and contains
  * "owner/repo".
  *
- * <p>The output is a set of {@code .csv} files with columns: repository, branch name, merge commit
- * SHA, parent 1 commit SHA, base commit SHA.
+ * <p>The output is a set of {@code .csv} files with columns: branch name, merge commit SHA, parent
+ * 1 commit SHA, parest 2 commit SHA, base commit SHA.
  *
  * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
@@ -409,9 +409,8 @@ public class FindMergeCommits {
    * If there is none (because the two commits have different initial commits!), then this returns
    * null.
    *
-   * <p>Since only two commits are passed in, this always returns an existing commit (or null),
-   * never a synthetic one. When a criss-cross merge exists in the history, this outputs an
-   * arbitrary one of the best merge bases.
+   * <p>This always returns an existing commit (or null), never a synthetic one. When a criss-cross
+   * merge exists in the history, this outputs an arbitrary one of the best merge bases.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
