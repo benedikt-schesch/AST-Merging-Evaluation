@@ -228,6 +228,8 @@ public class FindMergeCommits {
   }
 
   /**
+   * The main entry point of the class, which is called by {@link #main}.
+   *
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
@@ -272,7 +274,7 @@ public class FindMergeCommits {
     }
 
     String repoDirName =
-        "/tmp/"
+        (Files.exists(Paths.get("/scratch/")) ? "/scratch/" : "/tmp/")
             + System.getProperty("user.name")
             + "/ast-merge-eval-data/"
             + orgName
@@ -286,6 +288,7 @@ public class FindMergeCommits {
     //      System.out.println("Clone " + repoDirFile + " already exists.");
     //      repo = new FileRepository(repoDirFile);
     //      git = new Git(repo);
+
     if (repoDirFile.exists()) {
       // Delete the directory.
       try (Stream<Path> pathStream = Files.walk(repoDirFile.toPath())) {
@@ -373,11 +376,23 @@ public class FindMergeCommits {
 
       RevCommit parent1 = parents[0];
       RevCommit parent2 = parents[1];
-      ObjectId mergeId = commit.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+
       if (mergeBase == null) {
+        // This merge originated from two distinct initial commits.
         continue;
       }
+
+      ObjectId mergeBaseId = mergeBase.toObjectId();
+      ObjectId parent1Id = parent1.toObjectId();
+      ObjectId parent2Id = parent2.toObjectId();
+      ObjectId mergeId = commit.toObjectId();
+
+      if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
+        // This is a trivial merge.
+        continue;
+      }
+
       boolean newMerge = written.add(mergeId);
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
@@ -414,9 +429,12 @@ public class FindMergeCommits {
   /// Git utilities
 
   /**
-   * Returns a list, retaining only the first branch when multiple branches have the same SHA, such
-   * as refs/heads/master and refs/remotes/origin/master. The result list has elements in the same
-   * order as the argument list.
+   * Returns a list, retaining only the first branch when multiple branches have the same head SHA,
+   * such as refs/heads/master and refs/remotes/origin/master. The result list has elements in the
+   * same order as the argument list.
+   *
+   * <p>This method removes duplicate branches. It does not filter duplicate commits that appear in
+   * multiple branches.
    *
    * @param branches a list of branches
    * @return the list, with duplicates removed
