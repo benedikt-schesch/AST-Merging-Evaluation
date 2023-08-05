@@ -38,9 +38,9 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if ! command -v  git-hires-merge &> /dev/null
+if ! command -v git-hires-merge &> /dev/null
 then
-    echo "Git hires merge could not be found"
+    echo "git-hires-merge is not on the PATH"
     echo "Run: export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH"
     echo "Alternatively, you can run: echo 'export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH' >> ~/.bashrc"
     exit 1
