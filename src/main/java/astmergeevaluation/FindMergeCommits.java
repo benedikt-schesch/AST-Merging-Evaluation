@@ -336,11 +336,23 @@ public class FindMergeCommits {
 
       RevCommit parent1 = parents[0];
       RevCommit parent2 = parents[1];
-      ObjectId mergeId = commit.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+
       if (mergeBase == null) {
+        // This merge originated from two distinct initial commits.
         continue;
       }
+
+      ObjectId mergeBaseId = mergeBase.toObjectId();
+      ObjectId parent1Id = parent1.toObjectId();
+      ObjectId parent2Id = parent2.toObjectId();
+      ObjectId mergeId = commit.toObjectId();
+
+      if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
+        // This is a trivial merge.
+        continue;
+      }
+
       boolean newMerge = written.add(mergeId);
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
@@ -351,9 +363,9 @@ public class FindMergeCommits {
                 "%s,%s,%s,%s,%s",
                 branch.getName(),
                 ObjectId.toString(mergeId),
-                ObjectId.toString(parent1.toObjectId()),
-                ObjectId.toString(parent2.toObjectId()),
-                ObjectId.toString(mergeBase.toObjectId())));
+                ObjectId.toString(parent1Id),
+                ObjectId.toString(parent2Id),
+                ObjectId.toString(mergeBaseId)));
         writer.newLine();
       }
     }
