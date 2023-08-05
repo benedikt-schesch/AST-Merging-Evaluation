@@ -1,8 +1,8 @@
-# ASTMerging
+# Evaluation of VCS merging algorithms
 
-![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
+![small-test](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
 
-![example workflow](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
+![check-style](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
 
 ## Requirements
 
@@ -52,7 +52,7 @@ brew install gh
 
 ### Java
 
-Make sure you install Java 8, 11 and 17. You need to set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective java installation.
+Make sure you install Java 8, 11 and 17. You need to set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
 
 ---
 
@@ -66,11 +66,11 @@ To test the stack, execute:
 make small-test
 ```
 
-This will run the entire code on two small repos.
-All the output data can be found in `results-small/`.
-The final result is found in `results-small/result.csv`.
-Directory `results-small/merges_small/` contains all the merges.
-Directory `results-small/merges_small_valid/` contains all the merges and also stores if the parents of a merge pass tests.
+This runs the entire code on two small repos.
+The output data appears in `results-small/`.
+ * `results-small/result.csv`: the final result
+ * `results-small/merges_small/` contains all the merges.
+ * `results-small/merges_small_valid/` contains all the merges and also records whether the parents of a merge pass tests.
 
 ### Perform full analysis
 
