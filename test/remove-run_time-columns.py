@@ -15,7 +15,7 @@ if len(args) != 2:
     sys.exit(1)
 
 # From https://stackoverflow.com/questions/74898724
-with open(args[0], "r") as input_file, open(args[1], "w", newline="") as output_file:
+with open(args[0], "r") as input_file, open(args[1], "w") as output_file:
     reader = csv.reader(input_file)
     writer = csv.writer(output_file)
 
