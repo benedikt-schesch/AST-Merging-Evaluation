@@ -224,7 +224,8 @@ def commit_pass_test(
             explanation = str(e)
             raise
     except Exception as e:
-        pass
+        # pass
+        raise
     write_cache(status, explanation, target_file)
     assert status != TEST_STATE.Not_tested
     print(repo_name, commit, ": Finished testing commit: ", status.name)
