@@ -45,8 +45,7 @@ import org.plumelib.util.StringsPlume;
  * Given a list of repositories, outputs a list of merge commits. The merge commits may be on the
  * mainline branch, feature branches, and pull requests (both opened and closed).
  *
- * <p>The input is a .csv file, one of whose columns is named "repository" and contains
- * "owner/repo".
+ * <p>The input is a .csv file, one of whose columns is named "repository" and contains "org/repo".
  *
  * <p>The output is a set of {@code .csv} files with columns: repository, branch name, merge commit
  * SHA, parent 1 commit SHA, base commit SHA.
@@ -68,11 +67,11 @@ import org.plumelib.util.StringsPlume;
 @SuppressWarnings("deprecation") // TODO: add comment here about why needed.
 public class FindMergeCommits {
 
-  /** The GitHub repositories to search for merge commits. Each is in the format "owner/repo". */
-  List<String> repos;
+  /** The GitHub repositories to search for merge commits. Each is in the format "org/repo". */
+  final List<OrgAndRepo> repos;
 
   /** The output directory. */
-  Path outputDir;
+  final Path outputDir;
 
   /** Performs GitHub queries and actions. */
   final GitHub gitHub;
@@ -81,10 +80,10 @@ public class FindMergeCommits {
   final CredentialsProvider credentialsProvider;
 
   /**
-   * Outputs (TODO: to where?) a list of merge commits from the given repositories.
+   * Outputs a list of merge commits from the given repositories.
    *
-   * @param args the first element is a .csv file containing GitHub repositories, in "owner/repo"
-   *     format, in a column named "repository"
+   * @param args the first element is a .csv file containing GitHub repositories, in "org/repo"
+   *     format, in a column named "repository"; the second element is an output directory
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
@@ -95,8 +94,8 @@ public class FindMergeCommits {
     }
 
     String inputFileName = args[0];
-    // A list of "owner/repo" strings.
-    List<String> repos = reposFromCsv(inputFileName);
+    // A list of "org/repo" strings.
+    List<OrgAndRepo> repos = reposFromCsv(inputFileName);
 
     String outputDirectoryName = args[1];
     Path outputDir = Paths.get(outputDirectoryName);
@@ -106,19 +105,14 @@ public class FindMergeCommits {
     fmc.writeMergeCommitsForRepos();
   }
 
-  @Override
-  public String toString(@GuardSatisfied FindMergeCommits this) {
-    return String.format("FindMergeCommits(%s, %s)", repos, outputDir);
-  }
-
   /**
    * Creates an instance of FindMergeCommits.
    *
-   * @param repos a list of GitHub repositories, in "owner/repository" format
+   * @param repos a list of GitHub repositories, in "org/repository" format
    * @param outputDir where to write results; is created if it does not exist
    * @throws IOException if there is trouble reading or writing files
    */
-  FindMergeCommits(List<String> repos, Path outputDir) throws IOException {
+  FindMergeCommits(List<OrgAndRepo> repos, Path outputDir) throws IOException {
     this.repos = repos;
     this.outputDir = outputDir;
 
@@ -160,6 +154,56 @@ public class FindMergeCommits {
     }
   }
 
+  @Override
+  public String toString(@GuardSatisfied FindMergeCommits this) {
+    return String.format("FindMergeCommits(%s, %s)", repos, outputDir);
+  }
+
+  /** Represents a GitHub repository. */
+  static class OrgAndRepo {
+    /** The owner or organization. */
+    public final String org;
+
+    /** The repository name within the organization. */
+    public final String repo;
+
+    /**
+     * Creates a new OrgAndRepo.
+     *
+     * @param org the org or organization
+     * @param repo the repository name within the organization
+     */
+    public OrgAndRepo(String org, String repo) {
+      this.org = org;
+      this.repo = repo;
+    }
+
+    /**
+     * Creates a new OrgAndRepo.
+     *
+     * @param orgAndRepoString the organization and repository name, separated by a slash ("/")
+     */
+    public OrgAndRepo(String orgAndRepoString) {
+      String[] orgAndRepoSplit = orgAndRepoString.split("/", -1);
+      if (orgAndRepoSplit.length != 2) {
+        System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
+        System.exit(4);
+      }
+      this.org = orgAndRepoSplit[1];
+      this.repo = orgAndRepoSplit[0];
+    }
+
+    /**
+     * Returns the printed representation of this.
+     *
+     * @return the printed representation of this
+     */
+    @Override
+    public String toString(@GuardSatisfied OrgAndRepo this) {
+      return org + "/" + repo;
+    }
+  }
+
   /**
    * Reads a list of repositories from a .csv file, one of whose columns is "repository".
    *
@@ -168,15 +212,15 @@ public class FindMergeCommits {
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
-  static List<String> reposFromCsv(String inputFileName) throws IOException, GitAPIException {
-    List<String> repos = new ArrayList<>();
+  static List<OrgAndRepo> reposFromCsv(String inputFileName) throws IOException, GitAPIException {
+    List<OrgAndRepo> repos = new ArrayList<>();
     try (@SuppressWarnings("DefaultCharset")
             FileReader fr = new FileReader(inputFileName /*, UTF_8*/);
         CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(fr)) {
       String[] repoColumn;
       while ((repoColumn = csvReader.readNext("repository")) != null) {
         assert repoColumn.length == 1 : "@AssumeAssertion(index): application-specific property";
-        repos.add(repoColumn[0]);
+        repos.add(new OrgAndRepo(repoColumn[0]));
       }
     } catch (CsvValidationException e) {
       throw new Error(e);
@@ -185,6 +229,8 @@ public class FindMergeCommits {
   }
 
   /**
+   * The main entry point of the class, which is called by {@link #main}.
+   *
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
@@ -196,36 +242,30 @@ public class FindMergeCommits {
   /**
    * Writes all merge commits for the given repository to a file.
    *
-   * @param orgAndRepo the GitHub organization name and repository name, separated by "/"
+   * @param orgAndRepo the GitHub organization name and repository name
    */
-  void writeMergeCommitsForRepo(String orgAndRepo) {
+  void writeMergeCommitsForRepo(OrgAndRepo orgAndRepo) {
     String msgPrefix = StringsPlume.rpad("Find merge commits: " + orgAndRepo + " ", 69) + " ";
     System.out.println(msgPrefix + "STARTED");
     try {
-      String[] orgAndRepoSplit = orgAndRepo.split("/", -1);
-      if (orgAndRepoSplit.length != 2) {
-        System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepo);
-        System.exit(4);
-      }
-      writeMergeCommits(orgAndRepoSplit[0], orgAndRepoSplit[1]);
-      System.out.println(msgPrefix + "DONE");
+      writeMergeCommits(orgAndRepo);
     } catch (Throwable e) {
       throw new Error(e);
     }
+    System.out.println(msgPrefix + "DONE");
   }
 
   /**
    * Writes all merge commits for the given repository to a file.
    *
-   * @param orgName the GitHub organization name
-   * @param repoName the repository name
+   * @param orgAndRepo the GitHub organization name and repository name
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
-  void writeMergeCommits(String orgName, String repoName) throws IOException, GitAPIException {
-    // This variant includes the organization name in the filename.
-    // File outputFile = new File(outputDir.toFile(), orgName + "__" + repoName + ".csv");
-    File outputFile = new File(outputDir.toFile(), repoName + ".csv");
+  void writeMergeCommits(OrgAndRepo orgAndRepo) throws IOException, GitAPIException {
+    String orgName = orgAndRepo.org;
+    String repoName = orgAndRepo.repo;
+    File outputFile = new File(outputDir.toFile(), orgName + "__" + repoName + ".csv");
     Path outputPath = outputFile.toPath();
     if (Files.exists(outputPath)) {
       // File exists, so there is nothing to do.
