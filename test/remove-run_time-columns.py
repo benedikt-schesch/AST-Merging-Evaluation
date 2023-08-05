@@ -21,7 +21,7 @@ with open(args[0], "r") as input_file, open(args[1], "w", newline="") as output_
 
     header_row = next(reader)
 
-    run_time_columns = [col for col in header_row if col.contains("run_time")]
+    run_time_columns = [col for col in header_row if "run_time" in col]
 
     run_time_column_indices = [header_row.index(col) for col in run_time_columns]
 
