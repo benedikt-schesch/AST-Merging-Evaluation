@@ -2,8 +2,8 @@
 
 """Remove all columns whose name contains "run_time"."""
 
-import pandas as pd
 from argparse import ArgumentParser
+import pandas as pd
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -22,5 +22,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     df = pd.read_csv(args.input)
-    df = df.loc[:, ~df.columns.str.contains("run_time")]
+    df = df.drop(columns=[c for c in df.columns if "run_time" in c])
     df.to_csv(args.output, index=False)
