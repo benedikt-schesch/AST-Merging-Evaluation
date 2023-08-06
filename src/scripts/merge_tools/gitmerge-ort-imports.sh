@@ -9,4 +9,4 @@ branch2=$3
 strategy="-s ort"
 "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
 
-(cd "$clone_dir" && "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts.sh)
+(cd "$clone_dir" && "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts)
