@@ -10,14 +10,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input",
         type=str,
-        default="results-small/result.csv",
-        help="Path to CSV file with run time columns",
+        help='Path to CSV file with "run_time" columns',
     )
     parser.add_argument(
         "--output",
         type=str,
-        default="results-small/result-without-times.csv",
-        help="Path to CSV file without run time columns",
+        help='Path to CSV file without "run_time" columns',
     )
     args = parser.parse_args()
 
