@@ -203,4 +203,4 @@ To run style checking run `make style`.
 
 * jars/ -> Location for the Intellimerge and Spork jars.
 
-* scratch/ -> If enabled each merge will be stored in this location.
+* scratch/ -> If STORE_SCRATCH is enabled in `merge_tester.py`, each merge will be stored in this location.
