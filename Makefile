@@ -80,8 +80,10 @@ small-test:
 	${MAKE} small-test-diff
 
 small-test-diff:
-# Print file names followed by file content.
+	@echo
+	@echo "Here is the file content, in case a diff fails."
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
+	@echo
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
