@@ -48,9 +48,10 @@ import org.plumelib.util.StringsPlume;
  * <p>The input is a .csv file, one of whose columns is named "repository" and contains "org/repo".
  *
  * <p>The output is a set of {@code .csv} files with columns: branch name, merge commit SHA, parent
- * 1 commit SHA, base commit SHA. The output omits merges with no base commit (this happens when a
- * repository contains multiple initial commits) and trivial merges where the base commit is one of
- * the parents.
+ * 1 commit SHA, base commit SHA.
+ *
+ * <p>The output omits merges with no base commit (this happens when a repository contains multiple
+ * initial commits) and trivial merges where the base commit is one of the parents.
  *
  * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
