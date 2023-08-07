@@ -369,7 +369,7 @@ public class FindMergeCommits {
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
-                ObjectId.toString(mergeBaseId),
+                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }
