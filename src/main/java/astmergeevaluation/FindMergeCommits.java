@@ -49,7 +49,8 @@ import org.plumelib.util.StringsPlume;
  * "owner/repo".
  *
  * <p>The output is a set of {@code .csv} files with columns: branch name, merge commit SHA, parent
- * 1 commit SHA, parest 2 commit SHA, base commit SHA.
+ * 1 commit SHA, parent 2 commit SHA, base commit SHA, notes. The "notes" column contains "trivial
+ * merge", "two initial commits", or is blank.
  *
  * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
@@ -334,23 +335,26 @@ public class FindMergeCommits {
         continue;
       }
 
+      ObjectId mergeId = commit.toObjectId();
       RevCommit parent1 = parents[0];
+      ObjectId parent1Id = parent1.toObjectId();
       RevCommit parent2 = parents[1];
+      ObjectId parent2Id = parent2.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+      ObjectId mergeBaseId;
+      String notes;
 
       if (mergeBase == null) {
         // This merge originated from two distinct initial commits.
-        continue;
-      }
-
-      ObjectId mergeBaseId = mergeBase.toObjectId();
-      ObjectId parent1Id = parent1.toObjectId();
-      ObjectId parent2Id = parent2.toObjectId();
-      ObjectId mergeId = commit.toObjectId();
-
-      if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
-        // This is a trivial merge.
-        continue;
+        notes = "two initial commits";
+        mergeBaseId = null;
+      } else {
+        mergeBaseId = mergeBase.toObjectId();
+        if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
+          notes = "trivial merge";
+        } else {
+          notes = "";
+        }
       }
 
       boolean newMerge = written.add(mergeId);
@@ -360,12 +364,13 @@ public class FindMergeCommits {
         // "org_repo,branch_name,merge_commit,parent_1,parent_2,base_commit"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s",
+                "%s,%s,%s,%s,%s,%s",
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
-                ObjectId.toString(mergeBaseId)));
+                ObjectId.toString(mergeBaseId),
+                notes));
         writer.newLine();
       }
     }
