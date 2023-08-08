@@ -270,7 +270,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit");
+      writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
