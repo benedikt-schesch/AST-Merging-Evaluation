@@ -276,8 +276,6 @@ public class FindMergeCommits {
         (Files.exists(Paths.get("/scratch/")) ? "/scratch/" : "/tmp/")
             + System.getProperty("user.name")
             + "/ast-merge-eval-data/"
-            + orgName
-            + "__"
             + repoName;
     File repoDirFile = new File(repoDirName);
     repoDirFile.mkdirs();
