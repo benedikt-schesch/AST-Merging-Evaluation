@@ -24,6 +24,7 @@ TEST_STATE = Enum(
         "Tests_failed",
         "Tests_running",
         "Tests_timedout",
+        "Git_checkout_failed",
     ],
 )
 
@@ -150,7 +151,9 @@ class Repository:
         """
         sha = self.compute_tree_fingerprint()
         cache_entry_name = sha + ".json"
-        cache_entry = self.cache_prefix / self.repo_name / cache_entry_name
+        cache_entry = (
+            self.cache_prefix / self.repo_name.split("/")[1] / cache_entry_name
+        )
         cache_entry.parent.mkdir(parents=True, exist_ok=True)
 
         lock = fasteners.InterProcessLock(str(cache_entry) + ".lock")

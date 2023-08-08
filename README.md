@@ -187,7 +187,7 @@ To run style checking run `make style`.
 
   * merge_diff_results/ -> Caches the diff results for specific merges.
 
-* test_cache/ -> This folder is a cache for each test computation. contains:
+* cache-small/ -> This folder is a cache for each test computation. contains:
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
