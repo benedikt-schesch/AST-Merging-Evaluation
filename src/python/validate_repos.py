@@ -31,7 +31,7 @@ if os.getenv("TERM", "dumb") == "dumb":
 TIMEOUT_TESTING = 60 * 30  # 30 minutes
 
 
-def clone_repo(repo_name: str):
+def clone_repo(repo_name: str)->git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
@@ -53,6 +53,7 @@ def clone_repo(repo_name: str):
     except Exception as e:
         print(repo_name, "Exception during cloning. Exception:\n", e)
         raise
+    return repo
 
 
 def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:

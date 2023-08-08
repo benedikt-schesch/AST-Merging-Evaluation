@@ -49,7 +49,7 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # Compresses the cache.
 compress-cache:
 	rm -r cache.tar
-	tar --exclude="*explanation.txt" --exclude="*.lock" -czf cache.tar cache
+	tar --exclude="*.lock" -czf cache.tar cache
 
 # Decompresses the cache.
 decompress-cache:
