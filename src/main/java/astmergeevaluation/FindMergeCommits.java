@@ -187,8 +187,8 @@ public class FindMergeCommits {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
         System.exit(4);
       }
-      this.org = orgAndRepoSplit[1];
-      this.repo = orgAndRepoSplit[0];
+      this.org = orgAndRepoSplit[0];
+      this.repo = orgAndRepoSplit[1];
     }
 
     /**
