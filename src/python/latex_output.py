@@ -25,6 +25,7 @@ following input files:
 import os
 import argparse
 from pathlib import Path
+import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -240,16 +241,18 @@ if __name__ == "__main__":
         latex_merge_tool = [
             "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
         ]
-        heatmap = sns.heatmap(
-            result,
-            annot=True,
-            ax=ax,
-            xticklabels=latex_merge_tool,
-            yticklabels=latex_merge_tool,
-            fmt="g",
-            mask=result == 0,
-            cmap="Blues",
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            heatmap = sns.heatmap(
+                result,
+                annot=True,
+                ax=ax,
+                xticklabels=latex_merge_tool,
+                yticklabels=latex_merge_tool,
+                fmt="g",
+                mask=result == 0,
+                cmap="Blues",
+            )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
         heatmap.set_xticklabels(
             labels=heatmap.get_xticklabels(),
