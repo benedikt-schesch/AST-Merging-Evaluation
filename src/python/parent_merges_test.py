@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["branch_name", "merge", "left", "right", "base"],
+            names=["branch_name", "merge", "left", "right", "base", "notes"],
             header=0,
         )
         merges = merges.sample(frac=1, random_state=42)
@@ -274,7 +274,7 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["branch_name", "merge", "left", "right", "base"],
+            names=["branch_name", "merge", "left", "right", "base", "notes"],
             header=0,
         )
         merges = merges.sample(frac=1, random_state=42)
