@@ -161,6 +161,7 @@ def del_rw(action, name, exc):
     shutil.rmtree(name, ignore_errors=True)
 
 
+# pylint: disable=locally-disabled, too-many-statements
 def commit_pass_test(
     repo_name: str, commit: str, diagnostic: str, cache: str
 ) -> TEST_STATE:
