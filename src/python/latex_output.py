@@ -129,7 +129,7 @@ def compute_trivial_merges(df: pd.DataFrame):
     """
     trivial_merges = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        if row["left"] == row["base"] or row["right"] == row["base"]:
+        if row["notes"] == "trivial merge":
             trivial_merges.append(row)
     return trivial_merges
 
@@ -508,7 +508,7 @@ if __name__ == "__main__":
         if i.endswith(".csv"):
             df = pd.read_csv(
                 os.path.join(args.merges_path, i),
-                names=["branch_name", "merge", "left", "right", "base"],
+                names=["branch_name", "merge", "left", "right", "notes"],
                 header=0,
             )
             count += len(df)
