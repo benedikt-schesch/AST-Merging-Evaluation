@@ -165,7 +165,7 @@ def commit_pass_test(
     repo_name: str, commit: str, diagnostic: str, cache: str
 ) -> TEST_STATE:
     """Tests a commit of a repository.
-    Args:commit_pass_test
+    Args:
         repo_name (str): The name of the repository.
         commit (str): The commit to be tested.
         diagnostic (str): A string printed in diagnostics.
@@ -228,6 +228,8 @@ def commit_pass_test(
     write_cache(status, explanation, target_file)
     assert status != TEST_STATE.Not_tested
     print(repo_name, commit, ": Finished testing commit: ", status.name)
+    if status.name == "Tests_failed":
+        print(repo_name, commit, ": test failure output is in", target_file)
     if os.path.isdir(work_dir):
         # Remove all permision restrictions from work_dir
         shutil.rmtree(work_dir, onerror=del_rw)
@@ -318,7 +320,7 @@ if __name__ == "__main__":
     ]
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
-    print("validate_repos: Number of valid repos:", len(out))
+    print("validate_repos: Number of valid repos:", len(out), "out of", len(df))
     if len(out) == 0:
         sys.exit(1)
     out.to_csv(args.output_path, index_label="idx")
