@@ -398,7 +398,7 @@ public class FindMergeCommits {
         // "org_repo,branch_name,merge_commit,parent_1,parent_2"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s,%s",
+                "%s,%s,%s,%s,%s",
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
