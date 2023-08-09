@@ -377,13 +377,15 @@ public class FindMergeCommits {
       RevCommit parent2 = parents[1];
       ObjectId parent2Id = parent2.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+      ObjectId mergeBaseId;
       String notes;
 
       if (mergeBase == null) {
         // This merge originated from two distinct initial commits.
         notes = "two initial commits";
+        mergeBaseId = null;
       } else {
-        ObjectId mergeBaseId = mergeBase.toObjectId();
+        mergeBaseId = mergeBase.toObjectId();
         if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
           notes = "trivial merge";
         } else {
@@ -395,7 +397,7 @@ public class FindMergeCommits {
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
       if (newMerge) {
-        // "org_repo,branch_name,merge_commit,parent_1,parent_2"
+        // "org_repo,branch_name,merge_commit,parent_1,parent_2,base_commit"
         writer.write(
             String.format(
                 "%s,%s,%s,%s,%s,%s",
@@ -403,6 +405,7 @@ public class FindMergeCommits {
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
+                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }
@@ -450,11 +453,8 @@ public class FindMergeCommits {
    * If there is none (because the two commits have different initial commits!), then this returns
    * null.
    *
-   * <p>This always returns an existing commit (or null), never a synthetic one.
-   *
-   * <p>When a criss-cross merge exists in the history, this outputs an arbitrary one of the best
-   * merge bases (likely the earliest one). It doesn't matter which one is output, for the uses of
-   * this method in this program.
+   * <p>This always returns an existing commit (or null), never a synthetic one. When a criss-cross
+   * merge exists in the history, this outputs an arbitrary one of the best merge bases.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
@@ -512,7 +512,6 @@ public class FindMergeCommits {
   }
 
   // This doesn't work; I don't know why.
-  // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
@@ -550,7 +549,6 @@ public class FindMergeCommits {
   }
 
   // This doesn't work; I don't know why.
-  // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
