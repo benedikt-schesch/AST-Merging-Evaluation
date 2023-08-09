@@ -68,7 +68,15 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     print(repo_name, ": head_passes_tests : started")
 
     repo = Repository(repo_name, cache_prefix=cache)
-    repo.checkout(repo_info["Validation hash"])
+    success, explanation = repo.checkout(repo_info["Validation hash"])
+    if not success:
+        print(
+            repo_name,
+            ": head_passes_tests : failed : checkout =",
+            explanation,
+        )
+        del repo
+        return TEST_STATE.Git_checkout_failed
     test_result = repo.test(timeout=TIMEOUT_TESTING)
 
     del repo

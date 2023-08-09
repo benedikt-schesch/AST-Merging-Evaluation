@@ -10,6 +10,7 @@ import uuid
 import subprocess
 import shutil
 import json
+import time
 import fasteners
 from git.repo import Repo
 
@@ -25,6 +26,33 @@ TEST_STATE = Enum(
         "Tests_running",
         "Tests_timedout",
         "Git_checkout_failed",
+    ],
+)
+BRANCH_BASE_NAME = "___MERGE_TESTER"
+LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
+RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
+MERGE_TOOL = Enum(
+    "MERGE_TOOL",
+    [
+    "gitmerge_ort",
+    "gitmerge_ort_ignorespace",
+    "gitmerge_recursive_patience",
+    "gitmerge_recursive_minimal",
+    "gitmerge_recursive_histogram",
+    "gitmerge_recursive_myers",
+    "gitmerge_resolve",
+    "git_hires_merge",
+    "spork",
+    "intellimerge",
+    ],
+)
+MERGE_STATE = Enum(
+    "MERGE_STATE",
+    [
+        "Merge_failed",
+        "Merge_timedout",
+        "Merge_success",
+        "git_checkout_failed",
     ],
 )
 
@@ -83,7 +111,6 @@ def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
 
-
 class Repository:
     """A class that represents a repository."""
 
@@ -109,7 +136,7 @@ class Repository:
         self.cache_prefix = cache_prefix
         self.cache_data = {}
 
-    def checkout(self, commit: str) -> bool:
+    def checkout(self, commit: str) -> Tuple[bool,str]:
         """Checks out the given commit.
         Args:
             commit (str): The commit to checkout.
@@ -117,12 +144,64 @@ class Repository:
             bool: True if the checkout succeeded, False otherwise.
         """
         try:
-            self.repo.git.checkout(commit)
+            self.repo.git.checkout(commit, force=True)
             self.repo.submodule_update()
         except Exception as e:
-            print("Failed to checkout", commit, "for", self.repo_name, ":", e)
-            return False
-        return True
+            explanation = "Failed to checkout " + commit + " for " + self.repo_name + " : \n" + str(e)
+            return False, explanation
+        return True, ""
+
+    def merge(
+        self,
+        tool: MERGE_TOOL,
+        left_commit: str,
+        right_commit: str,
+        timeout: int,
+    )->Tuple[MERGE_STATE, str, float]:
+        """Merges the given commits using the given tool.
+        Args:
+            tool (MERGE_TOOL): The tool to use.
+            left_commit (str): The left commit to merge.
+            right_commit (str): The right commit to merge.
+            timeout (int): The timeout limit.
+        Returns:
+            MERGE_STATE: The result of the merge.
+            str: explanation. The explanation of the result.
+            float: The time it took to run the merge.
+        """
+        success, explanation = self.checkout(left_commit)
+        if not success:
+            return MERGE_STATE.git_checkout_failed, explanation, -1
+        self.repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        success, explanation = self.checkout(right_commit)
+        if not success:
+            return MERGE_STATE.git_checkout_failed, explanation, -1
+        self.repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
+        start = time.time()
+        try:
+            command = [
+                    "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
+                    self.repo_path,
+                    LEFT_BRANCH_NAME,
+                    RIGHT_BRANCH_NAME,
+                ]
+            p = subprocess.run(  # pylint: disable=consider-using-with
+                command,
+                capture_output=True,
+                timeout=timeout,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as e:
+            explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+            explanation += "\nstdout:\n" + e.stdout.decode("utf-8") if e.stdout else ""
+            explanation += "\nstderr:\n" + e.stderr.decode("utf-8") if e.stderr else ""
+            return MERGE_STATE.Merge_timedout, explanation, -1
+        run_time = time.time() - start
+        explanation = "STDOUT:\n" + p.stdout.decode("utf-8")
+        explanation += "\nSTDERR:\n" + p.stderr.decode("utf-8")
+        merge_status = MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
+        return merge_status, explanation, run_time
+
 
     def compute_tree_fingerprint(self) -> str:
         """Computes the tree fingerprint of the repository.
