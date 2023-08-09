@@ -29,6 +29,7 @@ clean:
 	rm -rf repos
 	rm -rf scratch
 	rm -rf results-small
+	rm -rf .valid_merges
 
 # This target deletes files in the cache, which is commited to version control.
 clean-cache:

@@ -9,15 +9,19 @@ from enum import Enum
 import uuid
 import subprocess
 import shutil
-import json
 import time
-import fasteners
 from git.repo import Repo
+from cache_utils import (
+    get_cache_path,
+    check_cache,
+    get_cache,
+    write_cache,
+    get_cache_lock,
+)
 
-
+DELETE_WORKDIRS = True
 REPOS_PATH = Path("repos")
 WORKDIR_PREFIX = Path(".workdir")
-N_RESTARTS = 5
 TEST_STATE = Enum(
     "TEST_STATE",
     [
@@ -34,16 +38,16 @@ RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOL = Enum(
     "MERGE_TOOL",
     [
-    "gitmerge_ort",
-    "gitmerge_ort_ignorespace",
-    "gitmerge_recursive_patience",
-    "gitmerge_recursive_minimal",
-    "gitmerge_recursive_histogram",
-    "gitmerge_recursive_myers",
-    "gitmerge_resolve",
-    "git_hires_merge",
-    "spork",
-    "intellimerge",
+        "gitmerge_ort",
+        "gitmerge_ort_ignorespace",
+        "gitmerge_recursive_patience",
+        "gitmerge_recursive_minimal",
+        "gitmerge_recursive_histogram",
+        "gitmerge_recursive_myers",
+        # "gitmerge_resolve",
+        "git_hires_merge",
+        "spork",
+        "intellimerge",
     ],
 )
 MERGE_STATE = Enum(
@@ -55,18 +59,6 @@ MERGE_STATE = Enum(
         "git_checkout_failed",
     ],
 )
-
-
-def read_cache(cache_entry: Path) -> dict:
-    """Reads the cache entry."""
-    with open(cache_entry, "r") as f:
-        return json.load(f)
-
-
-def write_cache(cache_entry: Path, entry: dict):
-    """Writes the entry to the cache."""
-    with open(cache_entry, "w") as f:
-        json.dump(entry, f, indent=2)
 
 
 def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
@@ -111,6 +103,7 @@ def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
 
+
 class Repository:
     """A class that represents a repository."""
 
@@ -134,9 +127,8 @@ class Repository:
         shutil.copytree(self.path, self.repo_path)
         self.repo = Repo(self.repo_path)
         self.cache_prefix = cache_prefix
-        self.cache_data = {}
 
-    def checkout(self, commit: str) -> Tuple[bool,str]:
+    def checkout(self, commit: str) -> Tuple[bool, str]:
         """Checks out the given commit.
         Args:
             commit (str): The commit to checkout.
@@ -147,7 +139,14 @@ class Repository:
             self.repo.git.checkout(commit, force=True)
             self.repo.submodule_update()
         except Exception as e:
-            explanation = "Failed to checkout " + commit + " for " + self.repo_name + " : \n" + str(e)
+            explanation = (
+                "Failed to checkout "
+                + commit
+                + " for "
+                + self.repo_name
+                + " : \n"
+                + str(e)
+            )
             return False, explanation
         return True, ""
 
@@ -157,7 +156,9 @@ class Repository:
         left_commit: str,
         right_commit: str,
         timeout: int,
-    )->Tuple[MERGE_STATE, str, float]:
+    ) -> Tuple[
+        MERGE_STATE, Union[str, None], Union[str, None], Union[str, None], str, float
+    ]:
         """Merges the given commits using the given tool.
         Args:
             tool (MERGE_TOOL): The tool to use.
@@ -166,25 +167,37 @@ class Repository:
             timeout (int): The timeout limit.
         Returns:
             MERGE_STATE: The result of the merge.
+            str: The tree fingerprint of result.
+            str: The left fingerprint.
+            str: The right fingerprint.
             str: explanation. The explanation of the result.
             float: The time it took to run the merge.
         """
         success, explanation = self.checkout(left_commit)
+        left_fingreprint = self.compute_tree_fingerprint()
         if not success:
-            return MERGE_STATE.git_checkout_failed, explanation, -1
+            return MERGE_STATE.git_checkout_failed, None, None, None, explanation, -1
         self.repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
         success, explanation = self.checkout(right_commit)
+        right_fingerprint = self.compute_tree_fingerprint()
         if not success:
-            return MERGE_STATE.git_checkout_failed, explanation, -1
+            return (
+                MERGE_STATE.git_checkout_failed,
+                None,
+                left_fingreprint,
+                None,
+                explanation,
+                -1,
+            )
         self.repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
         start = time.time()
         try:
             command = [
-                    "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
-                    self.repo_path,
-                    LEFT_BRANCH_NAME,
-                    RIGHT_BRANCH_NAME,
-                ]
+                "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
+                self.repo_path,
+                LEFT_BRANCH_NAME,
+                RIGHT_BRANCH_NAME,
+            ]
             p = subprocess.run(  # pylint: disable=consider-using-with
                 command,
                 capture_output=True,
@@ -195,16 +208,35 @@ class Repository:
             explanation = "Run Command: " + " ".join(command) + "\nTimed out"
             explanation += "\nstdout:\n" + e.stdout.decode("utf-8") if e.stdout else ""
             explanation += "\nstderr:\n" + e.stderr.decode("utf-8") if e.stderr else ""
-            return MERGE_STATE.Merge_timedout, explanation, -1
+            sha = self.compute_tree_fingerprint()
+            return (
+                MERGE_STATE.Merge_timedout,
+                sha,
+                left_fingreprint,
+                right_fingerprint,
+                explanation,
+                -1,
+            )
         run_time = time.time() - start
         explanation = "STDOUT:\n" + p.stdout.decode("utf-8")
         explanation += "\nSTDERR:\n" + p.stderr.decode("utf-8")
-        merge_status = MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
-        return merge_status, explanation, run_time
-
+        merge_status = (
+            MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
+        )
+        sha = self.compute_tree_fingerprint()
+        return (
+            merge_status,
+            sha,
+            left_fingreprint,
+            right_fingerprint,
+            explanation,
+            run_time,
+        )
 
     def compute_tree_fingerprint(self) -> str:
         """Computes the tree fingerprint of the repository.
+        Args:
+            store_cache (bool, optional) = False: Whether to store the fingerprint in the cache.
         Returns:
             str: The tree fingerprint.
         """
@@ -221,47 +253,52 @@ class Repository:
         )
         return result
 
-    def test(self, timeout: int) -> TEST_STATE:
+    def test(self, timeout: int, n_restarts: int) -> TEST_STATE:
         """Tests the repository.
         Args:
             timeout (int): The timeout limit.
+            n_restarts (int): The number of times to restart the test.
         Returns:
             TEST_STATE: The result of the test.
         """
         sha = self.compute_tree_fingerprint()
-        cache_entry_name = sha + ".json"
-        cache_entry = (
-            self.cache_prefix / self.repo_name.split("/")[1] / cache_entry_name
-        )
+        cache_entry = get_cache_path(self.repo_name, self.cache_prefix)
         cache_entry.parent.mkdir(parents=True, exist_ok=True)
+        cache_data = {}
 
-        lock = fasteners.InterProcessLock(str(cache_entry) + ".lock")
+        lock = get_cache_lock(self.repo_name, self.cache_prefix)
         with lock:
-            if cache_entry.exists():
-                self.cache_data = read_cache(cache_entry)
-                return TEST_STATE[self.cache_data["test_result"]]
-            self.cache_data["test_result"] = TEST_STATE.Tests_running.name
-            write_cache(cache_entry, self.cache_data)
+            if check_cache(sha, self.repo_name, self.cache_prefix):
+                cache_data = get_cache(sha, self.repo_name, self.cache_prefix)
+                return TEST_STATE[cache_data["test_result"]]
+            cache_data["test_result"] = TEST_STATE.Tests_running.name
+            write_cache(sha, cache_data, self.repo_name, self.cache_prefix)
 
-        self.cache_data["tests"] = []
-        self.cache_data["test_log_file"] = []
-        for i in range(N_RESTARTS):
+        cache_data["test_results"] = []
+        cache_data["test_log_file"] = []
+        for i in range(n_restarts):
             test, explanation = repo_test(self.repo_path, timeout)
             test_log_file = Path(
                 str(cache_entry).replace(".json", "_" + str(i) + ".log")
             )
+            test_log_file.parent.mkdir(parents=True, exist_ok=True)
+            if test_log_file.exists():
+                test_log_file.unlink()
             with open(test_log_file, "w") as f:
                 f.write(explanation)
-            self.cache_data["tests"].append(test.name)
-            self.cache_data["test_log_file"].append(str(test_log_file))
-            self.cache_data["test_result"] = test.name
+            cache_data["test_results"].append(test.name)
+            cache_data["test_log_file"].append(str(test_log_file))
+            cache_data["test_result"] = test.name
             if test in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
         with lock:
-            write_cache(cache_entry, self.cache_data)
-        return TEST_STATE[self.cache_data["test_result"]]
+            write_cache(
+                sha, cache_data, self.repo_name, self.cache_prefix, overwrite=True
+            )
+        return TEST_STATE[cache_data["test_result"]]
 
     def __del__(self) -> None:
         """Deletes the repository."""
-        shutil.rmtree(self.workdir)
+        if DELETE_WORKDIRS:
+            shutil.rmtree(self.workdir)

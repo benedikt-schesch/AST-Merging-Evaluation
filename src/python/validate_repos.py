@@ -31,7 +31,7 @@ if os.getenv("TERM", "dumb") == "dumb":
 TIMEOUT_TESTING = 60 * 30  # 30 minutes
 
 
-def clone_repo(repo_name: str)->git.repo.Repo:
+def clone_repo(repo_name: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
@@ -77,7 +77,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
         )
         del repo
         return TEST_STATE.Git_checkout_failed
-    test_result = repo.test(timeout=TIMEOUT_TESTING)
+    test_result = repo.test(timeout=TIMEOUT_TESTING, n_restarts=3)
 
     del repo
     print(
@@ -136,9 +136,8 @@ if __name__ == "__main__":
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
 
-    print("validate_repos: Number of valid repos:", len(out))
+    print("validate_repos: Number of valid repos:", len(out), "out of", len(df))
     if len(out) == 0:
-        sys.exit(1)
+        raise Exception("No valid repos found")
     out.to_csv(args.output_path, index_label="idx")
     print("validate_repos: Done")
-    exit(1)
