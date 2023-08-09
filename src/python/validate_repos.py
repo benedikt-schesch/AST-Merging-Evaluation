@@ -228,7 +228,7 @@ def commit_pass_test(
     write_cache(status, explanation, target_file)
     assert status != TEST_STATE.Not_tested
     print(repo_name, commit, ": Finished testing commit: ", status.name)
-    if status.name == "Tests_failed":
+    if status == TEST_STATE.Tests_failed:
         print(repo_name, commit, ": test failure output is in", target_file)
     if os.path.isdir(work_dir):
         # Remove all permision restrictions from work_dir
