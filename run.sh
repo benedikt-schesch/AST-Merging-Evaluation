@@ -31,9 +31,6 @@ while [ $# -gt 0 ]; do
     num_machines=$2
     shift
     ;;
-    -d | -diff)
-    flags="$flags -diff"
-    ;;
   esac
   shift
 done
@@ -79,7 +76,7 @@ python3 src/python/split_repos.py \
 python3 src/python/validate_repos.py \
     --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
     --output_path "$OUT_DIR/valid_repos.csv" \
-    --cache_dir "$CACHE_DIR/test_result"
+    --cache_dir "$CACHE_DIR/test_results"
 
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
@@ -89,16 +86,16 @@ java -cp build/libs/astmergeevaluation-all.jar \
 python3 src/python/merge_filter.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_data/" \
+    --output_dir "$OUT_DIR/merges_analyze/" \
     --cache_dir "$CACHE_DIR/merges"
 
-exit 0
-# shellcheck disable=SC2086
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
-    --merges_path "$OUT_DIR/merges_valid/" \
-    --output_file "$OUT_DIR/result.csv" \
-    --cache_dir "$CACHE_DIR" $flags
+    --merges_path "$OUT_DIR/merges_analyze/" \
+    --output_file "$OUT_DIR/merges_tested/" \
+    --cache_dir "$CACHE_DIR/test_results"
+
+exit 0
 
 python3 src/python/latex_output.py \
     --full_repos_csv "$REPOS_CSV" \

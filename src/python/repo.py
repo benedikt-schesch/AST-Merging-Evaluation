@@ -44,7 +44,7 @@ MERGE_TOOL = Enum(
         "gitmerge_recursive_minimal",
         "gitmerge_recursive_histogram",
         "gitmerge_recursive_myers",
-        # "gitmerge_resolve",
+        "gitmerge_resolve",
         "git_hires_merge",
         "spork",
         "intellimerge",

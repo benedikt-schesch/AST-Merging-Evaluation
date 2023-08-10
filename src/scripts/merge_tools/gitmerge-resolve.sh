@@ -10,10 +10,15 @@ strategy="-s resolve"
 "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
 status=$?
 
-readarray -t files < <(grep -l -r '^\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file_')
+if [ "$status" -ne 0 ]; then
+  echo "Fixing conflicts"
+  cd "$clone_dir" || exit 1
+  readarray -t files < <(grep -l -r '^\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file_')
+  for file in "${files[@]}" ; do
+    echo "Fixing $file"
+    sed -i 's/^\(\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file\)_[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]$/\1/' "$file"
+  done
+fi
 
-for file in "${files[@]}" ; do
-  sed -i 's/^\(\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file\)_[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]$/\1/' "$file"
-done
 
 exit "$status"
