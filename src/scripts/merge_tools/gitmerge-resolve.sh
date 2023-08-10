@@ -8,7 +8,7 @@ branch1=$2
 branch2=$3
 strategy="-s resolve"
 "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
-echo status=$?
+status=$?
 
 readarray -t files < <(grep -l -r '^\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file_')
 
