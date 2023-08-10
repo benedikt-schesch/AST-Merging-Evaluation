@@ -169,14 +169,14 @@ if __name__ == "__main__":
     random.shuffle(arguments)
 
     print("merge_filter: Finished Constructing Inputs")
-    print("merge_filter: Number of merges:", len(arguments))
+    print("merge_filter: Number of new merges:", len(arguments))
 
     print("merge_filter: Started Merging")
     cpu_count = os.cpu_count() or 1
     processes_used = int(cpu_count * 0.9) if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         result = list(tqdm(pool.imap(merger, arguments), total=len(arguments)))
-    print("parent_merges_test: Finished Merging")
+    print("merge_filter: Finished Merging")
 
     results = {repo_name: [] for repo_name in repos["repository"]}
     print("merge_filter: Constructing Output")
@@ -222,12 +222,19 @@ if __name__ == "__main__":
         if analyze:
             n_analyze += 1
 
+    n_total_analyze = 0
     for repo_name in results:
-        df = pd.DataFrame(results[repo_name])
-        df.to_csv(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv"), index=False
+        output_file = Path(
+            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
+        if output_file.exists():
+            n_total_analyze += sum(pd.read_csv(output_file,header=0)["analyze"])
+            continue
+        df = pd.DataFrame(results[repo_name])
+        df.to_csv(output_file)
+        n_total_analyze += sum(df["analyze"])
 
-    print("parent_merges_test: Number of merges to be analyzed:", n_analyze)
-    print("parent_merges_test: Finished Constructing Output")
-    print("parent_merges_test: Done")
+    print("merge_filter: Number of merges to be newly analyzed:", n_analyze)
+    print("merge_filter: Number of merges to be analyzed:", n_total_analyze)
+    print("merge_filter: Finished Constructing Output")
+    print("merge_filter: Done")

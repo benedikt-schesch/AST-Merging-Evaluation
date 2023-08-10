@@ -30,7 +30,7 @@ TIMEOUT_TESTING = 60 * 30  # 30 minutes
 N_RESTARTS = 3
 
 
-def merger(args: Tuple[str, pd.Series, Path]) -> dict:
+def merge_tester(args: Tuple[str, pd.Series, Path]) -> dict:
     """
     Merges two branches and returns the result.
     Args:
@@ -106,19 +106,11 @@ if __name__ == "__main__":
                 "merge_tester: Skipping", repo_name, "because it is already computed."
             )
             continue
-
-        merges = pd.read_csv(
-            merge_list_file,
-            names=["branch_name", "merge", "left", "right", "notes"],
-            dtype={
-                "branch_name": str,
-                "merge": str,
-                "left": str,
-                "right": str,
-                "notes": str,
-            },
-            header=0,
-        )
+        try:
+            merges = pd.read_csv(merge_list_file,header=0)
+        except pd.errors.EmptyDataError:
+            print("merge_tester: Skipping", repo_name, "because it is empty.")
+            continue
         merges = merges[merges["analyze"]]
         arguments += [
             (repo_name, merge_data, Path(args.cache_dir))
@@ -130,65 +122,43 @@ if __name__ == "__main__":
     random.shuffle(arguments)
 
     print("merge_tester: Finished Constructing Inputs")
-    print("merge_tester: Number of merges:", len(arguments))
+    print("merge_tester: Number of tested merges:", len(arguments))
 
-    print("merge_tester: Started Merging")
+    print("merge_tester: Started Testing")
     cpu_count = os.cpu_count() or 1
     processes_used = int(cpu_count * 0.7) if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
-        result = list(tqdm(pool.imap(merger, arguments), total=len(arguments)))
-    print("parent_merges_test: Finished Merging")
+        result = list(tqdm(pool.imap(merge_tester, arguments), total=len(arguments)))
+    print("merge_tester: Finished Testing")
 
     results = {repo_name: [] for repo_name in repos["repository"]}
     print("merge_tester: Constructing Output")
-    n_analyze = 0
+
+    n_merges = 0
     for i in tqdm(range(len(arguments))):
         repo_name = arguments[i][0]
         merge_data = arguments[i][1]
-        cache_data = result[i]
-        analyze = False
-        for merge_tool1 in MERGE_TOOL:
-            for merge_tool2 in MERGE_TOOL:
-                if (
-                    cache_data[merge_tool1.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                    and cache_data[merge_tool2.name]["results"][0]
-                    != MERGE_STATE.Merge_success.name
-                ):
-                    analyze = True
-                if (
-                    cache_data[merge_tool1.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                    and cache_data[merge_tool2.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                ):
-                    if (
-                        cache_data[merge_tool1.name]["merge_fingerprint"]
-                        != cache_data[merge_tool2.name]["merge_fingerprint"]
-                    ):
-                        analyze = True
-        merge_data["analyze"] = analyze
-        merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
-        merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
+        merge_results = result[i]
+
         for merge_tool in MERGE_TOOL:
-            merge_data[merge_tool.name] = cache_data[merge_tool.name]["results"][0]
-            merge_data[merge_tool.name + "_run_time"] = np.median(
-                cache_data[merge_tool.name]["run_time"]
-            )
-            merge_data[merge_tool.name + "_merge_fingerprint"] = cache_data[
-                merge_tool.name
-            ]["merge_fingerprint"]
+           merge_data[merge_tool.name] = merge_results[merge_tool.name]
 
         results[repo_name].append(merge_data)
-        if analyze:
-            n_analyze += 1
 
+    n_total_merges = 0
     for repo_name in results:
-        df = pd.DataFrame(results[repo_name])
-        df.to_csv(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv"), index=False
+        output_file = Path(
+            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
+        if output_file.exists():
+            n_total_merges += len(pd.read_csv(output_file,header=0))
+            continue
+        df = pd.DataFrame(results[repo_name])
+        df.to_csv(output_file)
+        n_total_merges += len(df)
 
-    print("parent_merges_test: Number of merges to be analyzed:", n_analyze)
-    print("parent_merges_test: Finished Constructing Output")
-    print("parent_merges_test: Done")
+
+    print("merge_tester: Number of newly tested merges:", n_merges)
+    print("merge_tester: Number of total tested merges:", n_total_merges)
+    print("merge_tester: Finished Constructing Output")
+    print("merge_tester: Done")

@@ -92,7 +92,7 @@ python3 src/python/merge_filter.py \
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyze/" \
-    --output_file "$OUT_DIR/merges_tested/" \
+    --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR/test_results"
 
 exit 0
