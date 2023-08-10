@@ -152,13 +152,12 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["branch_name", "merge", "left", "right", "base", "notes"],
+            names=["branch_name", "merge", "left", "right", "notes"],
             dtype={
                 "branch_name": str,
                 "merge": str,
                 "left": str,
                 "right": str,
-                "base": str,
                 "notes": str,
             },
             header=0,
