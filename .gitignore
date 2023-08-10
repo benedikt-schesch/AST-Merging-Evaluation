@@ -2,7 +2,7 @@
 .vscode
 venv
 **/*_explanation.txt
-test_cache/
+cache-small/
 apache-maven-3.9.2/
 results/local_repos.csv
 machines.txt

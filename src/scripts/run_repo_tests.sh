@@ -19,14 +19,12 @@ REPO_DIR=$1
 cd "$REPO_DIR" || exit 1
 
 if [ -f "gradlew" ] ; then
-  command="./gradlew test -g ../.gradle/"
+  command="./gradlew test"
 elif [ -f "mvnw" ] ; then
   mvn -version
-  export MAVEN_OPTS="-Dmaven.repo.local=$REPO_DIR/.m2"
   command="./mvnw test"
 elif [ -f pom.xml ] ; then
   mvn -version
-  export MAVEN_OPTS="-Dmaven.repo.local=$REPO_DIR/.m2"
   command="mvn test"
 else
   echo "No Gradle or Maven buildfile"

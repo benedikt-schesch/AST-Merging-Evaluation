@@ -86,13 +86,13 @@ java -cp build/libs/astmergeevaluation-all.jar \
     "$OUT_DIR/valid_repos.csv" \
     "$OUT_DIR/merges"
 
-python3 src/python/parent_merges_test.py \
+python3 src/python/merge_filter.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_valid/" \
-    --n_merges "$N_MERGES" \
-    --cache_dir "$CACHE_DIR/test_result"
+    --output_dir "$OUT_DIR/merges_data/" \
+    --cache_dir "$CACHE_DIR/merges"
 
+exit 0
 # shellcheck disable=SC2086
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
