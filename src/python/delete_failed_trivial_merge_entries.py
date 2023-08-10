@@ -44,8 +44,8 @@ if __name__ == "__main__":
                             row["repo_name"].split("/")[1],
                             row["left"],
                             row["right"],
-                            row["base"],
                             row["merge"],
+                            row["notes"],
                             "",
                         ]
                     ),

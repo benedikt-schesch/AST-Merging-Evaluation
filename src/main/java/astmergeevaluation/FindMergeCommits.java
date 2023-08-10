@@ -306,7 +306,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
+      writer.write("branch_name,merge_commit,parent_1,parent_2,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
@@ -395,7 +395,7 @@ public class FindMergeCommits {
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
       if (newMerge) {
-        // "org_repo,branch_name,merge_commit,parent_1,parent_2"
+        // "branch_name,merge_commit,parent_1,parent_2,notes"
         writer.write(
             String.format(
                 "%s,%s,%s,%s,%s",
