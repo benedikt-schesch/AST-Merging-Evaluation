@@ -8,7 +8,7 @@ usage: python3 merge_tester.py --repos_csv <path_to_repos.csv>
 This script takes a csv of repos and a csv of merges and performs the merges with
 the different merging tools. The input repositories should contain a repo_name
 column in format "ORGANIZATION/REPO". The merges csv should contain the following
-columns: "left", "right", "base", "merge", "parent test". The "parent test" column
+columns: "left", "right", "merge", "parent test", "notes". The "parent test" column
 should contain the result of the test of the parent merge. The script will then
 perform the merges and test the resulting repositories. The results of the merges
 and the tests are stored in the output csv. The output csv will contain the same
@@ -276,7 +276,6 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
         repo_name (str): Name of the repo, in "ORGANIZATION/REPO" format.
         left (str): Left parent hash of the merge.
         right (str): Right parent hash of the merge.
-        base (str): Base parent hash of the merge.
         merge (str): Name of the merge.
         cache_dir (str): Path to the cache directory.
         merge_tools (List[str]): List of merge tools to analyze.
@@ -284,14 +283,14 @@ def merge_and_test(  # pylint: disable=R0912,R0915,R0914
         dict: A dictionary containing the results of the tests and the comparison of the
             different merging methods.
     """
-    repo_name, left, right, base, merge, cache_dir, check_diff, merge_tools = args
-    merge_id = "_".join([repo_name.split("/")[1], left, right, base, merge, ""])
+    repo_name, left, right, merge, cache_dir, check_diff, merge_tools = args
+    merge_id = "_".join([repo_name.split("/")[1], left, right, merge, ""])
     repo_dir = os.path.join("repos/", repo_name)
     work_dir = os.path.join(WORKDIR, uuid.uuid4().hex)
     cache_merge_status_prefix = os.path.join(
         cache_dir,
         "merge_test_results",
-        "_".join([repo_name.split("/")[1], left, right, base, merge, ""]),
+        "_".join([repo_name.split("/")[1], left, right, merge, ""]),
     )
     cache_diff_status_prefix = os.path.join(
         cache_dir,
@@ -427,7 +426,7 @@ if __name__ == "__main__":
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_tester: Building Function Arguments")
-    # Function arguments: (repo_name, left, right, base, merge)
+    # Function arguments: (repo_name, left, right, merge)
     args_merges = []
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
@@ -446,7 +445,6 @@ if __name__ == "__main__":
                         repository_data["repository"],
                         merge_data["left"],
                         merge_data["right"],
-                        merge_data["base"],
                         merge_data["merge"],
                         args.cache_dir,
                         args.diff,
@@ -460,7 +458,6 @@ if __name__ == "__main__":
                             repository_data["repository"],
                             merge_data["left"],
                             merge_data["right"],
-                            merge_data["base"],
                             merge_data["merge"],
                             args.cache_dir,
                             args.diff,
@@ -515,7 +512,6 @@ if __name__ == "__main__":
                     repository_data["repository"],
                     merge_data["left"],
                     merge_data["right"],
-                    merge_data["base"],
                     merge_data["merge"],
                     args.cache_dir,
                     args.diff,
@@ -534,7 +530,7 @@ if __name__ == "__main__":
                         ] = results[merge_tool].diff_merge_result[merge_tool2]
         output.append(merges)
     output = pd.concat(output, ignore_index=True)
-    output.sort_values(by=["repo_name", "left", "right", "base", "merge"], inplace=True)
+    output.sort_values(by=["repo_name", "left", "right", "merge"], inplace=True)
     output.reset_index(drop=True, inplace=True)
     output.to_csv(args.output_file, index_label="idx", columns=list(output.columns))
     print("merge_tester: Finished Building Output")

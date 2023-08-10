@@ -21,14 +21,14 @@ repos_csv = "input_data/repos.csv"
 if __name__ == "__main__":
     urllib.request.urlretrieve(
         "https://reporeapers.github.io/static/downloads/dataset.csv.gz",
-        "data/repos.csv.gz",
+        "input_data/repos.csv.gz",
     )
-    with gzip.open("data/repos.csv.gz", "rb") as f:
+    with gzip.open("input_data/repos.csv.gz", "rb") as f:
         df = pd.read_csv(BytesIO(f.read()))
-
     df = df[df["language"] == "Java"]
     df = df.replace(to_replace="None", value=np.nan).dropna()
-    df = df[df["stars"].astype(int) > 10]
+    df["stars"] = df["stars"].astype(int)
+    df = df[df["stars"] > 10]
     df = df[df["unit_test"] > 0.25]
 
     df.to_csv(repos_csv, index_label="idx")

@@ -29,6 +29,7 @@ clean:
 	rm -rf repos
 	rm -rf scratch
 	rm -rf results-small
+	rm -rf .valid_merges
 
 # This target deletes files in the cache, which is commited to version control.
 clean-cache:
@@ -36,7 +37,7 @@ clean-cache:
 
 # This target deletes files in the test cache.
 clean-test-cache:
-	rm -rf test_cache
+	rm -rf cache-small
 
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
@@ -49,7 +50,7 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # Compresses the cache.
 compress-cache:
 	rm -r cache.tar
-	tar --exclude="*explanation.txt" -czf cache.tar cache
+	tar --exclude="*.lock" -czf cache.tar cache
 
 # Decompresses the cache.
 decompress-cache:

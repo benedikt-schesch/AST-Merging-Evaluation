@@ -47,8 +47,6 @@ if __name__ == "__main__":
                     + "_"
                     + row["right"]
                     + "_"
-                    + row["base"]
-                    + "_"
                     + row["merge"]
                     + "_"
                     + i,

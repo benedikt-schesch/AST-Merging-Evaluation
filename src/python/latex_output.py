@@ -25,6 +25,7 @@ following input files:
 import os
 import argparse
 from pathlib import Path
+import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -129,7 +130,7 @@ def compute_trivial_merges(df: pd.DataFrame):
     """
     trivial_merges = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        if row["left"] == row["base"] or row["right"] == row["base"]:
+        if row["notes"] == "trivial merge":
             trivial_merges.append(row)
     return trivial_merges
 
@@ -240,16 +241,18 @@ if __name__ == "__main__":
         latex_merge_tool = [
             "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
         ]
-        heatmap = sns.heatmap(
-            result,
-            annot=True,
-            ax=ax,
-            xticklabels=latex_merge_tool,
-            yticklabels=latex_merge_tool,
-            fmt="g",
-            mask=result == 0,
-            cmap="Blues",
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            heatmap = sns.heatmap(
+                result,
+                annot=True,
+                ax=ax,
+                xticklabels=latex_merge_tool,
+                yticklabels=latex_merge_tool,
+                fmt="g",
+                mask=result == 0,
+                cmap="Blues",
+            )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
         heatmap.set_xticklabels(
             labels=heatmap.get_xticklabels(),
@@ -508,7 +511,7 @@ if __name__ == "__main__":
         if i.endswith(".csv"):
             df = pd.read_csv(
                 os.path.join(args.merges_path, i),
-                names=["branch_name", "merge", "left", "right", "base"],
+                names=["branch_name", "merge", "left", "right", "notes"],
                 header=0,
             )
             count += len(df)
