@@ -235,7 +235,9 @@ class Repository:
             str: The right fingerprint.
             float: The time it took to run the merge.
         """
-        sha_cache = self.check_sha_cache(left_commit + "_" + right_commit + "_" + tool.name)
+        sha_cache = self.check_sha_cache(
+            left_commit + "_" + right_commit + "_" + tool.name
+        )
         if sha_cache is None:
             return self.merge_and_test(
                 tool, left_commit, right_commit, timeout, n_restarts

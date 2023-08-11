@@ -67,9 +67,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             )
             assert left_fingreprint == merge_data["left_tree_fingerprint"]
             assert right_fingerprint == merge_data["right_tree_fingerprint"]
-            if (
-                merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]
-            ):
+            if merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]:
                 raise Exception(
                     "merge_tester: Merge fingerprint mismatch",
                     repo_name,
