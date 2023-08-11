@@ -61,7 +61,7 @@ def merger(args: Tuple[str, pd.Series, Path]) -> dict:
         assert right_fingerprint == merge_data["right_tree_fingerprint"]
         assert merge_fingerprint == merge_data[merge_tool.name + "_merge_fingerprint"]
         if merge_status == MERGE_STATE.Merge_success:
-            test_result = repo.test(TIMEOUT_TESTING,N_RESTARTS)
+            test_result = repo.test(TIMEOUT_TESTING, N_RESTARTS)
             result[merge_tool.name] = test_result.name
         else:
             result[merge_tool.name] = merge_status.name

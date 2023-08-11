@@ -57,7 +57,13 @@ def merger(args: Tuple[str, pd.Series, Path]) -> dict:
             return result
     cache_data = {}
     for merge_tool in MERGE_TOOL:
-        print("merge_filter: Merging", repo_name, merge_data["left"], merge_data["right"], merge_tool.name)
+        print(
+            "merge_filter: Merging",
+            repo_name,
+            merge_data["left"],
+            merge_data["right"],
+            merge_tool.name,
+        )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
         for i in range(N_RESTARTS):
             repo = Repository(repo_name, cache_prefix=cache_prefix)
@@ -93,7 +99,10 @@ def merger(args: Tuple[str, pd.Series, Path]) -> dict:
             if "merge_fingerprint" not in cache_data[merge_tool.name]:
                 cache_data[merge_tool.name]["merge_fingerprint"] = merge_fingerprint
             else:
-                assert cache_data[merge_tool.name]["merge_fingerprint"] == merge_fingerprint
+                assert (
+                    cache_data[merge_tool.name]["merge_fingerprint"]
+                    == merge_fingerprint
+                )
 
             if "left_tree_fingerprint" not in cache_data:
                 cache_data["left_tree_fingerprint"] = left_fingreprint
