@@ -21,7 +21,7 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 from cache_utils import (
-    check_cache,
+    isin_cache,
     get_cache,
     get_cache_lock,
     write_cache,
@@ -53,7 +53,7 @@ def merger(  # pylint: disable=too-many-locals
     lock = get_cache_lock(repo_name, cache_prefix)
 
     with lock:
-        if check_cache(cache_entry, repo_name, cache_prefix):
+        if isin_cache(cache_entry, repo_name, cache_prefix):
             result = get_cache(cache_entry, repo_name, cache_prefix)
             return result
     cache_data = {}

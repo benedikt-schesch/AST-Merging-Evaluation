@@ -86,7 +86,6 @@ small-test-diff:
 	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
 	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
-	python3 test/remove-run_time-columns.py --input results-small/filtered_result.csv --output results-small/filtered_result-without-times.csv
 	@echo
 	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x git -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -x '#*#' -r -U3 test/small-goal-files results-small
 	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt

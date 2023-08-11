@@ -127,7 +127,7 @@ UNDESIRABLE_STATES = [
     TEST_STATE.Git_checkout_failed.name,
     TEST_STATE.Not_tested.name,
     TEST_STATE.Tests_running.name,
-    MERGE_STATE.git_checkout_failed.name,
+    MERGE_STATE.Git_checkout_failed.name,
     MERGE_STATE.Merge_timedout.name,
 ]
 

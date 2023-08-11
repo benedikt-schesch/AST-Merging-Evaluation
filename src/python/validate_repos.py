@@ -19,6 +19,12 @@ import sys
 from functools import partialmethod
 from typing import Tuple
 from repo import Repository, TEST_STATE, REPOS_PATH
+from cache_utils import (
+    get_cache_lock,
+    get_cache_path,
+    isin_cache,
+    load_cache,
+)
 
 from tqdm import tqdm
 import pandas as pd
@@ -68,22 +74,8 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     print(repo_name, ": head_passes_tests : started")
 
     repo = Repository(repo_name, cache_prefix=cache)
-    success, explanation = repo.checkout(repo_info["Validation hash"])
-    if not success:
-        print(
-            repo_name,
-            ": head_passes_tests : failed : checkout =",
-            explanation,
-        )
-        del repo
-        return TEST_STATE.Git_checkout_failed
-    test_result = repo.test(timeout=TIMEOUT_TESTING, n_restarts=3)
-
-    del repo
-    print(
-        repo_name,
-        ": head_passes_tests : finished : result =",
-        test_result.name,
+    test_result = repo.checkout_and_test_cached(
+        repo_info["Validation hash"], timeout=TIMEOUT_TESTING, n_restarts=3
     )
     return test_result
 

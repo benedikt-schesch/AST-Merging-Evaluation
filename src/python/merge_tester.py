@@ -65,7 +65,6 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                 right_commit=merge_data["right"],
                 timeout=2 * TIMEOUT_MERGING,
             )
-            assert merge_status == MERGE_STATE.Merge_success
             assert left_fingreprint == merge_data["left_tree_fingerprint"]
             assert right_fingerprint == merge_data["right_tree_fingerprint"]
             assert (
