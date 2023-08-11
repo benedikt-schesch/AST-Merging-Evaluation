@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Make sure load factor is not biased
     df = df.sample(frac=1, random_state=42)
     df = np.array_split(df, args.num_machines)[args.machine_id]
-    df.sort_values(by=["repository"], inplace=True)
+    df.sort_index(inplace=True)
 
     df.to_csv(args.output_file, index_label="idx")
     print("Number of local repos in", args.repos_csv, "=", len(df))

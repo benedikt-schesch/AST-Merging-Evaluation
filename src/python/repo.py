@@ -19,6 +19,7 @@ from cache_utils import (
     get_cache_lock,
 )
 
+CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes
 DELETE_WORKDIRS = True
 REPOS_PATH = Path("repos")
 WORKDIR_PREFIX = Path(".workdir")
@@ -30,6 +31,7 @@ TEST_STATE = Enum(
         "Tests_running",
         "Tests_timedout",
         "Git_checkout_failed",
+        "Not_tested",
     ],
 )
 BRANCH_BASE_NAME = "___MERGE_TESTER"
@@ -150,7 +152,7 @@ class Repository:
             return False, explanation
         return True, ""
 
-    def merge(
+    def merge(  # pylint: disable=too-many-locals
         self,
         tool: MERGE_TOOL,
         left_commit: str,
@@ -267,13 +269,22 @@ class Repository:
         cache_data = {}
 
         lock = get_cache_lock(self.repo_name, self.cache_prefix)
-        with lock:
-            if check_cache(sha, self.repo_name, self.cache_prefix):
+        lock.acquire()
+        if check_cache(sha, self.repo_name, self.cache_prefix):
+            total_time = 0
+            while True:
                 cache_data = get_cache(sha, self.repo_name, self.cache_prefix)
-                return TEST_STATE[cache_data["test_result"]]
-            cache_data["test_result"] = TEST_STATE.Tests_running.name
-            write_cache(sha, cache_data, self.repo_name, self.cache_prefix)
-
+                if cache_data["test_result"] != TEST_STATE.Tests_running.name:
+                    break
+                lock.release()
+                time.sleep(CACHE_BACKOFF_TIME)
+                total_time += CACHE_BACKOFF_TIME
+                lock.acquire()
+            lock.release()
+            return TEST_STATE[cache_data["test_result"]]
+        cache_data["test_result"] = TEST_STATE.Tests_running.name
+        write_cache(sha, cache_data, self.repo_name, self.cache_prefix)
+        lock.release()
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
         for i in range(n_restarts):

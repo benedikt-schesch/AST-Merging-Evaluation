@@ -63,6 +63,9 @@ REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
 
 mkdir -p "$OUT_DIR"
 
+# Delete all locks in cache
+find "$CACHE_DIR" -name "*.lock" -delete
+
 python3 src/python/write_head_hashes.py \
     --repos_csv "$REPOS_CSV" \
     --output_path "$REPOS_CSV_WITH_HASHES"
@@ -92,7 +95,7 @@ python3 src/python/merge_filter.py \
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyze/" \
-    --output_dir "$OUT_DIR/merges_tested/" \
+    --output_dir "$OUT_DIR" \
     --cache_dir "$CACHE_DIR/test_results"
 
 exit 0

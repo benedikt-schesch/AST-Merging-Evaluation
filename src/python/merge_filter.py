@@ -5,9 +5,8 @@ usage: python3 merge_filter.py --valid_repos_csv <path_to_valid_repos.csv>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
 This script filters the merges that will be analyzed.
-A merge is analyzed if it is not trivial, if it is not a merge of two initial commits,
-and if a merge has at least two merge results that disagree (except if both fail)
-on the merge result.
+Only merges that are not trivial and that are not two initial commits are candidates.
+Candidates are analyzed if at least two merge tools disagree on the result of the merge.
 """
 
 import os
@@ -15,12 +14,12 @@ import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
-import numpy as np
 from typing import Tuple
+import random
+import numpy as np
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
-import random
 from cache_utils import (
     check_cache,
     get_cache,
@@ -35,7 +34,9 @@ TIMEOUT_MERGING = 60 * 15  # 15 minutes
 N_RESTARTS = 3
 
 
-def merger(args: Tuple[str, pd.Series, Path]) -> dict:
+def merger(  # pylint: disable=too-many-locals
+    args: Tuple[str, pd.Series, Path]
+) -> dict:
     """
     Merges two branches and returns the result.
     Args:
@@ -178,14 +179,14 @@ if __name__ == "__main__":
     random.shuffle(arguments)
 
     print("merge_filter: Finished Constructing Inputs")
-    print("merge_filter: Number of merges:", len(arguments))
+    print("merge_filter: Number of new merges:", len(arguments))
 
     print("merge_filter: Started Merging")
     cpu_count = os.cpu_count() or 1
     processes_used = int(cpu_count * 0.9) if cpu_count > 3 else cpu_count
     with multiprocessing.Pool(processes=processes_used) as pool:
         result = list(tqdm(pool.imap(merger, arguments), total=len(arguments)))
-    print("parent_merges_test: Finished Merging")
+    print("merge_filter: Finished Merging")
 
     results = {repo_name: [] for repo_name in repos["repository"]}
     print("merge_filter: Constructing Output")
@@ -231,12 +232,19 @@ if __name__ == "__main__":
         if analyze:
             n_analyze += 1
 
+    n_total_analyze = 0
     for repo_name in results:
-        df = pd.DataFrame(results[repo_name])
-        df.to_csv(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv"), index=False
+        output_file = Path(
+            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
+        if output_file.exists():
+            n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
+            continue
+        df = pd.DataFrame(results[repo_name])
+        df.to_csv(output_file)
+        n_total_analyze += sum(df["analyze"])
 
-    print("parent_merges_test: Number of merges to be analyzed:", n_analyze)
-    print("parent_merges_test: Finished Constructing Output")
-    print("parent_merges_test: Done")
+    print("merge_filter: Number of newly analyzed merges:", n_analyze)
+    print("merge_filter: Total number of merges to be analyzed:", n_total_analyze)
+    print("merge_filter: Finished Constructing Output")
+    print("merge_filter: Done")
