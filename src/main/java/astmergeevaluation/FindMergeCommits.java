@@ -77,6 +77,9 @@ public class FindMergeCommits {
   /** The JGit credentials provider. */
   final CredentialsProvider credentialsProvider;
 
+  /** The index within the output file; incremented for each line of each file. */
+  private int index = -1;
+
   /**
    * Outputs a list of merge commits from the given repositories.
    *
@@ -146,7 +149,8 @@ public class FindMergeCommits {
           new UsernamePasswordCredentialsProvider("Bearer", environmentGithubToken);
     } else {
       System.err.println(
-          "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
+          "FindMergeCommits: "
+              + "need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
       throw new Error("unreachable"); // needed due to javac definite assignment check
     }
@@ -306,7 +310,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,notes");
+      writer.write("idx,branch_name,merge_commit,parent_1,parent_2,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
@@ -338,6 +342,7 @@ public class FindMergeCommits {
     // The SHA ids of the merge commits that have already been output.
     Set<ObjectId> written = new HashSet<>();
 
+    index = 1;
     for (Ref branch : branches) {
       writeMergeCommitsForBranch(git, repo, branch, writer, written);
     }
@@ -377,13 +382,15 @@ public class FindMergeCommits {
       RevCommit parent2 = parents[1];
       ObjectId parent2Id = parent2.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+      ObjectId mergeBaseId;
       String notes;
 
       if (mergeBase == null) {
         // This merge originated from two distinct initial commits.
         notes = "two initial commits";
+        mergeBaseId = null;
       } else {
-        ObjectId mergeBaseId = mergeBase.toObjectId();
+        mergeBaseId = mergeBase.toObjectId();
         if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
           notes = "trivial merge";
         } else {
@@ -395,14 +402,16 @@ public class FindMergeCommits {
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
       if (newMerge) {
-        // "branch_name,merge_commit,parent_1,parent_2,notes"
+        // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s",
+                "%s,%s,%s,%s,%s,%s,%s",
+                index++,
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
+                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }
