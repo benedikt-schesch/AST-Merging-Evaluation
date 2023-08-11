@@ -235,7 +235,7 @@ class Repository:
             str: The right fingerprint.
             float: The time it took to run the merge.
         """
-        sha_cache = self.check_sha_cache(left_commit + "_" + right_commit)
+        sha_cache = self.check_sha_cache(left_commit + "_" + right_commit + "_" + tool.name)
         if sha_cache is None:
             return self.merge_and_test(
                 tool, left_commit, right_commit, timeout, n_restarts
@@ -280,6 +280,7 @@ class Repository:
             float: The time it took to run the merge.
         """
         # Checkout left
+        cache_name = left_commit + "_" + right_commit + "_" + tool.name
         left_cache = self.check_sha_cache(left_commit)
         if left_cache is not None and left_cache["sha"] is None:
             return (
@@ -299,7 +300,7 @@ class Repository:
                 self.sha_cache_prefix,
             )
             set_in_cache(
-                left_commit + "_" + right_commit,
+                cache_name,
                 {"sha": None, "explanation": explanation},
                 self.repo_name,
                 self.sha_cache_prefix,
@@ -328,7 +329,7 @@ class Repository:
                 self.sha_cache_prefix,
             )
             set_in_cache(
-                left_commit + "_" + right_commit,
+                cache_name,
                 {"sha": None, "explanation": explanation},
                 self.repo_name,
                 self.sha_cache_prefix,
@@ -378,7 +379,7 @@ class Repository:
             "right_fingerprint": right_fingerprint,
         }
         set_in_cache(
-            left_commit + "_" + right_commit,
+            cache_name,
             cache_entry,
             self.repo_name,
             self.sha_cache_prefix,

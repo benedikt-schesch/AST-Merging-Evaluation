@@ -53,25 +53,34 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         if merge_data[merge_tool.name] == MERGE_STATE.Merge_success.name:
             repo = Repository(repo_name, cache_prefix=cache_prefix)
             (
-                merge_status,
+                result,
                 merge_fingerprint,
                 left_fingreprint,
                 right_fingerprint,
                 _,
-                _,
-            ) = repo.merge(
+            ) = repo.merge_and_test_cached(
                 tool=merge_tool,
                 left_commit=merge_data["left"],
                 right_commit=merge_data["right"],
-                timeout=2 * TIMEOUT_MERGING,
+                timeout=TIMEOUT_TESTING_MERGE,
+                n_restarts=N_RESTARTS,
             )
             assert left_fingreprint == merge_data["left_tree_fingerprint"]
             assert right_fingerprint == merge_data["right_tree_fingerprint"]
-            assert (
-                merge_fingerprint == merge_data[merge_tool.name + "_merge_fingerprint"]
-            )
-            test_result = repo.test(TIMEOUT_TESTING_MERGE, N_RESTARTS)
-            merge_data[merge_tool.name] = test_result.name
+            if (
+                merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]
+            ):
+                raise Exception(
+                    "merge_tester: Merge fingerprint mismatch",
+                    repo_name,
+                    merge_data["left"],
+                    merge_data["right"],
+                    merge_tool.name,
+                    result,
+                    merge_fingerprint,
+                    merge_data[merge_tool.name + "_merge_fingerprint"],
+                )
+            merge_data[merge_tool.name] = result.name
             del repo
         assert merge_tool.name in merge_data
     return merge_data
