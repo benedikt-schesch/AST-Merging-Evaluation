@@ -16,17 +16,18 @@ from typing import Tuple
 import random
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE, TEST_STATE
+from merge_filter import TIMEOUT_MERGING
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-TIMEOUT_MERGING = 60 * 30  # 30 minutes
-TIMEOUT_TESTING = 60 * 30  # 30 minutes
+TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes
+TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
 N_RESTARTS = 3
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path]) -> dict:
+def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repository info and the cache path.
@@ -34,18 +35,19 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> dict:
         dict: The result of the test.
     """
     repo_name, merge_data, cache_prefix = args
-    result = {}
     print("merge_tester: Started ", repo_name, merge_data["left"], merge_data["right"])
+    merge_data["parent pass"] = False
     for branch in ["left", "right"]:
         repo = Repository(repo_name, cache_prefix=cache_prefix)
         repo.checkout(merge_data[branch])
         left_tree_fingerprint = repo.compute_tree_fingerprint()
         assert left_tree_fingerprint == merge_data[f"{branch}_tree_fingerprint"]
-        test_result = repo.test(TIMEOUT_TESTING, N_RESTARTS)
-        result[f"{branch} test result"] = test_result.name
+        test_result = repo.test(TIMEOUT_TESTING_PARENT, N_RESTARTS)
+        merge_data[f"{branch} test result"] = test_result.name
         if test_result != TEST_STATE.Tests_passed:
-            return result
+            return merge_data
         del repo
+    merge_data["parent pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if merge_data[merge_tool.name] == MERGE_STATE.Merge_success.name:
@@ -61,7 +63,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> dict:
                 tool=merge_tool,
                 left_commit=merge_data["left"],
                 right_commit=merge_data["right"],
-                timeout=TIMEOUT_MERGING,
+                timeout=2 * TIMEOUT_MERGING,
             )
             assert merge_status == MERGE_STATE.Merge_success
             assert left_fingreprint == merge_data["left_tree_fingerprint"]
@@ -69,10 +71,11 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> dict:
             assert (
                 merge_fingerprint == merge_data[merge_tool.name + "_merge_fingerprint"]
             )
-            test_result = repo.test(TIMEOUT_TESTING, N_RESTARTS)
-            result[merge_tool.name] = test_result.name
+            test_result = repo.test(TIMEOUT_TESTING_MERGE, N_RESTARTS)
+            merge_data[merge_tool.name] = test_result.name
             del repo
-    return result
+        assert merge_tool.name in merge_data
+    return merge_data
 
 
 if __name__ == "__main__":
@@ -113,7 +116,7 @@ if __name__ == "__main__":
             )
             continue
         try:
-            merges = pd.read_csv(merge_list_file, header=0)
+            merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
             print("merge_tester: Skipping", repo_name, "because it is empty.")
             continue
@@ -140,34 +143,13 @@ if __name__ == "__main__":
     results = {repo_name: [] for repo_name in repos["repository"]}
     print("merge_tester: Constructing Output")
 
-    n_merges = 0
     n_merges_parent_pass = 0
     for i in tqdm(range(len(arguments))):
         repo_name = arguments[i][0]
-        merge_data = arguments[i][1]
         merge_results = result[i]
-
-        merge_data["left test result"] = merge_results["left test result"]
-        merge_data["right test result"] = (
-            merge_results["right test result"]
-            if "right test result" in merge_results
-            else TEST_STATE.Not_tested.name
-        )
-        merge_data["parent pass"] = (
-            merge_data["left test result"] == TEST_STATE.Tests_passed.name
-            and merge_data["right test result"] == TEST_STATE.Tests_passed.name
-        )
-        for merge_tool in MERGE_TOOL:
-            merge_data[merge_tool.name] = (
-                merge_results[merge_tool.name]
-                if merge_tool.name in merge_results
-                else TEST_STATE.Not_tested.name
-            )
-
-        n_merges += 1
-        if merge_data["parent pass"]:
+        if merge_results["parent pass"]:
             n_merges_parent_pass += 1
-        results[repo_name].append(merge_data)
+        results[repo_name].append(merge_results)
 
     n_total_merges = 0
     n_total_merges_parent_pass = 0
@@ -176,16 +158,21 @@ if __name__ == "__main__":
             os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
         if output_file.exists():
-            df = pd.read_csv(output_file, header=0)
+            try:
+                df = pd.read_csv(output_file, header=0)
+            except pd.errors.EmptyDataError:
+                print("merge_tester: Skipping", repo_name, "because it is empty.")
+                continue
             n_total_merges += len(df)
             n_total_merges_parent_pass += len(df[df["parent pass"]])
             continue
         df = pd.DataFrame(results[repo_name])
-        df.to_csv(output_file)
+        df.sort_index(inplace=True)
+        df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
         n_total_merges_parent_pass += len(df[df["parent pass"]])
 
-    print("merge_tester: Number of newly tested merges:", n_merges)
+    print("merge_tester: Number of newly tested merges:", len(arguments))
     print(
         "merge_tester: Number of newly tested merges with parent pass:",
         n_merges_parent_pass,

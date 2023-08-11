@@ -405,13 +405,12 @@ public class FindMergeCommits {
         // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s,%s,%s",
+                "%s,%s,%s,%s,%s,%s",
                 index++,
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
-                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }

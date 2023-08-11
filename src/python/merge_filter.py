@@ -158,8 +158,9 @@ if __name__ == "__main__":
 
         merges = pd.read_csv(
             merge_list_file,
-            names=["branch_name", "merge", "left", "right", "notes"],
+            names=["idx", "branch_name", "merge", "left", "right", "notes"],
             dtype={
+                "idx": int,
                 "branch_name": str,
                 "merge": str,
                 "left": str,
@@ -167,6 +168,7 @@ if __name__ == "__main__":
                 "notes": str,
             },
             header=0,
+            index_col="idx",
         )
         merges = merges[~merges["notes"].isin(["trivial merge", "two initial commits"])]
         arguments += [
@@ -238,10 +240,14 @@ if __name__ == "__main__":
             os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
         if output_file.exists():
-            n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
+            try:
+                n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
+            except pd.errors.EmptyDataError:
+                print("merge_filter: Skipping", repo_name, "because it is empty.")
             continue
         df = pd.DataFrame(results[repo_name])
-        df.to_csv(output_file)
+        df.sort_index(inplace=True)
+        df.to_csv(output_file, index_label="idx")
         n_total_analyze += sum(df["analyze"])
 
     print("merge_filter: Number of newly analyzed merges:", n_analyze)
