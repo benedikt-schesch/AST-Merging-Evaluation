@@ -12,11 +12,11 @@ import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple
+from typing import Tuple, Union
 import random
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE, TEST_STATE
-from merge_filter import TIMEOUT_MERGING
+from valid_merge_counters import read_valid_merges_counter, increment_valid_merges, delete_valid_merges_counters
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -27,15 +27,20 @@ TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
 N_RESTARTS = 3
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
+def merge_tester(args: Tuple[str, pd.Series, Path,int]) -> Union[pd.Series,None]:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[str,pd.Series,Path]): A tuple containing the repository info and the cache path.
+        args (Tuple[str,pd.Series,Path,int]): A tuple containing the repository info and the cache path.
     Returns:
         dict: The result of the test.
     """
-    repo_name, merge_data, cache_prefix = args
+    repo_name, merge_data, cache_prefix, n_samples = args
     print("merge_tester: Started ", repo_name, merge_data["left"], merge_data["right"])
+    
+    n_valid_merges = read_valid_merges_counter(repo_name)
+    if n_valid_merges > n_samples:
+        return None
+    
     merge_data["parent pass"] = False
     for branch in ["left", "right"]:
         repo = Repository(repo_name, cache_prefix=cache_prefix)
@@ -44,9 +49,14 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         assert left_tree_fingerprint == merge_data[f"{branch}_tree_fingerprint"]
         test_result = repo.test(TIMEOUT_TESTING_PARENT, N_RESTARTS)
         merge_data[f"{branch} test result"] = test_result.name
+        n_valid_merges = read_valid_merges_counter(repo_name)
+        if n_valid_merges > n_samples:
+            return None
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
         del repo
+
+    increment_valid_merges(repo_name)
     merge_data["parent pass"] = True
 
     for merge_tool in MERGE_TOOL:
@@ -90,12 +100,14 @@ if __name__ == "__main__":
     parser.add_argument("--valid_repos_csv", type=str)
     parser.add_argument("--merges_path", type=str)
     parser.add_argument("--output_dir", type=str)
+    parser.add_argument("--n_merges", type=int, default=2)
     parser.add_argument("--cache_dir", type=str, default="cache/")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    delete_valid_merges_counters()
 
     print("merge_tester: Constructing Inputs")
     arguments = []
@@ -128,7 +140,7 @@ if __name__ == "__main__":
             continue
         merges = merges[merges["analyze"]]
         arguments += [
-            (repo_name, merge_data, Path(args.cache_dir))
+            (repo_name, merge_data, Path(args.cache_dir), args.n_merges)
             for _, merge_data in merges.iterrows()
         ]
 
@@ -153,6 +165,8 @@ if __name__ == "__main__":
     for i in tqdm(range(len(arguments))):
         repo_name = arguments[i][0]
         merge_results = result[i]
+        if merge_results is None:
+            continue
         if merge_results["parent pass"]:
             n_merges_parent_pass += 1
         results[repo_name].append(merge_results)
@@ -189,4 +203,5 @@ if __name__ == "__main__":
         n_total_merges_parent_pass,
     )
     print("merge_tester: Finished Constructing Output")
+    delete_valid_merges_counters()
     print("merge_tester: Done")

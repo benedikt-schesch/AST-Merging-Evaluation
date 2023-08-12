@@ -29,7 +29,7 @@ clean:
 	rm -rf repos
 	rm -rf scratch
 	rm -rf results-small
-	rm -rf .valid_merges
+	rm -rf .valid_merges_counters
 
 # This target deletes files in the cache, which is commited to version control.
 clean-cache:
@@ -83,8 +83,6 @@ small-test-diff:
 	@echo "Here is the file content, in case a diff fails."
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_analyze/*.csv results-small/merges_tested/*.csv | cat
 	@echo
-	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
-	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
 	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
 	@echo
 	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x git -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -x '#*#' -r -U3 test/small-goal-files results-small

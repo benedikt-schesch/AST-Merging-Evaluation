@@ -8,6 +8,7 @@ from typing import Union, Tuple
 from enum import Enum
 import uuid
 import subprocess
+import os
 import shutil
 import time
 from git.repo import Repo
@@ -520,15 +521,12 @@ class Repository:
         cache_data["test_log_file"] = []
         for i in range(n_restarts):
             test, explanation = repo_test(self.repo_path, timeout)
-            test_log_file = Path(
-                "logs/"
-                + self.repo_name.split("/")[1]
-                + "/"
-                + sha
-                + "/"
-                + str(i)
-                + ".log"
-            )
+            test_log_file = Path(os.path.join(
+                self.test_cache_prefix,
+                "logs",
+                self.repo_name.split("/")[1],
+                sha + "_" + str(i) + ".log",
+            ))
             test_log_file.parent.mkdir(parents=True, exist_ok=True)
             if test_log_file.exists():
                 test_log_file.unlink()

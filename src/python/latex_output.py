@@ -255,16 +255,6 @@ if __name__ == "__main__":
             unhandled.append(
                 sum(val in MERGE_UNHANDLED_NAMES for val in merge_tool_status)
             )
-            print(merge_tool_status)
-            print(
-                merge_tool,
-                "correct:",
-                correct[-1],
-                "incorrect:",
-                incorrect[-1],
-                "unhandled:",
-                unhandled[-1],
-            )
             assert incorrect[-1] + correct[-1] + unhandled[-1] == len(merge_tool_status)
             assert (
                 incorrect[0] + correct[0] + unhandled[0]

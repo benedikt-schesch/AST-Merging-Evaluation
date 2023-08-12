@@ -83,8 +83,8 @@ def merger(  # pylint: disable=too-many-locals
             )
             log_file: Path = (
                 cache_prefix
-                / repo_name.split("/")[1]
                 / "logs"
+                / repo_name.split("/")[1]
                 / merge_data["left"]
                 / merge_data["right"]
                 / (merge_tool.name + f"_{i}.log")
