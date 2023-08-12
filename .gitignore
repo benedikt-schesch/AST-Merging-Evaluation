@@ -10,6 +10,7 @@ machines.txt
 cache/
 artifacts/
 artifacts.tar.gz
+*.hprof
 
 output/
 merge_repo/
