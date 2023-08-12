@@ -86,7 +86,7 @@ small-test-diff:
 	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
 	@echo
 	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x git -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -x '#*#' -r -U3 test/small-goal-files results-small
-	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
+	rm -f results-small/result-without-times.csv
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/
