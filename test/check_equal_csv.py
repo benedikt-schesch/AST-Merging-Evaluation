@@ -4,8 +4,8 @@
 
 import os
 from argparse import ArgumentParser
-import pandas as pd
 from pathlib import Path
+import pandas as pd
 
 
 def filter_run_time(df):
