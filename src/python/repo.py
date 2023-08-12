@@ -13,12 +13,7 @@ import shutil
 import time
 from git.repo import Repo
 from cache_utils import (
-    get_cache_path,
     set_in_cache,
-    isin_cache,
-    get_cache,
-    write_cache,
-    get_cache_lock,
     check_and_load_cache,
 )
 
