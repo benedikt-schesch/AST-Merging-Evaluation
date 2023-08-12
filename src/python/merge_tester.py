@@ -16,7 +16,11 @@ from typing import Tuple, Union
 import random
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE, TEST_STATE
-from valid_merge_counters import read_valid_merges_counter, increment_valid_merges, delete_valid_merges_counters
+from valid_merge_counters import (
+    read_valid_merges_counter,
+    increment_valid_merges,
+    delete_valid_merges_counters,
+)
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -27,20 +31,21 @@ TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
 N_RESTARTS = 3
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path,int]) -> Union[pd.Series,None]:
+def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, None]:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[str,pd.Series,Path,int]): A tuple containing the repository info and the cache path.
+        args (Tuple[str,pd.Series,Path,int]): A tuple containing the repository info and
+                    the cache path and the number of sampled merges.
     Returns:
         dict: The result of the test.
     """
     repo_name, merge_data, cache_prefix, n_samples = args
     print("merge_tester: Started ", repo_name, merge_data["left"], merge_data["right"])
-    
+
     n_valid_merges = read_valid_merges_counter(repo_name)
     if n_valid_merges > n_samples:
         return None
-    
+
     merge_data["parent pass"] = False
     for branch in ["left", "right"]:
         repo = Repository(repo_name, cache_prefix=cache_prefix)

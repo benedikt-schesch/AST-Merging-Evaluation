@@ -1,8 +1,14 @@
-import fasteners
+""" 
+This module contains functions to read and increment the number of merges
+that have passing parents for each repository.
+"""
+
 from pathlib import Path
 import shutil
+import fasteners
 
 VALID_MERGE_COUNTERS = Path(".valid_merges_counters/")
+
 
 def read_valid_merges_counter(repo_name: str) -> int:
     """Returns the number of merges that have passing parents for a repository.

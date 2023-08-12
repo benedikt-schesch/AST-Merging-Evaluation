@@ -6,7 +6,6 @@
 # Return code is 0 for merge success, 1 for merge failure.
 # For merge failure, also outputs "Conflict" and aborts the merge.
 
-set -e
 set -o nounset
 
 if [ "$#" -ne 3 ]; then
@@ -29,14 +28,14 @@ mkdir $temp_dir
 java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
 # run git merge
-cd "$clone_dir"
+cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
 # collect initial counts of strings that are conflict markers, but appear in the clone.
 m1a=$(grep -ro '^<<<<<<<$' . | wc -l)
 m2a=$(grep -ro '^=======$' . | wc -l)
 m3a=$(grep -ro 'n^>>>>>>>$' . | wc -l)
 git merge --no-edit "$branch2"
-cd -
+cd - || exit 1
 
 # move files
 find $temp_dir -type f | while read -r f; do
