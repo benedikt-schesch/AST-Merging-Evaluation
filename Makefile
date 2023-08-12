@@ -83,9 +83,9 @@ small-test-diff:
 	@echo "Here is the file content, in case a diff fails."
 	more results-small/*.csv results-small/merges/*.csv results-small/merges_analyze/*.csv results-small/merges_tested/*.csv | cat
 	@echo
-	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
+	python3 test/check_equal_csv.py --test_folder results-small/ --target_folder test/small-goal-files/
 	@echo
-	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x git -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -x '#*#' -r -U3 test/small-goal-files results-small
+	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all
 	rm -f results-small/result-without-times.csv
 
 gradle-assemble:
