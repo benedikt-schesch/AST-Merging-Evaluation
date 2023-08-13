@@ -71,7 +71,7 @@ The output data appears in `results-small/`.
 
 * `results-small/merges/` contains all the merges.
 
-* `results-small/merges_analyze/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
+* `results-small/merges_analyzed/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
 
 * `results-small/merges_tested/` contains all merges that have been tested.
 
@@ -124,6 +124,10 @@ To cleanup the workspace:`make clean`
 To run style checking run `make style`.
 
 ---
+
+## Code structure
+
+![alt text](illustrations/Architecture.drawio.png "Title")
 
 ## Directory structure
 

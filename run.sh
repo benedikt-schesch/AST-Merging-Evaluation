@@ -94,12 +94,12 @@ java -cp build/libs/astmergeevaluation-all.jar \
 python3 src/python/merge_filter.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_analyze/" \
+    --output_dir "$OUT_DIR/merges_analyzed/" \
     --cache_dir "$CACHE_DIR/merges"
 
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
-    --merges_path "$OUT_DIR/merges_analyze/" \
+    --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --n_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR/test_results"
