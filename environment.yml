@@ -2,15 +2,10 @@ name: AST
 channels:
   - defaults
 dependencies:
-  - _libgcc_mutex
-  - _openmp_mutex
   - bzip2
   - ca-certificates
   - ld_impl_linux-64
   - libffi
-  - libgcc-ng
-  - libgomp
-  - libstdcxx-ng
   - libuuid
   - ncurses
   - openssl
