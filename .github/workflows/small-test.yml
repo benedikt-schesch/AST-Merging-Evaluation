@@ -56,7 +56,7 @@ jobs:
       run: ./gradlew build
     - name: Test
       run: |
-        sha256sum <(cd JSCover/ ;find . -type f -not -path '*/\.git*' -exec sha256sum {} \; | sort)
+        sha256sum <(cd JSCover/ ;find . -type f -not -path '*.git*' -exec sha256sum {} \; | sort)
         mkdir test-repo
         cd test-repo
         git clone https://github.com/tntim96/JSCover.git
@@ -65,7 +65,7 @@ jobs:
         cd ..
         sha256sum <(cd JSCover/ ;find . -type f -not -path '*/\.git*' -exec sha256sum {} \; | sort)
         cd ..
-        diff -r --exclude="*/\.git*" JSCover test-repo/JSCover
+        diff -r --exclude="*.git*" JSCover test-repo/JSCover
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
