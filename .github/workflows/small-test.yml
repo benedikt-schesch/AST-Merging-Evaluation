@@ -64,6 +64,8 @@ jobs:
         git checkout 75e03285fddc0e2510c4f20c56ac607702fc3c9a
         cd ..
         sha256sum <(cd JSCover/ ;find . -type f -not -path '*/\.git*' -exec sha256sum {} \; | sort)
+        cd ..
+        diff -r JSCover test-repo/JSCover
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
