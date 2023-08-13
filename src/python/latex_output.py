@@ -173,20 +173,27 @@ if __name__ == "__main__":
 
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-            merges = merges[merges["parent pass"]]
-            merges["repo_name"] = repo_name
         except pd.errors.EmptyDataError:
             print("merge_tester: Skipping", repo_name, "because it is empty.")
             continue
+        merges = merges[merges["parent pass"]]
+        merges["repo_name"] = repo_name
+        merges["repo-idx"] = repository_data.name
+        merges["merge-idx"] = merges.index
         result_df.append(merges)
 
-    result_df = pd.concat(result_df)
+    result_df = pd.concat(result_df, ignore_index=True)
+    result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
+    result_df = result_df[
+        ["repo-idx", "merge-idx"] + [col for col in result_df.columns if col != "repo-idx" and col != "merge-idx"]
+    ]
 
     # Check if undesirable states are present
     for merge_tool in MERGE_TOOL:
         assert result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() == 0
 
-    result_df.to_csv(os.path.join(args.output_dir, "result.csv"))
+
+    result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
 
     for plot_category, merge_tools in PLOTS.items():
         plots_output_path = os.path.join(output_dir, "plots", plot_category)
