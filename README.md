@@ -8,7 +8,7 @@
 
 ### Python
 
-To install all the python requirements creat a conda environment:
+To install all the python requirements create a conda environment:
 
 ```bash
 conda env create -f environment.yml
