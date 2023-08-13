@@ -86,7 +86,6 @@ small-test-diff:
 	python3 test/check_equal_csv.py --test_folder results-small/ --target_folder test/small-goal-files/
 	@echo
 	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all
-	rm -f results-small/result-without-times.csv
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/

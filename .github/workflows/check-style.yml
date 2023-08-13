@@ -16,9 +16,10 @@ jobs:
     - name: Setup miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        auto-update-conda: true
-        channels: conda-forge
         python-version: 3.8
+        auto-update-conda: true
+        channels: conda-forge,defaults
+        mamba-version: "*"
         activate-environment: AST
         environment-file: environment.yml
     - name: Install shellcheck and checkbashisms
