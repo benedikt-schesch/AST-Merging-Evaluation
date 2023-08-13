@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ Contains all the functions related to the cache. """
 
 from pathlib import Path

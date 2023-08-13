@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ 
 Deletes all placeholders from the cache. Placeholders are created when a
 a process starts it indicates that is has started and is still running.

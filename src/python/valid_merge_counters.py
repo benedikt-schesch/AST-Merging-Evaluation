@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ 
 This module contains functions to read and increment the number of merges
 that have passing parents for each repository.
