@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+    <suppress checks="BooleanExpressionComplexity" files="jscover.Main.java" lines="504"/>
+    <suppress checks="CyclomaticComplexity" files="jscover.filesystem.ConfigurationForFS.java" lines="408"/>
+    <suppress checks="MissingSwitchDefault" files="jscover.instrument.BranchHelper" lines="359"/>
+    <suppress checks="CyclomaticComplexity" files="jscover.instrument.BranchHelper" lines="358"/>
+</suppressions>
