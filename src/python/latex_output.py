@@ -185,13 +185,13 @@ if __name__ == "__main__":
     result_df = pd.concat(result_df, ignore_index=True)
     result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
     result_df = result_df[
-        ["repo-idx", "merge-idx"] + [col for col in result_df.columns if col != "repo-idx" and col != "merge-idx"]
+        ["repo-idx", "merge-idx"]
+        + [col for col in result_df.columns if col != "repo-idx" and col != "merge-idx"]
     ]
 
     # Check if undesirable states are present
     for merge_tool in MERGE_TOOL:
         assert result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() == 0
-
 
     result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
 
