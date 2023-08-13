@@ -186,7 +186,7 @@ if __name__ == "__main__":
     result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
     result_df = result_df[
         ["repo-idx", "merge-idx"]
-        + [col for col in result_df.columns if col != "repo-idx" and col != "merge-idx"]
+        + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
 
     # Check if undesirable states are present
