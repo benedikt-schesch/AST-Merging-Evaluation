@@ -41,6 +41,11 @@ if __name__ == "__main__":
         test_df = filter_run_time(test_df)
 
         if not target_df.equals(test_df):
+            for col in target_df.columns:
+                if not target_df[col].equals(test_df[col]):
+                    print(f"Column {col} is not equal")
+                    print(target_df[col])
+                    print(test_df[col])
             print(f"{target_file} and {test_file} are not equal")
             # Print the differences
             print(os.system(f"diff {target_folder/  target_file} {test_file}"))
