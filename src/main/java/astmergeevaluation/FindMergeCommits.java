@@ -238,7 +238,7 @@ public class FindMergeCommits {
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
     System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
-    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
+    repos.forEach(this::writeMergeCommitsForRepo);
   }
 
   /**
