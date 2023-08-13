@@ -65,7 +65,7 @@ jobs:
         cd ..
         sha256sum <(cd JSCover/ ;find . -type f -not -path '*/\.git*' -exec sha256sum {} \; | sort)
         cd ..
-        diff -r JSCover test-repo/JSCover
+        diff -r --exclude="*/\.git*" JSCover test-repo/JSCover
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
