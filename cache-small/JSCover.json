@@ -1,0 +1,1692 @@
+{
+    "390eb1dbfc709f2b75889697a9296ffeb06424a4_2e483d3cd3abbb5b6af28ea519278f597ccded96": {
+        "gitmerge_ort": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_ort.log",
+            "merge_fingerprint": null
+        },
+        "left_tree_fingerprint": null,
+        "right_tree_fingerprint": null,
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_recursive_patience.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_recursive_myers.log",
+            "merge_fingerprint": null
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/gitmerge_resolve.log",
+            "merge_fingerprint": null
+        },
+        "git_hires_merge": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/git_hires_merge.log",
+            "merge_fingerprint": null
+        },
+        "spork": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/spork.log",
+            "merge_fingerprint": null
+        },
+        "intellimerge": {
+            "results": [
+                "Git_checkout_failed",
+                "Git_checkout_failed",
+                "Git_checkout_failed"
+            ],
+            "log_files": [],
+            "run_time": [
+                -1,
+                -1,
+                -1
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/390eb1dbfc709f2b75889697a9296ffeb06424a4/2e483d3cd3abbb5b6af28ea519278f597ccded96/intellimerge.log",
+            "merge_fingerprint": null
+        }
+    },
+    "fb4312ddbbf301484ff0e1243cfdf12d6a2fb840_c8937ebc236d924201af98021a50091ab0ee013a": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.019530773162841797,
+                0.019659996032714844,
+                0.020137548446655273
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_ort.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "left_tree_fingerprint": "1df962e38d7eb57b4089203442b3adabd0fa69068107fc155e2689a12823efe2",
+        "right_tree_fingerprint": "df60362dc02bda92c3989d190bbfeac4fbe5f648b0049001f2b6cb79b4b62c48",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.01978302001953125,
+                0.020023107528686523,
+                0.019277572631835938
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02023601531982422,
+                0.020740747451782227,
+                0.01930093765258789
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.021832942962646484,
+                0.021297693252563477,
+                0.021446943283081055
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.020902633666992188,
+                0.02213764190673828,
+                0.02220296859741211
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02256035804748535,
+                0.02098250389099121,
+                0.022439241409301758
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.022703170776367188,
+                0.021722078323364258,
+                0.02069377899169922
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.024632692337036133,
+                0.02610468864440918,
+                0.023392438888549805
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/gitmerge_resolve.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.018930673599243164,
+                0.018778324127197266,
+                0.017707109451293945
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/git_hires_merge.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.035508155822753906,
+                0.0331575870513916,
+                0.03528928756713867
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/spork.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.7587289810180664,
+                0.7486271858215332,
+                0.7447853088378906
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fb4312ddbbf301484ff0e1243cfdf12d6a2fb840/c8937ebc236d924201af98021a50091ab0ee013a/intellimerge.log",
+            "merge_fingerprint": "e7a8a9d1d98f9b56fdab1a11e136e6d8b4476371efde61782daf92ca30eb9137"
+        }
+    },
+    "8fb1d13ac9c28ccf9723a4328141816f224337b9_aec694fe670b35eb827c473f5fbaf205cd59a0ba": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025948047637939453,
+                0.02589559555053711,
+                0.025567293167114258
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_ort.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "left_tree_fingerprint": "bb4ed38dc2166762d5a373aa60d2d4930bc7e52d49b8c4b735d72c6a7f27017c",
+        "right_tree_fingerprint": "876c70f3e5dc78debfb39901faa59e33bda1b28ae33baf60cfc5a7d6ae22eea2",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02563333511352539,
+                0.025766611099243164,
+                0.02631068229675293
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02721714973449707,
+                0.026571989059448242,
+                0.027799367904663086
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02983856201171875,
+                0.029818296432495117,
+                0.02872300148010254
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.030347824096679688,
+                0.02898573875427246,
+                0.029692411422729492
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03255939483642578,
+                0.03509044647216797,
+                0.03093886375427246
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03162789344787598,
+                0.029196500778198242,
+                0.031137466430664062
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.030076265335083008,
+                0.05014514923095703,
+                0.029740095138549805
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/gitmerge_resolve.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02619194984436035,
+                0.026410579681396484,
+                0.02670431137084961
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/git_hires_merge.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.04484987258911133,
+                0.03811478614807129,
+                0.04137468338012695
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/spork.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.8357386589050293,
+                0.858933687210083,
+                0.8332436084747314
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8fb1d13ac9c28ccf9723a4328141816f224337b9/aec694fe670b35eb827c473f5fbaf205cd59a0ba/intellimerge.log",
+            "merge_fingerprint": "b1420018e0c2daa8b1e68e7ac97d647d50d239f756538b650f6a54df727580c5"
+        }
+    },
+    "92d6114663b80b24d1f9bb6d282138cf6094857e_b9a2ee7526cf561aa2ff511fe9872792bd315e91": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.026460886001586914,
+                0.027225971221923828,
+                0.027248144149780273
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_ort.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "left_tree_fingerprint": "7eec20744772899894326be9b7de81f71f0f127d0a5573acabb8a826e2b858ad",
+        "right_tree_fingerprint": "bea0812d7548cfff42fa82c9a20e56b4b8038e296342bef04d3a07553d39ea1c",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03508615493774414,
+                0.02658700942993164,
+                0.02747821807861328
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.032674312591552734,
+                0.03254842758178711,
+                0.03244423866271973
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03940224647521973,
+                0.03823232650756836,
+                0.04403996467590332
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.040079593658447266,
+                0.03328514099121094,
+                0.035356998443603516
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03136920928955078,
+                0.0333559513092041,
+                0.0350031852722168
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03423142433166504,
+                0.04558706283569336,
+                0.03433537483215332
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.08167839050292969,
+                0.08817625045776367,
+                0.07965970039367676
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/gitmerge_resolve.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02588677406311035,
+                0.027414798736572266,
+                0.033708810806274414
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/git_hires_merge.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.05538320541381836,
+                0.0602114200592041,
+                0.05523204803466797
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/spork.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.7542417049407959,
+                0.8077185153961182,
+                0.9946320056915283
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/92d6114663b80b24d1f9bb6d282138cf6094857e/b9a2ee7526cf561aa2ff511fe9872792bd315e91/intellimerge.log",
+            "merge_fingerprint": "2b6f62e95c35db49587c829defce9f44ac27b60ac3c1eb9546d03602281e2c6c"
+        }
+    },
+    "0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9_0256cc6b3b9f9470458ff418e6648c635c20e787": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.026510000228881836,
+                0.02431654930114746,
+                0.026398181915283203
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_ort.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "left_tree_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9",
+        "right_tree_fingerprint": "cad6bb22e5482c4251c8f3cf3cdbf7f09f32a63d145064d53f9a309996a88e76",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025161027908325195,
+                0.02417135238647461,
+                0.03850841522216797
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03207540512084961,
+                0.03167533874511719,
+                0.03251481056213379
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.04448699951171875,
+                0.03475379943847656,
+                0.03525257110595703
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03217911720275879,
+                0.033576011657714844,
+                0.032691240310668945
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.0339052677154541,
+                0.03496384620666504,
+                0.034067392349243164
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03671884536743164,
+                0.032651662826538086,
+                0.03239750862121582
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.045604705810546875,
+                0.04322099685668945,
+                0.045020103454589844
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/gitmerge_resolve.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025207996368408203,
+                0.03364205360412598,
+                0.04224824905395508
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/git_hires_merge.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.0675971508026123,
+                0.0676417350769043,
+                0.054625511169433594
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/spork.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.8732492923736572,
+                1.2720794677734375,
+                0.8578376770019531
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/0fb55976f6e30ddcc8ae7af393ee0dd8d14e20e9/0256cc6b3b9f9470458ff418e6648c635c20e787/intellimerge.log",
+            "merge_fingerprint": "31c45b3002d23d2ab83ae80c3d4348cf16641226838167680bef4828fa43c27a"
+        }
+    },
+    "c0603903e4b5caeb83d2c93ceabba1e9ea59af19_e405a7f2926be3103a388e990701af1f260bc905": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.023923397064208984,
+                0.022233009338378906,
+                0.023624420166015625
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_ort.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "left_tree_fingerprint": "73fd788287e09d74fd3655ff96ae970dfdbef23a7c5edbf4d8a283fc9596366e",
+        "right_tree_fingerprint": "18b06a4976504b391ab8b266d92762442a49f9ba0ce5fda9cc9a60c8c816f8d6",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02357316017150879,
+                0.02326202392578125,
+                0.0230252742767334
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02636885643005371,
+                0.025227069854736328,
+                0.024397611618041992
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.027521848678588867,
+                0.02775883674621582,
+                0.02769613265991211
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025419950485229492,
+                0.02550220489501953,
+                0.025827646255493164
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02437281608581543,
+                0.026803970336914062,
+                0.02516341209411621
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025172948837280273,
+                0.03677654266357422,
+                0.02658367156982422
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.027452945709228516,
+                0.02895355224609375,
+                0.028824329376220703
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/gitmerge_resolve.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03357553482055664,
+                0.03059530258178711,
+                0.039639949798583984
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/git_hires_merge.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.07268810272216797,
+                0.07392406463623047,
+                0.03467559814453125
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/spork.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.9093017578125,
+                1.1984543800354004,
+                0.9559285640716553
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/c0603903e4b5caeb83d2c93ceabba1e9ea59af19/e405a7f2926be3103a388e990701af1f260bc905/intellimerge.log",
+            "merge_fingerprint": "3e5654f50f34c225d8cf8705ace4a75fb907c7ab47219edb87ce5a03b3ab97a6"
+        }
+    },
+    "b9f47e216af0bc46830e0cb0c6964218511bbb3f_974ce1770dc602051b320619e240603cc5358d64": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.048012495040893555,
+                0.04836273193359375,
+                0.04777789115905762
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_ort.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "left_tree_fingerprint": "e18b3ba88cc7d565b615dd8623136da1d63630febebde162e2cffc54c842eb9e",
+        "right_tree_fingerprint": "04a326f5e41eef8b880988b9b468ada3cf2b34c550de24870f818d63952e637d",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.050745248794555664,
+                0.04946708679199219,
+                0.05113053321838379
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "8a9e4c480339857b968f9df181e059131954efd51136671b1781010fe90b8eca"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.07472896575927734,
+                0.07544207572937012,
+                0.0791783332824707
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "8a9e4c480339857b968f9df181e059131954efd51136671b1781010fe90b8eca"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.07496476173400879,
+                0.08326435089111328,
+                0.0738229751586914
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.07618570327758789,
+                0.07324028015136719,
+                0.07498025894165039
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.06575679779052734,
+                0.0742039680480957,
+                0.07394766807556152
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.07224559783935547,
+                0.07125306129455566,
+                0.08738231658935547
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.25004053115844727,
+                0.23090076446533203,
+                0.23576879501342773
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/gitmerge_resolve.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.049042463302612305,
+                0.05027627944946289,
+                0.06161808967590332
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/git_hires_merge.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                10.960184335708618,
+                9.24057912826538,
+                9.607596397399902
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/spork.log",
+            "merge_fingerprint": "90c5b688c20b39ff48410df225fa97fd5d89fdb92b1098990e42354d9648c19e"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                1.4135441780090332,
+                1.478302001953125,
+                1.007397174835205
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/b9f47e216af0bc46830e0cb0c6964218511bbb3f/974ce1770dc602051b320619e240603cc5358d64/intellimerge.log",
+            "merge_fingerprint": "7a7c00cd0ef7aa1e210f3600218a6e7b465c5ed22543a884fae1bfe485fd20d9"
+        }
+    },
+    "fe64f8c1071a356027e49247fd506edc23566c4d_ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.025745868682861328,
+                0.02645421028137207,
+                0.025044918060302734
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_ort.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "left_tree_fingerprint": "0964c40e9e97a2e3cf026a5f389c7847d6ebc7c71c7fb515075ab428c093535e",
+        "right_tree_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.026119232177734375,
+                0.0254669189453125,
+                0.026849746704101562
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.026973962783813477,
+                0.02809596061706543,
+                0.027949810028076172
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02756476402282715,
+                0.030321359634399414,
+                0.027765750885009766
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03085613250732422,
+                0.02789449691772461,
+                0.027081966400146484
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02913498878479004,
+                0.03217935562133789,
+                0.029209375381469727
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02683854103088379,
+                0.02715754508972168,
+                0.026622295379638672
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.029753446578979492,
+                0.040461063385009766,
+                0.05922889709472656
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/gitmerge_resolve.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03701066970825195,
+                0.030604839324951172,
+                0.03009629249572754
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/git_hires_merge.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.05070066452026367,
+                0.05343294143676758,
+                0.04472756385803223
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/spork.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.9260389804840088,
+                0.6777956485748291,
+                0.730959415435791
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/fe64f8c1071a356027e49247fd506edc23566c4d/ab9b573de54d1014b5d9822adc9d9e5cf43ba8c0/intellimerge.log",
+            "merge_fingerprint": "1c33990f3f8a1474d5ce29a9f425e4186fdd951e848a79d18570de9837aa4826"
+        }
+    },
+    "8e0ad29ac0d484db3eccc4bee791b72cc6222e4c_530d40378d2d17276f71b18f871637fea2937ecf": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.023930788040161133,
+                0.020589828491210938,
+                0.02374887466430664
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_ort.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "left_tree_fingerprint": "f92b72fcf3d326ca0fdc784bb1226153675afbf09fa9cbac29e0f8de9f9d4e48",
+        "right_tree_fingerprint": "e6da00deaaa40d14d6a85237995176b78d9563e7e2470d23559f51d6768ebbae",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.021630048751831055,
+                0.021050453186035156,
+                0.023951053619384766
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02013397216796875,
+                0.021973848342895508,
+                0.02071690559387207
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.024201154708862305,
+                0.02050495147705078,
+                0.021603107452392578
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02042412757873535,
+                0.020885944366455078,
+                0.02406001091003418
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.027193546295166016,
+                0.035758256912231445,
+                0.03304648399353027
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03732705116271973,
+                0.03902125358581543,
+                0.031131982803344727
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.04034757614135742,
+                0.03393149375915527,
+                0.030599117279052734
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/gitmerge_resolve.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03357672691345215,
+                0.01821446418762207,
+                0.021454334259033203
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/git_hires_merge.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.02794623374938965,
+                0.02728271484375,
+                0.02440357208251953
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/spork.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.6012434959411621,
+                0.7037160396575928,
+                0.5759193897247314
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/8e0ad29ac0d484db3eccc4bee791b72cc6222e4c/530d40378d2d17276f71b18f871637fea2937ecf/intellimerge.log",
+            "merge_fingerprint": "96ec5917e3fcf02e1b00af9691516982a4a79fc68ac4cd951f7ec166e4a66198"
+        }
+    },
+    "56dc97e7850da6b5a904b57c5e288cbb89fde81d_46b585e31b43ec0d1740395b38d15fd4e4f8c60f": {
+        "gitmerge_ort": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.034116268157958984,
+                0.03263115882873535,
+                0.033239126205444336
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_ort.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "left_tree_fingerprint": "8cd2e5da1cc38b2042f77063db20b9c9c480d6ae2da25000586ac2cc74ed5e9e",
+        "right_tree_fingerprint": "0655271b4f7b84183e4c0bf0105dc677f68858e9b294c4cdf28d57f34108ee66",
+        "gitmerge_ort_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03307199478149414,
+                0.038382768630981445,
+                0.048139333724975586
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_ort_ignorespace.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_recursive_ignorespace": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.05322098731994629,
+                0.04213285446166992,
+                0.060718536376953125
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_recursive_ignorespace.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_recursive_patience": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.04743027687072754,
+                0.04596066474914551,
+                0.0615839958190918
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_recursive_patience.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_recursive_minimal": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.04171919822692871,
+                0.055994510650634766,
+                0.033814430236816406
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_recursive_minimal.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_recursive_histogram": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.03219747543334961,
+                0.04117178916931152,
+                0.04184603691101074
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_recursive_histogram.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_recursive_myers": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.037927865982055664,
+                0.03180503845214844,
+                0.0451962947845459
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_recursive_myers.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "gitmerge_resolve": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.06920146942138672,
+                0.06568026542663574,
+                0.07010078430175781
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/gitmerge_resolve.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "git_hires_merge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.023865222930908203,
+                0.02376532554626465,
+                0.022139549255371094
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/git_hires_merge.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        },
+        "spork": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                1.6115834712982178,
+                1.6590218544006348,
+                1.6152024269104004
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/spork.log",
+            "merge_fingerprint": "0597b17fac27dd5503cf96febe102dfb3cf4eebd385ae84b6f1de0384a499827"
+        },
+        "intellimerge": {
+            "results": [
+                "Merge_success",
+                "Merge_success",
+                "Merge_success"
+            ],
+            "log_files": [],
+            "run_time": [
+                0.5826108455657959,
+                0.5505940914154053,
+                0.5270600318908691
+            ],
+            "log_file": "cache-small/merge_logs/JSCover/56dc97e7850da6b5a904b57c5e288cbb89fde81d/46b585e31b43ec0d1740395b38d15fd4e4f8c60f/intellimerge.log",
+            "merge_fingerprint": "f622ae60c2d097abcb9634b9cd53b174201cfc6c5bd4a8f1ebdfb2abb54f5042"
+        }
+    }
+}

@@ -1,0 +1,269 @@
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/config .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/config
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/config	2023-08-14 14:19:40.358640360 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/config	2023-08-14 14:25:35.323760018 +0200
+@@ -9,3 +9,6 @@
+ [branch "master"]
+ 	remote = origin
+ 	merge = refs/heads/master
++[merge "spork"]
++    name = spork
++    driver = java -jar /home/scheschb/Git/AST-Merging-Evaluation/jars/spork.jar --git-mode %A %O %B -o %A
+Binary files .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/index and .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/index differ
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/HEAD .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/HEAD
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/HEAD	2023-08-14 14:25:32.451783541 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/HEAD	2023-08-14 14:25:37.687740652 +0200
+@@ -1,7 +1,7 @@
+ 0000000000000000000000000000000000000000 7c869c1e403a5e67220974ad514bdeb83b669e2d Benedikt Schesch <b.schesch@gmail.com> 1692015580 +0200	clone: from https://github.com/tntim96/JSCover.git
+-7c869c1e403a5e67220974ad514bdeb83b669e2d 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015930 +0200	checkout: moving from master to 56dc97e7850da6b5a904b57c5e288cbb89fde81d
+-56dc97e7850da6b5a904b57c5e288cbb89fde81d 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	checkout: moving from 56dc97e7850da6b5a904b57c5e288cbb89fde81d to ___MERGE_TESTER_LEFT
+-56dc97e7850da6b5a904b57c5e288cbb89fde81d 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	checkout: moving from ___MERGE_TESTER_LEFT to 46b585e31b43ec0d1740395b38d15fd4e4f8c60f
+-46b585e31b43ec0d1740395b38d15fd4e4f8c60f 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	checkout: moving from 46b585e31b43ec0d1740395b38d15fd4e4f8c60f to ___MERGE_TESTER_RIGHT
+-46b585e31b43ec0d1740395b38d15fd4e4f8c60f 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	checkout: moving from ___MERGE_TESTER_RIGHT to ___MERGE_TESTER_LEFT
+-56dc97e7850da6b5a904b57c5e288cbb89fde81d c3acd64ab4b05cf86ec80f72b4adb5e59d5f2bde Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
++7c869c1e403a5e67220974ad514bdeb83b669e2d 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015933 +0200	checkout: moving from master to 56dc97e7850da6b5a904b57c5e288cbb89fde81d
++56dc97e7850da6b5a904b57c5e288cbb89fde81d 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	checkout: moving from 56dc97e7850da6b5a904b57c5e288cbb89fde81d to ___MERGE_TESTER_LEFT
++56dc97e7850da6b5a904b57c5e288cbb89fde81d 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	checkout: moving from ___MERGE_TESTER_LEFT to 46b585e31b43ec0d1740395b38d15fd4e4f8c60f
++46b585e31b43ec0d1740395b38d15fd4e4f8c60f 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015935 +0200	checkout: moving from 46b585e31b43ec0d1740395b38d15fd4e4f8c60f to ___MERGE_TESTER_RIGHT
++46b585e31b43ec0d1740395b38d15fd4e4f8c60f 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015935 +0200	checkout: moving from ___MERGE_TESTER_RIGHT to ___MERGE_TESTER_LEFT
++56dc97e7850da6b5a904b57c5e288cbb89fde81d ea7ecd72275a1df89d16e55e5b6c19a912c69eef Benedikt Schesch <b.schesch@gmail.com> 1692015935 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/refs/heads/___MERGE_TESTER_LEFT .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/refs/heads/___MERGE_TESTER_LEFT
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:32.451783541 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:37.687740652 +0200
+@@ -1,2 +1,2 @@
+-0000000000000000000000000000000000000000 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	branch: Created from HEAD
+-56dc97e7850da6b5a904b57c5e288cbb89fde81d c3acd64ab4b05cf86ec80f72b4adb5e59d5f2bde Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
++0000000000000000000000000000000000000000 56dc97e7850da6b5a904b57c5e288cbb89fde81d Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	branch: Created from HEAD
++56dc97e7850da6b5a904b57c5e288cbb89fde81d ea7ecd72275a1df89d16e55e5b6c19a912c69eef Benedikt Schesch <b.schesch@gmail.com> 1692015935 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/refs/heads/___MERGE_TESTER_RIGHT .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/refs/heads/___MERGE_TESTER_RIGHT
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/logs/refs/heads/___MERGE_TESTER_RIGHT	2023-08-14 14:25:32.423783770 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/logs/refs/heads/___MERGE_TESTER_RIGHT	2023-08-14 14:25:35.307760148 +0200
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	branch: Created from HEAD
++0000000000000000000000000000000000000000 46b585e31b43ec0d1740395b38d15fd4e4f8c60f Benedikt Schesch <b.schesch@gmail.com> 1692015935 +0200	branch: Created from HEAD
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: 40
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: 42
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: 81
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: 99
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: a7
+Only in .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/objects: c3
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: ce
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/objects: ea
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/refs/heads/___MERGE_TESTER_LEFT .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/refs/heads/___MERGE_TESTER_LEFT
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/.git/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:32.451783541 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/.git/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:37.687740652 +0200
+@@ -1 +1 @@
+-c3acd64ab4b05cf86ec80f72b4adb5e59d5f2bde
++ea7ecd72275a1df89d16e55e5b6c19a912c69eef
+Only in .workdir/37ca3a37349f45baaaba3962913d5480/JSCover: .gitattributes
+diff -u -r -x '*/\.git*' .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/src/test/java/jscover/MainParsingTest.java .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/src/test/java/jscover/MainParsingTest.java
+--- .workdir/7dcc469c1d304a489a0a251da884bb7d/JSCover/src/test/java/jscover/MainParsingTest.java	2023-08-14 14:25:32.447783573 +0200
++++ .workdir/37ca3a37349f45baaaba3962913d5480/JSCover/src/test/java/jscover/MainParsingTest.java	2023-08-14 14:25:37.687740652 +0200
+@@ -338,25 +338,22 @@
+ consider it more useful to permit linking proprietary applications with the
+ library.  If this is what you want to do, use the GNU Lesser General
+ Public License instead of this License.
+- */
+-
+-package jscover;
+-
+-import jscover.util.ReflectionUtils;
+-import org.junit.Test;
+-
+-import java.io.IOException;
+-import java.util.ArrayList;
+-
+-import static org.hamcrest.Matchers.containsString;
+-import static org.hamcrest.Matchers.equalTo;
+-import static org.junit.Assert.assertThat;
+-import static org.junit.Assert.fail;
+-
+-public class MainParsingTest {
+-    private Main main = new Main();
+-    
+-
++ */
++package jscover;
++
++import java.io.IOException;
++import java.util.ArrayList;
++import jscover.util.ReflectionUtils;
++import org.junit.Test;
++import static org.hamcrest.Matchers.containsString;
++import static org.hamcrest.Matchers.equalTo;
++import static org.junit.Assert.assertThat;
++import static org.junit.Assert.fail;
++
++
++public class MainParsingTest {
++    private Main main = new Main();
++
+     @Test
+     public void shouldHaveDefaults() {
+         assertThat(main.getExitStatus(), equalTo(0));
+@@ -365,8 +362,8 @@
+         assertThat(main.printVersion(), equalTo(false));
+         assertThat(main.isServer(), equalTo(false));
+         assertThat(main.isFileSystem(), equalTo(false));
+-    }
+-
++    }
++
+     @Test
+     public void shouldDetectMissingJARs() throws IOException {
+         main.parse(new String[]{});
+@@ -383,83 +380,83 @@
+             assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
+             assertThat(message, containsString("js.jar"));
+         }
+-    }
+-
+-    @Test
+-    public void shouldParseVersion() {
+-        assertThat(main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
+-        assertThat(main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
+-    @Test
+-    public void shouldParseFileSystem() {
+-        assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
+-        assertThat(main.parse(new String[]{"src", "doc", "-fs"}).isFileSystem(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
+-    @Test
+-    public void shouldParseServer() {
+-        assertThat(main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
+-    @Test
+-    public void shouldParseStdIO() {
+-        assertThat(main.parse(new String[]{"-io"}).isStdOut(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
++    }
++
++    @Test
++    public void shouldParseVersion() {
++        assertThat(main.parse(new String[]{ "-V" }).printVersion(), equalTo(true));
++        assertThat(main.parse(new String[]{ "--version" }).printVersion(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(0));
++    }
++
++    @Test
++    public void shouldParseFileSystem() {
++        assertThat(main.parse(new String[]{ "-fs" }).isFileSystem(), equalTo(true));
++        assertThat(main.parse(new String[]{ "src", "doc", "-fs" }).isFileSystem(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(0));
++    }
++
++    @Test
++    public void shouldParseServer() {
++        assertThat(main.parse(new String[]{ "-ws" }).isServer(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(0));
++    }
++
++    @Test
++    public void shouldParseStdIO() {
++        assertThat(main.parse(new String[]{ "-io" }).isStdOut(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(0));
++    }
++
+     @Test
+     public void shouldParseHelp() {
+         assertThat(main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
+         assertThat(main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+         assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
+-    @Test
+-    public void shouldShowHelpIfNoArgumentsProvided() {
+-        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(1));
+-    }
+-
+-    @Test
+-    public void shouldParseEncodingHelp() {
+-        assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
+-        assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(0));
+-    }
+-
+-    @Test
+-    public void shouldDetectInvalidOptions1() {
+-        verifyInvalid(new String[]{"-ws", "-fs"});
+-    }
+-
+-    @Test
+-    public void shouldDetectInvalidOptions2() {
+-        verifyInvalid(new String[]{"-ws", "-io"});
+-    }
+-
+-    @Test
+-    public void shouldDetectInvalidOptions3() {
+-        verifyInvalid(new String[]{"-fs", "-io"});
+-    }
+-
+-    private void verifyInvalid(String[] args) {
+-        assertThat(main.parse(args).showHelp(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(1));
+-    }
+-
+-    @Test
+-    public void shouldDetectInvalidOptionsNoArgs() {
+-        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
+-        assertThat(main.getExitStatus(), equalTo(1));
+-    }
+-
++    }
++
++    @Test
++    public void shouldShowHelpIfNoArgumentsProvided() {
++        assertThat(main.parse(new String[]{  }).showHelp(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(1));
++    }
++
++    @Test
++    public void shouldParseEncodingHelp() {
++        assertThat(main.parse(new String[]{ "-ws", "encoding" }).showCharSets(), equalTo(false));
++        assertThat(main.parse(new String[]{ "-h", "encoding" }).showCharSets(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(0));
++    }
++
++    @Test
++    public void shouldDetectInvalidOptions1() {
++        verifyInvalid(new String[]{ "-ws", "-fs" });
++    }
++
++    @Test
++    public void shouldDetectInvalidOptions2() {
++        verifyInvalid(new String[]{ "-ws", "-io" });
++    }
++
++    @Test
++    public void shouldDetectInvalidOptions3() {
++        verifyInvalid(new String[]{ "-fs", "-io" });
++    }
++
++    private void verifyInvalid(String[] args) {
++        assertThat(main.parse(args).showHelp(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(1));
++    }
++
++    @Test
++    public void shouldDetectInvalidOptionsNoArgs() {
++        assertThat(main.parse(new String[]{  }).showHelp(), equalTo(true));
++        assertThat(main.getExitStatus(), equalTo(1));
++    }
++
+     @Test
+     public void shouldRetrieveHelpText() {
+         String helpText = new Main().getHelpText();
+         assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
+-    }
+-}
++    }
++}
+\ No newline at end of file

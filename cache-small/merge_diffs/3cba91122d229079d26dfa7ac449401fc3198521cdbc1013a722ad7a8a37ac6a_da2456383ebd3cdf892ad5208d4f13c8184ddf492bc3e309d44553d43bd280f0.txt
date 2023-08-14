@@ -1,0 +1,87 @@
+Binary files .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/index and .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/index differ
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/HEAD .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/HEAD
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/HEAD	2023-08-14 14:25:32.235785310 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/HEAD	2023-08-14 14:25:34.847763916 +0200
+@@ -1,7 +1,7 @@
+ 0000000000000000000000000000000000000000 b8f0a18cad11ed6172e1c7e18b6d78f07fe4fabf Benedikt Schesch <b.schesch@gmail.com> 1692015582 +0200	clone: from https://github.com/mangstadt/ez-vcard.git
+-b8f0a18cad11ed6172e1c7e18b6d78f07fe4fabf ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015930 +0200	checkout: moving from master to ea6026ee62cc184db68d841d50d58474fcdf4862
+-ea6026ee62cc184db68d841d50d58474fcdf4862 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	checkout: moving from ea6026ee62cc184db68d841d50d58474fcdf4862 to ___MERGE_TESTER_LEFT
+-ea6026ee62cc184db68d841d50d58474fcdf4862 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	checkout: moving from ___MERGE_TESTER_LEFT to ab2032ca9769d452d4906f51cf56ca7d983a27c4
+-ab2032ca9769d452d4906f51cf56ca7d983a27c4 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	checkout: moving from ab2032ca9769d452d4906f51cf56ca7d983a27c4 to ___MERGE_TESTER_RIGHT
+-ab2032ca9769d452d4906f51cf56ca7d983a27c4 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	checkout: moving from ___MERGE_TESTER_RIGHT to ___MERGE_TESTER_LEFT
+-ea6026ee62cc184db68d841d50d58474fcdf4862 50fa8266059ca926a40c86e21bc6c588157d6042 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
++b8f0a18cad11ed6172e1c7e18b6d78f07fe4fabf ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	checkout: moving from master to ea6026ee62cc184db68d841d50d58474fcdf4862
++ea6026ee62cc184db68d841d50d58474fcdf4862 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015933 +0200	checkout: moving from ea6026ee62cc184db68d841d50d58474fcdf4862 to ___MERGE_TESTER_LEFT
++ea6026ee62cc184db68d841d50d58474fcdf4862 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015933 +0200	checkout: moving from ___MERGE_TESTER_LEFT to ab2032ca9769d452d4906f51cf56ca7d983a27c4
++ab2032ca9769d452d4906f51cf56ca7d983a27c4 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	checkout: moving from ab2032ca9769d452d4906f51cf56ca7d983a27c4 to ___MERGE_TESTER_RIGHT
++ab2032ca9769d452d4906f51cf56ca7d983a27c4 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	checkout: moving from ___MERGE_TESTER_RIGHT to ___MERGE_TESTER_LEFT
++ea6026ee62cc184db68d841d50d58474fcdf4862 1576e430775c62ec723299b343ffc2ef2b5a50d7 Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_LEFT .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_LEFT
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:32.235785310 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:34.847763916 +0200
+@@ -1,2 +1,2 @@
+-0000000000000000000000000000000000000000 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015931 +0200	branch: Created from HEAD
+-ea6026ee62cc184db68d841d50d58474fcdf4862 50fa8266059ca926a40c86e21bc6c588157d6042 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
++0000000000000000000000000000000000000000 ea6026ee62cc184db68d841d50d58474fcdf4862 Benedikt Schesch <b.schesch@gmail.com> 1692015933 +0200	branch: Created from HEAD
++ea6026ee62cc184db68d841d50d58474fcdf4862 1576e430775c62ec723299b343ffc2ef2b5a50d7 Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	merge ___MERGE_TESTER_RIGHT: Merge made by the 'ort' strategy.
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_RIGHT .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_RIGHT
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_RIGHT	2023-08-14 14:25:32.179785769 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/logs/refs/heads/___MERGE_TESTER_RIGHT	2023-08-14 14:25:34.795764342 +0200
+@@ -1 +1 @@
+-0000000000000000000000000000000000000000 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015932 +0200	branch: Created from HEAD
++0000000000000000000000000000000000000000 ab2032ca9769d452d4906f51cf56ca7d983a27c4 Benedikt Schesch <b.schesch@gmail.com> 1692015934 +0200	branch: Created from HEAD
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 04
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 15
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 2b
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 2f
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 4d
+Only in .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/objects: 50
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 78
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 83
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 8b
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: 97
+Only in .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/objects: b3
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/refs/heads/___MERGE_TESTER_LEFT .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/refs/heads/___MERGE_TESTER_LEFT
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/.git/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:32.231785343 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/.git/refs/heads/___MERGE_TESTER_LEFT	2023-08-14 14:25:34.847763916 +0200
+@@ -1 +1 @@
+-50fa8266059ca926a40c86e21bc6c588157d6042
++1576e430775c62ec723299b343ffc2ef2b5a50d7
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/src/main/java/ezvcard/io/json/JCardRawReader.java .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/src/main/java/ezvcard/io/json/JCardRawReader.java
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/src/main/java/ezvcard/io/json/JCardRawReader.java	2023-08-14 14:25:32.231785343 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/src/main/java/ezvcard/io/json/JCardRawReader.java	2023-08-14 14:25:34.847763916 +0200
+@@ -323,7 +323,7 @@
+ 			parser.close();
+ 		}
+ 		if (reader != null) {
+-			reader.close();
+-		}
++		reader.close();
++	}
+ 	}
+ }
+diff -u -r -x '*/\.git*' .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/src/main/java/ezvcard/io/json/JCardRawWriter.java .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/src/main/java/ezvcard/io/json/JCardRawWriter.java
+--- .workdir/a11303ebb52d489cb78fed063112ed0f/ez-vcard/src/main/java/ezvcard/io/json/JCardRawWriter.java	2023-08-14 14:25:32.231785343 +0200
++++ .workdir/af4e17750fad42d1a44381df1c23d847/ez-vcard/src/main/java/ezvcard/io/json/JCardRawWriter.java	2023-08-14 14:25:34.847763916 +0200
+@@ -304,8 +304,8 @@
+ 		}
+ 
+ 		if (closeGenerator) {
+-			generator.close();
+-		}
++		generator.close();
++	}
+ 	}
+ 
+ 	/**
+@@ -320,8 +320,8 @@
+ 
+ 		closeJsonStream();
+ 		if (writer != null) {
+-			writer.close();
+-		}
++		writer.close();
++	}
+ 	}
+ 
+ 	private void init() throws IOException {
