@@ -21,7 +21,6 @@ dependencies:
   - python=3.8
   - pip:
       - fasteners==0.18
-      - lockfile==0.12.2
       - matplotlib==3.6.3
       - numpy==1.23.5
       - pandas==2.0.2

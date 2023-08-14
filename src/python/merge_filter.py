@@ -87,7 +87,7 @@ def merger(  # pylint: disable=too-many-locals
                 / repo_name.split("/")[1]
                 / merge_data["left"]
                 / merge_data["right"]
-                / (merge_tool.name + f"_{i}.log")
+                / (merge_tool.name + f".log")
             )
             log_file.parent.mkdir(parents=True, exist_ok=True)
             if log_file.exists():
@@ -95,7 +95,7 @@ def merger(  # pylint: disable=too-many-locals
             with open(log_file, "w") as f:
                 f.write(explanation)
             cache_data[merge_tool.name]["results"].append(merge_status.name)
-            cache_data[merge_tool.name]["log_files"].append(str(log_file))
+            cache_data[merge_tool.name]["log_file"] = str(log_file)
             cache_data[merge_tool.name]["run_time"].append(run_time)
             if "merge_fingerprint" not in cache_data[merge_tool.name]:
                 cache_data[merge_tool.name]["merge_fingerprint"] = merge_fingerprint
