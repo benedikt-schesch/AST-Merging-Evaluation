@@ -162,7 +162,7 @@ def check_and_load_cache(
             time.sleep(CACHE_BACKOFF_TIME)
             total_time += CACHE_BACKOFF_TIME
             if total_time > TIMEOUT:
-                raise TimeoutError("Timeout while waiting for cache")
+                return None
             lock.acquire()
         lock.release()
         return cache_data

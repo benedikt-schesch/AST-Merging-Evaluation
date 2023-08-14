@@ -84,7 +84,7 @@ python3 src/python/split_repos.py \
 python3 src/python/validate_repos.py \
     --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
     --output_path "$OUT_DIR/valid_repos.csv" \
-    --cache_dir "$CACHE_DIR/test_results"
+    --cache_dir "$CACHE_DIR"
 
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
@@ -95,14 +95,18 @@ python3 src/python/merge_filter.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_analyzed/" \
-    --cache_dir "$CACHE_DIR/merges"
+    --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --n_merges "$N_MERGES" \
-    --cache_dir "$CACHE_DIR/test_results"
+    --cache_dir "$CACHE_DIR"
+
+python3 src/python/merge_differ.py \
+    --result_csv "$OUT_DIR/result.csv" \
+    --cache_dir "$CACHE_DIR"
 
 python3 src/python/latex_output.py \
     --tested_merges_path "$OUT_DIR/merges_tested/" \

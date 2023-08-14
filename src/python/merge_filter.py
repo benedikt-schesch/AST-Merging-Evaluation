@@ -20,12 +20,7 @@ import numpy as np
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
-from cache_utils import (
-    isin_cache,
-    get_cache,
-    get_cache_lock,
-    write_cache,
-)
+from cache_utils import set_in_cache, check_and_load_cache
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -48,14 +43,12 @@ def merger(  # pylint: disable=too-many-locals
     repo_name, merge_data, cache_prefix = args
 
     cache_entry = merge_data["left"] + "_" + merge_data["right"]
-    cache_prefix = cache_prefix
+    merge_cache_prefix = cache_prefix / "merge_results"
 
-    lock = get_cache_lock(repo_name, cache_prefix)
+    result = check_and_load_cache(cache_entry, repo_name, merge_cache_prefix, True)
+    if result is not None and isinstance(result, dict):
+        return result
 
-    with lock:
-        if isin_cache(cache_entry, repo_name, cache_prefix):
-            result = get_cache(cache_entry, repo_name, cache_prefix)
-            return result
     cache_data = {}
     for merge_tool in MERGE_TOOL:
         print(
@@ -83,7 +76,7 @@ def merger(  # pylint: disable=too-many-locals
             )
             log_file: Path = (
                 cache_prefix
-                / "logs"
+                / "merge_logs"
                 / repo_name.split("/")[1]
                 / merge_data["left"]
                 / merge_data["right"]
@@ -113,8 +106,7 @@ def merger(  # pylint: disable=too-many-locals
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
             del repo
 
-    with lock:
-        write_cache(cache_entry, cache_data, repo_name, cache_prefix)
+    set_in_cache(cache_entry, cache_data, repo_name, cache_prefix)
     return cache_data
 
 

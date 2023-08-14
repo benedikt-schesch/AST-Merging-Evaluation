@@ -109,7 +109,10 @@ class Repository:
     """A class that represents a repository."""
 
     def __init__(
-        self, repo_name: str, cache_prefix: Path, workdir: Union[Path, None] = None
+        self,
+        repo_name: str,
+        cache_prefix: Path = Path(""),
+        workdir: Union[Path, None] = None,
     ) -> None:
         """Initializes the repository.
         Args:

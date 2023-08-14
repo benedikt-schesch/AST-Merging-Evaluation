@@ -19,12 +19,6 @@ import sys
 from functools import partialmethod
 from typing import Tuple
 from repo import Repository, TEST_STATE, REPOS_PATH
-from cache_utils import (
-    get_cache_lock,
-    get_cache_path,
-    isin_cache,
-    load_cache,
-)
 
 from tqdm import tqdm
 import pandas as pd

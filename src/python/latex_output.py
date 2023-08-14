@@ -177,7 +177,7 @@ if __name__ == "__main__":
             print("merge_tester: Skipping", repo_name, "because it is empty.")
             continue
         merges = merges[merges["parent pass"]]
-        merges["repo_name"] = repo_name
+        merges["repository"] = repo_name
         merges["repo-idx"] = repository_data.name
         merges["merge-idx"] = merges.index
         result_df.append(merges)
@@ -511,7 +511,7 @@ if __name__ == "__main__":
         "% reposTotal/mergesTotal excludes any filtered out merges - we "
         "currently filter out some inconsistent merges\n"
     )
-    output += add_def("reposTotal", len(result_df["repo_name"].unique()))
+    output += add_def("reposTotal", len(result_df["repository"].unique()))
     output += add_def("mergesTotal", len(result_df))
 
     output += "\n% Results\n"
