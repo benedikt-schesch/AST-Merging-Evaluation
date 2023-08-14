@@ -195,7 +195,7 @@ class Repository:
             right_fingerprint,
             _,
             run_time,
-        ) = self.merge(tool, left_commit, right_commit, timeout)
+        ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
             return merge_status, None, None, None, -1
         test_result = self.test(timeout, n_restarts)
@@ -345,14 +345,14 @@ class Repository:
         try:
             command = [
                 "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
-                self.repo_path,
+                str(self.repo_path),
                 LEFT_BRANCH_NAME,
                 RIGHT_BRANCH_NAME,
             ]
             p = subprocess.run(  # pylint: disable=consider-using-with
                 command,
                 capture_output=True,
-                timeout=timeout,
+                timeout=timeout if timeout > 0 else None,
                 check=False,
             )
         except subprocess.TimeoutExpired as e:

@@ -134,14 +134,14 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
 if __name__ == "__main__":
     print("merge_differ: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results_csv", type=str)
+    parser.add_argument("--result_csv", type=str)
     parser.add_argument("--cache_dir", type=str, default="cache/")
     args = parser.parse_args()
     cache_dir = Path(args.cache_dir)
     cache_diffs_path = cache_dir / "merge_diffs"
     cache_diffs_path.mkdir(parents=True, exist_ok=True)
 
-    results_csv = pd.read_csv(args.results_csv, index_col="idx")
+    results_csv = pd.read_csv(args.result_csv, index_col="idx")
 
     print("merge_differ: Constructing Inputs")
     arguments = []
