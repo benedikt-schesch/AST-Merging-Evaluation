@@ -18,7 +18,9 @@ import json
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--cache_dir", help="Path to cache directory", default="cache",type=Path)
+    parser.add_argument(
+        "--cache_dir", help="Path to cache directory", default="cache", type=Path
+    )
     args = parser.parse_args()
 
     cache_path = Path(args.cache_dir)

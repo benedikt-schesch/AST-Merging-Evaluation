@@ -9,9 +9,9 @@ This script splits the repos list for each machine and stores the local repos li
 """
 
 import argparse
+from pathlib import Path
 import pandas as pd
 import numpy as np
-from pathlib import Path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
