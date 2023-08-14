@@ -77,9 +77,6 @@ public class FindMergeCommits {
   /** The JGit credentials provider. */
   final CredentialsProvider credentialsProvider;
 
-  /** The index within the output file; incremented for each line of each file. */
-  private int index = -1;
-
   /**
    * Outputs a list of merge commits from the given repositories.
    *
@@ -238,7 +235,8 @@ public class FindMergeCommits {
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
     System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
-    repos.forEach(this::writeMergeCommitsForRepo);
+    // Parallel execution for each repository.
+    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
 
   /**
@@ -342,26 +340,35 @@ public class FindMergeCommits {
     // The SHA ids of the merge commits that have already been output.
     Set<ObjectId> written = new HashSet<>();
 
-    index = 1;
+    // The index within the output file; incremented for each line of each file.
+    int index = 1;
+    // This loop cannot be parallelized, because of the `index` variable.
     for (Ref branch : branches) {
-      writeMergeCommitsForBranch(git, repo, branch, writer, written);
+      index = writeMergeCommitsForBranch(index, git, repo, branch, writer, written);
     }
   }
 
   /**
    * Write, to {@code writer}, all the merge commits in one branch of the given repository.
    *
+   * @param index the first index to use for output lines
    * @param git the JGit porcelain
    * @param repo the JGit file system repository
    * @param branch the branch whose commits to output
    * @param writer where to write the merge commits
    * @param written a set of refs that have already been written, to prevent duplicates in the
    *     output
+   * @return the next index to use for output lines
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
-  void writeMergeCommitsForBranch(
-      Git git, FileRepository repo, Ref branch, BufferedWriter writer, Set<ObjectId> written)
+  int writeMergeCommitsForBranch(
+      int index,
+      Git git,
+      FileRepository repo,
+      Ref branch,
+      BufferedWriter writer,
+      Set<ObjectId> written)
       throws IOException, GitAPIException {
 
     ObjectId branchId = branch.getObjectId();
@@ -369,6 +376,7 @@ public class FindMergeCommits {
       throw new Error("no ObjectId for " + branch);
     }
     Iterable<RevCommit> commits = git.log().add(branchId).call();
+    // This loop cannot be parallelized, beacuse of the `index` variable.
     for (RevCommit commit : commits) {
       RevCommit[] parents = commit.getParents();
       if (parents.length != 2) {
@@ -415,6 +423,7 @@ public class FindMergeCommits {
         writer.newLine();
       }
     }
+    return index;
   }
 
   /**
