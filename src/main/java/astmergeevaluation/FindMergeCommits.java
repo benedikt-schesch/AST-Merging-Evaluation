@@ -235,8 +235,8 @@ public class FindMergeCommits {
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
     System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
-    // This `forEach` loop can be run in parallel.
-    repos.forEach(this::writeMergeCommitsForRepo);
+    // Parallel execution for each repository.
+    repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
 
   /**
