@@ -15,7 +15,7 @@ from typing import Tuple
 import random
 import subprocess
 import pandas as pd
-from repo import Repository, MERGE_TOOL, TEST_STATE
+from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -61,7 +61,7 @@ def merge_differ(  # pylint: disable=too-many-locals
             right_commit=right,
             timeout=-1,
         )
-        assert merge_status1 == merge_data[merge_tool1.name]
+        assert merge_status1 == MERGE_STATE.Merge_success
         assert left_fingreprint1 == merge_data["left_tree_fingerprint"]
         assert right_fingerprint1 == merge_data["right_tree_fingerprint"]
         assert merge_fingerprint1 == merge_data[merge_tool1.name + "_merge_fingerprint"]
@@ -92,7 +92,7 @@ def merge_differ(  # pylint: disable=too-many-locals
                 right_commit=right,
                 timeout=-1,
             )
-            assert merge_status2 == merge_data[merge_tool2.name]
+            assert merge_status2 == MERGE_STATE.Merge_success
             assert left_fingreprint2 == merge_data["left_tree_fingerprint"]
             assert right_fingerprint2 == merge_data["right_tree_fingerprint"]
             assert (
