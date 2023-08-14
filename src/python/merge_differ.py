@@ -27,17 +27,16 @@ N_RESTARTS = 3
 
 
 def merge_differ(  # pylint: disable=too-many-locals
-    args: Tuple[pd.Series, Path]
+    args: Tuple[str, pd.Series, Path]
 ) -> None:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[pd.Series,Path]): A tuple containing the repository info and
-                    the cache path.
+        args (Tuple[str, pd.Series,Path]): A tuple containing the repository name,
+            the merge data and the cache prefix.
     Returns:
         dict: The result of the test.
     """
-    merge_data, cache_prefix = args
-    repo_name = merge_data["repository"]
+    repo_name, merge_data, cache_prefix = args
     left = merge_data["left"]
     right = merge_data["right"]
 
@@ -134,46 +133,65 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
 if __name__ == "__main__":
     print("merge_differ: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--result_csv", type=str)
-    parser.add_argument("--cache_dir", type=str, default="cache/")
+    parser.add_argument("--valid_repos_csv", type=Path)
+    parser.add_argument("--merges_path", type=Path)
+    parser.add_argument("--cache_dir", type=Path, default="cache/")
     args = parser.parse_args()
     cache_dir = Path(args.cache_dir)
     cache_diffs_path = cache_dir / "merge_diffs"
     cache_diffs_path.mkdir(parents=True, exist_ok=True)
 
-    results_csv = pd.read_csv(args.result_csv, index_col="idx")
+    repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_differ: Constructing Inputs")
     arguments = []
-    for _, merge_data in tqdm(results_csv.iterrows(), total=len(results_csv)):
-        repo_name = merge_data["repository"]
+    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
+        merges_repo = []
+        repo_name = repository_data["repository"]
+        merge_list_file = Path(
+            os.path.join(args.merges_path, repo_name.split("/")[1] + ".csv")
+        )
+        if not merge_list_file.exists():
+            print(
+                "merge_tester: Skipping",
+                repo_name,
+                "because it does not have a list of merge. Missing file: ",
+                merge_list_file,
+            )
+            continue
 
-        compute = False
-        for merge_tool1 in MERGE_TOOL:
-            if merge_data[merge_tool1.name] not in (
-                TEST_STATE.Tests_passed.name,
-                TEST_STATE.Tests_failed.name,
-            ):
-                continue
-            for merge_tool2 in MERGE_TOOL:
-                if merge_data[merge_tool2.name] not in (
+        try:
+            merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+        except pd.errors.EmptyDataError:
+            print("merge_tester: Skipping", repo_name, "because it is empty.")
+            continue
+        for _, merge_data in merges.iterrows():
+            compute = False
+            for merge_tool1 in MERGE_TOOL:
+                if merge_data[merge_tool1.name] not in (
                     TEST_STATE.Tests_passed.name,
                     TEST_STATE.Tests_failed.name,
                 ):
                     continue
-                if (
-                    merge_data[merge_tool1.name + "_merge_fingerprint"]
-                    == merge_data[merge_tool2.name + "_merge_fingerprint"]
-                ):
-                    continue
-                file_name = cache_diffs_path / diff_file_name(
-                    merge_data[merge_tool1.name + "_merge_fingerprint"],
-                    merge_data[merge_tool2.name + "_merge_fingerprint"],
-                )
-                if not file_name.exists():
-                    compute = True
-        if compute:
-            arguments.append((merge_data, cache_dir))
+                for merge_tool2 in MERGE_TOOL:
+                    if merge_data[merge_tool2.name] not in (
+                        TEST_STATE.Tests_passed.name,
+                        TEST_STATE.Tests_failed.name,
+                    ):
+                        continue
+                    if (
+                        merge_data[merge_tool1.name + "_merge_fingerprint"]
+                        == merge_data[merge_tool2.name + "_merge_fingerprint"]
+                    ):
+                        continue
+                    file_name = cache_diffs_path / diff_file_name(
+                        merge_data[merge_tool1.name + "_merge_fingerprint"],
+                        merge_data[merge_tool2.name + "_merge_fingerprint"],
+                    )
+                    if not file_name.exists():
+                        compute = True
+            if compute:
+                arguments.append((repo_name, merge_data, cache_dir))
 
     # Shuffle input to reduce cache contention
     random.seed(42)

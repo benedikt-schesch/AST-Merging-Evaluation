@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
     print("Started Storing Repos Hashes")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repos_csv", type=str)
-    parser.add_argument("--output_path", type=str)
+    parser.add_argument("--repos_csv", type=Path)
+    parser.add_argument("--output_path", type=Path)
     args = parser.parse_args()
 
     # If file exists ignore this step

@@ -102,11 +102,11 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
 if __name__ == "__main__":
     print("merge_tester: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--valid_repos_csv", type=str)
-    parser.add_argument("--merges_path", type=str)
-    parser.add_argument("--output_dir", type=str)
+    parser.add_argument("--valid_repos_csv", type=Path)
+    parser.add_argument("--merges_path", type=Path)
+    parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--n_merges", type=int, default=2)
-    parser.add_argument("--cache_dir", type=str, default="cache/")
+    parser.add_argument("--cache_dir", type=Path, default="cache/")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
@@ -126,12 +126,13 @@ if __name__ == "__main__":
             os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
         )
         if not merge_list_file.exists():
-            raise Exception(
+            print(
                 "merge_tester: Skipping",
                 repo_name,
                 "because it does not have a list of merge. Missing file: ",
                 merge_list_file,
             )
+            continue
 
         if output_file.exists():
             print(
