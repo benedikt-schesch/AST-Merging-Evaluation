@@ -104,10 +104,6 @@ python3 src/python/merge_tester.py \
     --n_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR"
 
-python3 src/python/merge_differ.py \
-    --result_csv "$OUT_DIR/result.csv" \
-    --cache_dir "$CACHE_DIR"
-
 python3 src/python/latex_output.py \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
@@ -117,3 +113,7 @@ python3 src/python/latex_output.py \
     --all_merges_path "$OUT_DIR/merges/" \
     --merges_valid_path "$OUT_DIR/merges_valid/" \
     --output_dir "$OUT_DIR"
+
+python3 src/python/merge_differ.py \
+    --result_csv "$OUT_DIR/result.csv" \
+    --cache_dir "$CACHE_DIR"
