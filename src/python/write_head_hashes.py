@@ -32,7 +32,7 @@ def get_latest_hash(args):
     Args:
         arg (idx,row): Information regarding that repo.
     Returns:
-        pd.Series: repo infromation with the hash of the HEAD
+        pd.Series: repo information with the hash of the HEAD
     """
     _, row = args
     repo_name = row["repository"]
@@ -53,7 +53,7 @@ def get_latest_hash(args):
 if __name__ == "__main__":
     Path("repos").mkdir(parents=True, exist_ok=True)
 
-    print("Started Storing Repos Hashes")
+    print("Started storing repo HEAD hashes")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_csv", type=Path)
     parser.add_argument("--output_path", type=Path)

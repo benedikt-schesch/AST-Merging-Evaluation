@@ -7,8 +7,8 @@ from typing import Union, Tuple
 import time
 import fasteners
 
-CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes
-TIMEOUT = 90 * 60  # 90 minutes
+CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
+TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
 def get_cache_lock(repo_name: str, cache_prefix: Path):
@@ -38,7 +38,7 @@ def get_cache_path(repo_name: str, cache_prefix: Path) -> Path:
     return cache_path
 
 
-def isin_cache(
+def is_in_cache(
     cache_key: Union[Tuple, str], repo_name: str, cache_prefix: Path
 ) -> bool:
     """Checks if the key is in the cache.
@@ -91,13 +91,13 @@ def write_cache(
     cache_prefix: Path,
     overwrite: bool = True,
 ) -> None:
-    """Writes the cache.
+    """Puts an entry in the cache, then writes the cache to disk.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
         repo_name (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
-        overwrite (bool, optional) = True: Whether to overwrite the cache if it already exists.
+        overwrite (bool, optional) = True: Whether to overwrite an existing cache entry.
     """
     cache_path = get_cache_path(repo_name, cache_prefix)
     cache = load_cache(repo_name, cache_prefix)
@@ -152,7 +152,7 @@ def check_and_load_cache(
     lock.acquire()
     cache_entry = get_cache_path(repo_name, cache_prefix)
     cache_entry.parent.mkdir(parents=True, exist_ok=True)
-    if isin_cache(cache_key, repo_name, cache_prefix):
+    if is_in_cache(cache_key, repo_name, cache_prefix):
         total_time = 0
         while True:
             cache_data = get_cache(cache_key, repo_name, cache_prefix)

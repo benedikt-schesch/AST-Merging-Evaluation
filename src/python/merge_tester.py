@@ -26,8 +26,8 @@ from tqdm import tqdm
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes
-TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
+TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes, in seconds
+TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
 N_RESTARTS = 3
 
 
@@ -46,12 +46,12 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
     if n_valid_merges > n_samples:
         return None
 
-    merge_data["parent pass"] = False
+    merge_data["parents pass"] = False
     for branch in ["left", "right"]:
         repo = Repository(repo_name, cache_prefix=cache_prefix)
         repo.checkout(merge_data[branch])
-        left_tree_fingerprint = repo.compute_tree_fingerprint()
-        assert left_tree_fingerprint == merge_data[f"{branch}_tree_fingerprint"]
+        tree_fingerprint = repo.compute_tree_fingerprint()
+        assert tree_fingerprint == merge_data[f"{branch}_tree_fingerprint"]
         test_result = repo.test(TIMEOUT_TESTING_PARENT, N_RESTARTS)
         merge_data[f"{branch} test result"] = test_result.name
         n_valid_merges = read_valid_merges_counter(repo_name)
@@ -62,7 +62,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
         del repo
 
     increment_valid_merges(repo_name)
-    merge_data["parent pass"] = True
+    merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if merge_data[merge_tool.name] == MERGE_STATE.Merge_success.name:
@@ -70,7 +70,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
             (
                 result,
                 merge_fingerprint,
-                left_fingreprint,
+                left_fingerprint,
                 right_fingerprint,
                 _,
             ) = repo.merge_and_test_cached(
@@ -80,7 +80,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
                 timeout=TIMEOUT_TESTING_MERGE,
                 n_restarts=N_RESTARTS,
             )
-            assert left_fingreprint == merge_data["left_tree_fingerprint"]
+            assert left_fingerprint == merge_data["left_tree_fingerprint"]
             assert right_fingerprint == merge_data["right_tree_fingerprint"]
             if merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]:
                 raise Exception(
@@ -127,22 +127,24 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             print(
-                "merge_tester: Skipping",
+                "merge_tester.py:",
                 repo_name,
-                "because it does not have a list of merge. Missing file: ",
+                "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
             continue
 
         if output_file.exists():
             print(
-                "merge_tester: Skipping", repo_name, "because it is already computed."
+                "merge_tester.py: Skipping",
+                repo_name,
+                "because it is already computed.",
             )
             continue
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_tester: Skipping", repo_name, "because it is empty.")
+            print("merge_tester.py: Skipping", repo_name, "because it is empty.")
             continue
         merges = merges[merges["analyze"]]
         arguments += [
@@ -173,7 +175,7 @@ if __name__ == "__main__":
         merge_results = result[i]
         if merge_results is None:
             continue
-        if merge_results["parent pass"]:
+        if merge_results["parents pass"]:
             n_merges_parent_pass += 1
         results[repo_name].append(merge_results)
 
@@ -187,25 +189,25 @@ if __name__ == "__main__":
             try:
                 df = pd.read_csv(output_file, header=0)
             except pd.errors.EmptyDataError:
-                print("merge_tester: Skipping", repo_name, "because it is empty.")
+                print("merge_tester.py: Skipping", repo_name, "because it is empty.")
                 continue
             n_total_merges += len(df)
-            n_total_merges_parent_pass += len(df[df["parent pass"]])
+            n_total_merges_parent_pass += len(df[df["parents pass"]])
             continue
         df = pd.DataFrame(results[repo_name])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
-        n_total_merges_parent_pass += len(df[df["parent pass"]])
+        n_total_merges_parent_pass += len(df[df["parents pass"]])
 
     print("merge_tester: Number of newly tested merges:", len(arguments))
     print(
-        "merge_tester: Number of newly tested merges with parent pass:",
+        "merge_tester: Number of newly tested merges with parents pass:",
         n_merges_parent_pass,
     )
     print("merge_tester: Total number of tested merges:", n_total_merges)
     print(
-        "merge_tester: Total number of merges with parent pass:",
+        "merge_tester: Total number of merges with parents pass:",
         n_total_merges_parent_pass,
     )
     print("merge_tester: Finished Constructing Output")

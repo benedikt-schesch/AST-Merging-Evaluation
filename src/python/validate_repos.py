@@ -28,7 +28,7 @@ if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-TIMEOUT_TESTING = 60 * 30  # 30 minutes
+TIMEOUT_TESTING = 60 * 30  # 30 minutes, in seconds.
 
 
 def clone_repo(repo_name: str) -> git.repo.Repo:
@@ -89,7 +89,6 @@ if __name__ == "__main__":
     print("validate_repos: Starting cloning repos")
     cpu_count = os.cpu_count() or 1
     processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
-    repos_to_clone = []
     with multiprocessing.Pool(processes=processes_used) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))

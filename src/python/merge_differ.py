@@ -50,7 +50,7 @@ def merge_differ(  # pylint: disable=too-many-locals
         (
             merge_status1,
             merge_fingerprint1,
-            left_fingreprint1,
+            left_fingerprint1,
             right_fingerprint1,
             _,
             _,
@@ -61,7 +61,7 @@ def merge_differ(  # pylint: disable=too-many-locals
             timeout=-1,
         )
         assert merge_status1 == MERGE_STATE.Merge_success
-        assert left_fingreprint1 == merge_data["left_tree_fingerprint"]
+        assert left_fingerprint1 == merge_data["left_tree_fingerprint"]
         assert right_fingerprint1 == merge_data["right_tree_fingerprint"]
         assert merge_fingerprint1 == merge_data[merge_tool1.name + "_merge_fingerprint"]
         if merge_fingerprint1 is None:
@@ -81,7 +81,7 @@ def merge_differ(  # pylint: disable=too-many-locals
             (
                 merge_status2,
                 merge_fingerprint2,
-                left_fingreprint2,
+                left_fingerprint2,
                 right_fingerprint2,
                 _,
                 _,
@@ -92,7 +92,7 @@ def merge_differ(  # pylint: disable=too-many-locals
                 timeout=-1,
             )
             assert merge_status2 == MERGE_STATE.Merge_success
-            assert left_fingreprint2 == merge_data["left_tree_fingerprint"]
+            assert left_fingerprint2 == merge_data["left_tree_fingerprint"]
             assert right_fingerprint2 == merge_data["right_tree_fingerprint"]
             assert (
                 merge_fingerprint2
@@ -153,9 +153,9 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             print(
-                "merge_tester: Skipping",
+                "merge_differ.py:",
                 repo_name,
-                "because it does not have a list of merge. Missing file: ",
+                "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
             continue
@@ -163,7 +163,7 @@ if __name__ == "__main__":
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_tester: Skipping", repo_name, "because it is empty.")
+            print("merge_differ.py: Skipping", repo_name, "because it is empty.")
             continue
         for _, merge_data in merges.iterrows():
             compute = False

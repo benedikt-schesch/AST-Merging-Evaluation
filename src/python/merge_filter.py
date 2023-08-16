@@ -25,7 +25,7 @@ from cache_utils import set_in_cache, check_and_load_cache
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-TIMEOUT_MERGING = 60 * 15  # 15 minutes
+TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
 N_RESTARTS = 3
 
 
@@ -64,7 +64,7 @@ def merger(  # pylint: disable=too-many-locals
             (
                 merge_status,
                 merge_fingerprint,
-                left_fingreprint,
+                left_fingerprint,
                 right_fingerprint,
                 explanation,
                 run_time,
@@ -99,10 +99,10 @@ def merger(  # pylint: disable=too-many-locals
                 )
 
             if "left_tree_fingerprint" not in cache_data:
-                cache_data["left_tree_fingerprint"] = left_fingreprint
+                cache_data["left_tree_fingerprint"] = left_fingerprint
                 cache_data["right_tree_fingerprint"] = right_fingerprint
             else:
-                assert cache_data["left_tree_fingerprint"] == left_fingreprint
+                assert cache_data["left_tree_fingerprint"] == left_fingerprint
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
             del repo
 
@@ -136,15 +136,17 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             raise Exception(
-                "merge_filter: Skipping",
+                "merge_filter.py:",
                 repo_name,
-                "because it does not have a list of merge. Missing file: ",
+                "does not have a list of merge. Missing file: ",
                 merge_list_file,
             )
 
         if output_file.exists():
             print(
-                "merge_filter: Skipping", repo_name, "because it is already computed."
+                "merge_filter.py: Skipping",
+                repo_name,
+                "because it is already computed.",
             )
             continue
 
@@ -235,7 +237,7 @@ if __name__ == "__main__":
             try:
                 n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
             except pd.errors.EmptyDataError:
-                print("merge_filter: Skipping", repo_name, "because it is empty.")
+                print("merge_filter.py: Skipping", repo_name, "because it is empty.")
             continue
         df = pd.DataFrame(results[repo_name])
         df.sort_index(inplace=True)

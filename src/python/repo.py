@@ -18,7 +18,7 @@ from cache_utils import (
     check_and_load_cache,
 )
 
-CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes
+CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 DELETE_WORKDIRS = True
 REPOS_PATH = Path("repos")
 WORKDIR_PREFIX = Path(".workdir")
@@ -68,7 +68,7 @@ def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     If one test timeouts then the entire test is marked as timeout.
     Args:
         repo_dir_copy (Path): The path of the working copy (the clone).
-        timeout (int): Test Timeout limit.
+        timeout (int): Test timeout limit, in seconds.
     Returns:
         TEST_STATE: The result of the test.
         str: explanation. The explanation of the result.
@@ -165,7 +165,7 @@ class Repository:
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,
+        timeout: int,  # in seconds
         n_restarts: int,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
@@ -179,19 +179,19 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
             n_restarts (int): The number of times to restart the test.
         Returns:
             TEST_STATE: The result of the test.
             str: The tree fingerprint of result.
             str: The left fingerprint.
             str: The right fingerprint.
-            float: The time it took to run the merge.
+            float: The time it took to run the merge, in seconds.
         """
         (
             merge_status,
             merge_fingerprint,
-            left_fingreprint,
+            left_fingerprint,
             right_fingerprint,
             _,
             run_time,
@@ -202,7 +202,7 @@ class Repository:
         return (
             test_result,
             merge_fingerprint,
-            left_fingreprint,
+            left_fingerprint,
             right_fingerprint,
             run_time,
         )
@@ -226,14 +226,14 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
             n_restarts (int): The number of times to restart the test.
         Returns:
             TEST_STATE: The result of the test.
             str: The tree fingerprint of result.
             str: The left fingerprint.
             str: The right fingerprint.
-            float: The time it took to run the merge.
+            float: The time it took to run the merge, in seconds.
         """
         sha_cache = self.check_sha_cache(
             left_commit + "_" + right_commit + "_" + tool.name
@@ -272,14 +272,14 @@ class Repository:
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
             explanation (str): The explanation of the result.
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
         Returns:
             MERGE_STATE: The result of the merge.
             str: The tree fingerprint of result.
             str: The left fingerprint.
             str: The right fingerprint.
             str: explanation. The explanation of the result.
-            float: The time it took to run the merge.
+            float: The time it took to run the merge, in seconds.
         """
         # Checkout left
         cache_name = left_commit + "_" + right_commit + "_" + tool.name
@@ -308,7 +308,7 @@ class Repository:
                 self.sha_cache_prefix,
             )
             return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
-        left_fingreprint = self.compute_tree_fingerprint()
+        left_fingerprint = self.compute_tree_fingerprint()
         self.repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
 
         # Checkout right
@@ -341,7 +341,7 @@ class Repository:
         self.repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
 
         # Merge
-        start = time.time()
+        start_time = time.time()
         try:
             command = [
                 "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
@@ -363,12 +363,12 @@ class Repository:
             return (
                 MERGE_STATE.Merge_timedout,
                 sha,
-                left_fingreprint,
+                left_fingerprint,
                 right_fingerprint,
                 explanation,
                 -1,
             )
-        run_time = time.time() - start
+        run_time = time.time() - start_time
         explanation = "STDOUT:\n" + p.stdout.decode("utf-8")
         explanation += "\nSTDERR:\n" + p.stderr.decode("utf-8")
         merge_status = (
@@ -377,7 +377,7 @@ class Repository:
         sha = self.compute_tree_fingerprint()
         cache_entry = {
             "sha": sha,
-            "left_fingerprint": left_fingreprint,
+            "left_fingerprint": left_fingerprint,
             "right_fingerprint": right_fingerprint,
         }
         set_in_cache(
@@ -389,7 +389,7 @@ class Repository:
         return (
             merge_status,
             sha,
-            left_fingreprint,
+            left_fingerprint,
             right_fingerprint,
             explanation,
             run_time,
@@ -465,7 +465,7 @@ class Repository:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
             n_restarts (int): The number of times to restart the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -485,7 +485,7 @@ class Repository:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
             n_restarts (int): The number of times to restart the test.
             check_cache (bool, optional) = True: Whether to check the cache.
         Returns:
@@ -504,7 +504,7 @@ class Repository:
     def test(self, timeout: int, n_restarts: int) -> TEST_STATE:
         """Tests the repository.
         Args:
-            timeout (int): The timeout limit.
+            timeout (int): The timeout limit, in seconds.
             n_restarts (int): The number of times to restart the test.
         Returns:
             TEST_STATE: The result of the test.
