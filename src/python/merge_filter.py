@@ -164,7 +164,6 @@ if __name__ == "__main__":
             header=0,
             index_col="idx",
         )
-        merges = merges[~merges["notes"].isin(["trivial merge", "two initial commits"])]
         arguments += [
             (repo_name, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
