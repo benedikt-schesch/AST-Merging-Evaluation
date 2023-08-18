@@ -5,6 +5,9 @@ usage: python3 merge_tester.py --valid_repos_csv <path_to_valid_repos.csv>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
 This script tests the merges and checks if the parents pass tests. 
+The output is written in output_dir. For each repository a csv output file
+is created that contains information including testing information regarding
+each merge.
 """
 
 import os
@@ -21,6 +24,7 @@ from valid_merge_counters import (
     increment_valid_merges,
     delete_valid_merges_counters,
 )
+from merge_filter import is_merge_sucess
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -65,7 +69,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
-        if merge_data[merge_tool.name] == MERGE_STATE.Merge_success.name:
+        if is_merge_sucess(merge_data[merge_tool.name]):
             repo = Repository(repo_name, cache_prefix=cache_prefix)
             (
                 result,
@@ -99,7 +103,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
     return merge_data
 
 
-if __name__ == "__main__":
+def main():
     print("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--valid_repos_csv", type=Path)
@@ -213,3 +217,7 @@ if __name__ == "__main__":
     print("merge_tester: Finished Constructing Output")
     delete_valid_merges_counters()
     print("merge_tester: Done")
+
+
+if __name__ == "__main__":
+    main()

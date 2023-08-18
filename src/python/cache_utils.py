@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-""" Contains all the functions related to the cache. """
+""" Contains all the functions related to the cache. 
+There will be 4 caches created:
+1) A cache that maps the commit hash to a sha256 hash of the repository.
+2) A cache that maps a sha256 to test results.
+3) A cache that maps a merge to the result of the merge.
+4) A cache that stores the diff between merge tools.
+"""
 
 from pathlib import Path
 import json
@@ -12,7 +18,9 @@ TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
 def get_cache_lock(repo_name: str, cache_prefix: Path):
-    """Returns a lock for the repository.
+    """Returns a lock for the cache of a repository.
+    Initially the locks are unlocked and the caller must explictly
+    lock and unlock the lock.
     Args:
         repo_name (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
@@ -71,7 +79,9 @@ def load_cache(repo_name: str, cache_prefix: Path) -> dict:
         return cache_data
 
 
-def get_cache(cache_key: Union[Tuple, str], repo_name: str, cache_prefix: Path) -> dict:
+def cache_lookup(
+    cache_key: Union[Tuple, str], repo_name: str, cache_prefix: Path
+) -> dict:
     """Loads the cache and returns the value for the given key.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
@@ -155,7 +165,7 @@ def check_and_load_cache(
     if is_in_cache(cache_key, repo_name, cache_prefix):
         total_time = 0
         while True:
-            cache_data = get_cache(cache_key, repo_name, cache_prefix)
+            cache_data = cache_lookup(cache_key, repo_name, cache_prefix)
             if cache_data is not None:
                 break
             lock.release()

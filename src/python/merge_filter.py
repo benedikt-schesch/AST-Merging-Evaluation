@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Filter the merges that will be analyzed.
+"""Filter the merges that do not have at least two merge tools that 
+disagree on the result of the merge.
 usage: python3 merge_filter.py --valid_repos_csv <path_to_valid_repos.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
 This script filters the merges that will be analyzed.
-Only merges that are not trivial and that are not two initial commits are candidates.
-Candidates are analyzed if at least two merge tools disagree on the result of the merge.
 """
 
 import os
@@ -27,6 +26,11 @@ if os.getenv("TERM", "dumb") == "dumb":
 
 TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
 N_RESTARTS = 3
+
+
+def is_merge_sucess(merge: str) -> bool:
+    """Returns true if the merge indicates success"""
+    return merge == MERGE_STATE.Merge_success.name
 
 
 def merger(  # pylint: disable=too-many-locals
@@ -193,19 +197,13 @@ if __name__ == "__main__":
         analyze = False
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
-                if (
+                if is_merge_sucess(
                     cache_data[merge_tool1.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                    and cache_data[merge_tool2.name]["results"][0]
-                    != MERGE_STATE.Merge_success.name
-                ):
+                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
                     analyze = True
-                if (
+                if is_merge_sucess(
                     cache_data[merge_tool1.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                    and cache_data[merge_tool2.name]["results"][0]
-                    == MERGE_STATE.Merge_success.name
-                ):
+                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
                     if (
                         cache_data[merge_tool1.name]["merge_fingerprint"]
                         != cache_data[merge_tool2.name]["merge_fingerprint"]
