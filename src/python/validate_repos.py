@@ -104,13 +104,14 @@ if __name__ == "__main__":
         print("validate_repos: Output file already exists. Exiting.")
         sys.exit(0)
 
-    for row in 
-
     print("validate_repos: Started Testing")
     head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         head_passes_tests_results = list(
-            tqdm(pool.imap(head_passes_tests, head_passes_tests_arguments), total=len(head_passes_tests_arguments))
+            tqdm(
+                pool.imap(head_passes_tests, head_passes_tests_arguments),
+                total=len(head_passes_tests_arguments),
+            )
         )
     print("validate_repos: Finished Testing")
 

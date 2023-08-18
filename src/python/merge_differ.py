@@ -203,5 +203,8 @@ if __name__ == "__main__":
 
     print("merge_differ: Started Diffing")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
-        tqdm(pool.imap(merge_differ, merge_differ_arguments), total=len(merge_differ_arguments))
+        tqdm(
+            pool.imap(merge_differ, merge_differ_arguments),
+            total=len(merge_differ_arguments),
+        )
     print("merge_differ: Finished Diffing")

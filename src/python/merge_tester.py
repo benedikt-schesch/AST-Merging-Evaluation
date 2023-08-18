@@ -167,7 +167,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     print("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
-        merge_tester_results = list(tqdm(pool.imap(merge_tester, merger_tester_arguments), total=len(merger_tester_arguments)))
+        merge_tester_results = list(
+            tqdm(
+                pool.imap(merge_tester, merger_tester_arguments),
+                total=len(merger_tester_arguments),
+            )
+        )
     print("merge_tester: Finished Testing")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}

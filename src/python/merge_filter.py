@@ -183,7 +183,9 @@ if __name__ == "__main__":
 
     print("merge_filter: Started Merging")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
-        merger_results = list(tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments)))
+        merger_results = list(
+            tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
+        )
     print("merge_filter: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
@@ -235,7 +237,7 @@ if __name__ == "__main__":
             except pd.errors.EmptyDataError:
                 print("merge_filter.py: Skipping", repo_slug, "because it is empty.")
             continue
-        df = pd.DataFrame(repo_merge_results[repo_slug])
+        df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_analyze += sum(df["analyze"])

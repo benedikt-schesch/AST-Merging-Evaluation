@@ -24,10 +24,19 @@ from validate_repos import clone_repo
 from tqdm import tqdm
 import pandas as pd
 
-def compute_num_cpus_used(ratio:float=0.7)->int:
+
+def compute_num_cpus_used(ratio: float = 0.7) -> int:
+    """Comput the number of cpus to be used
+    Args:
+        ratio (float) = 0.7: Ratios of cpus to be used with respect
+            to the total number of cpus.
+    Returns:
+        int: the number of cpus to be used.
+    """
     cpu_count = os.cpu_count() or 1
-    processes_used = int(ratio*cpu_count) if cpu_count > 3 else cpu_count
+    processes_used = int(ratio * cpu_count) if cpu_count > 3 else cpu_count
     return processes_used
+
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
