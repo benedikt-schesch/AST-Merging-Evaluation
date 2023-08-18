@@ -5,14 +5,13 @@ It also contains the functions that are used to test the repository.
 """
 
 from pathlib import Path
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from enum import Enum
 import uuid
 import subprocess
 import os
 import shutil
 import time
-from typing import List, Union
 from git.repo import Repo
 from cache_utils import (
     set_in_cache,
