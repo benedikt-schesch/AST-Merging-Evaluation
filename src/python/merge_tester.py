@@ -34,12 +34,12 @@ N_RESTARTS = 3
 def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> pd.Series:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[str,pd.Series,Path,int]): A tuple containing the repository info and
-                    the cache path and the number of sampled merges.
+        args (Tuple[str,pd.Series,Path]): A tuple containing the repository info and
+                    the cache path.
     Returns:
         dict: The result of the test.
     """
-    repo_slug, merge_data, cache_prefix, n_samples = args
+    repo_slug, merge_data, cache_prefix = args
     print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
     merge_data["parents pass"] = False
@@ -138,7 +138,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             continue
         merges = merges[merges["analyze"]]
         merger_tester_arguments += [
-            (repo_slug, merge_data, Path(args.cache_dir), args.n_merges)
+            (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
         ]
 

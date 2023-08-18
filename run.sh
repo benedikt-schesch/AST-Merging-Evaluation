@@ -113,7 +113,6 @@ python3 src/python/latex_output.py \
     --full_repos_csv "$REPOS_CSV" \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --n_merges "$N_MERGES" \
-    --result_csv "$OUT_DIR/result.csv" \
-    --all_merges_path "$OUT_DIR/merges/" \
+    --merges_tested_path "$OUT_DIR/merges/" \
     --merges_valid_path "$OUT_DIR/merges_valid/" \
     --output_dir "$OUT_DIR"
