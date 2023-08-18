@@ -103,7 +103,8 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
     return merge_data
 
 
-def main():
+def main():  # pylint: disable=too-many-locals,too-many-statements
+    """Main function"""
     print("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--valid_repos_csv", type=Path)

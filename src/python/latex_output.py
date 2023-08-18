@@ -118,7 +118,8 @@ UNDESIRABLE_STATES = [
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 
-def main():
+def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
+    """Main function"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--full_repos_csv", type=str, default="input_data/repos_with_hashes.csv"
