@@ -101,7 +101,6 @@ python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
-    --n_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_differ.py \

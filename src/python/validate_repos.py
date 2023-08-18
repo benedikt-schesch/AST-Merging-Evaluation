@@ -18,43 +18,17 @@ from pathlib import Path
 import sys
 from functools import partialmethod
 from typing import Tuple
-from repo import Repository, TEST_STATE, REPOS_PATH
+from repo import Repository, TEST_STATE
 
 from tqdm import tqdm
 import pandas as pd
-import git.repo
-from write_head_hashes import compute_num_cpus_used
+from write_head_hashes import compute_num_cpus_used, clone_repo
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
 TIMEOUT_TESTING = 60 * 30  # 30 minutes, in seconds.
-
-
-def clone_repo(repo_slug: str) -> git.repo.Repo:
-    """Clones a repository, or runs `git fetch` if it is already cloned.
-    Args:
-        repo_slug (str): The name of the repository to be cloned
-    """
-    repo_dir = REPOS_PATH / repo_slug
-    if os.path.isdir(repo_dir):
-        repo = git.repo.Repo(repo_dir)
-    else:
-        # ":@" in URL ensures that we are not prompted for login details
-        # for the repos that are now private.
-        os.environ["GIT_TERMINAL_PROMPT"] = "0"
-        print(repo_slug, " : Cloning repo")
-        git_url = "https://:@github.com/" + repo_slug + ".git"
-        repo = git.repo.Repo.clone_from(git_url, repo_dir)
-        print(repo_slug, " : Finished cloning")
-        try:
-            repo.remote().fetch()
-            repo.submodule_update()
-        except Exception as e:
-            print(repo_slug, "Exception during cloning. Exception:\n", e)
-            raise
-    return repo
 
 
 def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
@@ -82,7 +56,6 @@ if __name__ == "__main__":
     parser.add_argument("--cache_dir", type=Path, default="cache/")
     args = parser.parse_args()
 
-    Path(REPOS_PATH).mkdir(parents=True, exist_ok=True)
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")

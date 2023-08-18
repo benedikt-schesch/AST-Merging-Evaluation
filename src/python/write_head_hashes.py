@@ -20,9 +20,35 @@ import argparse
 from pathlib import Path
 import multiprocessing
 from functools import partialmethod
-from validate_repos import clone_repo
 from tqdm import tqdm
 import pandas as pd
+import git.repo
+from variables import REPOS_PATH
+
+def clone_repo(repo_slug: str) -> git.repo.Repo:
+    """Clones a repository, or runs `git fetch` if it is already cloned.
+    Args:
+        repo_slug (str): The name of the repository to be cloned
+    """
+    repo_dir = REPOS_PATH / repo_slug
+    if repo_dir.exists():
+        repo = git.repo.Repo(repo_dir)
+    else:
+        repo_dir.parent.mkdir(parents=True, exist_ok=True)
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
+        os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        print(repo_slug, " : Cloning repo")
+        git_url = "https://:@github.com/" + repo_slug + ".git"
+        repo = git.repo.Repo.clone_from(git_url, repo_dir)
+        print(repo_slug, " : Finished cloning")
+        try:
+            repo.remote().fetch()
+            repo.submodule_update()
+        except Exception as e:
+            print(repo_slug, "Exception during cloning. Exception:\n", e)
+            raise
+    return repo
 
 
 def compute_num_cpus_used(ratio: float = 0.7) -> int:

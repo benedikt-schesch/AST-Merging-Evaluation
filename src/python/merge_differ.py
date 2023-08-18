@@ -68,6 +68,8 @@ def merge_differ(  # pylint: disable=too-many-locals
         if merge_fingerprint1 is None:
             continue
         for merge_tool2 in MERGE_TOOL:
+            if not merge_data["parents pass"]:
+                continue
             if merge_data[merge_tool2.name] not in (
                 TEST_STATE.Tests_passed.name,
                 TEST_STATE.Tests_failed.name,
