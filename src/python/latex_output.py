@@ -142,14 +142,14 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
-        repo_name = repository_data["repository"]
+        repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.tested_merges_path, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.tested_merges_path, repo_slug.split("/")[1] + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
                 "latex_ouput.py:",
-                repo_name,
+                repo_slug,
                 "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
@@ -157,10 +157,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("latex_output.py: Skipping", repo_name, "because it is empty.")
+            print("latex_output.py: Skipping", repo_slug, "because it is empty.")
             continue
         merges = merges[merges["parents pass"]]
-        merges["repository"] = repo_name
+        merges["repository"] = repo_slug
         merges["repo-idx"] = repository_data.name
         merges["merge-idx"] = merges.index
         result_df.append(merges)

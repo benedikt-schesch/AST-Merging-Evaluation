@@ -20,6 +20,7 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, check_and_load_cache
+from write_head_hashes import compute_num_cpus_used
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -44,12 +45,12 @@ def merger(  # pylint: disable=too-many-locals
     Returns:
         dict: A dictionary containing the merge result.
     """
-    repo_name, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_prefix = args
 
     cache_entry = merge_data["left"] + "_" + merge_data["right"]
     merge_cache_prefix = cache_prefix / "merge_results"
 
-    result = check_and_load_cache(cache_entry, repo_name, merge_cache_prefix, True)
+    result = check_and_load_cache(cache_entry, repo_slug, merge_cache_prefix, True)
     if result is not None and isinstance(result, dict):
         return result
 
@@ -57,14 +58,14 @@ def merger(  # pylint: disable=too-many-locals
     for merge_tool in MERGE_TOOL:
         print(
             "merge_filter: Merging",
-            repo_name,
+            repo_slug,
             merge_data["left"],
             merge_data["right"],
             merge_tool.name,
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
         for i in range(N_RESTARTS):
-            repo = Repository(repo_name, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status,
                 merge_fingerprint,
@@ -81,7 +82,7 @@ def merger(  # pylint: disable=too-many-locals
             log_file: Path = (
                 cache_prefix
                 / "merge_logs"
-                / repo_name.split("/")[1]
+                / repo_slug.split("/")[1]
                 / merge_data["left"]
                 / merge_data["right"]
                 / (merge_tool.name + f".log")
@@ -110,7 +111,7 @@ def merger(  # pylint: disable=too-many-locals
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
             del repo
 
-    set_in_cache(cache_entry, cache_data, repo_name, cache_prefix)
+    set_in_cache(cache_entry, cache_data, repo_slug, cache_prefix)
     return cache_data
 
 
@@ -128,20 +129,20 @@ if __name__ == "__main__":
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_filter: Constructing Inputs")
-    arguments = []
+    merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
-        repo_name = repository_data["repository"]
+        repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
         )
         output_file = Path(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
                 "merge_filter.py:",
-                repo_name,
+                repo_slug,
                 "does not have a list of merge. Missing file: ",
                 merge_list_file,
             )
@@ -149,7 +150,7 @@ if __name__ == "__main__":
         if output_file.exists():
             print(
                 "merge_filter.py: Skipping",
-                repo_name,
+                repo_slug,
                 "because it is already computed.",
             )
             continue
@@ -168,32 +169,30 @@ if __name__ == "__main__":
             header=0,
             index_col="idx",
         )
-        arguments += [
-            (repo_name, merge_data, Path(args.cache_dir))
+        merger_arguments += [
+            (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
         ]
 
     # Shuffle input to reduce cache contention
     random.seed(42)
-    random.shuffle(arguments)
+    random.shuffle(merger_arguments)
 
     print("merge_filter: Finished Constructing Inputs")
-    print("merge_filter: Number of new merges:", len(arguments))
+    print("merge_filter: Number of new merges:", len(merger_arguments))
 
     print("merge_filter: Started Merging")
-    cpu_count = os.cpu_count() or 1
-    processes_used = int(cpu_count * 0.9) if cpu_count > 3 else cpu_count
-    with multiprocessing.Pool(processes=processes_used) as pool:
-        result = list(tqdm(pool.imap(merger, arguments), total=len(arguments)))
+    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+        merger_results = list(tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments)))
     print("merge_filter: Finished Merging")
 
-    results = {repo_name: [] for repo_name in repos["repository"]}
+    repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_filter: Constructing Output")
     n_analyze = 0
-    for i in tqdm(range(len(arguments))):
-        repo_name = arguments[i][0]
-        merge_data = arguments[i][1]
-        cache_data = result[i]
+    for i in tqdm(range(len(merger_arguments))):
+        repo_slug = merger_arguments[i][0]
+        merge_data = merger_arguments[i][1]
+        cache_data = merger_results[i]
         analyze = False
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
@@ -221,22 +220,22 @@ if __name__ == "__main__":
                 merge_tool.name
             ]["merge_fingerprint"]
 
-        results[repo_name].append(merge_data)
+        repo_result[repo_slug].append(merge_data)
         if analyze:
             n_analyze += 1
 
     n_total_analyze = 0
-    for repo_name in results:
+    for repo_slug in repo_result:
         output_file = Path(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
         )
         if output_file.exists():
             try:
                 n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
             except pd.errors.EmptyDataError:
-                print("merge_filter.py: Skipping", repo_name, "because it is empty.")
+                print("merge_filter.py: Skipping", repo_slug, "because it is empty.")
             continue
-        df = pd.DataFrame(results[repo_name])
+        df = pd.DataFrame(repo_merge_results[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_analyze += sum(df["analyze"])

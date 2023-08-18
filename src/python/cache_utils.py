@@ -17,61 +17,61 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
-def get_cache_lock(repo_name: str, cache_prefix: Path):
+def get_cache_lock(repo_slug: str, cache_prefix: Path):
     """Returns a lock for the cache of a repository.
     Initially the locks are unlocked and the caller must explictly
     lock and unlock the lock.
     Args:
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
     Returns:
         fasteners.InterProcessLock: A lock for the repository.
     """
-    lock_path = cache_prefix / "locks" / (repo_name.split("/")[1] + ".lock")
+    lock_path = cache_prefix / "locks" / (repo_slug.split("/")[1] + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock = fasteners.InterProcessLock(lock_path)
     return lock
 
 
-def get_cache_path(repo_name: str, cache_prefix: Path) -> Path:
+def get_cache_path(repo_slug: str, cache_prefix: Path) -> Path:
     """Returns the path to the cache file.
     Args:
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
     Returns:
         Path: The path to the cache file.
     """
-    cache_entry_name = repo_name.split("/")[1] + ".json"
+    cache_entry_name = repo_slug.split("/")[1] + ".json"
     cache_path = cache_prefix / cache_entry_name
     return cache_path
 
 
 def is_in_cache(
-    cache_key: Union[Tuple, str], repo_name: str, cache_prefix: Path
+    cache_key: Union[Tuple, str], repo_slug: str, cache_prefix: Path
 ) -> bool:
     """Checks if the key is in the cache.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
     Returns:
         bool: True if the repository is in the cache, False otherwise.
     """
-    if not get_cache_path(repo_name, cache_prefix).exists():
+    if not get_cache_path(repo_slug, cache_prefix).exists():
         return False
-    cache = load_cache(repo_name, cache_prefix)
+    cache = load_cache(repo_slug, cache_prefix)
     return cache_key in cache
 
 
-def load_cache(repo_name: str, cache_prefix: Path) -> dict:
+def load_cache(repo_slug: str, cache_prefix: Path) -> dict:
     """Loads the cache.
     Args:
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
     Returns:
         dict: The cache.
     """
-    cache_path = get_cache_path(repo_name, cache_prefix)
+    cache_path = get_cache_path(repo_slug, cache_prefix)
     if not cache_path.exists():
         return {}
     with open(cache_path, "r") as f:
@@ -80,24 +80,24 @@ def load_cache(repo_name: str, cache_prefix: Path) -> dict:
 
 
 def cache_lookup(
-    cache_key: Union[Tuple, str], repo_name: str, cache_prefix: Path
+    cache_key: Union[Tuple, str], repo_slug: str, cache_prefix: Path
 ) -> dict:
     """Loads the cache and returns the value for the given key.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
     Returns:
         dict: The cache.
     """
-    cache = load_cache(repo_name, cache_prefix)
+    cache = load_cache(repo_slug, cache_prefix)
     return cache[cache_key]
 
 
 def write_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],
-    repo_name: str,
+    repo_slug: str,
     cache_prefix: Path,
     overwrite: bool = True,
 ) -> None:
@@ -105,12 +105,12 @@ def write_cache(
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
         overwrite (bool, optional) = True: Whether to overwrite an existing cache entry.
     """
-    cache_path = get_cache_path(repo_name, cache_prefix)
-    cache = load_cache(repo_name, cache_prefix)
+    cache_path = get_cache_path(repo_slug, cache_prefix)
+    cache = load_cache(repo_slug, cache_prefix)
     if cache_key in cache and not overwrite:
         raise ValueError("Cache key already exists")
     cache[cache_key] = cache_value
@@ -123,7 +123,7 @@ def write_cache(
 def set_in_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],
-    repo_name: str,
+    repo_slug: str,
     cache_prefix: Path,
     overwrite: bool = True,
 ) -> None:
@@ -131,41 +131,41 @@ def set_in_cache(
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
         overwrite (bool, optional) = True: Whether to overwrite the cache if it already exists.
     """
-    lock = get_cache_lock(repo_name, cache_prefix)
+    lock = get_cache_lock(repo_slug, cache_prefix)
     lock.acquire()
-    cache_entry = get_cache_path(repo_name, cache_prefix)
+    cache_entry = get_cache_path(repo_slug, cache_prefix)
     cache_entry.parent.mkdir(parents=True, exist_ok=True)
-    write_cache(cache_key, cache_value, repo_name, cache_prefix, overwrite)
+    write_cache(cache_key, cache_value, repo_slug, cache_prefix, overwrite)
     lock.release()
 
 
 def check_and_load_cache(
     cache_key: Union[Tuple, str],
-    repo_name: str,
+    repo_slug: str,
     cache_prefix: Path,
     set_run: bool = False,
 ) -> Union[str, dict, None]:
     """Checks if the cache is available and loads a specific entry.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_name (str): The name of the repository.
+        repo_slug (str): The name of the repository.
         cache_prefix (Path): The path to the cache directory.
         set_run (bool, optional) = False: Whether to set the running flag to True.
     Returns:
         Union[dict,None]: The cache entry if it exists, None otherwise.
     """
-    lock = get_cache_lock(repo_name, cache_prefix)
+    lock = get_cache_lock(repo_slug, cache_prefix)
     lock.acquire()
-    cache_entry = get_cache_path(repo_name, cache_prefix)
+    cache_entry = get_cache_path(repo_slug, cache_prefix)
     cache_entry.parent.mkdir(parents=True, exist_ok=True)
-    if is_in_cache(cache_key, repo_name, cache_prefix):
+    if is_in_cache(cache_key, repo_slug, cache_prefix):
         total_time = 0
         while True:
-            cache_data = cache_lookup(cache_key, repo_name, cache_prefix)
+            cache_data = cache_lookup(cache_key, repo_slug, cache_prefix)
             if cache_data is not None:
                 break
             lock.release()
@@ -177,6 +177,6 @@ def check_and_load_cache(
         lock.release()
         return cache_data
     if set_run:
-        write_cache(cache_key, None, repo_name, cache_prefix)
+        write_cache(cache_key, None, repo_slug, cache_prefix)
     lock.release()
     return None

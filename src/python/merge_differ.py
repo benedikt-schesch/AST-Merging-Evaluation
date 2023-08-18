@@ -17,6 +17,7 @@ import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
+from write_head_hashes import compute_num_cpus_used
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -36,7 +37,7 @@ def merge_differ(  # pylint: disable=too-many-locals
     Returns:
         dict: The result of the test.
     """
-    repo_name, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_prefix = args
     left = merge_data["left"]
     right = merge_data["right"]
 
@@ -46,7 +47,7 @@ def merge_differ(  # pylint: disable=too-many-locals
             TEST_STATE.Tests_failed.name,
         ):
             continue
-        repo1 = Repository(repo_name, cache_prefix=cache_prefix)
+        repo1 = Repository(repo_slug, cache_prefix=cache_prefix)
         (
             merge_status1,
             merge_fingerprint1,
@@ -77,7 +78,7 @@ def merge_differ(  # pylint: disable=too-many-locals
                 == merge_data[merge_tool2.name + "_merge_fingerprint"]
             ):
                 continue
-            repo2 = Repository(repo_name, cache_prefix=cache_prefix)
+            repo2 = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status2,
                 merge_fingerprint2,
@@ -144,17 +145,17 @@ if __name__ == "__main__":
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
     print("merge_differ: Constructing Inputs")
-    arguments = []
+    merge_differ_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
-        repo_name = repository_data["repository"]
+        repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
         )
         if not merge_list_file.exists():
             print(
                 "merge_differ.py:",
-                repo_name,
+                repo_slug,
                 "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
@@ -163,7 +164,7 @@ if __name__ == "__main__":
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_differ.py: Skipping", repo_name, "because it is empty.")
+            print("merge_differ.py: Skipping", repo_slug, "because it is empty.")
             continue
         for _, merge_data in merges.iterrows():
             compute = False
@@ -191,18 +192,16 @@ if __name__ == "__main__":
                     if not file_name.exists():
                         compute = True
             if compute:
-                arguments.append((repo_name, merge_data, cache_dir))
+                merge_differ_arguments.append((repo_slug, merge_data, cache_dir))
 
     # Shuffle input to reduce cache contention
     random.seed(42)
-    random.shuffle(arguments)
+    random.shuffle(merge_differ_arguments)
 
     print("merge_differ: Finished Constructing Inputs")
-    print("merge_differ: Number of tested merges:", len(arguments))
+    print("merge_differ: Number of tested merges:", len(merge_differ_arguments))
 
     print("merge_differ: Started Diffing")
-    cpu_count = os.cpu_count() or 1
-    processes_used = int(cpu_count * 0.7) if cpu_count > 3 else cpu_count
-    with multiprocessing.Pool(processes=processes_used) as pool:
-        result = list(tqdm(pool.imap(merge_differ, arguments), total=len(arguments)))
+    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+        tqdm(pool.imap(merge_differ, merge_differ_arguments), total=len(merge_differ_arguments))
     print("merge_differ: Finished Diffing")

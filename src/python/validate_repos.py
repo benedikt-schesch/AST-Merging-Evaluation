@@ -7,9 +7,9 @@ usage: python3 validate_repos.py --repos_csv_with_hashes <repos_csv_with_hashes.
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository. The csv must also
-contain a column "Validation hash" which contains a commit hash for the repo that
-will be tested. Cache_dir is the directory where the cache will be stored.
-Output:  the rows of the input for which the head of the default branch passes tests.
+contain a column "Validation hash" which contains a commit hash that will be tested. 
+Cache_dir is the directory where the cache will be stored.
+Output: the rows of the input for which the commit at the validation hash passes tests.
 """
 import multiprocessing
 import os
@@ -23,6 +23,7 @@ from repo import Repository, TEST_STATE, REPOS_PATH
 from tqdm import tqdm
 import pandas as pd
 import git.repo
+from write_head_hashes import compute_num_cpus_used
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -31,28 +32,28 @@ if os.getenv("TERM", "dumb") == "dumb":
 TIMEOUT_TESTING = 60 * 30  # 30 minutes, in seconds.
 
 
-def clone_repo(repo_name: str) -> git.repo.Repo:
+def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
-        repo_name (str): The name of the repository to be cloned
+        repo_slug (str): The name of the repository to be cloned
     """
-    repo_dir = REPOS_PATH / repo_name
+    repo_dir = REPOS_PATH / repo_slug
     if os.path.isdir(repo_dir):
         repo = git.repo.Repo(repo_dir)
     else:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
-        print(repo_name, " : Cloning repo")
-        git_url = "https://:@github.com/" + repo_name + ".git"
+        print(repo_slug, " : Cloning repo")
+        git_url = "https://:@github.com/" + repo_slug + ".git"
         repo = git.repo.Repo.clone_from(git_url, repo_dir)
-        print(repo_name, " : Finished cloning")
-    try:
-        repo.remote().fetch()
-        repo.submodule_update()
-    except Exception as e:
-        print(repo_name, "Exception during cloning. Exception:\n", e)
-        raise
+        print(repo_slug, " : Finished cloning")
+        try:
+            repo.remote().fetch()
+            repo.submodule_update()
+        except Exception as e:
+            print(repo_slug, "Exception during cloning. Exception:\n", e)
+            raise
     return repo
 
 
@@ -64,10 +65,10 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
         TEST_STATE: The result of the test.
     """
     repo_info, cache = args
-    repo_name = repo_info["repository"]
-    print(repo_name, ": head_passes_tests : started")
+    repo_slug = repo_info["repository"]
+    print(repo_slug, ": head_passes_tests : started")
 
-    repo = Repository(repo_name, cache_prefix=cache)
+    repo = Repository(repo_slug, cache_prefix=cache)
     test_result = repo.checkout_and_test_cached(
         repo_info["Validation hash"], timeout=TIMEOUT_TESTING, n_restarts=3
     )
@@ -87,9 +88,7 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
     print("validate_repos: Starting cloning repos")
-    cpu_count = os.cpu_count() or 1
-    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
-    with multiprocessing.Pool(processes=processes_used) as pool:
+    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))
             for _, row in df.iterrows()
@@ -105,19 +104,19 @@ if __name__ == "__main__":
         print("validate_repos: Output file already exists. Exiting.")
         sys.exit(0)
 
+    for row in 
+
     print("validate_repos: Started Testing")
-    cpu_count = os.cpu_count() or 1
-    processes_used = cpu_count - 2 if cpu_count > 3 else cpu_count
-    arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
-    with multiprocessing.Pool(processes=processes_used) as pool:
-        result = list(
-            tqdm(pool.imap(head_passes_tests, arguments), total=len(arguments))
+    head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
+    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+        head_passes_tests_results = list(
+            tqdm(pool.imap(head_passes_tests, head_passes_tests_arguments), total=len(head_passes_tests_arguments))
         )
     print("validate_repos: Finished Testing")
 
     print("validate_repos: Building Output")
     out = []
-    valid_repos_mask = [i == TEST_STATE.Tests_passed for i in result]
+    valid_repos_mask = [i == TEST_STATE.Tests_passed for i in head_passes_tests_results]
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
 

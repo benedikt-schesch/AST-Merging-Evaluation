@@ -24,6 +24,7 @@ from valid_merge_counters import (
     increment_valid_merges,
     delete_valid_merges_counters,
 )
+from write_head_hashes import compute_num_cpus_used
 from merge_filter import is_merge_sucess
 from tqdm import tqdm
 
@@ -43,34 +44,34 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
     Returns:
         dict: The result of the test.
     """
-    repo_name, merge_data, cache_prefix, n_samples = args
-    print("merge_tester: Started ", repo_name, merge_data["left"], merge_data["right"])
+    repo_slug, merge_data, cache_prefix, n_samples = args
+    print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
-    n_valid_merges = read_valid_merges_counter(repo_name)
+    n_valid_merges = read_valid_merges_counter(repo_slug)
     if n_valid_merges > n_samples:
         return None
 
     merge_data["parents pass"] = False
     for branch in ["left", "right"]:
-        repo = Repository(repo_name, cache_prefix=cache_prefix)
+        repo = Repository(repo_slug, cache_prefix=cache_prefix)
         repo.checkout(merge_data[branch])
         tree_fingerprint = repo.compute_tree_fingerprint()
         assert tree_fingerprint == merge_data[f"{branch}_tree_fingerprint"]
         test_result = repo.test(TIMEOUT_TESTING_PARENT, N_RESTARTS)
         merge_data[f"{branch} test result"] = test_result.name
-        n_valid_merges = read_valid_merges_counter(repo_name)
+        n_valid_merges = read_valid_merges_counter(repo_slug)
         if n_valid_merges > n_samples:
             return None
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
         del repo
 
-    increment_valid_merges(repo_name)
+    increment_valid_merges(repo_slug)
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if is_merge_sucess(merge_data[merge_tool.name]):
-            repo = Repository(repo_name, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 result,
                 merge_fingerprint,
@@ -89,7 +90,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> Union[pd.Series, Non
             if merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]:
                 raise Exception(
                     "merge_tester: Merge fingerprint mismatch",
-                    repo_name,
+                    repo_slug,
                     merge_data["left"],
                     merge_data["right"],
                     merge_tool.name,
@@ -120,20 +121,20 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     delete_valid_merges_counters()
 
     print("merge_tester: Constructing Inputs")
-    arguments = []
+    merger_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
-        repo_name = repository_data["repository"]
+        repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
         )
         output_file = Path(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
         )
         if not merge_list_file.exists():
             print(
                 "merge_tester.py:",
-                repo_name,
+                repo_slug,
                 "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
@@ -142,70 +143,68 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         if output_file.exists():
             print(
                 "merge_tester.py: Skipping",
-                repo_name,
+                repo_slug,
                 "because it is already computed.",
             )
             continue
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_tester.py: Skipping", repo_name, "because it is empty.")
+            print("merge_tester.py: Skipping", repo_slug, "because it is empty.")
             continue
         merges = merges[merges["analyze"]]
-        arguments += [
-            (repo_name, merge_data, Path(args.cache_dir), args.n_merges)
+        merger_tester_arguments += [
+            (repo_slug, merge_data, Path(args.cache_dir), args.n_merges)
             for _, merge_data in merges.iterrows()
         ]
 
     # Shuffle input to reduce cache contention
     random.seed(42)
-    random.shuffle(arguments)
+    random.shuffle(merger_tester_arguments)
 
     print("merge_tester: Finished Constructing Inputs")
-    print("merge_tester: Number of tested merges:", len(arguments))
+    print("merge_tester: Number of tested merges:", len(merger_tester_arguments))
 
     print("merge_tester: Started Testing")
-    cpu_count = os.cpu_count() or 1
-    processes_used = int(cpu_count * 0.7) if cpu_count > 3 else cpu_count
-    with multiprocessing.Pool(processes=processes_used) as pool:
-        result = list(tqdm(pool.imap(merge_tester, arguments), total=len(arguments)))
+    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+        merge_tester_results = list(tqdm(pool.imap(merge_tester, merger_tester_arguments), total=len(merger_tester_arguments)))
     print("merge_tester: Finished Testing")
 
-    results = {repo_name: [] for repo_name in repos["repository"]}
+    repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_tester: Constructing Output")
 
     n_merges_parent_pass = 0
-    for i in tqdm(range(len(arguments))):
-        repo_name = arguments[i][0]
-        merge_results = result[i]
+    for i in tqdm(range(len(merger_tester_arguments))):
+        repo_slug = merger_tester_arguments[i][0]
+        merge_results = merge_tester_results[i]
         if merge_results is None:
             continue
         if merge_results["parents pass"]:
             n_merges_parent_pass += 1
-        results[repo_name].append(merge_results)
+        repo_result[repo_slug].append(merge_results)
 
     n_total_merges = 0
     n_total_merges_parent_pass = 0
-    for repo_name in results:
+    for repo_slug in repo_result:
         output_file = Path(
-            os.path.join(args.output_dir, repo_name.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
         )
         if output_file.exists():
             try:
                 df = pd.read_csv(output_file, header=0)
             except pd.errors.EmptyDataError:
-                print("merge_tester.py: Skipping", repo_name, "because it is empty.")
+                print("merge_tester.py: Skipping", repo_slug, "because it is empty.")
                 continue
             n_total_merges += len(df)
             n_total_merges_parent_pass += len(df[df["parents pass"]])
             continue
-        df = pd.DataFrame(results[repo_name])
+        df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
         n_total_merges_parent_pass += len(df[df["parents pass"]])
 
-    print("merge_tester: Number of newly tested merges:", len(arguments))
+    print("merge_tester: Number of newly tested merges:", len(merger_tester_arguments))
     print(
         "merge_tester: Number of newly tested merges with parents pass:",
         n_merges_parent_pass,

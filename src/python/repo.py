@@ -113,18 +113,18 @@ class Repository:
 
     def __init__(
         self,
-        repo_name: str,
+        repo_slug: str,
         cache_prefix: Path = Path(""),
         workdir: Union[Path, None] = None,
     ) -> None:
         """Initializes the repository.
         Args:
-            repo_name (str): The name of the repository.
+            repo_slug (str): The name of the repository.
             cache_prefix (Path): The prefix of the cache.
             workdir (Union[Path,None], optional) = None: Folder to use in the WORKDIR_PREFIX.
         """
-        self.repo_name = repo_name
-        self.path = REPOS_PATH / repo_name
+        self.repo_slug = repo_slug
+        self.path = REPOS_PATH / repo_slug
         if workdir is None:
             self.workdir = WORKDIR_PREFIX / uuid.uuid4().hex
         else:
@@ -152,15 +152,15 @@ class Repository:
                 "Failed to checkout "
                 + commit
                 + " for "
-                + self.repo_name
+                + self.repo_slug
                 + " : \n"
                 + str(e)
             )
             cache_entry = {"sha": None, "explanation": explanation}
-            set_in_cache(commit, cache_entry, self.repo_name, self.sha_cache_prefix)
+            set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
             return False, explanation
         cache_entry = {"sha": self.compute_tree_fingerprint(), "explanation": ""}
-        set_in_cache(commit, cache_entry, self.repo_name, self.sha_cache_prefix)
+        set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
         return True, ""
 
     def merge_and_test(  # pylint: disable=too-many-arguments
@@ -301,13 +301,13 @@ class Repository:
             set_in_cache(
                 left_commit,
                 {"sha": None, "explanation": explanation},
-                self.repo_name,
+                self.repo_slug,
                 self.sha_cache_prefix,
             )
             set_in_cache(
                 cache_name,
                 {"sha": None, "explanation": explanation},
-                self.repo_name,
+                self.repo_slug,
                 self.sha_cache_prefix,
             )
             return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
@@ -330,13 +330,13 @@ class Repository:
             set_in_cache(
                 right_commit,
                 {"sha": None, "explanation": explanation},
-                self.repo_name,
+                self.repo_slug,
                 self.sha_cache_prefix,
             )
             set_in_cache(
                 cache_name,
                 {"sha": None, "explanation": explanation},
-                self.repo_name,
+                self.repo_slug,
                 self.sha_cache_prefix,
             )
             return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
@@ -347,7 +347,7 @@ class Repository:
         start_time = time.time()
         try:
             command = [
-                "src/scripts/merge_tools/" + tool.name.replace("_", "-") + ".sh",
+                "src/scripts/merge_tools/" + tool.name + ".sh",
                 str(self.repo_path),
                 LEFT_BRANCH_NAME,
                 RIGHT_BRANCH_NAME,
@@ -386,7 +386,7 @@ class Repository:
         set_in_cache(
             cache_name,
             cache_entry,
-            self.repo_name,
+            self.repo_slug,
             self.sha_cache_prefix,
         )
         return (
@@ -430,7 +430,7 @@ class Repository:
             Union[None,dict]: The cache entry if the commit is in the cache, None otherwise.
         """
         cache = check_and_load_cache(
-            commit, self.repo_name, self.sha_cache_prefix, set_run=start_merge
+            commit, self.repo_slug, self.sha_cache_prefix, set_run=start_merge
         )
         if cache is None:
             return None
@@ -451,7 +451,7 @@ class Repository:
                     None otherwise.
         """
         cache = check_and_load_cache(
-            sha, self.repo_name, self.test_cache_prefix, set_run=start_test
+            sha, self.repo_slug, self.test_cache_prefix, set_run=start_test
         )
         if cache is None:
             return None
@@ -475,7 +475,7 @@ class Repository:
         """
         result, explanation = self.checkout(commit)
         if not result:
-            print("Checkout failed for", self.repo_name, commit, explanation)
+            print("Checkout failed for", self.repo_slug, commit, explanation)
             return TEST_STATE.Git_checkout_failed
         return self.test(timeout, n_restarts)
 
@@ -527,7 +527,7 @@ class Repository:
                 os.path.join(
                     self.test_cache_prefix,
                     "logs",
-                    self.repo_name.split("/")[1],
+                    self.repo_slug.split("/")[1],
                     sha + "_" + str(i) + ".log",
                 )
             )
@@ -542,7 +542,7 @@ class Repository:
             if test in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
-        set_in_cache(sha, cache_data, self.repo_name, self.test_cache_prefix)
+        set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_prefix)
         return TEST_STATE[cache_data["test_result"]]
 
     def __del__(self) -> None:
