@@ -30,4 +30,5 @@ dependencies:
       - seaborn==0.12.2
       - tqdm==4.64.1
       - black==23.3.0
+      - pandera==0.16.1
 prefix: /home/scheschb/miniconda3/envs/AST
