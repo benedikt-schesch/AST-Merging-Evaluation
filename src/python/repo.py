@@ -12,16 +12,14 @@ import subprocess
 import os
 import shutil
 import time
+from typing import List, Union
 from git.repo import Repo
 from cache_utils import (
     set_in_cache,
     check_and_load_cache,
 )
+from variables import *
 
-CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
-DELETE_WORKDIRS = True
-REPOS_PATH = Path("repos")
-WORKDIR_PREFIX = Path(".workdir")
 TEST_STATE = Enum(
     "TEST_STATE",
     [
@@ -33,9 +31,6 @@ TEST_STATE = Enum(
         "Not_tested",
     ],
 )
-BRANCH_BASE_NAME = "___MERGE_TESTER"
-LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
-RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 MERGE_TOOL = Enum(
     "MERGE_TOOL",
     [
@@ -65,6 +60,23 @@ MERGE_STATE = Enum(
 )
 
 
+def compute_explanation(
+    command: List[str],
+    source: Union[subprocess.TimeoutExpired, subprocess.CompletedProcess],
+) -> str:
+    """Poduces the explanation string of a timedout process or
+    a completed process.
+    """
+    explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+    explanation += (
+        "\nstdout:\n" + source.stdout.decode("utf-8") if source.stdout else ""
+    )
+    explanation += (
+        "\nstderr:\n" + source.stderr.decode("utf-8") if source.stderr else ""
+    )
+    return explanation
+
+
 def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """Returns the result of run_repo_tests.sh on the given working copy.
     If one test passes then the entire test is marked as passed.
@@ -88,21 +100,10 @@ def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as e:
-        explanation = "Run Command: " + " ".join(command) + "\nTimed out"
-        explanation += "\nstdout:\n" + e.stdout.decode("utf-8") if e.stdout else ""
-        explanation += "\nstderr:\n" + e.stderr.decode("utf-8") if e.stderr else ""
+        explanation = compute_explanation(command, e)
         return TEST_STATE.Tests_timedout, explanation
     rc = p.returncode
-    stdout = p.stdout.decode("utf-8")
-    stderr = p.stderr.decode("utf-8")
-    explanation = (
-        "Run Command: "
-        + " ".join(command)
-        + "\nstdout:\n"
-        + stdout
-        + "\nstderr:\n"
-        + stderr
-    )
+    explanation = compute_explanation(command, p)
     if rc == 0:  # Success
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
@@ -359,9 +360,7 @@ class Repository:
                 check=False,
             )
         except subprocess.TimeoutExpired as e:
-            explanation = "Run Command: " + " ".join(command) + "\nTimed out"  # type: ignore
-            explanation += "\nstdout:\n" + e.stdout.decode("utf-8") if e.stdout else ""
-            explanation += "\nstderr:\n" + e.stderr.decode("utf-8") if e.stderr else ""
+            explanation = compute_explanation(command, e)
             sha = self.compute_tree_fingerprint()
             return (
                 MERGE_STATE.Merge_timedout,
@@ -372,8 +371,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = "STDOUT:\n" + p.stdout.decode("utf-8")
-        explanation += "\nSTDERR:\n" + p.stderr.decode("utf-8")
+        explanation = compute_explanation(command, p)
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )

@@ -25,6 +25,7 @@ import pandas as pd
 import git.repo
 from variables import REPOS_PATH
 
+
 def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
