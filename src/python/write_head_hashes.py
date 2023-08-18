@@ -27,23 +27,26 @@ from variables import REPOS_PATH
 import pandera as pa
 
 # define input schema
-schema = pa.DataFrameSchema({
-    "repository": pa.Column(str),
-    "language": pa.Column(str),
-    "architecture": pa.Column(float),
-    "continuous_integration": pa.Column(int),
-    "documentation": pa.Column(float),
-    "history":pa.Column(float),
-    "issues":pa.Column(float),
-    "license":pa.Column(int),
-    "size":pa.Column(int),
-    "unit_test":pa.Column(float),
-    "stars":pa.Column(int),
-    "scorebased_org":pa.Column(int),
-    "randomforest_org":pa.Column(int),
-    "scorebased_utl":pa.Column(int),
-    "randomforest_utl":pa.Column(int)
-})
+schema = pa.DataFrameSchema(
+    {
+        "repository": pa.Column(str),
+        "language": pa.Column(str),
+        "architecture": pa.Column(float),
+        "continuous_integration": pa.Column(int),
+        "documentation": pa.Column(float),
+        "history": pa.Column(float),
+        "issues": pa.Column(float),
+        "license": pa.Column(int),
+        "size": pa.Column(int),
+        "unit_test": pa.Column(float),
+        "stars": pa.Column(int),
+        "scorebased_org": pa.Column(int),
+        "randomforest_org": pa.Column(int),
+        "scorebased_utl": pa.Column(int),
+        "randomforest_utl": pa.Column(int),
+    }
+)
+
 
 def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
@@ -125,7 +128,7 @@ if __name__ == "__main__":
         print("validate_repos: Cached")
         sys.exit(0)
 
-    df = pd.read_csv(args.repos_csv,index_col="idx")
+    df = pd.read_csv(args.repos_csv, index_col="idx")
     df = schema(df)
 
     print("write_head_hashes: Started cloning repos and collecting head hashes")
