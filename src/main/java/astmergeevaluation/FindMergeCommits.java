@@ -159,6 +159,9 @@ public class FindMergeCommits {
 
   /** Represents a GitHub repository. */
   static class OrgAndRepo {
+    /** The index, in the experimental pipeline. */
+    public final int index;
+
     /** The owner or organization. */
     public final String org;
 
@@ -168,10 +171,12 @@ public class FindMergeCommits {
     /**
      * Creates a new OrgAndRepo.
      *
+     * @param index the index, in the experimental pipeline
      * @param org the org or organization
      * @param repo the repository name within the organization
      */
-    public OrgAndRepo(String org, String repo) {
+    public OrgAndRepo(int index, String org, String repo) {
+      this.index = index;
       this.org = org;
       this.repo = repo;
     }
@@ -179,16 +184,16 @@ public class FindMergeCommits {
     /**
      * Creates a new OrgAndRepo.
      *
+     * @param index the index, in the experimental pipeline
      * @param orgAndRepoString the organization and repository name, separated by a slash ("/")
      */
-    public OrgAndRepo(String orgAndRepoString) {
+    public OrgAndRepo(int index, String orgAndRepoString) {
       String[] orgAndRepoSplit = orgAndRepoString.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
         System.exit(4);
       }
-      this.org = orgAndRepoSplit[0];
-      this.repo = orgAndRepoSplit[1];
+      this(index, orgAndRepoSplit[0], orgAndRepoSplit[1]);
     }
 
     /**
@@ -215,10 +220,10 @@ public class FindMergeCommits {
     try (@SuppressWarnings("DefaultCharset")
             FileReader fr = new FileReader(inputFileName /*, UTF_8*/);
         CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(fr)) {
-      String[] repoColumn;
-      while ((repoColumn = csvReader.readNext("repository")) != null) {
-        assert repoColumn.length == 1 : "@AssumeAssertion(index): application-specific property";
-        repos.add(new OrgAndRepo(repoColumn[0]));
+      String[] repoColumns;
+      while ((repoColumns = csvReader.readNext("idx", "repository")) != null) {
+        assert repoColumns.length == 2 : "@AssumeAssertion(index): application-specific property";
+        repos.add(new OrgAndRepo(parseInt(repoColumn[0]), repoColumn[1]));
       }
     } catch (CsvValidationException e) {
       throw new Error(e);
@@ -306,7 +311,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
+      writer.write("repo_index,branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
@@ -453,8 +458,11 @@ public class FindMergeCommits {
    * If there is none (because the two commits have different initial commits!), then this returns
    * null.
    *
-   * <p>This always returns an existing commit (or null), never a synthetic one. When a criss-cross
-   * merge exists in the history, this outputs an arbitrary one of the best merge bases.
+   * <p>This always returns an existing commit (or null), never a synthetic one.
+   *
+   * <p>When a criss-cross merge exists in the history, this outputs an arbitrary one of the best
+   * merge bases (likely the earliest one). It doesn't matter which one is output, for the uses of
+   * this method in this program.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
@@ -512,6 +520,7 @@ public class FindMergeCommits {
   }
 
   // This doesn't work; I don't know why.
+  // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
