@@ -15,12 +15,14 @@ import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple, Union
+from typing import Tuple
 import random
+import time
+import psutil
 import pandas as pd
-from repo import Repository, MERGE_TOOL, MERGE_STATE, TEST_STATE
+from repo import Repository, MERGE_TOOL, TEST_STATE
 from write_head_hashes import compute_num_cpus_used
-from merge_filter import is_merge_sucess
+from merge_tools_comparator import is_merge_sucess
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -31,7 +33,7 @@ TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
 N_RESTARTS = 3
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> pd.Series:
+def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repository info and
@@ -40,6 +42,14 @@ def merge_tester(args: Tuple[str, pd.Series, Path, int]) -> pd.Series:
         dict: The result of the test.
     """
     repo_slug, merge_data, cache_prefix = args
+    while psutil.cpu_percent() > 90:
+        print(
+            "merge_tester: Waiting for CPU load to come down ",
+            repo_slug,
+            merge_data["left"],
+            merge_data["right"],
+        )
+        time.sleep(60)
     print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
     merge_data["parents pass"] = False
@@ -136,7 +146,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         except pd.errors.EmptyDataError:
             print("merge_tester.py: Skipping", repo_slug, "because it is empty.")
             continue
-        merges = merges[merges["analyze"]]
+        merges = merges[merges["two merge tools differ"]]
         merger_tester_arguments += [
             (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()

@@ -81,7 +81,7 @@ small-test:
 small-test-diff:
 	@echo
 	@echo "Here is the file content, in case a diff fails."
-	more results-small/*.csv results-small/merges/*.csv results-small/merges_analyzed/*.csv results-small/merges_tested/*.csv | cat
+	more results-small/*.csv results-small/merges/*.csv results-small/merges_compared/*.csv results-small/merges_tested/*.csv | cat
 	@echo
 	python3 test/check_equal_csv.py --test_folder results-small/ --target_folder test/small-goal-files/
 	@echo

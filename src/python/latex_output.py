@@ -34,7 +34,6 @@ from tqdm import tqdm
 import seaborn as sns
 
 from merge_tester import MERGE_TOOL, TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
-from merge_filter import TIMEOUT_MERGING
 from repo import MERGE_STATE, TEST_STATE
 
 matplotlib.use("pgf")

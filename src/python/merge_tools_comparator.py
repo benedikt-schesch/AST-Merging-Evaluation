@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Filter the merges that do not have at least two merge tools that 
 disagree on the result of the merge.
-usage: python3 merge_filter.py --valid_repos_csv <path_to_valid_repos.csv>
+usage: python3 merge_tools_comparator.py --valid_repos_csv <path_to_valid_repos.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
@@ -57,7 +57,7 @@ def merger(  # pylint: disable=too-many-locals
     cache_data = {}
     for merge_tool in MERGE_TOOL:
         print(
-            "merge_filter: Merging",
+            "merge_tools_comparator: Merging",
             repo_slug,
             merge_data["left"],
             merge_data["right"],
@@ -116,7 +116,7 @@ def merger(  # pylint: disable=too-many-locals
 
 
 if __name__ == "__main__":
-    print("merge_filter: Start")
+    print("merge_tools_comparator: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--valid_repos_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
-    print("merge_filter: Constructing Inputs")
+    print("merge_tools_comparator: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             raise Exception(
-                "merge_filter.py:",
+                "merge_tools_comparator.py:",
                 repo_slug,
                 "does not have a list of merge. Missing file: ",
                 merge_list_file,
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
         if output_file.exists():
             print(
-                "merge_filter.py: Skipping",
+                "merge_tools_comparator.py: Skipping",
                 repo_slug,
                 "because it is already computed.",
             )
@@ -178,19 +178,20 @@ if __name__ == "__main__":
     random.seed(42)
     random.shuffle(merger_arguments)
 
-    print("merge_filter: Finished Constructing Inputs")
-    print("merge_filter: Number of new merges:", len(merger_arguments))
+    print("merge_tools_comparator: Finished Constructing Inputs")
+    print("merge_tools_comparator: Number of new merges:", len(merger_arguments))
 
-    print("merge_filter: Started Merging")
+    print("merge_tools_comparator: Started Merging")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
-    print("merge_filter: Finished Merging")
+    print("merge_tools_comparator: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_filter: Constructing Output")
-    n_analyze = 0
+    print("merge_tools_comparator: Constructing Output")
+    n_new_compared = 0
+    n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
@@ -210,7 +211,7 @@ if __name__ == "__main__":
                         != cache_data[merge_tool2.name]["merge_fingerprint"]
                     ):
                         analyze = True
-        merge_data["analyze"] = analyze
+        merge_data["two merge tools differ"] = analyze
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
         for merge_tool in MERGE_TOOL:
@@ -223,26 +224,49 @@ if __name__ == "__main__":
             ]["merge_fingerprint"]
 
         repo_result[repo_slug].append(merge_data)
+        n_new_compared += 1
         if analyze:
-            n_analyze += 1
+            n_new_tested += 1
 
-    n_total_analyze = 0
+    n_total_tested = 0
+    n_total_compared = 0
     for repo_slug in repo_result:
         output_file = Path(
             os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
         )
         if output_file.exists():
             try:
-                n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
+                n_total_tested += sum(
+                    pd.read_csv(output_file, header=0)["two merge tools differ"]
+                )
             except pd.errors.EmptyDataError:
-                print("merge_filter.py: Skipping", repo_slug, "because it is empty.")
+                print(
+                    "merge_tools_comparator.py: Skipping",
+                    repo_slug,
+                    "because it is empty.",
+                )
             continue
         df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
-        n_total_analyze += sum(df["analyze"])
+        n_total_tested += sum(df["two merge tools differ"])
+        n_total_compared += len(df)
 
-    print("merge_filter: Number of newly analyzed merges:", n_analyze)
-    print("merge_filter: Total number of merges to be analyzed:", n_total_analyze)
-    print("merge_filter: Finished Constructing Output")
-    print("merge_filter: Done")
+    print(
+        "merge_tools_comparator: Number of merges that have been newly compared:",
+        n_new_compared,
+    )
+    print(
+        "merge_tools_comparator: Number of merges that will be newly tested:",
+        n_new_tested,
+    )
+    print(
+        "merge_tools_comparator: Total number of merges that have been compared:",
+        n_total_compared,
+    )
+    print(
+        "merge_tools_comparator: Total number of merges that will be tested:",
+        n_total_tested,
+    )
+    print("merge_tools_comparator: Finished Constructing Output")
+    print("merge_tools_comparator: Done")

@@ -91,15 +91,15 @@ java -cp build/libs/astmergeevaluation-all.jar \
     "$OUT_DIR/valid_repos.csv" \
     "$OUT_DIR/merges"
 
-python3 src/python/merge_filter.py \
+python3 src/python/merge_tools_comparator.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_analyzed/" \
+    --output_dir "$OUT_DIR/merges_compared/" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_tester.py \
     --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
-    --merges_path "$OUT_DIR/merges_analyzed/" \
+    --merges_path "$OUT_DIR/merges_compared/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 

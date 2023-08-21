@@ -71,7 +71,7 @@ The output data appears in `results-small/`.
 
 * `results-small/merges/` contains all the merges.
 
-* `results-small/merges_analyzed/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
+* `results-small/merges_compared/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
 
 * `results-small/merges_tested/` contains all merges that have been tested.
 
@@ -149,7 +149,7 @@ To run style checking run `make style`.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
-    * merge_filter.py -> Filters the merges based if the merge results are different and the merge is not trivial.
+    * merge_tools_comparator.py -> Filters the merges based if the merge results are different and the merge is not trivial.
 
     * get_repos.py -> Downloads the repos list.
 
