@@ -32,7 +32,7 @@ def merge_differ(  # pylint: disable=too-many-locals
 ) -> None:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[str, pd.Series,Path]): A tuple containing the repository name,
+        args (Tuple[str, pd.Series,Path]): A tuple containing the repository slug,
             the merge data and the cache prefix.
     Returns:
         dict: The result of the test.
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
-    print("merge_differ: Constructing Inputs")
+    print("merge_differ: Started listing diffs to compute")
     merge_differ_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -169,7 +169,7 @@ if __name__ == "__main__":
             print("merge_differ.py: Skipping", repo_slug, "because it is empty.")
             continue
         for _, merge_data in merges.iterrows():
-            compute = False
+            need_to_diff = False
             for merge_tool1 in MERGE_TOOL:
                 if merge_data[merge_tool1.name] not in (
                     TEST_STATE.Tests_passed.name,
@@ -192,15 +192,15 @@ if __name__ == "__main__":
                         merge_data[merge_tool2.name + "_merge_fingerprint"],
                     )
                     if not file_name.exists():
-                        compute = True
-            if compute:
+                        need_to_diff = True
+            if need_to_diff:
                 merge_differ_arguments.append((repo_slug, merge_data, cache_dir))
 
     # Shuffle input to reduce cache contention
     random.seed(42)
     random.shuffle(merge_differ_arguments)
 
-    print("merge_differ: Finished Constructing Inputs")
+    print("merge_differ: Finished listing diffs to compute")
     print("merge_differ: Number of tested merges:", len(merge_differ_arguments))
 
     print("merge_differ: Started Diffing")

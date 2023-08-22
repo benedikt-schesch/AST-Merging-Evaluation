@@ -29,7 +29,7 @@ from variables import REPOS_PATH
 def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
-        repo_slug (str): The name of the repository to be cloned
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
     repo_dir = REPOS_PATH / repo_slug
     if repo_dir.exists():
