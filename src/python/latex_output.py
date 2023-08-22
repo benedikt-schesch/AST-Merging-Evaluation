@@ -479,7 +479,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
-            args.merges_valid_path, slug_repo_name(repository_data["repository"] + ".csv"
+            args.merges_valid_path,
+            slug_repo_name(repository_data["repository"] + ".csv"),
         )
         if not os.path.isfile(merge_list_file):
             continue
