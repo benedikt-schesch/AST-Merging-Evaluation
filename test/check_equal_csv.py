@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def filter_run_time(df):
+def remove_run_time(df):
     """Remove all columns whose name contains "run_time"."""
     df = df.drop(columns=[c for c in df.columns if "run_time" in c])
     return df
@@ -37,16 +37,26 @@ if __name__ == "__main__":
         assert test_file.exists(), f"{test_file} does not exist"
         target_df = pd.read_csv(target_folder / target_file, header=0, index_col="idx")
         test_df = pd.read_csv(test_file, header=0, index_col="idx")
-        target_df = filter_run_time(target_df)
-        test_df = filter_run_time(test_df)
+        target_df = remove_run_time(target_df)
+        test_df = remove_run_time(test_df)
 
         if not target_df.equals(test_df):
+            # Print the differences.
+            print(os.system(f"diff {target_folder/target_file} {test_file}"))
+            # Now print details, after diffs so it is not obscured by the diff output.
             for col in target_df.columns:
-                if not target_df[col].equals(test_df[col]):
-                    print(f"Column {col} is not equal")
+                if "run_time" in col:
+                    raise Error(
+                        f'target_df.columns contains "run_time": {target_df.columns}'
+                    )
+                if not col in test_df:
+                    print(f"Column {col} is not in test_df")
+                    print(target_df[col])
+                elif not target_df[col].equals(test_df[col]):
+                    print(f"Column {col} is not equal.  Printing target then test.")
                     print(target_df[col])
                     print(test_df[col])
             print(f"{target_file} and {test_file} are not equal")
-            # Print the differences
-            print(os.system(f"diff {target_folder/  target_file} {test_file}"))
-            raise ValueError(f"{target_file} and {test_file} are not equal")
+            raise ValueError(
+                f"{target_folder/target_file} and {test_file} are not equal"
+            )
