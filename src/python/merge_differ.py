@@ -42,67 +42,24 @@ def merge_differ(  # pylint: disable=too-many-locals
     right = merge_data["right"]
 
     for merge_tool1 in MERGE_TOOL:
-        if merge_data[merge_tool1.name] not in (
-            TEST_STATE.Tests_passed.name,
-            TEST_STATE.Tests_failed.name,
-        ):
-            continue
-        repo1 = Repository(repo_slug, cache_prefix=cache_prefix)
-        (
-            merge_status1,
-            merge_fingerprint1,
-            left_fingerprint1,
-            right_fingerprint1,
-            _,
-            _,
-        ) = repo1.merge(
-            tool=merge_tool1,
-            left_commit=left,
-            right_commit=right,
-            timeout=-1,
+        (repo1, merge_fingerprint1) = get_merge_fingerprint(
+            merge_data, merge_tool1, cache_prefix
         )
-        assert merge_status1 == MERGE_STATE.Merge_success
-        assert left_fingerprint1 == merge_data["left_tree_fingerprint"]
-        assert right_fingerprint1 == merge_data["right_tree_fingerprint"]
-        assert merge_fingerprint1 == merge_data[merge_tool1.name + "_merge_fingerprint"]
         if merge_fingerprint1 is None:
             continue
+
         for merge_tool2 in MERGE_TOOL:
+            # TODO: try putting this outside the loops.
             if not merge_data["parents pass"]:
                 continue
-            if merge_data[merge_tool2.name] not in (
-                TEST_STATE.Tests_passed.name,
-                TEST_STATE.Tests_failed.name,
-            ):
-                continue
-            if (
-                merge_data[merge_tool1.name + "_merge_fingerprint"]
-                == merge_data[merge_tool2.name + "_merge_fingerprint"]
-            ):
-                continue
-            repo2 = Repository(repo_slug, cache_prefix=cache_prefix)
-            (
-                merge_status2,
-                merge_fingerprint2,
-                left_fingerprint2,
-                right_fingerprint2,
-                _,
-                _,
-            ) = repo2.merge(
-                tool=merge_tool2,
-                left_commit=left,
-                right_commit=right,
-                timeout=-1,
-            )
-            assert merge_status2 == MERGE_STATE.Merge_success
-            assert left_fingerprint2 == merge_data["left_tree_fingerprint"]
-            assert right_fingerprint2 == merge_data["right_tree_fingerprint"]
-            assert (
-                merge_fingerprint2
-                == merge_data[merge_tool2.name + "_merge_fingerprint"]
+
+            (repo2, merge_fingerprint2) = get_merge_fingerprint(
+                merge_data, merge_tool2, cache_prefix
             )
             if merge_fingerprint2 is None:
                 continue
+
+            # TODO: Move this to the top of teh inner loop, before computing the fingerprint.
             diff_file = (
                 cache_prefix
                 / "merge_diffs"
@@ -118,6 +75,43 @@ def merge_differ(  # pylint: disable=too-many-locals
                 subprocess.run(command, stdout=f, stderr=f)
             del repo2
         del repo1
+
+
+def get_merge_fingerprint(merge_data, merge_tool, cache_prefix):
+    """Returns the repo and the fingerprint of a merge, or None.  Does some sanity-checking too.
+    Args:
+        merge_data: The merge data.
+        merge_tool (str): The merge tool name.
+    Returns:
+        repo: the repo.
+        str: the fingerprint of the merge.
+    """
+    if merge_data[merge_tool.name] not in (
+        TEST_STATE.Tests_passed.name,
+        TEST_STATE.Tests_failed.name,
+    ):
+        return (None, None)
+    left = merge_data["left"]
+    right = merge_data["right"]
+    repo = Repository(repo_slug, cache_prefix=cache_prefix)
+    (
+        merge_status,
+        merge_fingerprint,
+        left_fingerprint,
+        right_fingerprint,
+        _,
+        _,
+    ) = repo.merge(
+        tool=merge_tool,
+        left_commit=left,
+        right_commit=right,
+        timeout=-1,
+    )
+    assert merge_status == MERGE_STATE.Merge_success
+    assert left_fingerprint == merge_data["left_tree_fingerprint"]
+    assert right_fingerprint == merge_data["right_tree_fingerprint"]
+    assert merge_fingerprint == merge_data[merge_tool.name + "_merge_fingerprint"]
+    return (repo, merge_fingerprint)
 
 
 def diff_file_name(sha1: str, sha2: str) -> Path:
