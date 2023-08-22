@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def filter_run_time(df):
+def remove_run_time(df):
     """Remove all columns whose name contains "run_time"."""
     df = df.drop(columns=[c for c in df.columns if "run_time" in c])
     return df
@@ -37,8 +37,8 @@ if __name__ == "__main__":
         assert test_file.exists(), f"{test_file} does not exist"
         target_df = pd.read_csv(target_folder / target_file, header=0, index_col="idx")
         test_df = pd.read_csv(test_file, header=0, index_col="idx")
-        target_df = filter_run_time(target_df)
-        test_df = filter_run_time(test_df)
+        target_df = remove_run_time(target_df)
+        test_df = remove_run_time(test_df)
 
         if not target_df.equals(test_df):
             for col in target_df.columns:
