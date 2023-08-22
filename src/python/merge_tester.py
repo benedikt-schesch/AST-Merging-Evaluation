@@ -23,6 +23,7 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE
 from write_head_hashes import compute_num_cpus_used
 from merge_tools_comparator import is_merge_sucess
+from cache_utils import slug_repo_name
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
