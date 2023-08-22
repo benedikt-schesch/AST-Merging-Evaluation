@@ -23,6 +23,7 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE
 from write_head_hashes import compute_num_cpus_used
 from merge_tools_comparator import is_merge_sucess
+from cache_utils import slug_repo_name
 from tqdm import tqdm
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -120,10 +121,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             print(
@@ -184,7 +185,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     n_total_merges_parents_pass = 0
     for repo_slug in repo_result:
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if output_file.exists():
             try:

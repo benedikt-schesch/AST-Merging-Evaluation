@@ -11,7 +11,7 @@ Input: a csv of repos.
 The input file `repos.csv` must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository.
 Output: Write one file per repository, with the hash of the HEAD of the default branch
-as column "Validation hash".
+as column "head hash".
 """
 
 import os
@@ -83,7 +83,7 @@ def get_latest_hash(args):
     try:
         print(repo_slug, ": Cloning repo")
         repo = clone_repo(repo_slug)
-        row["Validation hash"] = repo.head.commit.hexsha
+        row["head hash"] = repo.head.commit.hexsha
     except Exception as e:
         print(repo_slug, ": Finished testing, result = exception, cause:", e)
         return None

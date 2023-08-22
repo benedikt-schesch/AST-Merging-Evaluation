@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
-from cache_utils import set_in_cache, check_and_load_cache
+from cache_utils import set_in_cache, check_and_load_cache, slug_repo_name
 from write_head_hashes import compute_num_cpus_used
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -82,7 +82,7 @@ def merger(  # pylint: disable=too-many-locals
             log_file: Path = (
                 cache_prefix
                 / "merge_logs"
-                / repo_slug.split("/")[1]
+                / slug_repo_name(repo_slug)
                 / merge_data["left"]
                 / merge_data["right"]
                 / (merge_tool.name + f".log")
@@ -134,10 +134,10 @@ if __name__ == "__main__":
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     n_total_compared = 0
     for repo_slug in repo_result:
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if output_file.exists():
             try:
