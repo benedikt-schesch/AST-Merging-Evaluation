@@ -149,7 +149,7 @@ To run style checking run `make style`.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
-    * merge_tools_comparator.py -> Filters the merges based if the merge results are different and the merge is not trivial.
+    * merge_tools_comparator.py -> Compares merges that produce different output.
 
     * get_repos.py -> Downloads the repos list.
 
