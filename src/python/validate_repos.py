@@ -7,7 +7,7 @@ usage: python3 validate_repos.py --repos_csv_with_hashes <repos_csv_with_hashes.
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository. The csv must also
-contain a column "Validation hash" which contains a commit hash that will be tested. 
+contain a column "head hash" which contains a commit hash that will be tested. 
 Cache_dir is the directory where the cache will be stored.
 Output: the rows of the input for which the commit at the validation hash passes tests.
 """
@@ -44,7 +44,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
 
     repo = Repository(repo_slug, cache_prefix=cache)
     test_result = repo.checkout_and_test_cached(
-        repo_info["Validation hash"], timeout=TIMEOUT_TESTING, n_restarts=3
+        repo_info["head hash"], timeout=TIMEOUT_TESTING, n_restarts=3
     )
     return test_result
 
