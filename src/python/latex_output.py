@@ -35,6 +35,7 @@ import seaborn as sns
 
 from merge_tester import MERGE_TOOL, TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
 from repo import MERGE_STATE, TEST_STATE
+from cache_utils import slug_repo_name
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -143,7 +144,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.tested_merges_path, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.tested_merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
@@ -478,7 +479,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     df = pd.read_csv(args.valid_repos_csv, index_col="idx")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
-            args.merges_valid_path, repository_data["repository"].split("/")[1] + ".csv"
+            args.merges_valid_path,
+            slug_repo_name(repository_data["repository"] + ".csv"),
         )
         if not os.path.isfile(merge_list_file):
             continue

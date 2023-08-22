@@ -17,6 +17,16 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
+def slug_repo_name(repo_slug: str) -> str:
+    """Given a GitHub repository slug (owner/reponame), returns the reponame.
+    Args:
+        repo_slug (str): The slug of the repository, which is 'owner/reponame'.
+    Returns:
+        str: The reponame.
+    """
+    return repo_slug.split("/")[1]
+
+
 def get_cache_lock(repo_slug: str, cache_prefix: Path):
     """Returns a lock for the cache of a repository.
     Initially the lock is unlocked; the caller must explictly
@@ -27,7 +37,7 @@ def get_cache_lock(repo_slug: str, cache_prefix: Path):
     Returns:
         fasteners.InterProcessLock: A lock for the repository.
     """
-    lock_path = cache_prefix / "locks" / (repo_slug.split("/")[1] + ".lock")
+    lock_path = cache_prefix / "locks" / (slug_repo_name(repo_slug) + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock = fasteners.InterProcessLock(lock_path)
     return lock
@@ -41,7 +51,7 @@ def get_cache_path(repo_slug: str, cache_prefix: Path) -> Path:
     Returns:
         Path: The path to the cache file.
     """
-    cache_entry_name = repo_slug.split("/")[1] + ".json"
+    cache_entry_name = slug_repo_name(repo_slug) + ".json"
     cache_path = cache_prefix / cache_entry_name
     return cache_path
 

@@ -16,6 +16,7 @@ from git.repo import Repo
 from cache_utils import (
     set_in_cache,
     check_and_load_cache,
+    slug_repo_name,
 )
 from variables import *
 
@@ -524,7 +525,7 @@ class Repository:
                 os.path.join(
                     self.test_cache_prefix,
                     "logs",
-                    self.repo_slug.split("/")[1],
+                    slug_repo_name(self.repo_slug),
                     sha + "_" + str(i) + ".log",
                 )
             )
