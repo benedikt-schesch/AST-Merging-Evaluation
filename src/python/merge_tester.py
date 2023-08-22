@@ -36,15 +36,15 @@ N_RESTARTS = 3
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
-        args (Tuple[str,pd.Series,Path]): A tuple containing the repository info and
-                    the cache path.
+        args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
+                    the repository info, and the cache path.
     Returns:
         dict: The result of the test.
     """
     repo_slug, merge_data, cache_prefix = args
     while psutil.cpu_percent() > 90:
         print(
-            "merge_tester: Waiting for CPU load to come down ",
+            "merge_tester: Waiting for CPU load to come down",
             repo_slug,
             merge_data["left"],
             merge_data["right"],
@@ -115,8 +115,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
 
-    print("merge_tester: Constructing Inputs")
-    merger_tester_arguments = []
+    print("merge_tester: Started listing merges to test")
+    merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
@@ -147,24 +147,24 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             print("merge_tester.py: Skipping", repo_slug, "because it is empty.")
             continue
         merges = merges[merges["two merge tools differ"]]
-        merger_tester_arguments += [
+        merge_tester_arguments += [
             (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
         ]
 
     # Shuffle input to reduce cache contention
     random.seed(42)
-    random.shuffle(merger_tester_arguments)
+    random.shuffle(merge_tester_arguments)
 
-    print("merge_tester: Finished Constructing Inputs")
-    print("merge_tester: Number of tested merges:", len(merger_tester_arguments))
+    print("merge_tester: Finished : Finished listing merges to test")
+    print("merge_tester: Number of tested merges:", len(merge_tester_arguments))
 
     print("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         merge_tester_results = list(
             tqdm(
-                pool.imap(merge_tester, merger_tester_arguments),
-                total=len(merger_tester_arguments),
+                pool.imap(merge_tester, merge_tester_arguments),
+                total=len(merge_tester_arguments),
             )
         )
     print("merge_tester: Finished Testing")
@@ -173,8 +173,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester: Constructing Output")
 
     n_merges_parent_pass = 0
-    for i in tqdm(range(len(merger_tester_arguments))):
-        repo_slug = merger_tester_arguments[i][0]
+    for i in tqdm(range(len(merge_tester_arguments))):
+        repo_slug = merge_tester_arguments[i][0]
         merge_results = merge_tester_results[i]
         if merge_results["parents pass"]:
             n_merges_parent_pass += 1
@@ -201,7 +201,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         n_total_merges += len(df)
         n_total_merges_parent_pass += len(df[df["parents pass"]])
 
-    print("merge_tester: Number of newly tested merges:", len(merger_tester_arguments))
+    print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
     print(
         "merge_tester: Number of newly tested merges with parents pass:",
         n_merges_parent_pass,

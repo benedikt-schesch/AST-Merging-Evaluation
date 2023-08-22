@@ -119,7 +119,7 @@ class Repository:
     ) -> None:
         """Initializes the repository.
         Args:
-            repo_slug (str): The name of the repository.
+            repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_prefix (Path): The prefix of the cache.
             workdir (Union[Path,None], optional) = None: Folder to use in the WORKDIR_PREFIX.
         """

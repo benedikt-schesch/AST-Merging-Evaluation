@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ 
 Deletes all placeholders from the cache. Placeholders are created when a
-a process starts it indicates that is has started and is still running.
+a process starts; it indicates that is has started and is still running.
 If the process fails, the placeholder is not replaced with the actual
 result. This script deletes all placeholders from the cache.
 
