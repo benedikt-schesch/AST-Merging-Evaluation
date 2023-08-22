@@ -156,8 +156,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     random.seed(42)
     random.shuffle(merge_tester_arguments)
 
-    print("merge_tester: Finished : Finished listing merges to test")
-    print("merge_tester: Number of tested merges:", len(merge_tester_arguments))
+    print("merge_tester: Finished listing merges to test")
+    print("merge_tester: Number of merges to test:", len(merge_tester_arguments))
 
     print("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
@@ -170,18 +170,18 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester: Finished Testing")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_tester: Constructing Output")
+    print("merge_tester: Started Writing Output")
 
-    n_merges_parent_pass = 0
+    n_merges_parents_pass = 0
     for i in tqdm(range(len(merge_tester_arguments))):
         repo_slug = merge_tester_arguments[i][0]
         merge_results = merge_tester_results[i]
         if merge_results["parents pass"]:
-            n_merges_parent_pass += 1
+            n_merges_parents_pass += 1
         repo_result[repo_slug].append(merge_results)
 
     n_total_merges = 0
-    n_total_merges_parent_pass = 0
+    n_total_merges_parents_pass = 0
     for repo_slug in repo_result:
         output_file = Path(
             os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
@@ -193,25 +193,25 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                 print("merge_tester.py: Skipping", repo_slug, "because it is empty.")
                 continue
             n_total_merges += len(df)
-            n_total_merges_parent_pass += len(df[df["parents pass"]])
+            n_total_merges_parents_pass += len(df[df["parents pass"]])
             continue
         df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
-        n_total_merges_parent_pass += len(df[df["parents pass"]])
+        n_total_merges_parents_pass += len(df[df["parents pass"]])
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
     print(
-        "merge_tester: Number of newly tested merges with parents pass:",
-        n_merges_parent_pass,
+        'merge_tester: Number of newly tested merges with "parents pass":',
+        n_merges_parents_pass,
     )
     print("merge_tester: Total number of tested merges:", n_total_merges)
     print(
-        "merge_tester: Total number of merges with parents pass:",
-        n_total_merges_parent_pass,
+        'merge_tester: Total number of merges with "parents pass":',
+        n_total_merges_parents_pass,
     )
-    print("merge_tester: Finished Constructing Output")
+    print("merge_tester: Finished Writing Output")
     print("merge_tester: Done")
 
 
