@@ -516,7 +516,7 @@ class Repository:
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
         for i in range(n_restarts):
-            test, explanation = repo_test(self.repo_path, timeout)
+            test_state, test_output = repo_test(self.repo_path, timeout)
             test_log_file = Path(
                 os.path.join(
                     self.test_cache_prefix,
@@ -529,11 +529,11 @@ class Repository:
             if test_log_file.exists():
                 test_log_file.unlink()
             with open(test_log_file, "w") as f:
-                f.write(explanation)
-            cache_data["test_results"].append(test.name)
+                f.write(test_output)
+            cache_data["test_results"].append(test_state.name)
             cache_data["test_log_file"].append(str(test_log_file))
-            cache_data["test_result"] = test.name
-            if test in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
+            cache_data["test_result"] = test_state.name
+            if test_state in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
         set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_prefix)
