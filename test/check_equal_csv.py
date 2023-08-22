@@ -46,7 +46,7 @@ if __name__ == "__main__":
             # Now print details, after diffs so it is not obscured by the diff output.
             for col in target_df.columns:
                 if "run_time" in col:
-                    raise Error(
+                    raise Exception(
                         f'target_df.columns contains "run_time": {target_df.columns}'
                     )
                 if not col in test_df:
