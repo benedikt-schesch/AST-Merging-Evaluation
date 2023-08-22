@@ -14,7 +14,7 @@ VALID_MERGE_COUNTERS = Path(".valid_merges_counters/")
 def read_valid_merges_counter(repo_slug: str) -> int:
     """Returns the number of merges that have passing parents for a repository.
     Args:
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
     Returns:
         int: The number of merges that have passing parents for the repository.
     """
@@ -34,7 +34,7 @@ def read_valid_merges_counter(repo_slug: str) -> int:
 def increment_valid_merges(repo_slug: str) -> None:
     """Increments the number of merges that have passing parents for a repository.
     Args:
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
     lock_file = VALID_MERGE_COUNTERS / "lock" / (repo_slug + ".lock")
     lock_file.parent.mkdir(parents=True, exist_ok=True)

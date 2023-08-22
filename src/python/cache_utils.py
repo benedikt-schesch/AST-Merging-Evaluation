@@ -17,17 +17,27 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
+def slug_repo_name(repo_slug: str) -> str:
+    """Given a GitHub repository slug (owner/reponame), returns the reponame.
+    Args:
+        repo_slug (str): The slug of the repository, which is 'owner/reponame'.
+    Returns:
+        str: The reponame.
+    """
+    return repo_slug.split("/")[1]
+
+
 def get_cache_lock(repo_slug: str, cache_prefix: Path):
     """Returns a lock for the cache of a repository.
-    Initially the locks are unlocked and the caller must explictly
+    Initially the lock is unlocked; the caller must explictly
     lock and unlock the lock.
     Args:
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
     Returns:
         fasteners.InterProcessLock: A lock for the repository.
     """
-    lock_path = cache_prefix / "locks" / (repo_slug.split("/")[1] + ".lock")
+    lock_path = cache_prefix / "locks" / (slug_repo_name(repo_slug) + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock = fasteners.InterProcessLock(lock_path)
     return lock
@@ -36,12 +46,12 @@ def get_cache_lock(repo_slug: str, cache_prefix: Path):
 def get_cache_path(repo_slug: str, cache_prefix: Path) -> Path:
     """Returns the path to the cache file.
     Args:
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
     Returns:
         Path: The path to the cache file.
     """
-    cache_entry_name = repo_slug.split("/")[1] + ".json"
+    cache_entry_name = slug_repo_name(repo_slug) + ".json"
     cache_path = cache_prefix / cache_entry_name
     return cache_path
 
@@ -52,7 +62,7 @@ def is_in_cache(
     """Checks if the key is in the cache.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
     Returns:
         bool: True if the repository is in the cache, False otherwise.
@@ -66,7 +76,7 @@ def is_in_cache(
 def load_cache(repo_slug: str, cache_prefix: Path) -> dict:
     """Loads the cache.
     Args:
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
     Returns:
         dict: The cache.
@@ -85,7 +95,7 @@ def cache_lookup(
     """Loads the cache and returns the value for the given key.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
     Returns:
         dict: The cache.
@@ -105,9 +115,10 @@ def write_cache(
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
         overwrite (bool, optional) = True: Whether to overwrite an existing cache entry.
+             If False, attempting to overwrite an existing cache entry throws an exception.
     """
     cache_path = get_cache_path(repo_slug, cache_prefix)
     cache = load_cache(repo_slug, cache_prefix)
@@ -127,11 +138,11 @@ def set_in_cache(
     cache_prefix: Path,
     overwrite: bool = True,
 ) -> None:
-    """Sets the cache.
+    """Puts an entry in the cache, then writes the cache to disk.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
         overwrite (bool, optional) = True: Whether to overwrite the cache if it already exists.
     """
@@ -152,7 +163,7 @@ def check_and_load_cache(
     """Checks if the cache is available and loads a specific entry.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
-        repo_slug (str): The name of the repository.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
         set_run (bool, optional) = False: Whether to set the running flag to True.
     Returns:
