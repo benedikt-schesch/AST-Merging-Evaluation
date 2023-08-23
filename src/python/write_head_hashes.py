@@ -36,18 +36,18 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
         repo = git.repo.Repo(repo_dir)
     else:
         repo_dir.parent.mkdir(parents=True, exist_ok=True)
-        # ":@" in URL ensures that we are not prompted for login details
-        # for the repos that are now private.
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
         print(repo_slug, " : Cloning repo")
-        git_url = "https://:@github.com/" + repo_slug + ".git"
-        repo = git.repo.Repo.clone_from(git_url, repo_dir)
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
+        github_url = "https://:@github.com/" + repo_slug + ".git"
+        repo = git.repo.Repo.clone_from(github_url, repo_dir)
         print(repo_slug, " : Finished cloning")
         try:
             repo.remote().fetch()
             repo.submodule_update()
         except Exception as e:
-            print(repo_slug, "Exception during cloning. Exception:\n", e)
+            print(repo_slug, "Exception during cloning:\n", e)
             raise
     return repo
 
@@ -78,24 +78,29 @@ def get_latest_hash(args):
     """
     _, row = args
     repo_slug = row["repository"]
-    print(repo_slug, ": Started get_latest_hash")
+    print("write_head_hashes:", repo_slug, ": Started get_latest_hash")
 
     try:
-        print(repo_slug, ": Cloning repo")
+        print("write_head_hashes:", repo_slug, ": Cloning repo")
         repo = clone_repo(repo_slug)
         row["head hash"] = repo.head.commit.hexsha
     except Exception as e:
-        print(repo_slug, ": Finished testing, result = exception, cause:", e)
+        print(
+            "write_head_hashes:",
+            repo_slug,
+            ": Finished get_latest_hash, result = exception, cause:",
+            e,
+        )
         return None
 
-    print(repo_slug, ": Finished get_latest_hash")
+    print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row
 
 
 if __name__ == "__main__":
     Path("repos").mkdir(parents=True, exist_ok=True)
 
-    print("Started storing repo HEAD hashes")
+    print("write_head_hashes: Started storing repo HEAD hashes")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_csv", type=Path)
     parser.add_argument("--output_path", type=Path)
@@ -103,7 +108,7 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(args.output_path):
-        print("validate_repos: Cached")
+        print("write_head_hashes: validate_repos: Cached")
         sys.exit(0)
 
     df = pd.read_csv(args.repos_csv, index_col="idx")
@@ -121,4 +126,4 @@ if __name__ == "__main__":
     result_df = pd.DataFrame([i for i in get_latest_hash_result if i is not None])
     result_df = result_df.set_index(result_df.columns[0]).reset_index(drop=True)
     result_df.to_csv(args.output_path, index_label="idx")
-    print("Finished Storing Repos Hashes")
+    print("write_head_hashes: Finished storing repo HEAD hashes")

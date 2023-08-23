@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Filter the merges that do not have at least two merge tools that 
-disagree on the result of the merge.
+"""Removes the merges such that all merge tools have identical output.
 usage: python3 merge_tools_comparator.py --valid_repos_csv <path_to_valid_repos.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
-This script filters the merges that will be analyzed.
+This script filters the merges that will be tested:
+those for whitch at least 2 merge tools disagree.
 """
 
 import os
@@ -29,9 +29,9 @@ TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
 N_RESTARTS = 3
 
 
-def is_merge_sucess(merge: str) -> bool:
-    """Returns true if the merge indicates success"""
-    return merge == MERGE_STATE.Merge_success.name
+def is_merge_sucess(merge_state: str) -> bool:
+    """Returns true if the merge state indicates success."""
+    return merge_state == MERGE_STATE.Merge_success.name
 
 
 def merger(  # pylint: disable=too-many-locals
@@ -40,8 +40,8 @@ def merger(  # pylint: disable=too-many-locals
     """
     Merges two branches and returns the result.
     Args:
-        args (Tuple[pd.Series,Path]): A tuple containing the
-                merge data, the merge tool and the cache path.
+        args (Tuple[str,pd.Series,Path]): A tuple containing the repo slug,
+                the merge data, and the cache path.
     Returns:
         dict: A dictionary containing the merge result.
     """
@@ -143,7 +143,7 @@ if __name__ == "__main__":
             raise Exception(
                 "merge_tools_comparator.py:",
                 repo_slug,
-                "does not have a list of merge. Missing file: ",
+                "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
 
@@ -253,7 +253,7 @@ if __name__ == "__main__":
         n_total_compared += len(df)
 
     print(
-        "merge_tools_comparator: Number of merges that have been newly compared:",
+        "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
         n_new_compared,
     )
     print(
@@ -261,7 +261,7 @@ if __name__ == "__main__":
         n_new_tested,
     )
     print(
-        "merge_tools_comparator: Total number of merges that have been compared:",
+        "merge_tools_comparator: Total number of merge tool outputs that have been compared:",
         n_total_compared,
     )
     print(
