@@ -32,7 +32,7 @@ TIMEOUT_TESTING = 60 * 30  # 30 minutes, in seconds.
 
 
 def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
-    """Checks if the head of main passes test.
+    """Runs tests on the head of the main branch.
     Args:
         args (Tuple[pd.Series,Path]): A tuple containing the repository info and the cache path.
     Returns:
@@ -40,13 +40,14 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     """
     repo_info, cache = args
     repo_slug = repo_info["repository"]
-    print(repo_slug, ": head_passes_tests : started")
+    print("validate_repos:", repo_slug, ": head_passes_tests : started")
 
     repo = Repository(repo_slug, cache_prefix=cache)
-    test_result = repo.checkout_and_test_cached(
+    test_state = repo.checkout_and_test_cached(
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_restarts=3
     )
-    return test_result
+    print("validate_repos:", repo_slug, ": head_passes_tests : returning", test_state)
+    return test_state
 
 
 if __name__ == "__main__":
@@ -60,7 +61,7 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
-    print("validate_repos: Starting cloning repos")
+    print("validate_repos: Started cloning repos")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))
@@ -88,14 +89,19 @@ if __name__ == "__main__":
         )
     print("validate_repos: Finished Testing")
 
-    print("validate_repos: Building Output")
+    print("validate_repos: Started Building Output")
     out = []
     valid_repos_mask = [i == TEST_STATE.Tests_passed for i in head_passes_tests_results]
     out = df[valid_repos_mask]
     print("validate_repos: Finished Building Output")
 
-    print("validate_repos: Number of valid repos:", len(out), "out of", len(df))
+    print(
+        "validate_repos: Number of repos whose head passes tests:",
+        len(out),
+        "out of",
+        len(df),
+    )
     if len(out) == 0:
-        raise Exception("No valid repos found")
+        raise Exception("No repos found whose head passes tests")
     out.to_csv(args.output_path, index_label="idx")
     print("validate_repos: Done")
