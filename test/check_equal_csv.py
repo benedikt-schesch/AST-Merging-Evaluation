@@ -48,5 +48,7 @@ if __name__ == "__main__":
                     print(test_df[col])
             print(f"{target_file} and {test_file} are not equal")
             # Print the differences
-            print(os.system(f"diff {target_folder/  target_file} {test_file}"))
-            raise ValueError(f"{target_file} and {test_file} are not equal")
+            print(os.system(f"diff {target_folder/target_file} {test_file}"))
+            raise ValueError(
+                f"{target_folder/target_file} and {test_file} are not equal"
+            )
