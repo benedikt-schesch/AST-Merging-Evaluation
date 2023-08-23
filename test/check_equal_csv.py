@@ -41,9 +41,19 @@ if __name__ == "__main__":
         test_df = remove_run_time(test_df)
 
         if not target_df.equals(test_df):
+            # Print the differences.
+            print(os.system(f"diff {target_folder/target_file} {test_file}"))
+            # Now print details, after diffs so it is not obscured by the diff output.
             for col in target_df.columns:
-                if not target_df[col].equals(test_df[col]):
-                    print(f"Column {col} is not equal")
+                if "run_time" in col:
+                    raise Exception(
+                        f'target_df.columns contains "run_time": {target_df.columns}'
+                    )
+                if not col in test_df:
+                    print(f"Column {col} is not in test_df")
+                    print(target_df[col])
+                elif not target_df[col].equals(test_df[col]):
+                    print(f"Column {col} is not equal.  Printing target then test.")
                     print(target_df[col])
                     print(test_df[col])
             print(f"{target_file} and {test_file} are not equal")
