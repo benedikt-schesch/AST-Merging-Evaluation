@@ -19,7 +19,7 @@ import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
-from write_head_hashes import compute_num_cpus_used
+from write_head_hashes import compute_num_process_used
 from cache_utils import slug_repo_name
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -32,7 +32,7 @@ TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
 def merge_differ(  # pylint: disable=too-many-locals
     args: Tuple[str, pd.Series, Path]
 ) -> None:
-    """ Diffs the results of any two merge tools on the same merge.
+    """Diffs the results of any two merge tools on the same merge.
     Does not diff merges that have the same result or merges that are not successful.
     Args:
         args (Tuple[str, pd.Series,Path]): A tuple containing the repository slug,
@@ -163,7 +163,11 @@ if __name__ == "__main__":
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_differ.py: Skipping", repo_slug, "because it does not contain any merges.")
+            print(
+                "merge_differ.py: Skipping",
+                repo_slug,
+                "because it does not contain any merges.",
+            )
             continue
         for _, merge_data in merges.iterrows():
             need_to_diff = False
@@ -201,7 +205,7 @@ if __name__ == "__main__":
     print("merge_differ: Number of tested merges:", len(merge_differ_arguments))
 
     print("merge_differ: Started Diffing")
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         tqdm(
             pool.imap(merge_differ, merge_differ_arguments),
             total=len(merge_differ_arguments),

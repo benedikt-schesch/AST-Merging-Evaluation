@@ -17,7 +17,10 @@ def remove_run_time(df):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument(
-        "--actual_folder", type=str, help="Path to actual folder", default="results-small"
+        "--actual_folder",
+        type=str,
+        help="Path to actual folder",
+        default="results-small",
     )
     parser.add_argument(
         "--goal_folder",
@@ -59,6 +62,4 @@ if __name__ == "__main__":
             print(f"{goal_file} and {actual_file} are not equal")
             # Print the differences
             print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
-            raise ValueError(
-                f"{goal_folder/goal_file} and {actual_file} are not equal"
-            )
+            raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")

@@ -33,8 +33,8 @@ from prettytable import PrettyTable
 from tqdm import tqdm
 import seaborn as sns
 
-from merge_tester import MERGE_TOOL, TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
-from repo import MERGE_STATE, TEST_STATE
+from merge_tester import TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
+from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
 from cache_utils import slug_repo_name
 
 matplotlib.use("pgf")
@@ -155,7 +155,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("latex_output.py: Skipping", repo_slug, "because it does not contain any merges.")
+            print(
+                "latex_output.py: Skipping",
+                repo_slug,
+                "because it does not contain any merges.",
+            )
             continue
         merges = merges[merges["parents pass"]]
         if len(merges) > args.n_merges:

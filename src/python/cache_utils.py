@@ -165,8 +165,9 @@ def lookup_in_cache(
         cache_key (Union[Tuple,str]): The key to check.
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
-        set_run (bool, optional) = False: Wheter to insert an empty cache entry if it does not exist.
-            This is useful for preventing multiple runs from attempting to insert the same cache entry.
+        set_run (bool, optional) = False: Wheter to insert an empty cache entry
+            if it does not exist. This is useful for preventing multiple runs from
+            attempting to insert the same cache entry.
     Returns:
         Union[dict,None]: The cache entry if it exists, None otherwise.
     """

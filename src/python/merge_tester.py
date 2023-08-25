@@ -22,7 +22,7 @@ import time
 import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE
-from write_head_hashes import compute_num_cpus_used
+from write_head_hashes import compute_num_process_used
 from merge_tools_comparator import is_merge_sucess
 from cache_utils import slug_repo_name
 from tqdm import tqdm
@@ -52,7 +52,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             merge_data["right"],
         )
         time.sleep(60)
-    print("merge_tester.py: Started ", repo_slug, merge_data["left"], merge_data["right"])
+    print(
+        "merge_tester.py: Started ", repo_slug, merge_data["left"], merge_data["right"]
+    )
 
     merge_data["parents pass"] = False
     for branch in ["left", "right"]:
@@ -146,7 +148,11 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_tester.py: Skipping", repo_slug, "because it does not contain any merges.")
+            print(
+                "merge_tester.py: Skipping",
+                repo_slug,
+                "because it does not contain any merges.",
+            )
             continue
         merges = merges[merges["two merge tools differ"]]
         merge_tester_arguments += [
@@ -162,7 +168,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester.py: Number of merges to test:", len(merge_tester_arguments))
 
     print("merge_tester.py: Started Testing")
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         merge_tester_results = list(
             tqdm(
                 pool.imap(merge_tester, merge_tester_arguments),
@@ -192,7 +198,11 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             try:
                 df = pd.read_csv(output_file, header=0)
             except pd.errors.EmptyDataError:
-                print("merge_tester.py: Skipping", repo_slug, "because it does not contain any merges.")
+                print(
+                    "merge_tester.py: Skipping",
+                    repo_slug,
+                    "because it does not contain any merges.",
+                )
                 continue
             n_total_merges += len(df)
             n_total_merges_parents_pass += len(df[df["parents pass"]])
@@ -203,7 +213,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         n_total_merges += len(df)
         n_total_merges_parents_pass += len(df[df["parents pass"]])
 
-    print("merge_tester.py: Number of newly tested merges:", len(merge_tester_arguments))
+    print(
+        "merge_tester.py: Number of newly tested merges:", len(merge_tester_arguments)
+    )
     print(
         'merge_tester.py: Number of newly tested merges with "parents pass":',
         n_merges_parents_pass,

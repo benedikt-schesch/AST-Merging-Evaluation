@@ -19,8 +19,9 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
-from write_head_hashes import compute_num_cpus_used
+from write_head_hashes import compute_num_process_used
 from variables import TIMEOUT_MERGING, N_MERGES
+
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     print("merge_tools_comparator.py: Number of new merges:", len(merger_arguments))
 
     print("merge_tools_comparator.py: Started Merging")
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
