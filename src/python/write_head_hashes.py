@@ -5,7 +5,7 @@ After this is done, the resulting files are used indefinitely, for reproducible 
 Note: the default branch is often named "main" or "master".
 
 usage: python3 write_head_hashes.py --repos_csv <repos.csv>
-                                    --output_path <valid_repos.csv>
+                                    --output_path <repos_head_passes.csv>
 
 Input: a csv of repos.
 The input file `repos.csv` must contain a header, one of whose columns is "repository".
@@ -31,7 +31,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
-    repo_dir = REPOS_PATH / repo_slug
+    repo_dir = REPOS_PATH / repo_slug.split("/")[1]
     if repo_dir.exists():
         repo = git.repo.Repo(repo_dir)
     else:
@@ -52,16 +52,13 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     return repo
 
 
-def compute_num_cpus_used(ratio: float = 0.7) -> int:
+def compute_num_cpus_used() -> int:
     """Comput the number of cpus to be used
-    Args:
-        ratio (float) = 0.7: Ratios of cpus to be used with respect
-            to the total number of cpus.
     Returns:
         int: the number of cpus to be used.
     """
     cpu_count = os.cpu_count() or 1
-    processes_used = int(ratio * cpu_count) if cpu_count > 3 else cpu_count
+    processes_used = int(0.7 * cpu_count) if cpu_count > 3 else cpu_count
     return processes_used
 
 
@@ -108,7 +105,7 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(args.output_path):
-        print("write_head_hashes: validate_repos: Cached")
+        print("write_head_hashes: test_repo_head: Cached")
         sys.exit(0)
 
     df = pd.read_csv(args.repos_csv, index_col="idx")

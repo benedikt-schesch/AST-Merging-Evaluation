@@ -63,12 +63,10 @@ def is_in_cache(
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         repo_slug (str): The slug of the repository, which is "owner/reponame".
-        cache_prefix (Path): The path to the cache directory.
+        cache_prefix (Path): The path prefix to the cache directory.
     Returns:
         bool: True if the repository is in the cache, False otherwise.
     """
-    if not get_cache_path(repo_slug, cache_prefix).exists():
-        return False
     cache = load_cache(repo_slug, cache_prefix)
     return cache_key in cache
 
@@ -104,7 +102,7 @@ def cache_lookup(
     return cache[cache_key]
 
 
-def write_cache(
+def write_to_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],
     repo_slug: str,
@@ -112,6 +110,7 @@ def write_cache(
     overwrite: bool = True,
 ) -> None:
     """Puts an entry in the cache, then writes the cache to disk.
+    This function is not thread-safe.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
@@ -139,6 +138,7 @@ def set_in_cache(
     overwrite: bool = True,
 ) -> None:
     """Puts an entry in the cache, then writes the cache to disk.
+    This function is thread-safe.
     Args:
         cache_key (Union[Tuple,str]): The key to check.
         cache_value (dict): The value to write.
@@ -150,11 +150,11 @@ def set_in_cache(
     lock.acquire()
     cache_entry = get_cache_path(repo_slug, cache_prefix)
     cache_entry.parent.mkdir(parents=True, exist_ok=True)
-    write_cache(cache_key, cache_value, repo_slug, cache_prefix, overwrite)
+    write_to_cache(cache_key, cache_value, repo_slug, cache_prefix, overwrite)
     lock.release()
 
 
-def check_and_load_cache(
+def lookup_in_cache(
     cache_key: Union[Tuple, str],
     repo_slug: str,
     cache_prefix: Path,
@@ -165,7 +165,8 @@ def check_and_load_cache(
         cache_key (Union[Tuple,str]): The key to check.
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_prefix (Path): The path to the cache directory.
-        set_run (bool, optional) = False: Whether to set the running flag to True.
+        set_run (bool, optional) = False: Wheter to insert an empty cache entry if it does not exist.
+            This is useful for preventing multiple runs from attempting to insert the same cache entry.
     Returns:
         Union[dict,None]: The cache entry if it exists, None otherwise.
     """
@@ -188,6 +189,6 @@ def check_and_load_cache(
         lock.release()
         return cache_data
     if set_run:
-        write_cache(cache_key, None, repo_slug, cache_prefix)
+        write_to_cache(cache_key, None, repo_slug, cache_prefix)
     lock.release()
     return None

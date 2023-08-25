@@ -81,38 +81,37 @@ python3 src/python/split_repos.py \
     --num_machines "$num_machines" \
     --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/validate_repos.py \
+python3 src/python/test_repo_head.py \
     --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
-    --output_path "$OUT_DIR/valid_repos.csv" \
+    --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
-    "$OUT_DIR/valid_repos.csv" \
+    "$OUT_DIR/repos_head_passes.csv" \
     "$OUT_DIR/merges"
 
 python3 src/python/merge_tools_comparator.py \
-    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_compared/" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_tester.py \
-    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges_compared/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_differ.py \
-    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges_tested" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/latex_output.py \
+    --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
-    --valid_repos_csv "$OUT_DIR/valid_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
-    --merges_tested_path "$OUT_DIR/merges/" \
-    --merges_valid_path "$OUT_DIR/merges_valid/" \
     --output_dir "$OUT_DIR"

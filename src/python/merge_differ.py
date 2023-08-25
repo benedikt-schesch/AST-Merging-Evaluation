@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """ Compare the results of two merge tools on the same merge.
-usage: python3 merge_differ.py --result_csv <result_csv.csv>
+usage: python3 merge_differ.py --repos_head_passes_csv <repos_head_passes_csv> 
+                                --merges_path <merges_path>
                                 --cache_dir <cache_dir>
 This script compares the results of two merge tools on the same merge.
-It outputs the diff of the two merge results.
+It outputs the diff any two merge results if their results differ.
+It ignores merges that have the same result or merges that are not successful.
 """
 
 import os
@@ -25,13 +27,13 @@ if os.getenv("TERM", "dumb") == "dumb":
 
 TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes
 TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
-N_RESTARTS = 3
 
 
 def merge_differ(  # pylint: disable=too-many-locals
     args: Tuple[str, pd.Series, Path]
 ) -> None:
-    """Tests the parents of a merge and in case of success, it tests the merge.
+    """ Diffs the results of any two merge tools on the same merge.
+    Does not diff merges that have the same result or merges that are not successful.
     Args:
         args (Tuple[str, pd.Series,Path]): A tuple containing the repository slug,
             the merge data and the cache prefix.
@@ -131,7 +133,7 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
 if __name__ == "__main__":
     print("merge_differ: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--valid_repos_csv", type=Path)
+    parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
     args = parser.parse_args()
@@ -139,7 +141,7 @@ if __name__ == "__main__":
     cache_diffs_path = cache_dir / "merge_diffs"
     cache_diffs_path.mkdir(parents=True, exist_ok=True)
 
-    repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
     print("merge_differ: Started listing diffs to compute")
     merge_differ_arguments = []
@@ -161,7 +163,7 @@ if __name__ == "__main__":
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("merge_differ.py: Skipping", repo_slug, "because it is empty.")
+            print("merge_differ.py: Skipping", repo_slug, "because it does not contain any merges.")
             continue
         for _, merge_data in merges.iterrows():
             need_to_diff = False

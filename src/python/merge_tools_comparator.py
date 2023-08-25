@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Removes the merges such that all merge tools have identical output.
-usage: python3 merge_tools_comparator.py --valid_repos_csv <path_to_valid_repos.csv>
+usage: python3 merge_tools_comparator.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
-This script filters the merges that will be tested:
-those for whitch at least 2 merge tools disagree.
+This script flags merges that have different results for different merge tools.
 """
 
 import os
@@ -19,14 +18,11 @@ import numpy as np
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
-from cache_utils import set_in_cache, check_and_load_cache, slug_repo_name
+from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
 from write_head_hashes import compute_num_cpus_used
-
+from variables import TIMEOUT_MERGING, N_MERGES
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
-
-TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
-N_RESTARTS = 3
 
 
 def is_merge_sucess(merge_state: str) -> bool:
@@ -50,21 +46,21 @@ def merger(  # pylint: disable=too-many-locals
     cache_entry = merge_data["left"] + "_" + merge_data["right"]
     merge_cache_prefix = cache_prefix / "merge_results"
 
-    result = check_and_load_cache(cache_entry, repo_slug, merge_cache_prefix, True)
+    result = lookup_in_cache(cache_entry, repo_slug, merge_cache_prefix, True)
     if result is not None and isinstance(result, dict):
         return result
 
     cache_data = {}
     for merge_tool in MERGE_TOOL:
         print(
-            "merge_tools_comparator: Merging",
+            "merge_tools_comparator.py: Merging",
             repo_slug,
             merge_data["left"],
             merge_data["right"],
             merge_tool.name,
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
-        for i in range(N_RESTARTS):
+        for i in range(N_MERGES):
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status,
@@ -116,9 +112,9 @@ def merger(  # pylint: disable=too-many-locals
 
 
 if __name__ == "__main__":
-    print("merge_tools_comparator: Start")
+    print("merge_tools_comparator.py: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--valid_repos_csv", type=Path)
+    parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
@@ -126,9 +122,9 @@ if __name__ == "__main__":
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_tools_comparator: Constructing Inputs")
+    print("merge_tools_comparator.py: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -178,18 +174,18 @@ if __name__ == "__main__":
     random.seed(42)
     random.shuffle(merger_arguments)
 
-    print("merge_tools_comparator: Finished Constructing Inputs")
-    print("merge_tools_comparator: Number of new merges:", len(merger_arguments))
+    print("merge_tools_comparator.py: Finished Constructing Inputs")
+    print("merge_tools_comparator.py: Number of new merges:", len(merger_arguments))
 
-    print("merge_tools_comparator: Started Merging")
+    print("merge_tools_comparator.py: Started Merging")
     with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
-    print("merge_tools_comparator: Finished Merging")
+    print("merge_tools_comparator.py: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_tools_comparator: Constructing Output")
+    print("merge_tools_comparator.py: Constructing Output")
     n_new_compared = 0
     n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
@@ -243,7 +239,7 @@ if __name__ == "__main__":
                 print(
                     "merge_tools_comparator.py: Skipping",
                     repo_slug,
-                    "because it is empty.",
+                    "because it does not contain any merges.",
                 )
             continue
         df = pd.DataFrame(repo_result[repo_slug])
@@ -253,20 +249,20 @@ if __name__ == "__main__":
         n_total_compared += len(df)
 
     print(
-        "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
+        "merge_tools_comparator.py: Number of merge tool outputs that have been newly compared:",
         n_new_compared,
     )
     print(
-        "merge_tools_comparator: Number of merges that will be newly tested:",
+        "merge_tools_comparator.py: Number of merges that will be newly tested:",
         n_new_tested,
     )
     print(
-        "merge_tools_comparator: Total number of merge tool outputs that have been compared:",
+        "merge_tools_comparator.py: Total number of merge tool outputs that have been compared:",
         n_total_compared,
     )
     print(
-        "merge_tools_comparator: Total number of merges that will be tested:",
+        "merge_tools_comparator.py: Total number of merges that will be tested:",
         n_total_tested,
     )
-    print("merge_tools_comparator: Finished Constructing Output")
-    print("merge_tools_comparator: Done")
+    print("merge_tools_comparator.py: Finished Constructing Output")
+    print("merge_tools_comparator.py: Done")

@@ -145,7 +145,7 @@ To run style checking run `make style`.
 
     * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
+    * test_repo_head.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
@@ -160,8 +160,6 @@ To run style checking run `make style`.
     * repo.py -> Contains the Repo class which represents a repo.
 
     * split_repos.py -> Splits the repos for parallel execution.
-
-    * valid_merge_counters.py -> Counts the number of merges that are valid.
 
     * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 
