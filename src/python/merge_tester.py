@@ -68,7 +68,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                 branch,
                 tree_fingerprint,
                 merge_data[f"{branch}_tree_fingerprint"],
-                repo.path
+                repo.path,
             )
         test_result = repo.test(TIMEOUT_TESTING_PARENT, N_TESTS)
         merge_data[f"{branch} test result"] = test_result.name
@@ -121,8 +121,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
-    parser.add_argument("--include_trivial_merges", action='store_true')
-    parser.add_argument("--only_trivial_merges", action='store_true')
+    parser.add_argument("--include_trivial_merges", action="store_true")
+    parser.add_argument("--only_trivial_merges", action="store_true")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)

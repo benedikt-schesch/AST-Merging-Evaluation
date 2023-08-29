@@ -13,7 +13,7 @@ import multiprocessing
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple
+from typing import Tuple, Union
 import random
 import subprocess
 import pandas as pd
@@ -29,71 +29,23 @@ TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes
 TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
 
 
-def merge_differ(  # pylint: disable=too-many-locals
-    args: Tuple[str, pd.Series, Path]
-) -> None:
-    """Diffs the results of any two merge tools on the same merge.
-    Does not diff merges that have the same result or merges that are not successful.
-    Args:
-        args (Tuple[str, pd.Series,Path]): A tuple containing the repository slug,
-            the merge data and the cache prefix.
-    Returns:
-        dict: The result of the test.
-    """
-    repo_slug, merge_data, cache_prefix = args
-    left = merge_data["left"]
-    right = merge_data["right"]
-
-    for merge_tool1 in MERGE_TOOL:
-        (repo1, merge_fingerprint1) = get_merge_fingerprint(
-            merge_data, merge_tool1, cache_prefix
-        )
-        if merge_fingerprint1 is None:
-            continue
-
-        for merge_tool2 in MERGE_TOOL:
-            # TODO: try putting this outside the loops.
-            if not merge_data["parents pass"]:
-                continue
-
-            (repo2, merge_fingerprint2) = get_merge_fingerprint(
-                merge_data, merge_tool2, cache_prefix
-            )
-            if merge_fingerprint2 is None:
-                continue
-
-            # TODO: Move this to the top of teh inner loop, before computing the fingerprint.
-            diff_file = (
-                cache_prefix
-                / "merge_diffs"
-                / diff_file_name(merge_fingerprint1, merge_fingerprint2)
-            )
-            diff_file.parent.mkdir(parents=True, exist_ok=True)
-            if diff_file.exists():
-                continue
-            command = ["diff", "-u", "-r", "-x", "*/\\.git*"]
-            command.append(str(repo1.repo_path))
-            command.append(str(repo2.repo_path))
-            with open(diff_file, "w") as f:
-                subprocess.run(command, stdout=f, stderr=f)
-            del repo2
-        del repo1
-
-
-def get_merge_fingerprint(merge_data, merge_tool, cache_prefix):
-    """Returns the repo and the fingerprint of a merge, or None.  Does some sanity-checking too.
+def get_merge_fingerprint(
+    merge_data: pd.Series, merge_tool: MERGE_TOOL, cache_prefix: Path
+) -> Union[Tuple[None, None], Tuple[Repository, str]]:
+    """Returns the repo and the fingerprint of a merge, or None.
+    Does some sanity-checking too.
     Args:
         merge_data: The merge data.
         merge_tool (str): The merge tool name.
     Returns:
-        repo: the repo.
-        str: the fingerprint of the merge.
+        repo: the repo. None if the merge is not successful.
+        str: the fingerprint of the merge. None if the merge is not successful.
     """
     if merge_data[merge_tool.name] not in (
         TEST_STATE.Tests_passed.name,
         TEST_STATE.Tests_failed.name,
     ):
-        return (None, None)
+        return None, None
     left = merge_data["left"]
     right = merge_data["right"]
     repo = Repository(repo_slug, cache_prefix=cache_prefix)
@@ -110,11 +62,63 @@ def get_merge_fingerprint(merge_data, merge_tool, cache_prefix):
         right_commit=right,
         timeout=-1,
     )
+    if merge_fingerprint is None:
+        raise Exception(
+            "merge_differ: Checkout failure",
+            repo_slug,
+            left,
+            right,
+            merge_tool.name,
+        )
     assert merge_status == MERGE_STATE.Merge_success
     assert left_fingerprint == merge_data["left_tree_fingerprint"]
     assert right_fingerprint == merge_data["right_tree_fingerprint"]
     assert merge_fingerprint == merge_data[merge_tool.name + "_merge_fingerprint"]
     return (repo, merge_fingerprint)
+
+
+def merge_differ(args: Tuple[pd.Series, Path]) -> None:
+    """Diffs the results of any two merge tools on the same merge.
+    Does not diff merges that have the same result or merges that are not successful.
+    Args:
+        args (Tuple[pd.Series,Path]): A tuple containing the merge data and the cache prefix.
+    Returns:
+        dict: The result of the test.
+    """
+    merge_data, cache_prefix = args
+
+    if not merge_data["parents pass"]:
+        return
+
+    diff_file_prefix = cache_prefix / "merge_diffs"
+    diff_file_prefix.mkdir(parents=True, exist_ok=True)
+
+    for merge_tool1 in MERGE_TOOL:
+        repo1, merge_fingerprint1 = get_merge_fingerprint(
+            merge_data, merge_tool1, cache_prefix
+        )
+        if repo1 is None or merge_fingerprint1 is None:
+            continue
+
+        for merge_tool2 in MERGE_TOOL:
+            repo2, merge_fingerprint2 = get_merge_fingerprint(
+                merge_data, merge_tool2, cache_prefix
+            )
+            if repo2 is None or merge_fingerprint2 is None:
+                continue
+
+            diff_file = diff_file_prefix / diff_file_name(
+                merge_fingerprint1, merge_fingerprint2
+            )
+            if diff_file.exists():
+                continue
+            command = ["diff", "-u", "-r", "-x", "*/\\.git*"]
+            command.append(str(repo1.repo_path))
+            command.append(str(repo2.repo_path))
+            with open(diff_file, "w") as f:
+                subprocess.run(command, stdout=f, stderr=f)
+            del repo2
+        del repo1
 
 
 def diff_file_name(sha1: str, sha2: str) -> Path:

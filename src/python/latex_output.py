@@ -136,7 +136,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output_dir = args.output_dir
 
     # Combine results file
-    result_df = []
+    result_df_list = []
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -168,9 +168,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         merges["repository"] = repo_slug
         merges["repo-idx"] = repository_data.name
         merges["merge-idx"] = merges.index
-        result_df.append(merges)
+        result_df_list.append(merges)
 
-    result_df = pd.concat(result_df, ignore_index=True)
+    result_df = pd.concat(result_df_list, ignore_index=True)
     result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
     result_df = result_df[
         ["repo-idx", "merge-idx"]
@@ -182,6 +182,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         assert result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() == 0
 
     result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
+
+    main = result_df[result_df["branch_name"].isin(main_branch_names)]
+    feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     for plot_category, merge_tools in PLOTS.items():
         plots_output_path = os.path.join(output_dir, "plots", plot_category)
@@ -211,8 +214,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 result,
                 annot=True,
                 ax=ax,
-                xticklabels=latex_merge_tool,
-                yticklabels=latex_merge_tool,
+                xticklabels=latex_merge_tool,  # type: ignore
+                yticklabels=latex_merge_tool,  # type: ignore
                 fmt="g",
                 mask=result == 0,
                 cmap="Blues",
@@ -370,9 +373,6 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             \\multicolumn{2}{c}{Feature Branch} \\\\
             \\hline
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
-
-        main = result_df[result_df["branch_name"].isin(main_branch_names)]
-        feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
         for merge_tool_idx, merge_tool in enumerate(merge_tools):
             merge_main = main[merge_tool]

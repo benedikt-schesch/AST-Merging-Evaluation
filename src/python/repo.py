@@ -115,19 +115,16 @@ class Repository:
         self,
         repo_slug: str,
         cache_prefix: Path = Path(""),
-        workdir: Union[Path, None] = None,
     ) -> None:
         """Initializes the repository.
         Args:
             repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_prefix (Path): The prefix of the cache.
-            workdir (Union[Path,None], optional) = None: Folder to use in the WORKDIR_PREFIX.
         """
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug.split("/")[1]
-        if workdir is None:
-            workdir = uuid.uuid4().hex
-        self.workdir = WORKDIR_PREFIX / workdir
+        workdir_id = uuid.uuid4().hex
+        self.workdir = WORKDIR_PREFIX / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         shutil.copytree(self.path, self.repo_path)
