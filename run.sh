@@ -32,9 +32,9 @@ while [ $# -gt 0 ]; do
     shift
     ;;
     -t | --include_trivial_merges)
-    merge_tester_flags="$merge_tester_flags --trivial_merges"
+    merge_tester_flags="$merge_tester_flags --include_trivial_merges"
     ;;
-    --only_trivial_merges)
+    -ot | --only_trivial_merges)
     merge_tester_flags="$merge_tester_flags --only_trivial_merges"
   esac
   shift

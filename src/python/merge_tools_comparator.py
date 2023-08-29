@@ -95,10 +95,17 @@ def merger(  # pylint: disable=too-many-locals
             if "merge_fingerprint" not in cache_data[merge_tool.name]:
                 cache_data[merge_tool.name]["merge_fingerprint"] = merge_fingerprint
             else:
-                assert (
-                    cache_data[merge_tool.name]["merge_fingerprint"]
-                    == merge_fingerprint
-                )
+                if cache_data[merge_tool.name]["merge_fingerprint"] != merge_fingerprint:
+                    raise Exception(
+                        "merge_tools_comparator: Merge fingerprint mismatch",
+                        repo_slug,
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_tool.name,
+                        merge_status,
+                        cache_data[merge_tool.name]["merge_fingerprint"],
+                        merge_fingerprint,
+                    )
 
             if "left_tree_fingerprint" not in cache_data:
                 cache_data["left_tree_fingerprint"] = left_fingerprint
@@ -219,7 +226,7 @@ if __name__ == "__main__":
             merge_data[merge_tool.name + "_merge_fingerprint"] = cache_data[
                 merge_tool.name
             ]["merge_fingerprint"]
-
+        if merge_data[""]
         repo_result[repo_slug].append(merge_data)
         n_new_compared += 1
 
