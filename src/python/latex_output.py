@@ -156,7 +156,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
             print(
-                "latex_output.py: Skipping",
+                "latex_output: Skipping",
                 repo_slug,
                 "because it does not contain any merges.",
             )

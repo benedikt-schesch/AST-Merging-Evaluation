@@ -54,7 +54,7 @@ def merger(  # pylint: disable=too-many-locals
     cache_data = {}
     for merge_tool in MERGE_TOOL:
         print(
-            "merge_tools_comparator.py: Merging",
+            "merge_tools_comparator: Merging",
             repo_slug,
             merge_data["left"],
             merge_data["right"],
@@ -113,7 +113,7 @@ def merger(  # pylint: disable=too-many-locals
 
 
 if __name__ == "__main__":
-    print("merge_tools_comparator.py: Start")
+    print("merge_tools_comparator: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_tools_comparator.py: Constructing Inputs")
+    print("merge_tools_comparator: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             raise Exception(
-                "merge_tools_comparator.py:",
+                "merge_tools_comparator:",
                 repo_slug,
                 "does not have a list of merges. Missing file: ",
                 merge_list_file,
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         if output_file.exists():
             print(
-                "merge_tools_comparator.py: Skipping",
+                "merge_tools_comparator: Skipping",
                 repo_slug,
                 "because it is already computed.",
             )
@@ -175,31 +175,31 @@ if __name__ == "__main__":
     random.seed(42)
     random.shuffle(merger_arguments)
 
-    print("merge_tools_comparator.py: Finished Constructing Inputs")
-    print("merge_tools_comparator.py: Number of new merges:", len(merger_arguments))
+    print("merge_tools_comparator: Finished Constructing Inputs")
+    print("merge_tools_comparator: Number of new merges:", len(merger_arguments))
 
-    print("merge_tools_comparator.py: Started Merging")
+    print("merge_tools_comparator: Started Merging")
     with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
-    print("merge_tools_comparator.py: Finished Merging")
+    print("merge_tools_comparator: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_tools_comparator.py: Constructing Output")
+    print("merge_tools_comparator: Constructing Output")
     n_new_compared = 0
     n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
         cache_data = merger_results[i]
-        analyze = False
+        two_merge_tools_differ = False
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
                 if is_merge_sucess(
                     cache_data[merge_tool1.name]["results"][0]
                 ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
-                    analyze = True
+                    two_merge_tools_differ = True
                 if is_merge_sucess(
                     cache_data[merge_tool1.name]["results"][0]
                 ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
@@ -207,8 +207,8 @@ if __name__ == "__main__":
                         cache_data[merge_tool1.name]["merge_fingerprint"]
                         != cache_data[merge_tool2.name]["merge_fingerprint"]
                     ):
-                        analyze = True
-        merge_data["two merge tools differ"] = analyze
+                        two_merge_tools_differ = True
+        merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
         for merge_tool in MERGE_TOOL:
@@ -222,10 +222,7 @@ if __name__ == "__main__":
 
         repo_result[repo_slug].append(merge_data)
         n_new_compared += 1
-        if analyze:
-            n_new_tested += 1
 
-    n_total_tested = 0
     n_total_compared = 0
     for repo_slug in repo_result:
         output_file = Path(
@@ -233,12 +230,10 @@ if __name__ == "__main__":
         )
         if output_file.exists():
             try:
-                n_total_tested += sum(
-                    pd.read_csv(output_file, header=0)["two merge tools differ"]
-                )
+                n_total_compared += len(pd.read_csv(output_file, header=0))
             except pd.errors.EmptyDataError:
                 print(
-                    "merge_tools_comparator.py: Skipping",
+                    "merge_tools_comparator: Skipping",
                     repo_slug,
                     "because it does not contain any merges.",
                 )
@@ -246,24 +241,15 @@ if __name__ == "__main__":
         df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
-        n_total_tested += sum(df["two merge tools differ"])
         n_total_compared += len(df)
 
     print(
-        "merge_tools_comparator.py: Number of merge tool outputs that have been newly compared:",
+        "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
         n_new_compared,
     )
     print(
-        "merge_tools_comparator.py: Number of merges that will be newly tested:",
-        n_new_tested,
-    )
-    print(
-        "merge_tools_comparator.py: Total number of merge tool outputs that have been compared:",
+        "merge_tools_comparator: Total number of merge tool outputs that have been compared:",
         n_total_compared,
     )
-    print(
-        "merge_tools_comparator.py: Total number of merges that will be tested:",
-        n_total_tested,
-    )
-    print("merge_tools_comparator.py: Finished Constructing Output")
-    print("merge_tools_comparator.py: Done")
+    print("merge_tools_comparator: Finished Constructing Output")
+    print("merge_tools_comparator: Done")

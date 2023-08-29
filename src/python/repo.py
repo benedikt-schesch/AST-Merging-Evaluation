@@ -259,6 +259,33 @@ class Repository:
             -1,
         )
 
+    def create_branch(
+        self, branch_name: str, commit: str
+    ) -> Tuple[Union[None, str], str]:
+        """Creates a branch from a certain commit.
+        Args:
+            branch_name (str): Name of the branch to create.
+            commit (str): Commit used to create the branch.
+        Returns:
+            Union[None,str] : None if a checkout failure occured,
+                    str is the fingerprint of that commit.
+            str: explanation of the result.
+        """
+        cache_entry = self.get_sha_cache_entry(commit)
+        if cache_entry is not None and cache_entry["sha"] is None:
+            return None, cache_entry["explanation"]
+        success, explanation = self.checkout(commit)
+        if not success:
+            set_in_cache(
+                commit,
+                {"sha": None, "explanation": explanation},
+                self.repo_slug,
+                self.sha_cache_prefix,
+            )
+        tree_fingerprint = self.compute_tree_fingerprint()
+        self.repo.git.checkout("-b", branch_name, force=True)
+        return tree_fingerprint, explanation
+
     def merge(  # pylint: disable=too-many-locals
         self,
         tool: MERGE_TOOL,
@@ -283,74 +310,42 @@ class Repository:
             str: explanation. The explanation of the result.
             float: The time it took to run the merge, in seconds.
         """
-        cache_name = left_commit + "_" + right_commit + "_" + tool.name
+        cache_entry_name = left_commit + "_" + right_commit + "_" + tool.name
+
         # Checkout left
-        left_cache = self.get_sha_cache_entry(left_commit)
-        if left_cache is not None and left_cache["sha"] is None:
-            return (
-                MERGE_STATE.Git_checkout_failed,
-                None,
-                None,
-                None,
-                left_cache["explanation"],
-                -1,
-            )
-        success, explanation = self.checkout(left_commit)
-        if not success:
-            set_in_cache(
-                left_commit,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            set_in_cache(
-                cache_name,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
-        left_fingerprint = self.compute_tree_fingerprint()
-        self.repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        left_fingerprint, explanation = self.create_branch(
+            LEFT_BRANCH_NAME, left_commit
+        )
 
         # Checkout right
-        right_cache = self.get_sha_cache_entry(right_commit)
-        if right_cache is not None and right_cache["sha"] is None:
+        right_fingerprint, explanation = self.create_branch(
+            RIGHT_BRANCH_NAME, right_commit
+        )
+        if right_fingerprint is None or left_fingerprint is None:
+            set_in_cache(
+                cache_entry_name,
+                {"sha": None, "explanation": explanation},
+                self.repo_slug,
+                self.sha_cache_prefix,
+            )
             return (
                 MERGE_STATE.Git_checkout_failed,
                 None,
                 None,
                 None,
-                right_cache["explanation"],
+                explanation,
                 -1,
             )
-        success, explanation = self.checkout(right_commit)
-        if not success:
-            set_in_cache(
-                right_commit,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            set_in_cache(
-                cache_name,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
-        right_fingerprint = self.compute_tree_fingerprint()
-        self.repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
 
         # Merge
         start_time = time.time()
+        command = [
+            "src/scripts/merge_tools/" + tool.name + ".sh",
+            str(self.repo_path),
+            LEFT_BRANCH_NAME,
+            RIGHT_BRANCH_NAME,
+        ]
         try:
-            command = [
-                "src/scripts/merge_tools/" + tool.name + ".sh",
-                str(self.repo_path),
-                LEFT_BRANCH_NAME,
-                RIGHT_BRANCH_NAME,
-            ]
             p = subprocess.run(  # pylint: disable=consider-using-with
                 command,
                 capture_output=True,
@@ -380,7 +375,7 @@ class Repository:
             "right_fingerprint": right_fingerprint,
         }
         set_in_cache(
-            cache_name,
+            cache_entry_name,
             cache_entry,
             self.repo_slug,
             self.sha_cache_prefix,
