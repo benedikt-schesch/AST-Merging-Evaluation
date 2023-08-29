@@ -75,7 +75,7 @@ update-cache-results:
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	./run_small.sh -d
+	./run_small.sh --include_trivial_merges
 	${MAKE} small-test-diff
 
 small-test-diff:

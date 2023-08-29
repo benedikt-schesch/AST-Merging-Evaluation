@@ -111,6 +111,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
+    parser.add_argument("--include_trivial_merges", store_true=True)
+    parser.add_argument("--only_trivial_merges", store_true=True)
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
@@ -152,7 +154,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                 "because it does not contain any merges.",
             )
             continue
-        merges = merges[merges["two merge tools differ"]]
+        if args.only_trivial_merges:
+            merges = merges[merges["notes"] is None]
+        elif not args.include_trivial_merges:
+            merges = merges[merges["notes"] is not None]
         merge_tester_arguments += [
             (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
