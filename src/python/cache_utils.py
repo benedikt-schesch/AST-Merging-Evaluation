@@ -53,6 +53,7 @@ def get_cache_path(repo_slug: str, cache_prefix: Path) -> Path:
     """
     cache_entry_name = slug_repo_name(repo_slug) + ".json"
     cache_path = cache_prefix / cache_entry_name
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
     return cache_path
 
 
@@ -121,6 +122,8 @@ def write_to_cache(
     """
     cache_path = get_cache_path(repo_slug, cache_prefix)
     cache = load_cache(repo_slug, cache_prefix)
+    if cache_prefix != Path("cache-small/sha_cache_entry"):
+        print("write_to_cache:", cache_key, cache_value, repo_slug, cache_prefix)
     if cache_key in cache and not overwrite:
         raise ValueError("Cache key already exists")
     cache[cache_key] = cache_value
@@ -148,8 +151,6 @@ def set_in_cache(
     """
     lock = get_cache_lock(repo_slug, cache_prefix)
     lock.acquire()
-    cache_entry = get_cache_path(repo_slug, cache_prefix)
-    cache_entry.parent.mkdir(parents=True, exist_ok=True)
     write_to_cache(cache_key, cache_value, repo_slug, cache_prefix, overwrite)
     lock.release()
 

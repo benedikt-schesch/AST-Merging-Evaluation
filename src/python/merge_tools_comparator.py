@@ -48,6 +48,8 @@ def merger(  # pylint: disable=too-many-locals
     merge_cache_prefix = cache_prefix / "merge_results"
 
     result = lookup_in_cache(cache_entry, repo_slug, merge_cache_prefix, True)
+    # if result is None:
+    #     raise Exception(cache_entry," HERE")
     if result is not None and isinstance(result, dict):
         return result
 
@@ -119,8 +121,7 @@ def merger(  # pylint: disable=too-many-locals
                 assert cache_data["left_tree_fingerprint"] == left_fingerprint
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
             del repo
-
-    set_in_cache(cache_entry, cache_data, repo_slug, cache_prefix)
+    set_in_cache(cache_entry, cache_data, repo_slug, merge_cache_prefix)
     return cache_data
 
 
@@ -131,6 +132,8 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
+    parser.add_argument("--include_trivial_merges", action="store_true")
+    parser.add_argument("--only_trivial_merges", action="store_true")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
@@ -178,6 +181,13 @@ if __name__ == "__main__":
             header=0,
             index_col="idx",
         )
+        merges["notes"].replace(np.nan, "", inplace=True)
+
+        if args.only_trivial_merges:
+            merges = merges[merges["notes"].str.contains("a parent is the base")]
+        elif not args.include_trivial_merges:
+            merges = merges[~merges["notes"].str.contains("a parent is the base")]
+
         merger_arguments += [
             (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
