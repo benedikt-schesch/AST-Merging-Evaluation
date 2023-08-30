@@ -63,6 +63,8 @@ import org.plumelib.util.StringsPlume;
  *       a fine-grained personal access token</a>.) Make sure the file is not world-readable.
  * </ul>
  */
+// TODO: This program should delete files from /tmp directory after using them, in order to avoid
+// filling up the disk.
 public class FindMergeCommits {
 
   /** The GitHub repositories to search for merge commits. Each is in the format "org/repo". */
