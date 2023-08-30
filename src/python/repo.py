@@ -156,7 +156,10 @@ class Repository:
             cache_entry = {"sha": None, "explanation": explanation}
             set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
             return False, explanation
-        cache_entry = {"sha": self.compute_tree_fingerprint(), "explanation": explanation}
+        cache_entry = {
+            "sha": self.compute_tree_fingerprint(),
+            "explanation": explanation,
+        }
         set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
         return True, explanation
 
@@ -353,7 +356,7 @@ class Repository:
                 check=False,
             )
         except subprocess.TimeoutExpired as e:
-            explanation = explanation+"\n"+compute_explanation(command, e)
+            explanation = explanation + "\n" + compute_explanation(command, e)
             sha = self.compute_tree_fingerprint()
             return (
                 MERGE_STATE.Merge_timedout,
@@ -364,7 +367,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = explanation+"\n"+compute_explanation(command, p)
+        explanation = explanation + "\n" + compute_explanation(command, p)
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )

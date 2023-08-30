@@ -223,11 +223,14 @@ if __name__ == "__main__":
         merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
-        
+
         # Ignore merges that could not be checked out.
-        if merge_data["left_tree_fingerprint"] == None or merge_data["right_tree_fingerprint"] == None:
+        if (
+            merge_data["left_tree_fingerprint"] is None
+            or merge_data["right_tree_fingerprint"] is None
+        ):
             continue
-        
+
         for merge_tool in MERGE_TOOL:
             merge_data[merge_tool.name] = cache_data[merge_tool.name]["results"][0]
             merge_data[merge_tool.name + "_run_time"] = np.median(
