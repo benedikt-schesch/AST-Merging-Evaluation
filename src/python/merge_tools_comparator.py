@@ -101,6 +101,7 @@ def merger(  # pylint: disable=too-many-locals
                 ):
                     raise Exception(
                         "merge_tools_comparator: Merge fingerprint mismatch",
+                        i,
                         repo_slug,
                         merge_data["left"],
                         merge_data["right"],
@@ -108,6 +109,7 @@ def merger(  # pylint: disable=too-many-locals
                         merge_status,
                         cache_data[merge_tool.name]["merge_fingerprint"],
                         merge_fingerprint,
+                        cache_data,
                     )
 
             if "left_tree_fingerprint" not in cache_data:
@@ -221,6 +223,11 @@ if __name__ == "__main__":
         merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
+        
+        # Ignore merges that could not be checked out.
+        if merge_data["left_tree_fingerprint"] == None or merge_data["right_tree_fingerprint"] == None:
+            continue
+        
         for merge_tool in MERGE_TOOL:
             merge_data[merge_tool.name] = cache_data[merge_tool.name]["results"][0]
             merge_data[merge_tool.name + "_run_time"] = np.median(
