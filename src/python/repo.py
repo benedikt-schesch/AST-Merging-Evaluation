@@ -178,6 +178,7 @@ class Repository:
         float,
     ]:
         """Merges the given commits using the given tool and tests the result.
+        The test results of multiple runs is combined into one result.
         Args:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
@@ -225,6 +226,7 @@ class Repository:
         float,
     ]:
         """Merges the given commits using the given tool and tests the result.
+        The test results of multiple runs is combined into one result.
         Args:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
@@ -497,7 +499,9 @@ class Repository:
         return result
 
     def test(self, timeout: int, n_tests: int) -> TEST_STATE:
-        """Tests the repository.
+        """Tests the repository. The test results of multiple runs is combined into one result.
+        If one of the runs passes then the entire test is marked as passed.
+        If one of the runs timeouts then the entire test is marked as timeout.
         Args:
             timeout (int): The timeout limit, in seconds.
             n_tests (int): The number of times to run the test suite.

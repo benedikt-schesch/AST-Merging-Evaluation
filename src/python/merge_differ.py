@@ -107,6 +107,7 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
             if repo2 is None or merge_fingerprint2 is None:
                 continue
 
+            # Use lexicographic order to prevent duplicates
             diff_file = diff_file_prefix / diff_file_name(
                 merge_fingerprint1, merge_fingerprint2
             )

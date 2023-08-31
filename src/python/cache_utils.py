@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ Contains all the functions related to the caches. 
-There will be 4 caches after running the script:
+There will be 4 caches which are stored on disk after running the script:
 1) cache/sha_cache_entry:  A cache that maps the commit hash to a sha256 hash of the repository.
 2) cache/test_cache: A cache that maps a sha256 to test results.
 3) cache/merge_results:A cache that maps a merge to the result 
