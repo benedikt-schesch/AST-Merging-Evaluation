@@ -81,7 +81,7 @@ public class FindMergeCommits {
    * Outputs a list of merge commits from the given repositories.
    *
    * @param args the first element is a .csv file containing GitHub repository slugs, in "org/repo"
-   *     format, in a column named "repo_slug"; the second element is an output directory
+   *     format, in a column named "repository"; the second element is an output directory
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */

@@ -10,7 +10,7 @@
 
 To install all the python requirements create a conda environment:
 
-With mamba (faster \urlhttps://github.com/mamba-org/mamba):
+With mamba (faster https://github.com/mamba-org/mamba):
 
 ```bash
 mamba env create -f environment.yml
