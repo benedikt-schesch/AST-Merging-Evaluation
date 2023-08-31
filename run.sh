@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# usage: ./run.sh <repo_list> <output_folder> <n_merges> [-i <machine_id> -n <num_machines>] [-d]
+# usage: ./run.sh <repo_list> <output_folder> <n_merges> [-i <machine_id> -n <num_machines>] [-t] [-ot]
 # <repo_list> list of repositories in csv formart with a column
 #     "repository" that has the format "owner/reponame" for each repository.
 # <output_folder> folder that contains all outputs.
 # <n_merges> number of merges to sample for each repository.
 # <machine_id> optional argument to specify the id of the current machine.
 # <num_machine> optional argument to specify the total number of machines used.
-# <diff> optional argument to specify whether to diff the merges.
-# Runs the stack.
+# -t optional argument to include trivial merges.
+# -ot optional argument to only use trivial merges.
 # The output appears in <output_folder>.
 
 

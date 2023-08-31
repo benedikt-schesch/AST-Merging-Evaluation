@@ -4,7 +4,16 @@ usage: python3 merge_tools_comparator.py --repos_head_passes_csv <path_to_repos_
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
+                                --include_trivial_merges (optional flag)
+                                --only_trivial_merges (optional flag)
 This script flags merges that have different results for different merge tools.
+The output is written in output_dir and consists of the same files as the input
+files, but with an additional column that indicates whether the merge tools
+differ.
+If the flag --include_trivial_merges is set, then the script will also output
+merges that are trivial.
+If the flag --only_trivial_merges is set, then the script will only output
+merges that are trivial.
 """
 
 import os

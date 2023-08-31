@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-""" Contains all the functions related to the cache. 
-There will be 4 caches created:
-1) A cache that maps the commit hash to a sha256 hash of the repository.
-2) A cache that maps a sha256 to test results.
-3) A cache that maps a merge to the result of the merge.
-4) A cache that stores the diff between merge tools.
+""" Contains all the functions related to the caches. 
+There will be 4 caches after running the script:
+1) cache/sha_cache_entry:  A cache that maps the commit hash to a sha256 hash of the repository.
+2) cache/test_cache: A cache that maps a sha256 to test results.
+3) cache/merge_results:A cache that maps a merge to the result 
+        of the merge (sha256, runtime and MERGE_STATE)
+4) cache/merge_diffs: A cache that stores the diff between merge tools.
 """
 
 from pathlib import Path

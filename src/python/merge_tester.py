@@ -6,9 +6,8 @@ usage: python3 merge_tester.py --repos_head_passes_csv <path_to_repos_head_passe
                                 --cache_dir <cache_dir>
 This script checks if the parents pass tests and if so, it tests the merges with
 each merge tool.
-The output is written in output_dir. For each repository a csv output file
-is created that contains information including testing information regarding
-each merge.
+The output is written in output_dir and consists of the same merges as the input
+but with the test results.
 """
 
 import os
