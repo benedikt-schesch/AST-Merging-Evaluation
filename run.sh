@@ -17,7 +17,7 @@ set -o nounset
 
 REPOS_CSV="$1"
 OUT_DIR="$2"
-N_MERGES=$3
+N_REPETITIONS=$3
 CACHE_DIR="${4}"
 
 comparator_flags=""
@@ -120,5 +120,5 @@ python3 src/python/latex_output.py \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --n_merges "$N_MERGES" \
+    --n_merges "$N_REPETITIONS" \
     --output_dir "$OUT_DIR"
