@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(args.output_path):
-        print("write_head_hashes: test_repo_head: Cached")
+        print("write_head_hashes: test_repo_heads: Cached")
         sys.exit(0)
 
     df = pd.read_csv(args.repos_csv, index_col="idx")
