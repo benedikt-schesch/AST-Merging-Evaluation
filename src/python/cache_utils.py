@@ -3,8 +3,8 @@
 There will be 4 caches which are stored on disk after running the script:
 1) cache/sha_cache_entry:  A cache that maps the commit hash to a sha256 hash of the repository.
 2) cache/test_cache: A cache that maps a sha256 to test results.
-3) cache/merge_results:A cache that maps a merge to the result 
-        of the merge (sha256, runtime and MERGE_STATE)
+3) cache/merge_results: A cache that maps a merge to the result 
+        of the merge (sha256, run time, and MERGE_STATE).
 4) cache/merge_diffs: A cache that stores the diff between merge tools.
 """
 
@@ -19,9 +19,9 @@ TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
 def slug_repo_name(repo_slug: str) -> str:
-    """Given a GitHub repository slug (owner/reponame), returns the reponame.
+    """Given a GitHub repository slug ("owner/reponame"), returns the reponame.
     Args:
-        repo_slug (str): The slug of the repository, which is 'owner/reponame'.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
     Returns:
         str: The reponame.
     """
@@ -52,8 +52,8 @@ def get_cache_path(repo_slug: str, cache_prefix: Path) -> Path:
     Returns:
         Path: The path to the cache file.
     """
-    cache_entry_name = slug_repo_name(repo_slug) + ".json"
-    cache_path = cache_prefix / cache_entry_name
+    cache_file_name = slug_repo_name(repo_slug) + ".json"
+    cache_path = cache_prefix / cache_file_name
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     return cache_path
 

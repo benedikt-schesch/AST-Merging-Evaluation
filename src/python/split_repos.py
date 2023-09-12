@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", type=Path)
     args = parser.parse_args()
     df: pd.DataFrame = pd.read_csv(args.repos_csv, index_col="idx")
-    # Shuffle the dataframe so the ordering of the list doesn't bias the output
+    # Shuffle the dataframe so the ordering of the list doesn't bias the output.
     df = df.sample(frac=1, random_state=42)
     df = np.array_split(df, args.num_machines)[args.machine_id]
     df.sort_index(inplace=True)

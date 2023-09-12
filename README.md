@@ -145,7 +145,7 @@ To run style checking run `make style`.
 
     * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-    * test_repo_head.py -> Checks out all repos and removes all repos that fail their tests on main branch.
+    * test_repo_heads.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
