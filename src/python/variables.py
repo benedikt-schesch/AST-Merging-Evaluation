@@ -9,6 +9,7 @@ RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 DELETE_WORKDIRS = True
 REPOS_PATH = Path("repos")
+# TODO: What is this used for?  Please give it a more descriptive name.
 WORKDIR_PREFIX = Path(".workdir")
 
 TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds

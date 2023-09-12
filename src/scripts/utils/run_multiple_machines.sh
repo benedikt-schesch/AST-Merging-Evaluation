@@ -1,4 +1,5 @@
 #!/bin/bash
+# TODO: A branch of what?  This repository?  (Same question in `run_remotely.sh`.)
 # Run the code for a certain branch on multiple remote machines.
 # Usage: ./run_multiple_machines.sh <branch> <machine_address_path> <root_path_on_machine>
 # <branch> is the branch to run

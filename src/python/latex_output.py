@@ -16,6 +16,7 @@ following input files:
 - repos_head_passes_csv: csv file containing the list of valid repositories
 - tested_merges_path: path to the folder containing the merge results
 - merges_path: path to the folder containing all found merges.
+TODO: Throughout, be consistent about "directory" vs "folder".
 - output_dir: path to the folder where the LaTeX files will be saved
 """
 
@@ -92,6 +93,9 @@ PLOTS = {
     ],
 }
 
+# TODO: I suggest that these should be declared in repo.py, or move the enums to
+# a different file where this can also be defined.  Or, define predicates for
+# clients to use rather than exporting these lists.
 MERGE_CORRECT_NAMES = [
     TEST_STATE.Tests_passed.name,
 ]

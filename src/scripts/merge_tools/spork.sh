@@ -13,7 +13,8 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-# Kill all java processes that are running for over an hour (to avoid memory leaks)
+# TODO: This script is an odd place to put this `killall` command.  Should it be elsewhere in the experimental infrastructure?
+# Kill all Java processes that are running for over an hour (to avoid memory leaks).
 killall -9 java --older-than 1h
 
 SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"

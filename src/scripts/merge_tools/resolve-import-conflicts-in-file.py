@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# TODO: Benedikt, could you review and improve this file?  I'm sure it is not perfect Python style.
 
 """Edits a file in place to remove conflict markers related to Java imports."""
 

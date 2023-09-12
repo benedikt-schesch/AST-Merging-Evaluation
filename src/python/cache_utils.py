@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """ Contains all the functions related to the caches. 
+TODO: Elsewhere, the code speaks of "the cache" (example: get_cache_lock), but here it speaks of 4 caches. I'm confused about the relationship.
+TODO: Are there 4 caches overall, or 4 caches per repository, or something else? Please clarify.
+TODO: "after running the script": Which script?
 There will be 4 caches which are stored on disk after running the script:
+TODO: Is the cache directory literally named "cache"?  Where is it on disk?
+TODO: Are all the caches JSON files?
 1) cache/sha_cache_entry:  A cache that maps the commit hash to a sha256 hash of the repository.
 2) cache/test_cache: A cache that maps a sha256 to test results.
 3) cache/merge_results:A cache that maps a merge to the result 
@@ -17,6 +22,9 @@ import fasteners
 CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
+# TODO: In this file, please place the externally-visible or exported functions
+# first, and then a comment marker of some kind, and then the "private" ones.
+
 
 def slug_repo_name(repo_slug: str) -> str:
     """Given a GitHub repository slug (owner/reponame), returns the reponame.
@@ -28,6 +36,9 @@ def slug_repo_name(repo_slug: str) -> str:
     return repo_slug.split("/")[1]
 
 
+# TODO: Throughout, please use "_directory" instead of "_prefix" in
+# variable names, when the variable actually holds a directory.  I
+# feel this will be clearer.
 def get_cache_lock(repo_slug: str, cache_prefix: Path):
     """Returns a lock for the cache of a repository.
     Initially the lock is unlocked; the caller must explictly
@@ -74,6 +85,10 @@ def is_in_cache(
 
 
 def load_cache(repo_slug: str, cache_prefix: Path) -> dict:
+    # TODO: "the cache": which one?  Also, does this load a cache or a cache
+    # entry?  Please define those terms to help the reader.  This method returns
+    # a cache, which is a dict.  `cache_lookup` returns a cache entry, which is
+    # also a dict.  What are they dicts from and to?
     """Loads the cache.
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
@@ -104,6 +119,10 @@ def cache_lookup(
     return cache[cache_key]
 
 
+# TODO: The distinction between write_to_cache and set_in_cache is not clear to
+# me.  If it is only locking, then please give them the same name, but with one
+# suffixed by "_without_lock".  Also please indicate under what circumstances
+# each should be called.
 def write_to_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],
@@ -156,6 +175,8 @@ def set_in_cache(
     lock.release()
 
 
+# TODO: I'm not clear what is the difference between `cache_lookup` and
+# `lookup_in_cache`.  Please clarify, and indicate when each should be called.
 def lookup_in_cache(
     cache_key: Union[Tuple, str],
     repo_slug: str,

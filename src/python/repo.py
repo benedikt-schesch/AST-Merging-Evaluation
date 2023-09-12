@@ -78,9 +78,11 @@ def compute_explanation(
 
 def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """Returns the result of run_repo_tests.sh on the given working copy.
+    TODO: What is the definition of "the entire test"?  How is it different than the test process?
     If the test process passes then the entire test is marked as passed.
     If the test process timeouts then the entire test is marked as timeout.
     Args:
+        TODO: Minor: Throughout, you don't need "The path of" at the beginning of comments.  Or change it to "The directory of".
         wcopy_dir (Path): The path of the working copy (the clone).
         timeout (int): Test timeout limit, in seconds.
     Returns:
@@ -190,6 +192,10 @@ class Repository:
             str: The tree fingerprint of the merge result.
             str: The left fingerprint.
             str: The right fingerprint.
+            TODO: Is this time to merge, time to test, or time to merge and test?
+            TODO: This is a ssingle number, but n_tests tells how many times to
+            TODO: run the test.  Is this an average, median, overall, or something
+            TODO: else?  (I have the same question elsewhere.)
             float: The time it took to run the merge, in seconds.
         """
         (
@@ -415,12 +421,14 @@ class Repository:
     def get_sha_cache_entry(
         self, commit: str, start_merge: bool = False
     ) -> Union[None, dict]:
+        # TODO: is a SHA cache a cache from a SHA to something, or a cache from something to a SHA?
         """Gets a SHA cache entry.
         Args:
             commit (str): The commit to check.
             start_merge (bool, optional) = False: Whether to indicate that the merge starts if the
                 commit is not in the cache.
         Returns:
+            # TODO: What is the structure of the dict this returns?
             Union[None,dict]: The cache entry if the commit is in the cache, None otherwise.
         """
         cache = lookup_in_cache(
@@ -501,7 +509,10 @@ class Repository:
     def test(self, timeout: int, n_tests: int) -> TEST_STATE:
         """Tests the repository. The test results of multiple runs is combined into one result.
         If one of the runs passes then the entire test is marked as passed.
+        # TODO: Should this line be preceded by "otherwise"?  Is it possible that one run passes and another times out?
+        # TODO: I would think the test should be marked as timeout only if every run is timeout.
         If one of the runs timeouts then the entire test is marked as timeout.
+        # TODO: Otherwise the test is marked as failure?
         Args:
             timeout (int): The timeout limit, in seconds.
             n_tests (int): The number of times to run the test suite.

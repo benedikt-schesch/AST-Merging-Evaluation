@@ -7,6 +7,8 @@
 
 set -o nounset
 
+# TODO: This is too agressive and will interfere with the user's other work.
+# TODO: Instead, create a directory under /tmp (or, better, under /tmp/$USER) for the AST merging experiments, and clean it.
 # Test side effects can be seen in the /tmp directory.
 # We delete all the files older than 2h and owned by the current user.
 find /tmp -maxdepth 1 -user "$(whoami)" -mmin +120 -exec rm -rf {} \;

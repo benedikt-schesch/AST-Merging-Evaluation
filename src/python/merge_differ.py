@@ -4,7 +4,9 @@ usage: python3 merge_differ.py --repos_head_passes_csv <repos_head_passes_csv>
                                 --merges_path <merges_path>
                                 --cache_dir <cache_dir>
 This script compares the results of two merge tools on the same merge.
-It outputs the diff any two merge results if their results differ.
+# TODO: Where is the output?  Standard out?
+It outputs the diff of the two merge results if their results differ.
+# TODO: Does "ignores" mean there is no output, or is it something deeper?
 It ignores merges that have the same result or merges that are not successful.
 """
 
@@ -78,11 +80,13 @@ def get_merge_fingerprint(
 
 
 def merge_differ(args: Tuple[pd.Series, Path]) -> None:
-    """Diffs the results of any two merge tools on the same merge.
+    # TODO: What does this funtion do with the diff?  I think it writes to a file?  Or does it populate a cache too?
+    """Diffs the results of every two merge tools on the same merge.
     Does not diff merges that have the same result or merges that are not successful.
     Args:
         args (Tuple[pd.Series,Path]): A tuple containing the merge data and the cache prefix.
     Returns:
+        TODO: How is "The result of the test." related to the diff of two merge tools?  I don't see this function returning anything.
         dict: The result of the test.
     """
     merge_data, cache_prefix = args
@@ -90,6 +94,7 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
     if not merge_data["parents pass"]:
         return
 
+    # TODO: See other comment about "_prefix" in variable names; change throughout.
     diff_file_prefix = cache_prefix / "merge_diffs"
     diff_file_prefix.mkdir(parents=True, exist_ok=True)
 
@@ -131,6 +136,7 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
         Path: The name of the diff file.
     """
     if sha1 < sha2:
+        # TODO: Why does this use ".txt" rather than ".diff" as the file extension?
         return Path(sha1 + "_" + sha2 + ".txt")
     return Path(sha2 + "_" + sha1 + ".txt")
 
@@ -143,6 +149,7 @@ if __name__ == "__main__":
     parser.add_argument("--cache_dir", type=Path, default="cache/")
     args = parser.parse_args()
     cache_dir = Path(args.cache_dir)
+    # TODO: See comment elsewhere about "_path" in variable names.
     cache_diffs_path = cache_dir / "merge_diffs"
     cache_diffs_path.mkdir(parents=True, exist_ok=True)
 

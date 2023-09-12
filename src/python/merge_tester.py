@@ -54,6 +54,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
     merge_data["parents pass"] = False
+    # TODO: It's not clear to me whether "left" and "right" are keys for branches, or shas, or something else.  How about improving the key name?  (We can change the find-merge-conflicts program if it is the source of the problem.)
     for branch in ["left", "right"]:
         repo = Repository(repo_slug, cache_prefix=cache_prefix)
         repo.checkout(merge_data[branch])
@@ -73,12 +74,14 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         merge_data[f"{branch} test result"] = test_result.name
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
+        # TODO: It looks suspicious to me that the repo is only sometimes, not always, deleted.
         del repo
 
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if is_merge_sucess(merge_data[merge_tool.name]):
+            # TODO: I suggest abstracting the body of this loop into a separate function, since it stands on its own logically.
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 result,
@@ -126,6 +129,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
+    # TODO: I suggest abstracting this loop into a separate function (through printing "number of merges to test").
     print("merge_tester: Started listing merges to test")
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# TODO: What does it mean to "validate it"?
 """Tests the HEAD of a repo and validates it if the test passes.
 
 usage: python3 test_repo_head.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>

@@ -53,6 +53,8 @@ def merger(  # pylint: disable=too-many-locals
     """
     repo_slug, merge_data, cache_prefix = args
 
+    # TODO: I think this is a key, not an entry.  Please clarify.
+    # TODO: Why are these two SHAs (if they are SHAs) not sorted as is done elsewhere?
     cache_entry = merge_data["left"] + "_" + merge_data["right"]
     merge_cache_prefix = cache_prefix / "merge_results"
 
@@ -73,6 +75,7 @@ def merger(  # pylint: disable=too-many-locals
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
         for i in range(N_MERGES):
+            # TODO: I suggest abstracting out the body of this loop as a function.
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status,
@@ -152,6 +155,7 @@ if __name__ == "__main__":
     print("merge_tools_comparator: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
+        # TODO: I suggest abstracting out the body of this loop as a function.
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
@@ -225,6 +229,7 @@ if __name__ == "__main__":
         merge_data = merger_arguments[i][1]
         cache_data = merger_results[i]
         two_merge_tools_differ = False
+        # TODO: I suggest abstracting this loop into a function.  That will also make it easier to return early, which can be done just with "return".  (Currently it makes more iterations even after discovering that two merge tools do differ.)
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
                 if is_merge_sucess(

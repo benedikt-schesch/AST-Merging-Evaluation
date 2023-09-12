@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# TODO: This file uses "clean", "remove", and "delete".  Please choose one term
+# and stick to it, in both the code and in the file name.
 """ 
 Deletes all placeholders from the cache. Placeholders are created when a
 a process starts; it indicates that is has started and is still running.
@@ -9,6 +11,8 @@ Usage:
     python clean_cache_placeholders.py --cache_path <path_to_cache>
 
 Args:
+TODO: Throughout, please don't use "_path" as a variable suffix, because it is
+# not sufficiently precise.  Instead, use either "_file" or "_directory".
     cache_path (str): Path to cache directory
 """
 
