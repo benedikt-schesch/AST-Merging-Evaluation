@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests the HEAD of a repo and validates it if the test passes.
 
-usage: python3 test_repo_head.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
+usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
                                  --output_path <repos_head_passes.csv>
                                  --cache_dir <cache_dir>
 
@@ -40,13 +40,13 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     """
     repo_info, cache = args
     repo_slug = repo_info["repository"]
-    print("test_repo_head:", repo_slug, ": head_passes_tests : started")
+    print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
     repo = Repository(repo_slug, cache_prefix=cache)
     test_state = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )
-    print("test_repo_head:", repo_slug, ": head_passes_tests : returning", test_state)
+    print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return test_state
 
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
-    print("test_repo_head: Started cloning repos")
+    print("test_repo_heads: Started cloning repos")
     with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))
@@ -72,13 +72,13 @@ if __name__ == "__main__":
                 return_value = result.get(10 * 60)
             except Exception as e:
                 print("Couldn't clone repo", e)
-    print("test_repo_head: Finished cloning repos")
+    print("test_repo_heads: Finished cloning repos")
 
     if os.path.exists(args.output_path):
-        print("test_repo_head: Output file already exists. Exiting.")
+        print("test_repo_heads: Output file already exists. Exiting.")
         sys.exit(0)
 
-    print("test_repo_head: Started Testing")
+    print("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
         head_passes_tests_results = list(
@@ -87,18 +87,18 @@ if __name__ == "__main__":
                 total=len(head_passes_tests_arguments),
             )
         )
-    print("test_repo_head: Finished Testing")
+    print("test_repo_heads: Finished Testing")
 
-    print("test_repo_head: Started Building Output")
+    print("test_repo_heads: Started Building Output")
     out = []
     repos_head_passes_mask = [
         i == TEST_STATE.Tests_passed for i in head_passes_tests_results
     ]
     out = df[repos_head_passes_mask]
-    print("test_repo_head: Finished Building Output")
+    print("test_repo_heads: Finished Building Output")
 
     print(
-        "test_repo_head: Number of repos whose head passes tests:",
+        "test_repo_heads: Number of repos whose head passes tests:",
         len(out),
         "out of",
         len(df),
@@ -106,4 +106,4 @@ if __name__ == "__main__":
     if len(out) == 0:
         raise Exception("No repos found whose head passes tests")
     out.to_csv(args.output_path, index_label="idx")
-    print("test_repo_head: Done")
+    print("test_repo_heads: Done")

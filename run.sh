@@ -86,7 +86,7 @@ python3 src/python/split_repos.py \
     --num_machines "$num_machines" \
     --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/test_repo_head.py \
+python3 src/python/test_repo_heads.py \
     --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
