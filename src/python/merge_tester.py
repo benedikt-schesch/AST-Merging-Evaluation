@@ -210,12 +210,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     "because it does not contain any merges.",
                 )
                 continue
-            n_total_merges += len(df)
-            n_total_merges_parents_pass += len(df[df["parents pass"]])
-            continue
-        df = pd.DataFrame(repo_result[repo_slug])
-        df.sort_index(inplace=True)
-        df.to_csv(output_file, index_label="idx")
+        else:
+            df = pd.DataFrame(repo_result[repo_slug])
+            df.sort_index(inplace=True)
+            df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
         n_total_merges_parents_pass += len(df[df["parents pass"]])
 
