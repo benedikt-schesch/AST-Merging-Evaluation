@@ -38,7 +38,7 @@ if [ ! -d "${JAVA11_HOME}" ] ; then echo "JAVA11_HOME is set to a nonexistent di
 if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
 if [ ! -d "${JAVA17_HOME}" ] ; then echo "JAVA17_HOME is set to a nonexistent directory: ${JAVA17_HOME}"; exit 1; fi
 
-ORIG_PATH=PATH
+ORIG_PATH="${PATH}"
 
 # shellcheck disable=SC2153 # Not a typo of JAVA_HOME.
 for javaX_home in $JAVA8_HOME $JAVA11_HOME $JAVA17_HOME
