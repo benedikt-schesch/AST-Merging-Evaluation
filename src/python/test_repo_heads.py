@@ -22,7 +22,7 @@ from repo import Repository, TEST_STATE
 
 from tqdm import tqdm
 import pandas as pd
-from write_head_hashes import compute_num_process_used, clone_repo
+from write_head_hashes import num_processes, clone_repo
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
     print("test_repo_heads: Started cloning repos")
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))
             for _, row in df.iterrows()
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     print("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         head_passes_tests_results = list(
             tqdm(
                 pool.imap(head_passes_tests, head_passes_tests_arguments),

@@ -52,7 +52,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     return repo
 
 
-def compute_num_process_used() -> int:
+def num_processes() -> int:
     """Comput the number of cpus to be used
     Returns:
         int: the number of cpus to be used.
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     print("write_head_hashes: Started cloning repos and collecting head hashes")
 
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         get_latest_hash_result = list(
             tqdm(
                 pool.imap(get_latest_hash, df.iterrows()),

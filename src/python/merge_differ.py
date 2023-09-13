@@ -19,7 +19,7 @@ import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
-from write_head_hashes import compute_num_process_used
+from write_head_hashes import num_processes
 from cache_utils import slug_repo_name
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     print("merge_differ: Number of tested merges:", len(merge_differ_arguments))
 
     print("merge_differ: Started Diffing")
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         tqdm(
             pool.imap(merge_differ, merge_differ_arguments),
             total=len(merge_differ_arguments),

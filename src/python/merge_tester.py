@@ -21,8 +21,8 @@ import time
 import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE
-from write_head_hashes import compute_num_process_used
-from merge_tools_comparator import is_merge_sucess
+from write_head_hashes import num_processes
+from merge_tools_comparator import is_merge_success
 from cache_utils import slug_repo_name
 from tqdm import tqdm
 
@@ -78,7 +78,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
-        if is_merge_sucess(merge_data[merge_tool.name]):
+        if is_merge_success(merge_data[merge_tool.name]):
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 result,
@@ -174,7 +174,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester: Number of merges to test:", len(merge_tester_arguments))
 
     print("merge_tester: Started Testing")
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         merge_tester_results = list(
             tqdm(
                 pool.imap(merge_tester, merge_tester_arguments),
