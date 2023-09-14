@@ -282,7 +282,8 @@ if __name__ == "__main__":
         df.to_csv(output_file, index_label="idx")
         n_total_compared += len(df)
 
-    # This is the number of merges whose "two merge tools differ" bit has been set (to true or false).
+    # This is the number of merges whose "two merge tools differ" bit has been set (to true or
+    # false).
     print(
         "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
         n_new_compared,
