@@ -63,9 +63,11 @@ import org.plumelib.util.StringsPlume;
  *       a fine-grained personal access token</a>.) Make sure the file is not world-readable.
  * </ul>
  */
+// TODO: This program should delete files from /tmp directory after using them, in order to avoid
+// filling up the disk.
 public class FindMergeCommits {
 
-  /** The GitHub repositories to search for merge commits. */
+  /** The GitHub repositories to search for merge commits. Each is in the format "org/repo". */
   final List<OrgAndRepo> repos;
 
   /** The output directory. */
@@ -92,6 +94,7 @@ public class FindMergeCommits {
     }
 
     String inputFileName = args[0];
+    // A list of "org/repo" strings.
     List<OrgAndRepo> repos = reposFromCsv(inputFileName);
 
     String outputDirectoryName = args[1];
@@ -105,7 +108,7 @@ public class FindMergeCommits {
   /**
    * Creates an instance of FindMergeCommits.
    *
-   * @param repos a list of GitHub repositories
+   * @param repos a list of GitHub repositories, in "org/repository" format
    * @param outputDir where to write results; is created if it does not exist
    * @throws IOException if there is trouble reading or writing files
    */
@@ -187,13 +190,15 @@ public class FindMergeCommits {
      * @param index the index, in the experimental pipeline
      * @param orgAndRepoString the organization and repository name, separated by a slash ("/")
      */
+    @SuppressWarnings(
+        "index:array.access.unsafe.high.constant") // user-unfriendly way to indicate bad input
     public OrgAndRepo(int index, String orgAndRepoString) {
+      this(index, orgAndRepoString.split("/", -1)[0], orgAndRepoString.split("/", -1)[1]);
       String[] orgAndRepoSplit = orgAndRepoString.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
         System.exit(4);
       }
-      this(index, orgAndRepoSplit[0], orgAndRepoSplit[1]);
     }
 
     /**
@@ -223,7 +228,7 @@ public class FindMergeCommits {
       String[] repoColumns;
       while ((repoColumns = csvReader.readNext("idx", "repository")) != null) {
         assert repoColumns.length == 2 : "@AssumeAssertion(index): application-specific property";
-        repos.add(new OrgAndRepo(parseInt(repoColumn[0]), repoColumn[1]));
+        repos.add(new OrgAndRepo(Integer.parseInt(repoColumns[0]), repoColumns[1]));
       }
     } catch (CsvValidationException e) {
       throw new Error(e);
@@ -417,7 +422,7 @@ public class FindMergeCommits {
         // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s,%s",
+                "%d,%s,%s,%s,%s,%s,%s",
                 index++,
                 branch.getName(),
                 ObjectId.toString(mergeId),
