@@ -82,7 +82,7 @@ public class FindMergeCommits {
   /**
    * Outputs a list of merge commits from the given repositories.
    *
-   * @param args the first element is a .csv file containing GitHub repositories, in "org/repo"
+   * @param args the first element is a .csv file containing GitHub repository slugs, in "org/repo"
    *     format, in a column named "repository"; the second element is an output directory
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
@@ -148,7 +148,8 @@ public class FindMergeCommits {
           new UsernamePasswordCredentialsProvider("Bearer", environmentGithubToken);
     } else {
       System.err.println(
-          "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
+          "FindMergeCommits: "
+              + "need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
       throw new Error("unreachable"); // needed due to javac definite assignment check
     }
@@ -189,13 +190,15 @@ public class FindMergeCommits {
      * @param index the index, in the experimental pipeline
      * @param orgAndRepoString the organization and repository name, separated by a slash ("/")
      */
+    @SuppressWarnings(
+        "index:array.access.unsafe.high.constant") // user-unfriendly way to indicate bad input
     public OrgAndRepo(int index, String orgAndRepoString) {
+      this(index, orgAndRepoString.split("/", -1)[0], orgAndRepoString.split("/", -1)[1]);
       String[] orgAndRepoSplit = orgAndRepoString.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
         System.exit(4);
       }
-      this(index, orgAndRepoSplit[0], orgAndRepoSplit[1]);
     }
 
     /**
@@ -225,7 +228,7 @@ public class FindMergeCommits {
       String[] repoColumns;
       while ((repoColumns = csvReader.readNext("idx", "repository")) != null) {
         assert repoColumns.length == 2 : "@AssumeAssertion(index): application-specific property";
-        repos.add(new OrgAndRepo(parseInt(repoColumn[0]), repoColumn[1]));
+        repos.add(new OrgAndRepo(Integer.parseInt(repoColumns[0]), repoColumns[1]));
       }
     } catch (CsvValidationException e) {
       throw new Error(e);
@@ -241,6 +244,7 @@ public class FindMergeCommits {
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
     System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
+    // Parallel execution for each repository.
     repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
 
