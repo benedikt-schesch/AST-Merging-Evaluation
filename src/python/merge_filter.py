@@ -179,6 +179,7 @@ if __name__ == "__main__":
     random.shuffle(merger_arguments)
 
     print("merge_filter: Finished Constructing Inputs")
+    # New merges are merges whose analysis does not appear in the output folder.
     print("merge_filter: Number of new merges:", len(merger_arguments))
 
     print("merge_filter: Started Merging")
@@ -242,7 +243,12 @@ if __name__ == "__main__":
         df.to_csv(output_file, index_label="idx")
         n_total_analyze += sum(df["analyze"])
 
-    print("merge_filter: Number of newly analyzed merges:", n_analyze)
-    print("merge_filter: Total number of merges to be analyzed:", n_total_analyze)
+    # This is the number of merges whose "two merge tools differ" bit has been set (to true or false).
+    print(
+        "merge_filter: Number of merges on which all merge tools have been newly run:",
+        n_analyze,
+    )
+    # This is the number of merges whose "two merge tools differ" bit has been to true.
+    print("merge_filter: Total number of merges to be tested:", n_total_analyze)
     print("merge_filter: Finished Constructing Output")
     print("merge_filter: Done")
