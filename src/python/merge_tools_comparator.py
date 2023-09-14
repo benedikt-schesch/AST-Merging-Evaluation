@@ -284,12 +284,13 @@ if __name__ == "__main__":
 
     # This is the number of merges whose "two merge tools differ" bit has been set (to true or false).
     print(
-        "merge_tools_comparator: Number of merges on which all merge tools have been newly run:",
-        n_analyze,
+        "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
+        n_new_compared,
     )
     # This is the number of merges whose "two merge tools differ" bit has been to true.
     print(
-        "merge_tools_comparator: Total number of merges to be tested:", n_total_analyze
+        "merge_tools_comparator: Total number of merge tool outputs that have been compared:",
+        n_total_compared,
     )
     print("merge_tools_comparator: Finished Constructing Output")
     print("merge_tools_comparator: Done")
