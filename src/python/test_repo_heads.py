@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Tests the HEAD of a repo and validates it if the test passes.
 
-usage: python3 validate_repos.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
-                                 --output_path <valid_repos.csv>
+usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
+                                 --output_path <repos_head_passes.csv>
                                  --cache_dir <cache_dir>
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository. The csv must also
-contain a column "Validation hash" which contains a commit hash that will be tested. 
+contain a column "head hash" which contains a commit hash that will be tested. 
 Cache_dir is the directory where the cache will be stored.
-Output: the rows of the input for which the commit at the validation hash passes tests.
+Output: the rows of the input for which the commit at head hash passes tests.
 """
 import multiprocessing
 import os
@@ -22,7 +22,7 @@ from repo import Repository, TEST_STATE
 
 from tqdm import tqdm
 import pandas as pd
-from write_head_hashes import compute_num_cpus_used, clone_repo
+from write_head_hashes import num_processes, clone_repo
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -32,7 +32,7 @@ TIMEOUT_TESTING = 60 * 30  # 30 minutes, in seconds.
 
 
 def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
-    """Checks if the head of main passes test.
+    """Runs tests on the head of the main branch.
     Args:
         args (Tuple[pd.Series,Path]): A tuple containing the repository info and the cache path.
     Returns:
@@ -40,13 +40,14 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     """
     repo_info, cache = args
     repo_slug = repo_info["repository"]
-    print(repo_slug, ": head_passes_tests : started")
+    print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
     repo = Repository(repo_slug, cache_prefix=cache)
-    test_result = repo.checkout_and_test_cached(
-        repo_info["Validation hash"], timeout=TIMEOUT_TESTING, n_restarts=3
+    test_state = repo.checkout_and_test(
+        repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )
-    return test_result
+    print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
+    return test_state
 
 
 if __name__ == "__main__":
@@ -60,8 +61,8 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
-    print("validate_repos: Starting cloning repos")
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    print("test_repo_heads: Started cloning repos")
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         results = [
             pool.apply_async(clone_repo, args=(row["repository"],))
             for _, row in df.iterrows()
@@ -71,31 +72,38 @@ if __name__ == "__main__":
                 return_value = result.get(10 * 60)
             except Exception as e:
                 print("Couldn't clone repo", e)
-    print("validate_repos: Finished cloning repos")
+    print("test_repo_heads: Finished cloning repos")
 
     if os.path.exists(args.output_path):
-        print("validate_repos: Output file already exists. Exiting.")
+        print("test_repo_heads: Output file already exists. Exiting.")
         sys.exit(0)
 
-    print("validate_repos: Started Testing")
+    print("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         head_passes_tests_results = list(
             tqdm(
                 pool.imap(head_passes_tests, head_passes_tests_arguments),
                 total=len(head_passes_tests_arguments),
             )
         )
-    print("validate_repos: Finished Testing")
+    print("test_repo_heads: Finished Testing")
 
-    print("validate_repos: Building Output")
+    print("test_repo_heads: Started Building Output")
     out = []
-    valid_repos_mask = [i == TEST_STATE.Tests_passed for i in head_passes_tests_results]
-    out = df[valid_repos_mask]
-    print("validate_repos: Finished Building Output")
+    repos_head_passes_mask = [
+        i == TEST_STATE.Tests_passed for i in head_passes_tests_results
+    ]
+    out = df[repos_head_passes_mask]
+    print("test_repo_heads: Finished Building Output")
 
-    print("validate_repos: Number of valid repos:", len(out), "out of", len(df))
+    print(
+        "test_repo_heads: Number of repos whose head passes tests:",
+        len(out),
+        "out of",
+        len(df),
+    )
     if len(out) == 0:
-        raise Exception("No valid repos found")
+        raise Exception("No repos found whose head passes tests")
     out.to_csv(args.output_path, index_label="idx")
-    print("validate_repos: Done")
+    print("test_repo_heads: Done")

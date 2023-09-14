@@ -10,3 +10,6 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 DELETE_WORKDIRS = True
 REPOS_PATH = Path("repos")
 WORKDIR_PREFIX = Path(".workdir")
+
+TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
+N_REPETITIONS = 3

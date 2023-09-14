@@ -1,4 +1,4 @@
-idx,repository,language,architecture,community,continuous_integration,documentation,history,issues,license,size,unit_test,stars,scorebased_org,randomforest_org,scorebased_utl,randomforest_utl,Validation hash
+idx,repository,language,architecture,community,continuous_integration,documentation,history,issues,license,size,unit_test,stars,scorebased_org,randomforest_org,scorebased_utl,randomforest_utl,head hash
 0,Complexible/stardog-spring,Java,1.0,1,0,0.36999,0.0,0.0,1,2153,0.403618,12,0,0,1,1,05ed950161bfa7a4cd23922eddd760a51cfc7089
 1,sdeo/protobuf-socket-rpc,Java,1.0,1,0,0.233562,0.0,0.0,1,7472,0.323622,18,0,0,1,1,b1cf847b9922c2bc146a9eabf7c0df52428bf076
 2,twitter/netty-http2,Java,1.0,2,1,0.22231,0.368421,0.0,1,5886,0.341296,41,1,0,1,1,e8df896db61045b118f3423196c41c11c162b1c0

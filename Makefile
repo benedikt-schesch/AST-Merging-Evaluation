@@ -75,15 +75,15 @@ update-cache-results:
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	./run_small.sh -d
+	./run_small.sh --include_trivial_merges
 	${MAKE} small-test-diff
 
 small-test-diff:
 	@echo
 	@echo "Here is the file content, in case a diff fails."
-	more results-small/*.csv results-small/merges/*.csv results-small/merges_analyzed/*.csv results-small/merges_tested/*.csv | cat
+	more results-small/*.csv results-small/merges/*.csv results-small/merges_compared/*.csv results-small/merges_tested/*.csv | cat
 	@echo
-	python3 test/check_equal_csv.py --test_folder results-small/ --target_folder test/small-goal-files/
+	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
 	@echo
 	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all
 

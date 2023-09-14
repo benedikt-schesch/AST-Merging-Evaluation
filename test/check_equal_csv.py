@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def filter_run_time(df):
+def remove_run_time(df):
     """Remove all columns whose name contains "run_time"."""
     df = df.drop(columns=[c for c in df.columns if "run_time" in c])
     return df
@@ -17,36 +17,49 @@ def filter_run_time(df):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument(
-        "--test_folder", type=str, help="Path to test folder", default="results-small"
+        "--actual_folder",
+        type=str,
+        help="Path to actual folder",
+        default="results-small",
     )
     parser.add_argument(
-        "--target_folder",
+        "--goal_folder",
         type=str,
-        help="Path to the folder with target files",
+        help="Path to the folder with goal files",
         default="test/small-goal-files",
     )
     args = parser.parse_args()
 
-    target_folder = Path(args.target_folder)
-    test_folder = Path(args.test_folder)
+    goal_folder = Path(args.goal_folder)
+    actual_folder = Path(args.actual_folder)
 
-    for target_file in target_folder.glob("**/*.csv"):
-        target_file = target_file.relative_to(target_folder)
-        print(f"Checking {target_file}")
-        test_file = test_folder / target_file
-        assert test_file.exists(), f"{test_file} does not exist"
-        target_df = pd.read_csv(target_folder / target_file, header=0, index_col="idx")
-        test_df = pd.read_csv(test_file, header=0, index_col="idx")
-        target_df = filter_run_time(target_df)
-        test_df = filter_run_time(test_df)
+    for goal_file in goal_folder.glob("**/*.csv"):
+        goal_file = goal_file.relative_to(goal_folder)
+        print(f"Checking {goal_file}")
+        actual_file = actual_folder / goal_file
+        assert actual_file.exists(), f"{actual_file} does not exist"
+        goal_df = pd.read_csv(goal_folder / goal_file, header=0, index_col="idx")
+        actual_df = pd.read_csv(actual_file, header=0, index_col="idx")
+        goal_df = remove_run_time(goal_df)
+        actual_df = remove_run_time(actual_df)
 
-        if not target_df.equals(test_df):
-            for col in target_df.columns:
-                if not target_df[col].equals(test_df[col]):
-                    print(f"Column {col} is not equal")
-                    print(target_df[col])
-                    print(test_df[col])
-            print(f"{target_file} and {test_file} are not equal")
+        if not goal_df.equals(actual_df):
+            # Print the differences.
+            print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
+            # Now print details, after diffs so it is not obscured by the diff output.
+            for col in goal_df.columns:
+                if "run_time" in col:
+                    raise Exception(
+                        f'goal_df.columns contains "run_time": {goal_df.columns}'
+                    )
+                if not col in actual_df:
+                    print(f"Column {col} is not in actual_df")
+                    print(goal_df[col])
+                elif not goal_df[col].equals(actual_df[col]):
+                    print(f"Column {col} is not equal.  Printing goal then actual.")
+                    print(goal_df[col])
+                    print(actual_df[col])
+            print(f"{goal_file} and {actual_file} are not equal")
             # Print the differences
-            print(os.system(f"diff {target_folder/  target_file} {test_file}"))
-            raise ValueError(f"{target_file} and {test_file} are not equal")
+            print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
+            raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")

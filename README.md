@@ -10,7 +10,7 @@
 
 To install all the python requirements create a conda environment:
 
-With mamba (faster \urlhttps://github.com/mamba-org/mamba):
+With mamba (faster https://github.com/mamba-org/mamba):
 
 ```bash
 mamba env create -f environment.yml
@@ -71,7 +71,7 @@ The output data appears in `results-small/`.
 
 * `results-small/merges/` contains all the merges.
 
-* `results-small/merges_analyzed/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
+* `results-small/merges_compared/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
 
 * `results-small/merges_tested/` contains all merges that have been tested.
 
@@ -145,11 +145,11 @@ To run style checking run `make style`.
 
     * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
+    * test_repo_heads.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
-    * merge_filter.py -> Filters the merges based if the merge results are different and the merge is not trivial.
+    * merge_tools_comparator.py -> Compares merges that produce different output.
 
     * get_repos.py -> Downloads the repos list.
 
@@ -160,8 +160,6 @@ To run style checking run `make style`.
     * repo.py -> Contains the Repo class which represents a repo.
 
     * split_repos.py -> Splits the repos for parallel execution.
-
-    * valid_merge_counters.py -> Counts the number of merges that are valid.
 
     * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 

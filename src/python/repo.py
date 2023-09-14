@@ -15,7 +15,8 @@ import time
 from git.repo import Repo
 from cache_utils import (
     set_in_cache,
-    check_and_load_cache,
+    lookup_in_cache,
+    slug_repo_name,
 )
 from variables import *
 
@@ -24,7 +25,6 @@ TEST_STATE = Enum(
     [
         "Tests_passed",
         "Tests_failed",
-        "Tests_running",
         "Tests_timedout",
         "Git_checkout_failed",
         "Not_tested",
@@ -76,12 +76,12 @@ def compute_explanation(
     return explanation
 
 
-def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
+def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """Returns the result of run_repo_tests.sh on the given working copy.
-    If one test passes then the entire test is marked as passed.
-    If one test timeouts then the entire test is marked as timeout.
+    If the test process passes then the entire test is marked as passed.
+    If the test process timeouts then the entire test is marked as timeout.
     Args:
-        repo_dir_copy (Path): The path of the working copy (the clone).
+        wcopy_dir (Path): The path of the working copy (the clone).
         timeout (int): Test timeout limit, in seconds.
     Returns:
         TEST_STATE: The result of the test.
@@ -90,7 +90,7 @@ def repo_test(repo_dir_copy: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     explanation = ""
     command = [
         "src/scripts/run_repo_tests.sh",
-        str(repo_dir_copy),
+        str(wcopy_dir),
     ]
     try:
         p = subprocess.run(  # pylint: disable=consider-using-with
@@ -115,26 +115,22 @@ class Repository:
         self,
         repo_slug: str,
         cache_prefix: Path = Path(""),
-        workdir: Union[Path, None] = None,
     ) -> None:
         """Initializes the repository.
         Args:
-            repo_slug (str): The name of the repository.
+            repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_prefix (Path): The prefix of the cache.
-            workdir (Union[Path,None], optional) = None: Folder to use in the WORKDIR_PREFIX.
         """
         self.repo_slug = repo_slug
-        self.path = REPOS_PATH / repo_slug
-        if workdir is None:
-            self.workdir = WORKDIR_PREFIX / uuid.uuid4().hex
-        else:
-            self.workdir = WORKDIR_PREFIX / workdir
+        self.path = REPOS_PATH / repo_slug.split("/")[1]
+        workdir_id = uuid.uuid4().hex
+        self.workdir = WORKDIR_PREFIX / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         shutil.copytree(self.path, self.repo_path)
         self.repo = Repo(self.repo_path)
         self.test_cache_prefix = cache_prefix / "test_cache"
-        self.sha_cache_prefix = cache_prefix / "sha_cache"
+        self.sha_cache_prefix = cache_prefix / "sha_cache_entry"
 
     def checkout(self, commit: str) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -146,6 +142,7 @@ class Repository:
         """
         try:
             self.repo.git.checkout(commit, force=True)
+            explanation = f"Checked out {commit} for {self.repo_slug}"
             self.repo.submodule_update()
         except Exception as e:
             explanation = (
@@ -159,17 +156,20 @@ class Repository:
             cache_entry = {"sha": None, "explanation": explanation}
             set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
             return False, explanation
-        cache_entry = {"sha": self.compute_tree_fingerprint(), "explanation": ""}
+        cache_entry = {
+            "sha": self.compute_tree_fingerprint(),
+            "explanation": explanation,
+        }
         set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
-        return True, ""
+        return True, explanation
 
-    def merge_and_test(  # pylint: disable=too-many-arguments
+    def _merge_and_test(  # pylint: disable=too-many-arguments
         self,
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
         timeout: int,  # in seconds
-        n_restarts: int,
+        n_tests: int,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -178,15 +178,16 @@ class Repository:
         float,
     ]:
         """Merges the given commits using the given tool and tests the result.
+        The test results of multiple runs is combined into one result.
         Args:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
             timeout (int): The timeout limit, in seconds.
-            n_restarts (int): The number of times to restart the test.
+            n_tests (int): The number of times to perform the test.
         Returns:
             TEST_STATE: The result of the test.
-            str: The tree fingerprint of result.
+            str: The tree fingerprint of the merge result.
             str: The left fingerprint.
             str: The right fingerprint.
             float: The time it took to run the merge, in seconds.
@@ -201,7 +202,7 @@ class Repository:
         ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
             return merge_status, None, None, None, -1
-        test_result = self.test(timeout, n_restarts)
+        test_result = self.test(timeout, n_tests)
         return (
             test_result,
             merge_fingerprint,
@@ -210,13 +211,13 @@ class Repository:
             run_time,
         )
 
-    def merge_and_test_cached(  # pylint: disable=too-many-arguments
+    def merge_and_test(  # pylint: disable=too-many-arguments
         self,
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
         timeout: int,
-        n_restarts: int,
+        n_tests: int,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -225,40 +226,69 @@ class Repository:
         float,
     ]:
         """Merges the given commits using the given tool and tests the result.
+        The test results of multiple runs is combined into one result.
         Args:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
             timeout (int): The timeout limit, in seconds.
-            n_restarts (int): The number of times to restart the test.
+            n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
-            str: The tree fingerprint of result.
+            str: The tree fingerprint of the result.
             str: The left fingerprint.
             str: The right fingerprint.
             float: The time it took to run the merge, in seconds.
         """
-        sha_cache = self.check_sha_cache(
+        sha_cache_entry = self.get_sha_cache_entry(
             left_commit + "_" + right_commit + "_" + tool.name
         )
-        if sha_cache is None:
-            return self.merge_and_test(
-                tool, left_commit, right_commit, timeout, n_restarts
+        if sha_cache_entry is None:
+            return self._merge_and_test(
+                tool, left_commit, right_commit, timeout, n_tests
             )
-        if sha_cache["sha"] is None:
+        if sha_cache_entry["sha"] is None:
             return TEST_STATE.Git_checkout_failed, None, None, None, -1
-        result = self.check_test_cache(sha_cache["sha"])
+        result = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
-            return self.merge_and_test(
-                tool, left_commit, right_commit, timeout, n_restarts
+            return self._merge_and_test(
+                tool, left_commit, right_commit, timeout, n_tests
             )
         return (
             result,
-            sha_cache["sha"],
-            sha_cache["left_fingerprint"],
-            sha_cache["right_fingerprint"],
+            sha_cache_entry["sha"],
+            sha_cache_entry["left_fingerprint"],
+            sha_cache_entry["right_fingerprint"],
             -1,
         )
+
+    def create_branch(
+        self, branch_name: str, commit: str
+    ) -> Tuple[Union[None, str], str]:
+        """Creates a branch from a certain commit.
+        Args:
+            branch_name (str): Name of the branch to create.
+            commit (str): Commit used to create the branch.
+        Returns:
+            Union[None,str] : None if a checkout failure occured,
+                    str is the fingerprint of that commit.
+            str: explanation of the result.
+        """
+        cache_entry = self.get_sha_cache_entry(commit)
+        if cache_entry is not None and cache_entry["sha"] is None:
+            return None, cache_entry["explanation"]
+        success, explanation = self.checkout(commit)
+        if not success:
+            set_in_cache(
+                commit,
+                {"sha": None, "explanation": explanation},
+                self.repo_slug,
+                self.sha_cache_prefix,
+            )
+            return None, explanation
+        tree_fingerprint = self.compute_tree_fingerprint()
+        self.repo.git.checkout("-b", branch_name, force=True)
+        return tree_fingerprint, explanation
 
     def merge(  # pylint: disable=too-many-locals
         self,
@@ -278,80 +308,49 @@ class Repository:
             timeout (int): The timeout limit, in seconds.
         Returns:
             MERGE_STATE: The result of the merge.
-            str: The tree fingerprint of result.
+            str: The tree fingerprint of the result.
             str: The left fingerprint.
             str: The right fingerprint.
             str: explanation. The explanation of the result.
             float: The time it took to run the merge, in seconds.
         """
+        cache_entry_name = left_commit + "_" + right_commit + "_" + tool.name
+
         # Checkout left
-        cache_name = left_commit + "_" + right_commit + "_" + tool.name
-        left_cache = self.check_sha_cache(left_commit)
-        if left_cache is not None and left_cache["sha"] is None:
-            return (
-                MERGE_STATE.Git_checkout_failed,
-                None,
-                None,
-                None,
-                left_cache["explanation"],
-                -1,
-            )
-        success, explanation = self.checkout(left_commit)
-        if not success:
-            set_in_cache(
-                left_commit,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            set_in_cache(
-                cache_name,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
-        left_fingerprint = self.compute_tree_fingerprint()
-        self.repo.git.checkout("-b", LEFT_BRANCH_NAME, force=True)
+        left_fingerprint, left_explanation = self.create_branch(
+            LEFT_BRANCH_NAME, left_commit
+        )
 
         # Checkout right
-        right_cache = self.check_sha_cache(right_commit)
-        if right_cache is not None and right_cache["sha"] is None:
+        right_fingerprint, right_explanation = self.create_branch(
+            RIGHT_BRANCH_NAME, right_commit
+        )
+        explanation = left_explanation + "\n" + right_explanation
+        if right_fingerprint is None or left_fingerprint is None:
+            set_in_cache(
+                cache_entry_name,
+                {"sha": None, "explanation": explanation},
+                self.repo_slug,
+                self.sha_cache_prefix,
+            )
             return (
                 MERGE_STATE.Git_checkout_failed,
                 None,
                 None,
                 None,
-                right_cache["explanation"],
+                explanation,
                 -1,
             )
-        success, explanation = self.checkout(right_commit)
-        if not success:
-            set_in_cache(
-                right_commit,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            set_in_cache(
-                cache_name,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_prefix,
-            )
-            return MERGE_STATE.Git_checkout_failed, None, None, None, explanation, -1
-        right_fingerprint = self.compute_tree_fingerprint()
-        self.repo.git.checkout("-b", RIGHT_BRANCH_NAME, force=True)
 
         # Merge
         start_time = time.time()
+        command = [
+            "src/scripts/merge_tools/" + tool.name + ".sh",
+            str(self.repo_path),
+            LEFT_BRANCH_NAME,
+            RIGHT_BRANCH_NAME,
+        ]
         try:
-            command = [
-                "src/scripts/merge_tools/" + tool.name + ".sh",
-                str(self.repo_path),
-                LEFT_BRANCH_NAME,
-                RIGHT_BRANCH_NAME,
-            ]
             p = subprocess.run(  # pylint: disable=consider-using-with
                 command,
                 capture_output=True,
@@ -359,7 +358,7 @@ class Repository:
                 check=False,
             )
         except subprocess.TimeoutExpired as e:
-            explanation = compute_explanation(command, e)
+            explanation = explanation + "\n" + compute_explanation(command, e)
             sha = self.compute_tree_fingerprint()
             return (
                 MERGE_STATE.Merge_timedout,
@@ -370,7 +369,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = compute_explanation(command, p)
+        explanation = explanation + "\n" + compute_explanation(command, p)
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )
@@ -381,7 +380,7 @@ class Repository:
             "right_fingerprint": right_fingerprint,
         }
         set_in_cache(
-            cache_name,
+            cache_entry_name,
             cache_entry,
             self.repo_slug,
             self.sha_cache_prefix,
@@ -397,8 +396,6 @@ class Repository:
 
     def compute_tree_fingerprint(self) -> str:
         """Computes the tree fingerprint of the repository.
-        Args:
-            store_cache (bool, optional) = False: Whether to store the fingerprint in the cache.
         Returns:
             str: The tree fingerprint.
         """
@@ -415,10 +412,10 @@ class Repository:
         )
         return result
 
-    def check_sha_cache(
+    def get_sha_cache_entry(
         self, commit: str, start_merge: bool = False
     ) -> Union[None, dict]:
-        """Checks if the commit is in the cache.
+        """Gets a SHA cache entry.
         Args:
             commit (str): The commit to check.
             start_merge (bool, optional) = False: Whether to indicate that the merge starts if the
@@ -426,7 +423,7 @@ class Repository:
         Returns:
             Union[None,dict]: The cache entry if the commit is in the cache, None otherwise.
         """
-        cache = check_and_load_cache(
+        cache = lookup_in_cache(
             commit, self.repo_slug, self.sha_cache_prefix, set_run=start_merge
         )
         if cache is None:
@@ -435,10 +432,10 @@ class Repository:
             raise Exception("Cache entry should be a dictionary")
         return cache
 
-    def check_test_cache(
+    def get_test_cache_entry(
         self, sha: str, start_test: bool = False
     ) -> Union[None, TEST_STATE]:
-        """Checks if the test entry is in the cache.
+        """Gets a test cache entry.
         Args:
             sha (str): The tree fingerprint of the repository.
             start_test (bool, optional) = False: Whether to indicate that the test starts if the
@@ -447,7 +444,7 @@ class Repository:
             Union[None,TEST_STATE]: The result of the test if the repository is in the cache,
                     None otherwise.
         """
-        cache = check_and_load_cache(
+        cache = lookup_in_cache(
             sha, self.repo_slug, self.test_cache_prefix, set_run=start_test
         )
         if cache is None:
@@ -456,17 +453,17 @@ class Repository:
             raise Exception("Cache entry should be a dictionary")
         return TEST_STATE[cache["test_result"]]
 
-    def checkout_and_test(
+    def _checkout_and_test(
         self,
         commit: str,
         timeout: int,
-        n_restarts: int,
+        n_tests: int,
     ) -> TEST_STATE:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
             timeout (int): The timeout limit, in seconds.
-            n_restarts (int): The number of times to restart the test.
+            n_tests (int): The number of times to run the test suite.
         Returns:
             TEST_STATE: The result of the test.
         """
@@ -474,57 +471,59 @@ class Repository:
         if not result:
             print("Checkout failed for", self.repo_slug, commit, explanation)
             return TEST_STATE.Git_checkout_failed
-        return self.test(timeout, n_restarts)
+        return self.test(timeout, n_tests)
 
-    def checkout_and_test_cached(
+    def checkout_and_test(
         self,
         commit: str,
         timeout: int,
-        n_restarts: int,
+        n_tests: int,
     ) -> TEST_STATE:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
             timeout (int): The timeout limit, in seconds.
-            n_restarts (int): The number of times to restart the test.
+            n_tests (int): The number of times to run the test suite.
             check_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             TEST_STATE: The result of the test.
         """
-        sha_cache = self.check_sha_cache(commit, start_merge=True)
-        if sha_cache is None:
-            return self.checkout_and_test(commit, timeout, n_restarts)
-        if sha_cache["sha"] is None:
+        sha_cache_entry = self.get_sha_cache_entry(commit, start_merge=True)
+        if sha_cache_entry is None:
+            return self._checkout_and_test(commit, timeout, n_tests)
+        if sha_cache_entry["sha"] is None:
             return TEST_STATE.Git_checkout_failed
-        result = self.check_test_cache(sha_cache["sha"])
+        result = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
-            return self.checkout_and_test(commit, timeout, n_restarts)
+            return self._checkout_and_test(commit, timeout, n_tests)
         return result
 
-    def test(self, timeout: int, n_restarts: int) -> TEST_STATE:
-        """Tests the repository.
+    def test(self, timeout: int, n_tests: int) -> TEST_STATE:
+        """Tests the repository. The test results of multiple runs is combined into one result.
+        If one of the runs passes then the entire test is marked as passed.
+        If one of the runs timeouts then the entire test is marked as timeout.
         Args:
             timeout (int): The timeout limit, in seconds.
-            n_restarts (int): The number of times to restart the test.
+            n_tests (int): The number of times to run the test suite.
         Returns:
             TEST_STATE: The result of the test.
         """
         sha = self.compute_tree_fingerprint()
         cache_data = {}
 
-        result = self.check_test_cache(sha, start_test=True)
+        result = self.get_test_cache_entry(sha, start_test=True)
         if result is not None:
             return result
 
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
-        for i in range(n_restarts):
-            test, explanation = repo_test(self.repo_path, timeout)
+        for i in range(n_tests):
+            test_state, test_output = repo_test(self.repo_path, timeout)
             test_log_file = Path(
                 os.path.join(
                     self.test_cache_prefix,
                     "logs",
-                    self.repo_slug.split("/")[1],
+                    slug_repo_name(self.repo_slug),
                     sha + "_" + str(i) + ".log",
                 )
             )
@@ -532,11 +531,11 @@ class Repository:
             if test_log_file.exists():
                 test_log_file.unlink()
             with open(test_log_file, "w") as f:
-                f.write(explanation)
-            cache_data["test_results"].append(test.name)
+                f.write(test_output)
+            cache_data["test_results"].append(test_state.name)
             cache_data["test_log_file"].append(str(test_log_file))
-            cache_data["test_result"] = test.name
-            if test in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
+            cache_data["test_result"] = test_state.name
+            if test_state in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
         set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_prefix)

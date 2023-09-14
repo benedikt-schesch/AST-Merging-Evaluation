@@ -48,8 +48,8 @@ import org.plumelib.util.StringsPlume;
  * <p>The input is a .csv file, one of whose columns is named "repository" and contains "org/repo".
  *
  * <p>The output is a set of {@code .csv} files with columns: branch name, merge commit SHA, parent
- * 1 commit SHA, parent 2 commit SHA, base commit SHA, notes. The "notes" column contains "trivial
- * merge", "two initial commits", or is blank.
+ * 1 commit SHA, parent 2 commit SHA, base commit SHA, notes. The "notes" column contains "a parent
+ * is the base", "two initial commits", or is blank.
  *
  * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
@@ -65,7 +65,7 @@ import org.plumelib.util.StringsPlume;
  */
 public class FindMergeCommits {
 
-  /** The GitHub repositories to search for merge commits. Each is in the format "org/repo". */
+  /** The GitHub repositories to search for merge commits. */
   final List<OrgAndRepo> repos;
 
   /** The output directory. */
@@ -80,7 +80,7 @@ public class FindMergeCommits {
   /**
    * Outputs a list of merge commits from the given repositories.
    *
-   * @param args the first element is a .csv file containing GitHub repositories, in "org/repo"
+   * @param args the first element is a .csv file containing GitHub repository slugs, in "org/repo"
    *     format, in a column named "repository"; the second element is an output directory
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
@@ -92,7 +92,6 @@ public class FindMergeCommits {
     }
 
     String inputFileName = args[0];
-    // A list of "org/repo" strings.
     List<OrgAndRepo> repos = reposFromCsv(inputFileName);
 
     String outputDirectoryName = args[1];
@@ -106,7 +105,7 @@ public class FindMergeCommits {
   /**
    * Creates an instance of FindMergeCommits.
    *
-   * @param repos a list of GitHub repositories, in "org/repository" format
+   * @param repos a list of GitHub repositories
    * @param outputDir where to write results; is created if it does not exist
    * @throws IOException if there is trouble reading or writing files
    */
@@ -400,7 +399,7 @@ public class FindMergeCommits {
       } else {
         mergeBaseId = mergeBase.toObjectId();
         if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
-          notes = "trivial merge";
+          notes = "a parent is the base";
         } else {
           notes = "";
         }

@@ -3,19 +3,19 @@
 
 usage: python3 latex_output.py
                 --full_repos_csv <path_to_full_repos_csv>
-                --valid_repos_csv <path_to_valid_repos_csv>
+                --repos_head_passes_csv <path_to_repos_head_passes_csv>
                 --n_merges <number_of_merges>
-                --merges_tested_path <path_to_merges>
-                --merges_valid_path <path_to_merges_valid>
+                --tested_merges_path <path_to_tested_merges>
+                --merges_path <path_to_merges>
                 --output_dir <path_to_output>
 
 
 This script generates all the tables and plots for the paper. It requires the
 following input files:
 - full_repos_csv: csv file containing the full list of repositories
-- valid_repos_csv: csv file containing the list of valid repositories
-- merges_tested_path: path to the folder containing the merge results
-- merges_valid_path: path to the folder containing the merge results for valid repositories
+- repos_head_passes_csv: csv file containing the list of valid repositories
+- tested_merges_path: path to the folder containing the merge results
+- merges_path: path to the folder containing all found merges.
 - output_dir: path to the folder where the LaTeX files will be saved
 """
 
@@ -33,9 +33,9 @@ from prettytable import PrettyTable
 from tqdm import tqdm
 import seaborn as sns
 
-from merge_tester import MERGE_TOOL, TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
-from merge_filter import TIMEOUT_MERGING
-from repo import MERGE_STATE, TEST_STATE
+from merge_tester import TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
+from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
+from cache_utils import slug_repo_name
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -109,7 +109,6 @@ MERGE_UNHANDLED_NAMES = [
 UNDESIRABLE_STATES = [
     TEST_STATE.Git_checkout_failed.name,
     TEST_STATE.Not_tested.name,
-    TEST_STATE.Tests_running.name,
     MERGE_STATE.Git_checkout_failed.name,
     MERGE_STATE.Merge_timedout.name,
 ]
@@ -125,26 +124,25 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         "--full_repos_csv", type=str, default="input_data/repos_with_hashes.csv"
     )
     parser.add_argument(
-        "--valid_repos_csv", type=str, default="results/valid_repos.csv"
+        "--repos_head_passes_csv", type=str, default="results/repos_head_passes.csv"
     )
     parser.add_argument(
         "--tested_merges_path", type=str, default="results/merges_tested"
     )
+    parser.add_argument("--merges_path", type=str, default="results/merges")
     parser.add_argument("--n_merges", type=int, default=20)
-    parser.add_argument("--merges_tested_path", type=str, default="results/merges")
-    parser.add_argument("--merges_valid_path", type=str, default="results/merges_valid")
     parser.add_argument("--output_dir", type=str, default="results")
     args = parser.parse_args()
     output_dir = args.output_dir
 
     # Combine results file
-    result_df = []
-    repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    result_df_list = []
+    repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.tested_merges_path, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.tested_merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
@@ -157,7 +155,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
-            print("latex_output.py: Skipping", repo_slug, "because it is empty.")
+            print(
+                "latex_output: Skipping",
+                repo_slug,
+                "because it does not contain any merges.",
+            )
             continue
         merges = merges[merges["parents pass"]]
         if len(merges) > args.n_merges:
@@ -166,9 +168,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         merges["repository"] = repo_slug
         merges["repo-idx"] = repository_data.name
         merges["merge-idx"] = merges.index
-        result_df.append(merges)
+        result_df_list.append(merges)
 
-    result_df = pd.concat(result_df, ignore_index=True)
+    result_df = pd.concat(result_df_list, ignore_index=True)
     result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
     result_df = result_df[
         ["repo-idx", "merge-idx"]
@@ -180,6 +182,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         assert result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() == 0
 
     result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
+
+    main = result_df[result_df["branch_name"].isin(main_branch_names)]
+    feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     for plot_category, merge_tools in PLOTS.items():
         plots_output_path = os.path.join(output_dir, "plots", plot_category)
@@ -209,8 +214,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 result,
                 annot=True,
                 ax=ax,
-                xticklabels=latex_merge_tool,
-                yticklabels=latex_merge_tool,
+                xticklabels=latex_merge_tool,  # type: ignore
+                yticklabels=latex_merge_tool,  # type: ignore
                 fmt="g",
                 mask=result == 0,
                 cmap="Blues",
@@ -369,9 +374,6 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             \\hline
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
 
-        main = result_df[result_df["branch_name"].isin(main_branch_names)]
-        feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
-
         for merge_tool_idx, merge_tool in enumerate(merge_tools):
             merge_main = main[merge_tool]
             merge_feature = feature[merge_tool]
@@ -454,18 +456,17 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
     # Create defs.tex
     full_repos_df = pd.read_csv(args.full_repos_csv)
-    valid_repos_df = pd.read_csv(args.valid_repos_csv)
+    repos_head_passes_df = pd.read_csv(args.repos_head_passes_csv)
 
     output = "% Dataset and sample numbers\n"
     output = latex_def("reposInitial", len(full_repos_df))
-    output += latex_def("reposValid", len(valid_repos_df))
+    output += latex_def("reposValid", len(repos_head_passes_df))
 
     count = 0
-    for i in tqdm(os.listdir(args.merges_tested_path)):
+    for i in tqdm(os.listdir(args.tested_merges_path)):
         if i.endswith(".csv"):
             df = pd.read_csv(
-                os.path.join(args.merges_tested_path, i),
-                names=["idx", "branch_name", "merge", "left", "right", "notes"],
+                os.path.join(args.tested_merges_path, i),
                 header=0,
                 index_col="idx",
             )
@@ -476,10 +477,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = 0
     count = 0
     full = 0
-    df = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    df = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
-            args.merges_valid_path, repository_data["repository"].split("/")[1] + ".csv"
+            args.merges_path,
+            slug_repo_name(repository_data["repository"] + ".csv"),
         )
         if not os.path.isfile(merge_list_file):
             continue

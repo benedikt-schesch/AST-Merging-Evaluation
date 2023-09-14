@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-"""Filter the merges that do not have at least two merge tools that 
-disagree on the result of the merge.
-usage: python3 merge_filter.py --valid_repos_csv <path_to_valid_repos.csv>
+"""Removes the merges such that all merge tools have identical output.
+usage: python3 merge_tools_comparator.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
-This script filters the merges that will be analyzed.
+                                --include_trivial_merges (optional flag)
+                                --only_trivial_merges (optional flag)
+This script flags merges that have different results for different merge tools.
+The output is written in output_dir and consists of the same files as the input
+files, but with an additional column that indicates whether the merge tools
+differ.
+If the flag --include_trivial_merges is set, then the script will also output
+merges that are trivial.
+If the flag --only_trivial_merges is set, then the script will only output
+merges that are trivial.
 """
 
 import os
@@ -19,19 +27,17 @@ import numpy as np
 import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
-from cache_utils import set_in_cache, check_and_load_cache
-from write_head_hashes import compute_num_cpus_used
+from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
+from write_head_hashes import num_processes
+from variables import TIMEOUT_MERGING, N_REPETITIONS
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
-N_RESTARTS = 3
 
-
-def is_merge_sucess(merge: str) -> bool:
-    """Returns true if the merge indicates success"""
-    return merge == MERGE_STATE.Merge_success.name
+def is_merge_success(merge_state: str) -> bool:
+    """Returns true if the merge state indicates success."""
+    return merge_state == MERGE_STATE.Merge_success.name
 
 
 def merger(  # pylint: disable=too-many-locals
@@ -40,8 +46,8 @@ def merger(  # pylint: disable=too-many-locals
     """
     Merges two branches and returns the result.
     Args:
-        args (Tuple[pd.Series,Path]): A tuple containing the
-                merge data, the merge tool and the cache path.
+        args (Tuple[str,pd.Series,Path]): A tuple containing the repo slug,
+                the merge data, and the cache path.
     Returns:
         dict: A dictionary containing the merge result.
     """
@@ -50,21 +56,23 @@ def merger(  # pylint: disable=too-many-locals
     cache_entry = merge_data["left"] + "_" + merge_data["right"]
     merge_cache_prefix = cache_prefix / "merge_results"
 
-    result = check_and_load_cache(cache_entry, repo_slug, merge_cache_prefix, True)
+    result = lookup_in_cache(cache_entry, repo_slug, merge_cache_prefix, True)
+    # if result is None:
+    #     raise Exception(cache_entry," HERE")
     if result is not None and isinstance(result, dict):
         return result
 
     cache_data = {}
     for merge_tool in MERGE_TOOL:
         print(
-            "merge_filter: Merging",
+            "merge_tools_comparator: Merging",
             repo_slug,
             merge_data["left"],
             merge_data["right"],
             merge_tool.name,
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
-        for i in range(N_RESTARTS):
+        for i in range(N_REPETITIONS):
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status,
@@ -82,7 +90,7 @@ def merger(  # pylint: disable=too-many-locals
             log_file: Path = (
                 cache_prefix
                 / "merge_logs"
-                / repo_slug.split("/")[1]
+                / slug_repo_name(repo_slug)
                 / merge_data["left"]
                 / merge_data["right"]
                 / (merge_tool.name + f".log")
@@ -98,10 +106,22 @@ def merger(  # pylint: disable=too-many-locals
             if "merge_fingerprint" not in cache_data[merge_tool.name]:
                 cache_data[merge_tool.name]["merge_fingerprint"] = merge_fingerprint
             else:
-                assert (
+                if (
                     cache_data[merge_tool.name]["merge_fingerprint"]
-                    == merge_fingerprint
-                )
+                    != merge_fingerprint
+                ):
+                    raise Exception(
+                        "merge_tools_comparator: Merge fingerprint mismatch",
+                        i,
+                        repo_slug,
+                        merge_data["left"],
+                        merge_data["right"],
+                        merge_tool.name,
+                        merge_status,
+                        cache_data[merge_tool.name]["merge_fingerprint"],
+                        merge_fingerprint,
+                        cache_data,
+                    )
 
             if "left_tree_fingerprint" not in cache_data:
                 cache_data["left_tree_fingerprint"] = left_fingerprint
@@ -110,46 +130,47 @@ def merger(  # pylint: disable=too-many-locals
                 assert cache_data["left_tree_fingerprint"] == left_fingerprint
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
             del repo
-
-    set_in_cache(cache_entry, cache_data, repo_slug, cache_prefix)
+    set_in_cache(cache_entry, cache_data, repo_slug, merge_cache_prefix)
     return cache_data
 
 
 if __name__ == "__main__":
-    print("merge_filter: Start")
+    print("merge_tools_comparator: Start")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--valid_repos_csv", type=Path)
+    parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
+    parser.add_argument("--include_trivial_merges", action="store_true")
+    parser.add_argument("--only_trivial_merges", action="store_true")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    repos = pd.read_csv(args.valid_repos_csv, index_col="idx")
+    repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_filter: Constructing Inputs")
+    print("merge_tools_comparator: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
-                "merge_filter.py:",
+                "merge_tools_comparator:",
                 repo_slug,
-                "does not have a list of merge. Missing file: ",
+                "does not have a list of merges. Missing file: ",
                 merge_list_file,
             )
 
         if output_file.exists():
             print(
-                "merge_filter.py: Skipping",
+                "merge_tools_comparator: Skipping",
                 repo_slug,
                 "because it is already computed.",
             )
@@ -169,6 +190,13 @@ if __name__ == "__main__":
             header=0,
             index_col="idx",
         )
+        merges["notes"].replace(np.nan, "", inplace=True)
+
+        if args.only_trivial_merges:
+            merges = merges[merges["notes"].str.contains("a parent is the base")]
+        elif not args.include_trivial_merges:
+            merges = merges[~merges["notes"].str.contains("a parent is the base")]
+
         merger_arguments += [
             (repo_slug, merge_data, Path(args.cache_dir))
             for _, merge_data in merges.iterrows()
@@ -178,42 +206,51 @@ if __name__ == "__main__":
     random.seed(42)
     random.shuffle(merger_arguments)
 
-    print("merge_filter: Finished Constructing Inputs")
+    print("merge_tools_comparator: Finished Constructing Inputs")
     # New merges are merges whose analysis does not appear in the output folder.
-    print("merge_filter: Number of new merges:", len(merger_arguments))
+    print("merge_tools_comparator: Number of new merges:", len(merger_arguments))
 
-    print("merge_filter: Started Merging")
-    with multiprocessing.Pool(processes=compute_num_cpus_used()) as pool:
+    print("merge_tools_comparator: Started Merging")
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
-    print("merge_filter: Finished Merging")
+    print("merge_tools_comparator: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_filter: Constructing Output")
-    n_analyze = 0
+    print("merge_tools_comparator: Constructing Output")
+    n_new_compared = 0
+    n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
         cache_data = merger_results[i]
-        analyze = False
+        two_merge_tools_differ = False
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
-                if is_merge_sucess(
+                if is_merge_success(
                     cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
-                    analyze = True
-                if is_merge_sucess(
+                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
+                    two_merge_tools_differ = True
+                if is_merge_success(
                     cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
+                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
                     if (
                         cache_data[merge_tool1.name]["merge_fingerprint"]
                         != cache_data[merge_tool2.name]["merge_fingerprint"]
                     ):
-                        analyze = True
-        merge_data["analyze"] = analyze
+                        two_merge_tools_differ = True
+        merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
+
+        # Ignore merges that could not be checked out.
+        if (
+            merge_data["left_tree_fingerprint"] is None
+            or merge_data["right_tree_fingerprint"] is None
+        ):
+            continue
+
         for merge_tool in MERGE_TOOL:
             merge_data[merge_tool.name] = cache_data[merge_tool.name]["results"][0]
             merge_data[merge_tool.name + "_run_time"] = np.median(
@@ -222,33 +259,37 @@ if __name__ == "__main__":
             merge_data[merge_tool.name + "_merge_fingerprint"] = cache_data[
                 merge_tool.name
             ]["merge_fingerprint"]
-
         repo_result[repo_slug].append(merge_data)
-        if analyze:
-            n_analyze += 1
+        n_new_compared += 1
 
-    n_total_analyze = 0
+    n_total_compared = 0
     for repo_slug in repo_result:
         output_file = Path(
-            os.path.join(args.output_dir, repo_slug.split("/")[1] + ".csv")
+            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
         if output_file.exists():
             try:
-                n_total_analyze += sum(pd.read_csv(output_file, header=0)["analyze"])
+                n_total_compared += len(pd.read_csv(output_file, header=0))
             except pd.errors.EmptyDataError:
-                print("merge_filter.py: Skipping", repo_slug, "because it is empty.")
+                print(
+                    "merge_tools_comparator: Skipping",
+                    repo_slug,
+                    "because it does not contain any merges.",
+                )
             continue
         df = pd.DataFrame(repo_result[repo_slug])
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
-        n_total_analyze += sum(df["analyze"])
+        n_total_compared += len(df)
 
     # This is the number of merges whose "two merge tools differ" bit has been set (to true or false).
     print(
-        "merge_filter: Number of merges on which all merge tools have been newly run:",
+        "merge_tools_comparator: Number of merges on which all merge tools have been newly run:",
         n_analyze,
     )
     # This is the number of merges whose "two merge tools differ" bit has been to true.
-    print("merge_filter: Total number of merges to be tested:", n_total_analyze)
-    print("merge_filter: Finished Constructing Output")
-    print("merge_filter: Done")
+    print(
+        "merge_tools_comparator: Total number of merges to be tested:", n_total_analyze
+    )
+    print("merge_tools_comparator: Finished Constructing Output")
+    print("merge_tools_comparator: Done")
