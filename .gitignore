@@ -10,6 +10,7 @@ machines.txt
 cache/
 artifacts/
 artifacts.tar.gz
+*.hprof
 
 output/
 merge_repo/
@@ -108,3 +109,5 @@ docs/_build/
 
 # Emacs
 TAGS
+
+!JSCover/**

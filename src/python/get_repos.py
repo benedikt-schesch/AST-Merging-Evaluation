@@ -3,7 +3,7 @@
 
 # usage: python3 get_repos.py
 
-# This script creates file input_data/repos.csv from part of the reaper dataset:
+# This script creates file input_data/repos.csv from part of the Reaper dataset:
 # the Java repos with more than 10 GitHub stars and a unit_test score of more than 0.25.
 # This script only needs to be re-run when you desire to re-create that file (which is rare).
 

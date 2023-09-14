@@ -29,7 +29,7 @@ clean:
 	rm -rf repos
 	rm -rf scratch
 	rm -rf results-small
-	rm -rf .valid_merges
+	rm -rf .valid_merges_counters
 
 # This target deletes files in the cache, which is commited to version control.
 clean-cache:
@@ -50,7 +50,7 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # Compresses the cache.
 compress-cache:
 	rm -r cache.tar
-	tar --exclude="*.lock" -czf cache.tar cache
+	tar --exclude="lock" -czf cache.tar cache
 
 # Decompresses the cache.
 decompress-cache:
@@ -75,21 +75,17 @@ update-cache-results:
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	./run_small.sh -d
+	./run_small.sh --include_trivial_merges
 	${MAKE} small-test-diff
 
 small-test-diff:
 	@echo
 	@echo "Here is the file content, in case a diff fails."
-	more results-small/*.csv results-small/merges/*.csv results-small/merges_valid/*.csv | cat
+	more results-small/*.csv results-small/merges/*.csv results-small/merges_compared/*.csv results-small/merges_tested/*.csv | cat
 	@echo
-	if grep -Fqvf results-small/merges/ez-vcard.csv test/small-goal-files/merges/ez-vcard.csv; then exit 1; fi
-	if grep -Fqvf results-small/merges/Algorithms.csv test/small-goal-files/merges/Algorithms.csv; then exit 1; fi
-	python3 test/remove-run_time-columns.py --input results-small/result.csv --output results-small/result-without-times.csv
-	python3 test/remove-run_time-columns.py --input results-small/filtered_result.csv --output results-small/filtered_result-without-times.csv
+	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
 	@echo
-	diff -x tools -x defs.tex -x git -x merges -x .gitignore -x git -x result.csv -x plots -x filtered_result.csv -x table_run_time.tex -x .DS_Store -x '*~' -x '#*#' -r -U3 test/small-goal-files results-small
-	rm -f test/small-goal-files/result-without-times.txt results-small/result-without-times.txt
+	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all
 
 gradle-assemble:
 	./gradlew assemble -g ../.gradle/

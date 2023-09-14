@@ -32,18 +32,19 @@ else
 fi
 
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
+if [ ! -d "${JAVA8_HOME}" ] ; then echo "JAVA8_HOME is set to a nonexistent directory: ${JAVA8_HOME}"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
+if [ ! -d "${JAVA11_HOME}" ] ; then echo "JAVA11_HOME is set to a nonexistent directory: ${JAVA11_HOME}"; exit 1; fi
 if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
+if [ ! -d "${JAVA17_HOME}" ] ; then echo "JAVA17_HOME is set to a nonexistent directory: ${JAVA17_HOME}"; exit 1; fi
+
+ORIG_PATH="${PATH}"
 
 # shellcheck disable=SC2153 # Not a typo of JAVA_HOME.
 for javaX_home in $JAVA8_HOME $JAVA11_HOME $JAVA17_HOME
 do
-  if [ ! -d "${javaX_home}" ] ; then
-    echo "No JDK ${javaX_home}"
-    continue
-  fi
-  export JAVA_HOME=${javaX_home}
-  export PATH="$JAVA_HOME/bin:$PATH"
+  export JAVA_HOME="${javaX_home}"
+  export PATH="$JAVA_HOME/bin:$ORIG_PATH"
   echo "Running tests with JAVA_HOME=$JAVA_HOME"
   ${command}
   rc=$?

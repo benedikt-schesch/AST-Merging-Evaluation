@@ -7,11 +7,10 @@
 # Return code is 0 for merge success, 1 for merge failure.
 # For merge failure, also outputs "Conflict" and aborts the merge.
 
-set -e
 set -o nounset
 
 if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 MERGE_SCRIPTS_DIR BRANCH1 BRANCH2 STRATEGY" >&2
+  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 STRATEGY" >&2
   exit 1
 fi
 
@@ -21,7 +20,7 @@ branch2=$3
 strategy=$4
 
 # perform merge
-cd "$clone_dir"
+cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
 echo "Running: git merge --no-edit $strategy $branch2"
 # shellcheck disable=SC2086
@@ -33,7 +32,5 @@ if [ $retVal -ne 0 ]; then
     echo "Conflict"
     git merge --abort
 fi
-
-cd -
 
 exit $retVal
