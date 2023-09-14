@@ -159,6 +159,9 @@ public class FindMergeCommits {
 
   /** Represents a GitHub repository. */
   static class OrgAndRepo {
+    /** The index, in the experimental pipeline. */
+    public final int index;
+
     /** The owner or organization. */
     public final String org;
 
@@ -168,10 +171,12 @@ public class FindMergeCommits {
     /**
      * Creates a new OrgAndRepo.
      *
+     * @param index the index, in the experimental pipeline
      * @param org the org or organization
      * @param repo the repository name within the organization
      */
-    public OrgAndRepo(String org, String repo) {
+    public OrgAndRepo(int index, String org, String repo) {
+      this.index = index;
       this.org = org;
       this.repo = repo;
     }
@@ -179,16 +184,16 @@ public class FindMergeCommits {
     /**
      * Creates a new OrgAndRepo.
      *
+     * @param index the index, in the experimental pipeline
      * @param orgAndRepoString the organization and repository name, separated by a slash ("/")
      */
-    public OrgAndRepo(String orgAndRepoString) {
+    public OrgAndRepo(int index, String orgAndRepoString) {
       String[] orgAndRepoSplit = orgAndRepoString.split("/", -1);
       if (orgAndRepoSplit.length != 2) {
         System.err.printf("repo \"%s\" has wrong number of slashes%n", orgAndRepoString);
         System.exit(4);
       }
-      this.org = orgAndRepoSplit[0];
-      this.repo = orgAndRepoSplit[1];
+      this(index, orgAndRepoSplit[0], orgAndRepoSplit[1]);
     }
 
     /**
@@ -215,10 +220,10 @@ public class FindMergeCommits {
     try (@SuppressWarnings("DefaultCharset")
             FileReader fr = new FileReader(inputFileName /*, UTF_8*/);
         CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(fr)) {
-      String[] repoColumn;
-      while ((repoColumn = csvReader.readNext("repository")) != null) {
-        assert repoColumn.length == 1 : "@AssumeAssertion(index): application-specific property";
-        repos.add(new OrgAndRepo(repoColumn[0]));
+      String[] repoColumns;
+      while ((repoColumns = csvReader.readNext("idx", "repository")) != null) {
+        assert repoColumns.length == 2 : "@AssumeAssertion(index): application-specific property";
+        repos.add(new OrgAndRepo(parseInt(repoColumn[0]), repoColumn[1]));
       }
     } catch (CsvValidationException e) {
       throw new Error(e);
@@ -306,7 +311,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,notes");
+      writer.write("repo_index,branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
@@ -377,13 +382,15 @@ public class FindMergeCommits {
       RevCommit parent2 = parents[1];
       ObjectId parent2Id = parent2.toObjectId();
       RevCommit mergeBase = getMergeBaseCommit(git, repo, parent1, parent2);
+      ObjectId mergeBaseId;
       String notes;
 
       if (mergeBase == null) {
         // This merge originated from two distinct initial commits.
         notes = "two initial commits";
+        mergeBaseId = null;
       } else {
-        ObjectId mergeBaseId = mergeBase.toObjectId();
+        mergeBaseId = mergeBase.toObjectId();
         if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
           notes = "trivial merge";
         } else {
@@ -395,14 +402,15 @@ public class FindMergeCommits {
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
       if (newMerge) {
-        // "branch_name,merge_commit,parent_1,parent_2,notes"
+        // "org_repo,branch_name,merge_commit,parent_1,parent_2,base_commit"
         writer.write(
             String.format(
-                "%s,%s,%s,%s,%s",
+                "%s,%s,%s,%s,%s,%s",
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
+                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }
