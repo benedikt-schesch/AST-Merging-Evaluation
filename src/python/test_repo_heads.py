@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests the HEAD of a repo and validates it if the test passes.
+"""Tests the HEAD commits of multiple repos and validates it if the test passes.
 
 usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
                                  --output_path <repos_head_passes.csv>

@@ -219,7 +219,6 @@ if __name__ == "__main__":
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_tools_comparator: Constructing Output")
     n_new_compared = 0
-    n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]

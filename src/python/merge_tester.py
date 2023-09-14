@@ -106,6 +106,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                     merge_fingerprint,
                     merge_data[merge_tool.name + "_merge_fingerprint"],
                 )
+            # Update the status from merge success to test result.
             merge_data[merge_tool.name] = result.name
             del repo
         assert merge_tool.name in merge_data
@@ -126,7 +127,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_tester: Started listing merges to test")
+    print("merge_tester: Started collecting merges to test")
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
@@ -170,7 +171,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     random.seed(42)
     random.shuffle(merge_tester_arguments)
 
-    print("merge_tester: Finished listing merges to test")
+    print("merge_tester: Finished collecting merges to test")
     print("merge_tester: Number of merges to test:", len(merge_tester_arguments))
 
     print("merge_tester: Started Testing")
@@ -210,12 +211,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     "because it does not contain any merges.",
                 )
                 continue
-            n_total_merges += len(df)
-            n_total_merges_parents_pass += len(df[df["parents pass"]])
-            continue
-        df = pd.DataFrame(repo_result[repo_slug])
-        df.sort_index(inplace=True)
-        df.to_csv(output_file, index_label="idx")
+        else:
+            df = pd.DataFrame(repo_result[repo_slug])
+            df.sort_index(inplace=True)
+            df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
         n_total_merges_parents_pass += len(df[df["parents pass"]])
 

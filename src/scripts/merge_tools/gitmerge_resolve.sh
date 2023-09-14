@@ -11,11 +11,11 @@ strategy="-s resolve"
 status=$?
 
 if [ "$status" -ne 0 ]; then
-  echo "Fixing conflicts"
+  echo "Removing filenames from conflict markers."
   cd "$clone_dir" || exit 1
   readarray -t files < <(grep -l -r '^\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file_')
   for file in "${files[@]}" ; do
-    echo "Fixing $file"
+    echo "Removing filenames from conflict markers in $file"
     sed -i 's/^\(\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file\)_[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]$/\1/' "$file"
   done
 fi

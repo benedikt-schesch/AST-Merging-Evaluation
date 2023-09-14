@@ -25,14 +25,15 @@ from cache_utils import slug_repo_name
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes
-TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes
+TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes, in seconds
+TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
 
 
 def get_merge_fingerprint(
     merge_data: pd.Series, merge_tool: MERGE_TOOL, cache_prefix: Path
 ) -> Union[Tuple[None, None], Tuple[Repository, str]]:
-    """Returns the repo and the fingerprint of a merge, or None.
+    """Returns the repo and the fingerprint of a merge,
+    or (None, None) if the merge is not successful.
     Does some sanity-checking too.
     Args:
         merge_data: The merge data.
@@ -107,7 +108,6 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
             if repo2 is None or merge_fingerprint2 is None:
                 continue
 
-            # Use lexicographic order to prevent duplicates
             diff_file = diff_file_prefix / diff_file_name(
                 merge_fingerprint1, merge_fingerprint2
             )
@@ -130,6 +130,7 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
     Returns:
         Path: The name of the diff file.
     """
+    # Use lexicographic order to prevent duplicates
     if sha1 < sha2:
         return Path(sha1 + "_" + sha2 + ".txt")
     return Path(sha2 + "_" + sha1 + ".txt")
@@ -148,7 +149,7 @@ if __name__ == "__main__":
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_differ: Started listing diffs to compute")
+    print("merge_differ: Started collecting diffs to compute")
     merge_differ_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
@@ -206,8 +207,8 @@ if __name__ == "__main__":
     random.seed(42)
     random.shuffle(merge_differ_arguments)
 
-    print("merge_differ: Finished listing diffs to compute")
-    print("merge_differ: Number of tested merges:", len(merge_differ_arguments))
+    print("merge_differ: Finished collecting diffs to compute")
+    print("merge_differ: Number of merges to test:", len(merge_differ_arguments))
 
     print("merge_differ: Started Diffing")
     with multiprocessing.Pool(processes=num_processes()) as pool:
