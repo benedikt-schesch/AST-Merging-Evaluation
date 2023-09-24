@@ -10,7 +10,7 @@
 set -o nounset
 
 if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 MERGE_SCRIPTS_DIR BRANCH1 BRANCH2 STRATEGY" >&2
+  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 STRATEGY" >&2
   exit 1
 fi
 

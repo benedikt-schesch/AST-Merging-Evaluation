@@ -63,16 +63,14 @@ def compute_explanation(
     command: List[str],
     source: Union[subprocess.TimeoutExpired, subprocess.CompletedProcess],
 ) -> str:
-    """Poduces the explanation string of a timedout process or
+    """Produces the explanation string of a timedout process or
     a completed process.
     """
     explanation = "Run Command: " + " ".join(command) + "\nTimed out"
-    explanation += (
-        "\nstdout:\n" + source.stdout.decode("utf-8") if source.stdout else ""
-    )
-    explanation += (
-        "\nstderr:\n" + source.stderr.decode("utf-8") if source.stderr else ""
-    )
+    if source.stdout:
+        explanation += "\nstdout:\n" + source.stdout.decode("utf-8")
+    if source.stderr:
+        explanation += "\nstderr:\n" + source.stderr.decode("utf-8")
     return explanation
 
 
@@ -186,7 +184,7 @@ class Repository:
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
             timeout (int): The timeout limit, in seconds.
-            n_tests (int): The number of times to perform the test.
+            n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
             str: The tree fingerprint of the merge result.
@@ -402,6 +400,8 @@ class Repository:
 
     def compute_tree_fingerprint(self) -> str:
         """Computes the tree fingerprint of the repository.
+        This function must never be run after running tests,
+        since running tests might write output files.
         Returns:
             str: The tree fingerprint.
         """
@@ -467,7 +467,9 @@ class Repository:
         timeout: int,
         n_tests: int,
     ) -> TEST_STATE:
-        """Checks out the given commit and tests the repository.
+        """Helper function for `checkout_and_test`,
+        which checks out the given commit and tests the repository.
+        This function does not check the cache.
         Args:
             commit (str): The commit to checkout.
             timeout (int): The timeout limit, in seconds.

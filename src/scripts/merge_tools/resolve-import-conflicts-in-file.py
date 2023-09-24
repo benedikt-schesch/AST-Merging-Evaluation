@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 # TODO: Benedikt, could you review and improve this file?  I'm sure it is not perfect Python style.
 
-"""Edits a file in place to remove conflict markers related to Java imports."""
+"""Edits a file in place to remove conflict markers related to Java imports.
+It simplistically leaves all the imports that appear in either parent.
+"""
 
 
 # TODO: merge both scripts into one.
@@ -12,15 +14,14 @@ import sys
 import tempfile
 
 if len(sys.argv) != 2:
-    print("Provide exactly one command-line argument")
+    print(
+        "resolve-import-conflicts-in-file: Provide exactly one command-line argument."
+    )
     sys.exit(1)
 
 filename = sys.argv[1]
 with open(filename) as file:
     lines = file.readlines()
-
-# The state is: nonconflict, in left, in original, in right.
-state = "nonconflict"
 
 
 def all_import_lines(lines):
@@ -53,10 +54,13 @@ def merge(base, parent1, parent2):
 
 
 def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
-    """Tests whether the following text starts a conflict.
+    """Tests whether the text starting at line `start_index` is the beginning of a conflict.
     If not, returns None.
     If so, returns a 4-tuple of (base, parent1, parent2, num_lines_in_conflict)
     where the first 3 elements of the tuple are lists of lines.
+    Args:
+        start_index: an index into `lines`.
+        lines: all the lines of the file with name `filename`.
     """
 
     if not lines[start_index].startswith("<<<<<<<"):
@@ -119,6 +123,8 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
 
     return (base, parent1, parent2, index - start_index)
 
+
+## Main starts here.
 
 with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
     file_len = len(lines)

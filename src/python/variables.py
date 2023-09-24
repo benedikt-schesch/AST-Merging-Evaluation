@@ -13,4 +13,4 @@ REPOS_PATH = Path("repos")
 WORKDIR_PREFIX = Path(".workdir")
 
 TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
-N_MERGES = 3
+N_REPETITIONS = 3

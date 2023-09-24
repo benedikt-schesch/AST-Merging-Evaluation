@@ -28,14 +28,14 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, MERGE_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
-from write_head_hashes import compute_num_process_used
-from variables import TIMEOUT_MERGING, N_MERGES
+from write_head_hashes import num_processes
+from variables import TIMEOUT_MERGING, N_REPETITIONS
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-def is_merge_sucess(merge_state: str) -> bool:
+def is_merge_success(merge_state: str) -> bool:
     """Returns true if the merge state indicates success."""
     return merge_state == MERGE_STATE.Merge_success.name
 
@@ -74,8 +74,8 @@ def merger(  # pylint: disable=too-many-locals
             merge_tool.name,
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
-        for i in range(N_MERGES):
             # TODO: I suggest abstracting out the body of this loop as a function.
+        for i in range(N_REPETITIONS):
             repo = Repository(repo_slug, cache_prefix=cache_prefix)
             (
                 merge_status,
@@ -211,10 +211,11 @@ if __name__ == "__main__":
     random.shuffle(merger_arguments)
 
     print("merge_tools_comparator: Finished Constructing Inputs")
+    # New merges are merges whose analysis does not appear in the output folder.
     print("merge_tools_comparator: Number of new merges:", len(merger_arguments))
 
     print("merge_tools_comparator: Started Merging")
-    with multiprocessing.Pool(processes=compute_num_process_used()) as pool:
+    with multiprocessing.Pool(processes=num_processes()) as pool:
         merger_results = list(
             tqdm(pool.imap(merger, merger_arguments), total=len(merger_arguments))
         )
@@ -223,7 +224,6 @@ if __name__ == "__main__":
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_tools_comparator: Constructing Output")
     n_new_compared = 0
-    n_new_tested = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
@@ -232,13 +232,13 @@ if __name__ == "__main__":
         # TODO: I suggest abstracting this loop into a function.  That will also make it easier to return early, which can be done just with "return".  (Currently it makes more iterations even after discovering that two merge tools do differ.)
         for merge_tool1 in MERGE_TOOL:
             for merge_tool2 in MERGE_TOOL:
-                if is_merge_sucess(
+                if is_merge_success(
                     cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
+                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
                     two_merge_tools_differ = True
-                if is_merge_sucess(
+                if is_merge_success(
                     cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_sucess(cache_data[merge_tool2.name]["results"][0]):
+                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
                     if (
                         cache_data[merge_tool1.name]["merge_fingerprint"]
                         != cache_data[merge_tool2.name]["merge_fingerprint"]
@@ -286,10 +286,13 @@ if __name__ == "__main__":
         df.to_csv(output_file, index_label="idx")
         n_total_compared += len(df)
 
+    # This is the number of merges whose "two merge tools differ" bit has been set (to true or
+    # false).
     print(
         "merge_tools_comparator: Number of merge tool outputs that have been newly compared:",
         n_new_compared,
     )
+    # This is the number of merges whose "two merge tools differ" bit has been to true.
     print(
         "merge_tools_comparator: Total number of merge tool outputs that have been compared:",
         n_total_compared,

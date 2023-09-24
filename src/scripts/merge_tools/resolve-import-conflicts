@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # This script edits files to remove conflict markers related to Java imports.
-# Works on all files given on the command line; if none are given,
-# works on all files in or under the current directory.
+# It works on all files given on the command line;
+# if none are given, it works on all files in or under the current directory.
 
-# This is not a git mergetool.  A git mergetool is given the base, parent 1, and
+# This script is not a git mergetool.  A git mergetool is given the base, parent 1, and
 # parent 2 files, all without conflict markers.
-# However, this can be run instead of a git mergetool, or after a git mergetool.
+# However, this script can be run instead of a git mergetool, or after a git mergetool.
 
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)

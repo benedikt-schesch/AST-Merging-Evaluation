@@ -13,7 +13,7 @@ usage: python3 latex_output.py
 This script generates all the tables and plots for the paper. It requires the
 following input files:
 - full_repos_csv: csv file containing the full list of repositories
-- repos_head_passes_csv: csv file containing the list of valid repositories
+- repos_head_passes_csv: csv file containing the list of repositories whose head passes tests
 - tested_merges_path: path to the folder containing the merge results
 - merges_path: path to the folder containing all found merges.
 TODO: Throughout, be consistent about "directory" vs "folder".
