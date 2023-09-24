@@ -51,16 +51,12 @@ def merger(  # pylint: disable=too-many-locals
     Returns:
         dict: A dictionary containing the merge result.
     """
-    repo_slug, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_directory = args
 
-    # TODO: I think this is a key, not an entry.  Please clarify.
-    # TODO: Why are these two SHAs (if they are SHAs) not sorted as is done elsewhere?
-    cache_entry = merge_data["left"] + "_" + merge_data["right"]
-    merge_cache_prefix = cache_prefix / "merge_results"
+    cache_key = merge_data["left"] + "_" + merge_data["right"]
+    merge_cache_directory = cache_directory / "merge_results"
 
-    result = lookup_in_cache(cache_entry, repo_slug, merge_cache_prefix, True)
-    # if result is None:
-    #     raise Exception(cache_entry," HERE")
+    result = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
     if result is not None and isinstance(result, dict):
         return result
 
@@ -74,9 +70,9 @@ def merger(  # pylint: disable=too-many-locals
             merge_tool.name,
         )
         cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
-            # TODO: I suggest abstracting out the body of this loop as a function.
+        # TODO: I suggest abstracting out the body of this loop as a function.
         for i in range(N_REPETITIONS):
-            repo = Repository(repo_slug, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_directory=cache_directory)
             (
                 merge_status,
                 merge_fingerprint,
@@ -91,7 +87,7 @@ def merger(  # pylint: disable=too-many-locals
                 timeout=TIMEOUT_MERGING,
             )
             log_file: Path = (
-                cache_prefix
+                cache_directory
                 / "merge_logs"
                 / slug_repo_name(repo_slug)
                 / merge_data["left"]
@@ -132,9 +128,32 @@ def merger(  # pylint: disable=too-many-locals
             else:
                 assert cache_data["left_tree_fingerprint"] == left_fingerprint
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
-            del repo
-    set_in_cache(cache_entry, cache_data, repo_slug, merge_cache_prefix)
+    set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
     return cache_data
+
+
+def check_if_two_merges_differ(cache_data: dict) -> bool:
+    """Returns true if two merge tools differ on the same merge.
+    Args:
+        cache_data (dict): A dictionary containing the merge data.
+    Returns:
+        bool: True if two merge tools differ on the same merge.
+    """
+    for merge_tool1 in MERGE_TOOL:
+        for merge_tool2 in MERGE_TOOL:
+            if is_merge_success(
+                cache_data[merge_tool1.name]["results"][0]
+            ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
+                return True
+            if is_merge_success(
+                cache_data[merge_tool1.name]["results"][0]
+            ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
+                if (
+                    cache_data[merge_tool1.name]["merge_fingerprint"]
+                    != cache_data[merge_tool2.name]["merge_fingerprint"]
+                ):
+                    return True
+    return False
 
 
 if __name__ == "__main__":
@@ -228,22 +247,8 @@ if __name__ == "__main__":
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
         cache_data = merger_results[i]
-        two_merge_tools_differ = False
-        # TODO: I suggest abstracting this loop into a function.  That will also make it easier to return early, which can be done just with "return".  (Currently it makes more iterations even after discovering that two merge tools do differ.)
-        for merge_tool1 in MERGE_TOOL:
-            for merge_tool2 in MERGE_TOOL:
-                if is_merge_success(
-                    cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
-                    two_merge_tools_differ = True
-                if is_merge_success(
-                    cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
-                    if (
-                        cache_data[merge_tool1.name]["merge_fingerprint"]
-                        != cache_data[merge_tool2.name]["merge_fingerprint"]
-                    ):
-                        two_merge_tools_differ = True
+        two_merge_tools_differ = check_if_two_merges_differ(cache_data)
+
         merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]

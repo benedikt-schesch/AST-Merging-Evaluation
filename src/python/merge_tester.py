@@ -42,7 +42,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     Returns:
         pd.Series: The result of the test.
     """
-    repo_slug, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_directory = args
     while psutil.cpu_percent() > 90:
         print(
             "merge_tester: Waiting for CPU load to come down",
@@ -56,7 +56,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     merge_data["parents pass"] = False
     # TODO: It's not clear to me whether "left" and "right" are keys for branches, or shas, or something else.  How about improving the key name?  (We can change the find-merge-conflicts program if it is the source of the problem.)
     for branch in ["left", "right"]:
-        repo = Repository(repo_slug, cache_prefix=cache_prefix)
+        repo = Repository(repo_slug, cache_directory=cache_directory)
         repo.checkout(merge_data[branch])
         tree_fingerprint = repo.compute_tree_fingerprint()
         if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
@@ -74,15 +74,12 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         merge_data[f"{branch} test result"] = test_result.name
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
-        # TODO: It looks suspicious to me that the repo is only sometimes, not always, deleted.
-        del repo
 
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if is_merge_success(merge_data[merge_tool.name]):
-            # TODO: I suggest abstracting the body of this loop into a separate function, since it stands on its own logically.
-            repo = Repository(repo_slug, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_directory=cache_directory)
             (
                 result,
                 merge_fingerprint,
@@ -111,7 +108,6 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                 )
             # Update the status from merge success to test result.
             merge_data[merge_tool.name] = result.name
-            del repo
         assert merge_tool.name in merge_data
     return merge_data
 

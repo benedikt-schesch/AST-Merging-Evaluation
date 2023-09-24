@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-# TODO: This file uses "clean", "remove", and "delete".  Please choose one term
-# and stick to it, in both the code and in the file name.
 """ 
 Deletes all placeholders from the cache. Placeholders are created when a
 a process starts; it indicates that is has started and is still running.
@@ -8,12 +6,10 @@ If the process fails, the placeholder is not replaced with the actual
 result. This script deletes all placeholders from the cache.
 
 Usage:
-    python clean_cache_placeholders.py --cache_path <path_to_cache>
+    python delete_cache_placeholders.py --cache_directory <path_to_cache>
 
 Args:
-TODO: Throughout, please don't use "_path" as a variable suffix, because it is
-# not sufficiently precise.  Instead, use either "_file" or "_directory".
-    cache_path (str): Path to cache directory
+    cache_directory (str): Path to cache directory
 """
 
 from argparse import ArgumentParser
@@ -27,10 +23,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    cache_path = Path(args.cache_dir)
+    cache_directory = Path(args.cache_dir)
 
     n_deleted = 0
-    for file in cache_path.glob("**/*.json"):
+    for file in cache_directory.glob("**/*.json"):
         with open(file, "r") as f:
             data = json.load(f)
 

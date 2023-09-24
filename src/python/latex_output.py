@@ -14,10 +14,9 @@ This script generates all the tables and plots for the paper. It requires the
 following input files:
 - full_repos_csv: csv file containing the full list of repositories
 - repos_head_passes_csv: csv file containing the list of repositories whose head passes tests
-- tested_merges_path: path to the folder containing the merge results
-- merges_path: path to the folder containing all found merges.
-TODO: Throughout, be consistent about "directory" vs "folder".
-- output_dir: path to the folder where the LaTeX files will be saved
+- tested_merges_path: path to the directory containing the merge results
+- merges_path: path to the directory containing all found merges.
+- output_dir: path to the directory where the LaTeX files will be saved
 """
 
 
@@ -77,7 +76,7 @@ def latex_def(name, value) -> str:
 
 
 # Dictonary that lists the different subsets of merge tools for which plots
-# and tables are generated. The key is the folder name which will contain all figures
+# and tables are generated. The key is the directory name which will contain all figures
 # that will be used and the value is the list of plots to contain.
 PLOTS = {
     "all": [merge_tool.name for merge_tool in MERGE_TOOL],
@@ -93,9 +92,6 @@ PLOTS = {
     ],
 }
 
-# TODO: I suggest that these should be declared in repo.py, or move the enums to
-# a different file where this can also be defined.  Or, define predicates for
-# clients to use rather than exporting these lists.
 MERGE_CORRECT_NAMES = [
     TEST_STATE.Tests_passed.name,
 ]

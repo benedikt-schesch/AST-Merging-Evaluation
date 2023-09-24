@@ -76,12 +76,10 @@ def compute_explanation(
 
 def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """Returns the result of run_repo_tests.sh on the given working copy.
-    TODO: What is the definition of "the entire test"?  How is it different than the test process?
-    If the test process passes then the entire test is marked as passed.
-    If the test process timeouts then the entire test is marked as timeout.
+    If the test process passes then the function returns and marks it as passed.
+    If the test process timeouts then the function returns and marks it as timedout.
     Args:
-        TODO: Minor: Throughout, you don't need "The path of" at the beginning of comments.  Or change it to "The directory of".
-        wcopy_dir (Path): The path of the working copy (the clone).
+        wcopy_dir (Path): The directory of the working copy (the clone).
         timeout (int): Test timeout limit, in seconds.
     Returns:
         TEST_STATE: The result of the test.
@@ -114,23 +112,23 @@ class Repository:
     def __init__(
         self,
         repo_slug: str,
-        cache_prefix: Path = Path(""),
+        cache_directory: Path = Path(""),
     ) -> None:
         """Initializes the repository.
         Args:
             repo_slug (str): The slug of the repository, which is "owner/reponame".
-            cache_prefix (Path): The prefix of the cache.
+            cache_directory (Path): The prefix of the cache.
         """
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug.split("/")[1]
         workdir_id = uuid.uuid4().hex
-        self.workdir = WORKDIR_PREFIX / workdir_id
+        self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         shutil.copytree(self.path, self.repo_path)
         self.repo = Repo(self.repo_path)
-        self.test_cache_prefix = cache_prefix / "test_cache"
-        self.sha_cache_prefix = cache_prefix / "sha_cache_entry"
+        self.test_cache_directory = cache_directory / "test_cache"
+        self.sha_cache_directory = cache_directory / "sha_cache_entry"
 
     def checkout(self, commit: str) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -154,13 +152,13 @@ class Repository:
                 + str(e)
             )
             cache_entry = {"sha": None, "explanation": explanation}
-            set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
+            set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
             return False, explanation
         cache_entry = {
             "sha": self.compute_tree_fingerprint(),
             "explanation": explanation,
         }
-        set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_prefix)
+        set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
         return True, explanation
 
     def _merge_and_test(  # pylint: disable=too-many-arguments
@@ -190,11 +188,8 @@ class Repository:
             str: The tree fingerprint of the merge result.
             str: The left fingerprint.
             str: The right fingerprint.
-            TODO: Is this time to merge, time to test, or time to merge and test?
-            TODO: This is a ssingle number, but n_tests tells how many times to
-            TODO: run the test.  Is this an average, median, overall, or something
-            TODO: else?  (I have the same question elsewhere.)
-            float: The time it took to run the merge, in seconds.
+            float: The time it took to run the merge, in seconds. Does not include
+                the test time.
         """
         (
             merge_status,
@@ -287,7 +282,7 @@ class Repository:
                 commit,
                 {"sha": None, "explanation": explanation},
                 self.repo_slug,
-                self.sha_cache_prefix,
+                self.sha_cache_directory,
             )
             return None, explanation
         tree_fingerprint = self.compute_tree_fingerprint()
@@ -335,7 +330,7 @@ class Repository:
                 cache_entry_name,
                 {"sha": None, "explanation": explanation},
                 self.repo_slug,
-                self.sha_cache_prefix,
+                self.sha_cache_directory,
             )
             return (
                 MERGE_STATE.Git_checkout_failed,
@@ -387,7 +382,7 @@ class Repository:
             cache_entry_name,
             cache_entry,
             self.repo_slug,
-            self.sha_cache_prefix,
+            self.sha_cache_directory,
         )
         return (
             merge_status,
@@ -421,18 +416,18 @@ class Repository:
     def get_sha_cache_entry(
         self, commit: str, start_merge: bool = False
     ) -> Union[None, dict]:
-        # TODO: is a SHA cache a cache from a SHA to something, or a cache from something to a SHA?
-        """Gets a SHA cache entry.
+        """The SHA cache maps a commit to a tree fingerprint.
+        This function checks if the commit is in the cache.
         Args:
             commit (str): The commit to check.
             start_merge (bool, optional) = False: Whether to indicate that the merge starts if the
                 commit is not in the cache.
         Returns:
-            # TODO: What is the structure of the dict this returns?
-            Union[None,dict]: The cache entry if the commit is in the cache, None otherwise.
+            Union[None, dict]: The cache entry if the commit is in the cache, None otherwise.
+                The dict contains the sha entry and an explanation entry.
         """
         cache = lookup_in_cache(
-            commit, self.repo_slug, self.sha_cache_prefix, set_run=start_merge
+            commit, self.repo_slug, self.sha_cache_directory, set_run=start_merge
         )
         if cache is None:
             return None
@@ -453,7 +448,7 @@ class Repository:
                     None otherwise.
         """
         cache = lookup_in_cache(
-            sha, self.repo_slug, self.test_cache_prefix, set_run=start_test
+            sha, self.repo_slug, self.test_cache_directory, set_run=start_test
         )
         if cache is None:
             return None
@@ -511,10 +506,8 @@ class Repository:
     def test(self, timeout: int, n_tests: int) -> TEST_STATE:
         """Tests the repository. The test results of multiple runs is combined into one result.
         If one of the runs passes then the entire test is marked as passed.
-        # TODO: Should this line be preceded by "otherwise"?  Is it possible that one run passes and another times out?
-        # TODO: I would think the test should be marked as timeout only if every run is timeout.
         If one of the runs timeouts then the entire test is marked as timeout.
-        # TODO: Otherwise the test is marked as failure?
+        Otherwise all runs must fail for the entire test to be marked as failed.
         Args:
             timeout (int): The timeout limit, in seconds.
             n_tests (int): The number of times to run the test suite.
@@ -534,7 +527,7 @@ class Repository:
             test_state, test_output = repo_test(self.repo_path, timeout)
             test_log_file = Path(
                 os.path.join(
-                    self.test_cache_prefix,
+                    self.test_cache_directory,
                     "logs",
                     slug_repo_name(self.repo_slug),
                     sha + "_" + str(i) + ".log",
@@ -551,7 +544,7 @@ class Repository:
             if test_state in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
-        set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_prefix)
+        set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_directory)
         return TEST_STATE[cache_data["test_result"]]
 
     def __del__(self) -> None:
