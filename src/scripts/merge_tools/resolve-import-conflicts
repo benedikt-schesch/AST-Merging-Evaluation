@@ -1,4 +1,5 @@
 #!/bin/bash
+# bash, not POSIX sh, because of "readarray".
 
 # This script edits files to remove conflict markers related to Java imports.
 # It works on all files given on the command line;

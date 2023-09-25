@@ -7,8 +7,8 @@
 # For merge success, return code is 0.
 # For merge failure:
 #  * return code is 1.
-#  * outputs "Conflict".
-#  * aborts the merge, unless a 5th command-line argument is provided.
+#  * outputs "Conflict" and aborts the merge,
+#    unless a non-empty 5th command-line argument is provided.
 
 set -o nounset
 
@@ -21,7 +21,7 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy=$4
-# If this variable is non-empty, don't run `git merge --abort`.
+# If this variable is non-empty, don't output "Conflict" or run `git merge --abort`.
 no_git_merge_abort=$5
 
 # perform merge
@@ -34,8 +34,8 @@ retVal=$?
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
-    echo "Conflict"
     if [ -z "$no_git_merge_abort" ] ; then
+        echo "Conflict"
         git merge --abort
     fi
 fi

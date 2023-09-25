@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+# usage: ./resolve-import-conflicts-or-abort-merge
+# Runs `resolve-import-conflicts`.
+# If there are no remaining conflicts, exits with status 0.
+# If some conflicts remain, ouputs "Conflict", aborts the merge, and exits with status 1.
+
+
+"$MERGE_SCRIPTS_DIR"/resolve-import-conflicts
+
+# From https://stackoverflow.com/questions/41246415/
+if git diff --exit-code -S '<<<<<<< HEAD' -S "=======" -S ">>>>>>> $(git name-rev --name-only MERGE_HEAD)" HEAD ; then
+  exit
+fi
+
+echo "Conflict"
+git merge --abort
+exit 1
