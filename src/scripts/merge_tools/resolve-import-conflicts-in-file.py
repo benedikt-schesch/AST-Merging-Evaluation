@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 
 """Edits a file in place to remove conflict markers related to Java imports.
-It simplistically leaves all the imports that appear in either parent.
+The merged version contains all the imports that appear in either parent.
+This is simplistic, but is often adequate.
+
+Exit status is 1 only if the program halts exceptionally.
+With an exit status of 0, some conflicts may still exist in the file.
 """
 
 

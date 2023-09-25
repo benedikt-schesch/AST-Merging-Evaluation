@@ -8,6 +8,9 @@
 # parent 2 files, all without conflict markers.
 # However, this script can be run instead of a git mergetool, or after a git mergetool.
 
+# Exit status is 1 if merging some file halted exceptionally.
+# With an exit status of 0, some conflicts may still exist in the current repository.
+
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
 else
