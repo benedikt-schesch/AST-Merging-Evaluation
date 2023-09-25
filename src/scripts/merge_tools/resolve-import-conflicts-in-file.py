@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # TODO: Benedikt, could you review and improve this file?  I'm sure it is not perfect Python style.
 
 """Edits a file in place to remove conflict markers related to Java imports.
@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 import tempfile
+from typing import List, Union, Tuple
 
 if len(sys.argv) != 2:
     print(
@@ -24,12 +25,12 @@ with open(filename) as file:
     lines = file.readlines()
 
 
-def all_import_lines(lines):
+def all_import_lines(lines: List[str]) -> bool:
     """Return true if every line is a Java import line."""
     return all(line.startswith("import ") for line in lines)
 
 
-def merge(base, parent1, parent2):
+def merge(base, parent1: List[str], parent2: List[str]) -> Union[List[str], None]:
     """Given text for the base and two parents, return merged text.
 
     This currently does a simplistic merge that retains all lines in either parent.
@@ -40,7 +41,7 @@ def merge(base, parent1, parent2):
         parent2: a list of lines
 
     Returns:
-        a list of lines, or None if it cannot do merging.
+        Union[List[str], None]: If the merge is successful, returns a list of lines.
     """
 
     if (
@@ -53,7 +54,9 @@ def merge(base, parent1, parent2):
     return None
 
 
-def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
+def looking_at_conflict(  # pylint: disable=too-many-return-statements
+    start_index: int, lines: List[str]
+) -> Union[None, Tuple[List[str], List[str], List[str], int]]:
     """Tests whether the text starting at line `start_index` is the beginning of a conflict.
     If not, returns None.
     If so, returns a 4-tuple of (base, parent1, parent2, num_lines_in_conflict)
@@ -82,7 +85,7 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
         if index == num_lines:
             print(
                 "Starting at line "
-                + start_index
+                + str(start_index)
                 + ", did not find ||||||| or ======= in "
                 + filename
             )
@@ -98,7 +101,7 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
             if index == num_lines:
                 print(
                     "Starting at line "
-                    + start_index
+                    + str(start_index)
                     + ", did not find ======= in "
                     + filename
                 )
@@ -114,7 +117,7 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
         if index == num_lines:
             print(
                 "Starting at line "
-                + start_index
+                + str(start_index)
                 + ", did not find >>>>>>> in "
                 + filename
             )

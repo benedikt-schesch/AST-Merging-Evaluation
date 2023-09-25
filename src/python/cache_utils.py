@@ -35,7 +35,6 @@ def set_in_cache(
     cache_value: Union[str, dict, None],
     repo_slug: str,
     cache_directory: Path,
-    overwrite: bool = True,
     acquire_lock: bool = True,
 ) -> None:
     """Puts an entry in the cache, then writes the cache to disk.
@@ -45,16 +44,12 @@ def set_in_cache(
         cache_value (dict): The value to write.
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_directory (Path): The path to the cache directory.
-        overwrite (bool, optional) = True: Whether to overwrite an existing cache entry.
-             If False, attempting to overwrite an existing cache entry throws an exception.
     """
     if acquire_lock:
         lock = get_cache_lock(repo_slug, cache_directory)
         lock.acquire()
     cache_path = get_cache_path(repo_slug, cache_directory)
     cache = load_cache(repo_slug, cache_directory)
-    if cache_key in cache and not overwrite:
-        raise ValueError("Cache key already exists")
     cache[cache_key] = cache_value
     output = json.dumps(cache, indent=4)
     with open(cache_path, "w") as f:

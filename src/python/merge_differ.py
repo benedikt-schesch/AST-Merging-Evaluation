@@ -118,8 +118,6 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
             command.append(str(repo2.repo_path))
             with open(diff_file, "w") as f:
                 subprocess.run(command, stdout=f, stderr=f)
-            del repo2
-        del repo1
 
 
 def diff_file_name(sha1: str, sha2: str) -> Path:
