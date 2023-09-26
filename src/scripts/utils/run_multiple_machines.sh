@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run the code for a certain branch on multiple remote machines.
+# Run the code of a specific branch of this repository on multiple remote machines.
 # Usage: ./run_multiple_machines.sh <branch> <machine_address_path> <root_path_on_machine>
 # <branch> is the branch to run
 # <machine_address_path> is the path to a file containing the addresses of the machines (one address per line)

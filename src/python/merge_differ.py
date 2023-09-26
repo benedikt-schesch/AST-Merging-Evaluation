@@ -4,8 +4,10 @@ usage: python3 merge_differ.py --repos_head_passes_csv <repos_head_passes_csv>
                                 --merges_path <merges_path>
                                 --cache_dir <cache_dir>
 This script compares the results of two merge tools on the same merge.
-It outputs the diff any two merge results if their results differ.
-It ignores merges that have the same result or merges that are not successful.
+It outputs the diff of the two merge results if their results differ.
+It does not produce output for merges that have the same result or merges that 
+are not successful.
+The output is written in cache_dir/merge_diffs.
 """
 
 import os
@@ -30,7 +32,7 @@ TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
 
 
 def get_merge_fingerprint(
-    merge_data: pd.Series, merge_tool: MERGE_TOOL, cache_prefix: Path
+    merge_data: pd.Series, merge_tool: MERGE_TOOL, cache_directory: Path
 ) -> Union[Tuple[None, None], Tuple[Repository, str]]:
     """Returns the repo and the fingerprint of a merge,
     or (None, None) if the merge is not successful.
@@ -49,7 +51,7 @@ def get_merge_fingerprint(
         return None, None
     left = merge_data["left"]
     right = merge_data["right"]
-    repo = Repository(repo_slug, cache_prefix=cache_prefix)
+    repo = Repository(repo_slug, cache_directory=cache_directory)
     (
         merge_status,
         merge_fingerprint,
@@ -79,36 +81,34 @@ def get_merge_fingerprint(
 
 
 def merge_differ(args: Tuple[pd.Series, Path]) -> None:
-    """Diffs the results of any two merge tools on the same merge.
-    Does not diff merges that have the same result or merges that are not successful.
+    """Diffs the results of every two merge tools on the same merge.
+    Writes the diff to a file.
     Args:
         args (Tuple[pd.Series,Path]): A tuple containing the merge data and the cache prefix.
-    Returns:
-        dict: The result of the test.
     """
-    merge_data, cache_prefix = args
+    merge_data, cache_directory = args
 
     if not merge_data["parents pass"]:
         return
 
-    diff_file_prefix = cache_prefix / "merge_diffs"
-    diff_file_prefix.mkdir(parents=True, exist_ok=True)
+    diff_file_directory = cache_directory / "merge_diffs"
+    diff_file_directory.mkdir(parents=True, exist_ok=True)
 
     for merge_tool1 in MERGE_TOOL:
         repo1, merge_fingerprint1 = get_merge_fingerprint(
-            merge_data, merge_tool1, cache_prefix
+            merge_data, merge_tool1, cache_directory
         )
         if repo1 is None or merge_fingerprint1 is None:
             continue
 
         for merge_tool2 in MERGE_TOOL:
             repo2, merge_fingerprint2 = get_merge_fingerprint(
-                merge_data, merge_tool2, cache_prefix
+                merge_data, merge_tool2, cache_directory
             )
             if repo2 is None or merge_fingerprint2 is None:
                 continue
 
-            diff_file = diff_file_prefix / diff_file_name(
+            diff_file = diff_file_directory / diff_file_name(
                 merge_fingerprint1, merge_fingerprint2
             )
             if diff_file.exists():
@@ -118,8 +118,6 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
             command.append(str(repo2.repo_path))
             with open(diff_file, "w") as f:
                 subprocess.run(command, stdout=f, stderr=f)
-            del repo2
-        del repo1
 
 
 def diff_file_name(sha1: str, sha2: str) -> Path:
@@ -132,8 +130,8 @@ def diff_file_name(sha1: str, sha2: str) -> Path:
     """
     # Use lexicographic order to prevent duplicates
     if sha1 < sha2:
-        return Path(sha1 + "_" + sha2 + ".txt")
-    return Path(sha2 + "_" + sha1 + ".txt")
+        return Path(sha1 + "_" + sha2 + ".diff")
+    return Path(sha2 + "_" + sha1 + ".diff")
 
 
 if __name__ == "__main__":

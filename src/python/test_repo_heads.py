@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests the HEAD commits of multiple repos and validates it if the test passes.
+"""Tests the HEAD commits of multiple repos and considers them as valid if the test passes.
 
 usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
                                  --output_path <repos_head_passes.csv>
@@ -42,7 +42,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     repo_slug = repo_info["repository"]
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
-    repo = Repository(repo_slug, cache_prefix=cache)
+    repo = Repository(repo_slug, cache_directory=cache)
     test_state = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )

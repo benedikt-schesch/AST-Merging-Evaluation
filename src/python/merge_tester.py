@@ -42,7 +42,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     Returns:
         pd.Series: The result of the test.
     """
-    repo_slug, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_directory = args
     while psutil.cpu_percent() > 90:
         print(
             "merge_tester: Waiting for CPU load to come down",
@@ -55,8 +55,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
     merge_data["parents pass"] = False
     for branch in ["left", "right"]:
-        repo = Repository(repo_slug, cache_prefix=cache_prefix)
-        repo.checkout(merge_data[branch])
+        commit_sha = merge_data[branch]
+        repo = Repository(repo_slug, cache_directory=cache_directory)
+        repo.checkout(commit_sha)
         tree_fingerprint = repo.compute_tree_fingerprint()
         if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
             raise Exception(
@@ -73,13 +74,12 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         merge_data[f"{branch} test result"] = test_result.name
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
-        del repo
 
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
         if is_merge_success(merge_data[merge_tool.name]):
-            repo = Repository(repo_slug, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_directory=cache_directory)
             (
                 result,
                 merge_fingerprint,
@@ -108,9 +108,56 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                 )
             # Update the status from merge success to test result.
             merge_data[merge_tool.name] = result.name
-            del repo
         assert merge_tool.name in merge_data
     return merge_data
+
+
+def build_arguments(
+    args: argparse.Namespace,
+    repo_slug: str,
+) -> list:
+    """Builds the arguments for the merge_tester function.
+    Args:
+        args (argparse.Namespace): The arguments of the script.
+        repo_slug (str): The slug of the repository.
+    Returns:
+        list: The arguments for the merge_tester function.
+    """
+    merge_list_file = Path(
+        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
+    )
+    output_file = Path(
+        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
+    )
+    if not merge_list_file.exists():
+        print(
+            "merge_tester:",
+            repo_slug,
+            "does not have a list of merges. Missing file: ",
+            merge_list_file,
+        )
+        return []
+
+    if output_file.exists():
+        print(
+            "merge_tester: Skipping",
+            repo_slug,
+            "because it is already computed.",
+        )
+        return []
+    try:
+        merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+    except pd.errors.EmptyDataError:
+        print(
+            "merge_tester: Skipping",
+            repo_slug,
+            "because it does not contain any merges.",
+        )
+        return []
+    return [
+        (repo_slug, merge_data, Path(args.cache_dir))
+        for _, merge_data in merges.iterrows()
+    ]
 
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
@@ -131,41 +178,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-        )
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
-        if not merge_list_file.exists():
-            print(
-                "merge_tester:",
-                repo_slug,
-                "does not have a list of merges. Missing file: ",
-                merge_list_file,
-            )
-            continue
-
-        if output_file.exists():
-            print(
-                "merge_tester: Skipping",
-                repo_slug,
-                "because it is already computed.",
-            )
-            continue
-        try:
-            merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-        except pd.errors.EmptyDataError:
-            print(
-                "merge_tester: Skipping",
-                repo_slug,
-                "because it does not contain any merges.",
-            )
-            continue
-        merge_tester_arguments += [
-            (repo_slug, merge_data, Path(args.cache_dir))
-            for _, merge_data in merges.iterrows()
-        ]
+        merge_tester_arguments += build_arguments(args, repo_slug)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
