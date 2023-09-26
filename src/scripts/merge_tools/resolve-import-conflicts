@@ -9,8 +9,9 @@
 # parent 2 files, all without conflict markers.
 # However, this script can be run instead of a git mergetool, or after a git mergetool.
 
-# Exit status is 1 if merging some file halted exceptionally.
-# With an exit status of 0, some conflicts may still exist in the current repository.
+# Exit status is 1 if conflicts remain after running this script or if
+# there is an error generated in some file.
+# Exit status is 0 if there are no conflicts after running this script.
 
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
@@ -24,8 +25,18 @@ status=0
 
 for file in "${files[@]}" ; do
   if ! "${SCRIPTDIR}"/resolve-import-conflicts-in-file.py "$file" ; then
-    status=1
+    echo "Error in $file"
+    git merge --abort
+    exit 1
   fi
 done
 
-exit $status
+# From https://stackoverflow.com/questions/41246415/
+if git diff --exit-code -S '<<<<<<< HEAD' -S "=======" -S ">>>>>>> $(git name-rev --name-only MERGE_HEAD)" HEAD ; then
+  exit 0
+fi
+
+echo "Conflict"
+git merge --abort
+exit 1
+

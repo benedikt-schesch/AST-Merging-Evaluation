@@ -11,4 +11,4 @@ if "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strateg
   exit
 fi
 
-(cd "$clone_dir" && "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts-or-abort-merge)
+(cd "$clone_dir" && "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts)
