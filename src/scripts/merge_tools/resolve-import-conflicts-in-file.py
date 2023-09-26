@@ -8,22 +8,11 @@ It simplistically leaves all the imports that appear in either parent.
 
 # TODO: merge both scripts into one.
 
-import os
 import shutil
-import sys
+import argparse
+from pathlib import Path
 import tempfile
 from typing import List, Union, Tuple
-
-if len(sys.argv) != 2:
-    print(
-        "resolve-import-conflicts-in-file: Provide exactly one command-line argument."
-    )
-    sys.exit(1)
-
-filename = sys.argv[1]
-with open(filename) as file:
-    lines = file.readlines()
-
 
 def all_import_lines(lines: List[str]) -> bool:
     """Return true if every line is a Java import line."""
@@ -55,7 +44,7 @@ def merge(base, parent1: List[str], parent2: List[str]) -> Union[List[str], None
 
 
 def looking_at_conflict(  # pylint: disable=too-many-return-statements
-    start_index: int, lines: List[str]
+    file: Path, start_index: int, lines: List[str]
 ) -> Union[None, Tuple[List[str], List[str], List[str], int]]:
     """Tests whether the text starting at line `start_index` is the beginning of a conflict.
     If not, returns None.
@@ -63,7 +52,7 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     where the first 3 elements of the tuple are lists of lines.
     Args:
         start_index: an index into `lines`.
-        lines: all the lines of the file with name `filename`.
+        lines: all the lines of the file with name `file`.
     """
 
     if not lines[start_index].startswith("<<<<<<<"):
@@ -87,13 +76,13 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
                 "Starting at line "
                 + str(start_index)
                 + ", did not find ||||||| or ======= in "
-                + filename
+                + str(file)
             )
             return None
     if lines[index].startswith("|||||||"):
         index = index + 1
         if index == num_lines:
-            print("File ends with |||||||: " + filename)
+            print("File ends with |||||||: " + str(file))
             return None
         while not lines[index].startswith("======="):
             base.append(lines[index])
@@ -103,13 +92,13 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
                     "Starting at line "
                     + str(start_index)
                     + ", did not find ======= in "
-                    + filename
+                    + str(file)
                 )
                 return None
     assert lines[index].startswith("=======")
     index = index + 1  # skip over "=======" line
     if index == num_lines:
-        print("File ends with =======: " + filename)
+        print("File ends with =======: " + str(file))
         return None
     while not lines[index].startswith(">>>>>>>"):
         parent2.append(lines[index])
@@ -119,7 +108,7 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
                 "Starting at line "
                 + str(start_index)
                 + ", did not find >>>>>>> in "
-                + filename
+                + str(file)
             )
             return None
     index = index + 1
@@ -127,27 +116,32 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     return (base, parent1, parent2, index - start_index)
 
 
-## Main starts here.
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file", type=Path)
+    args = parser.parse_args()
 
-with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
-    file_len = len(lines)
-    i = 0
-    while i < file_len:
-        conflict = looking_at_conflict(i, lines)
-        if conflict is None:
-            tmp.write(lines[i])
-            i = i + 1
-        else:
-            (base, parent1, parent2, num_lines) = conflict
-            merged = merge(base, parent1, parent2)
-            if merged is None:
+    with open(args.file) as file:
+        lines = file.readlines()
+
+    with tempfile.NamedTemporaryFile(mode="w", delete=True) as tmp:
+        file_len = len(lines)
+        i = 0
+        while i < file_len:
+            conflict = looking_at_conflict(Path(args.file), i, lines)
+            if conflict is None:
                 tmp.write(lines[i])
                 i = i + 1
             else:
-                for line in merged:
-                    tmp.write(line)
-                i = i + num_lines
+                (base, parent1, parent2, num_lines) = conflict
+                merged = merge(base, parent1, parent2)
+                if merged is None:
+                    tmp.write(lines[i])
+                    i = i + 1
+                else:
+                    for line in merged:
+                        tmp.write(line)
+                    i = i + num_lines
 
-    tmp.close()
-    shutil.copy(tmp.name, filename)
-    os.unlink(tmp.name)
+        # Copying the file back to the original location
+        shutil.copyfile(tmp.name, args.file)
