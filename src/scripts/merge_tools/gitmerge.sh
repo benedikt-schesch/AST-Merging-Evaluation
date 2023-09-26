@@ -1,19 +1,16 @@
 #!/usr/bin/env sh
 
-# usage: ./gitmerge.sh <clone_dir> <branch-1> <branch-2> <strategy> [no-git-merge-abort]
+# usage: ./gitmerge.sh <clone_dir> <branch-1> <branch-2> <strategy>
 # <clone_dir> must contain a clone of a repository.
 # <strategy> is arguments to `git merge`, including -s and possibly -X.
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <strategy>.
-# For merge success, return code is 0.
-# For merge failure:
-#  * return code is 1.
-#  * outputs "Conflict" and aborts the merge,
-#    unless a non-empty 5th command-line argument is provided.
+# Return code is 0 for merge success, 1 for merge failure.
+# For merge failure, also outputs "Conflict" and aborts the merge.
 
 set -o nounset
 
-if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
-  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 STRATEGY [no-git-merge-abort]" >&2
+if [ "$#" -ne 4 ]; then
+  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 STRATEGY" >&2
   exit 1
 fi
 
@@ -21,8 +18,6 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy=$4
-# If this variable is non-empty, don't output "Conflict" or run `git merge --abort`.
-no_git_merge_abort=$5
 
 # perform merge
 cd "$clone_dir" || exit 1
@@ -34,10 +29,8 @@ retVal=$?
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
-    if [ -z "$no_git_merge_abort" ] ; then
-        echo "Conflict"
-        git merge --abort
-    fi
+    echo "Conflict"
+    git merge --abort
 fi
 
 exit $retVal

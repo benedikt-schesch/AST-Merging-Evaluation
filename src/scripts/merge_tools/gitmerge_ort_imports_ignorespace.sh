@@ -7,8 +7,13 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy="-s ort -Xignore-space-change"
-if "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy" "no-git-merge-abort" ; then
-  exit
+"$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
+if [ $? -e 0 ] ; then
+  exit 0
 fi
 
-(cd "$clone_dir" && "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts)
+cd "$clone_dir"
+"$MERGE_SCRIPTS_DIR"/resolve-import-conflicts
+if [ $? -ne 0 ] ; then
+  exit 1
+fi

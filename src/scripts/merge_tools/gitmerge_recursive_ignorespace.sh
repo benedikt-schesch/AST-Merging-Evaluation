@@ -8,3 +8,6 @@ branch1=$2
 branch2=$3
 strategy="-s recursive -Xignore-space-change"
 "$MERGE_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
+if [ $? -ne 0 ] ; then
+  exit 1
+fi
