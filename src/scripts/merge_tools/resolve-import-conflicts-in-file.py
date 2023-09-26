@@ -14,6 +14,7 @@ from pathlib import Path
 import tempfile
 from typing import List, Union, Tuple
 
+
 def all_import_lines(lines: List[str]) -> bool:
     """Return true if every line is a Java import line."""
     return all(line.startswith("import ") for line in lines)
