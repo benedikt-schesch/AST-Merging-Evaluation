@@ -7,6 +7,4 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy="-s ort"
-if ! "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"; then
-  exit 1
-fi
+"$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"
