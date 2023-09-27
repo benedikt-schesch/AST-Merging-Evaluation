@@ -131,7 +131,7 @@ To run style checking run `make style`.
 
 ## Directory structure
 
-### Commited files
+### Committed files
 
 * run.sh -> This file executes each step of the stack.
 
@@ -179,13 +179,13 @@ To run style checking run `make style`.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
 
-### Uncommited Files
+### Uncommitted Files
 
 * cache/ -> This folder is a cache for each computation. contains:
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the run time.
 
   * merge_diff_results/ -> Caches the diff results for specific merges.
 
@@ -193,9 +193,9 @@ To run style checking run `make style`.
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the run time.
 
-* .workdir/ -> This folder is used for the local computations of each process and content is named by Unix process (using "$$"). If `DELETE_WORKDIRS` is set to `false` in `src/python/repo.py` this folder is not deleted after the computation and can be used for inspection.
+* .workdir/ -> This folder is used for the local computations of each process and content is named by Unix process (using "$$"). If `DELETE_WORKDIRS` is set to `false` in `src/python/repo.py` this folder is not deleted after the computation and can be inspectedx.
 
 * repos/ -> In this folder each repo is cloned.
 
@@ -203,4 +203,4 @@ To run style checking run `make style`.
 
 * results-small/ -> Contains all the results for the small analysis.
 
-* jars/ -> Location for the Intellimerge and Spork jars.
+* jars/ -> Location for the IntelliMerge and Spork jars.
