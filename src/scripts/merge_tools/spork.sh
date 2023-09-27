@@ -14,6 +14,7 @@ if [ "$#" -ne 3 ]; then
 fi
 
 # Kill all Java processes that are running for over an hour (to avoid memory leaks).
+# Spork tends to create Java processes that don't terminate even when the parent process is killed.
 killall -9 java --older-than 1h
 
 SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"

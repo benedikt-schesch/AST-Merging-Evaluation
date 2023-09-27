@@ -21,7 +21,7 @@ intellimerge_absolutepath="${ROOT_DIR}/${intellimerge_relativepath}"
 clone_dir=$1
 branch1=$2
 branch2=$3
-temp_dir=".workdir/intelli_temp_$$/"
+temp_dir="/tmp/intelli_temp_$$/"
 mkdir $temp_dir
 
 # run intellimerge

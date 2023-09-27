@@ -51,14 +51,12 @@ def merger(  # pylint: disable=too-many-locals
     Returns:
         dict: A dictionary containing the merge result.
     """
-    repo_slug, merge_data, cache_prefix = args
+    repo_slug, merge_data, cache_directory = args
 
-    cache_entry = merge_data["left"] + "_" + merge_data["right"]
-    merge_cache_prefix = cache_prefix / "merge_results"
+    cache_key = merge_data["left"] + "_" + merge_data["right"]
+    merge_cache_directory = cache_directory / "merge_results"
 
-    result = lookup_in_cache(cache_entry, repo_slug, merge_cache_prefix, True)
-    # if result is None:
-    #     raise Exception(cache_entry," HERE")
+    result = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
     if result is not None and isinstance(result, dict):
         return result
 
@@ -71,9 +69,20 @@ def merger(  # pylint: disable=too-many-locals
             merge_data["right"],
             merge_tool.name,
         )
-        cache_data[merge_tool.name] = {"results": [], "log_files": [], "run_time": []}
+        cache_data[merge_tool.name] = {"results": [], "run_time": []}
+        log_file: Path = (
+            cache_directory
+            / "merge_logs"
+            / slug_repo_name(repo_slug)
+            / merge_data["left"]
+            / merge_data["right"]
+            / (merge_tool.name + f".log")
+        )
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        log_file.unlink(missing_ok=True)
+
         for i in range(N_REPETITIONS):
-            repo = Repository(repo_slug, cache_prefix=cache_prefix)
+            repo = Repository(repo_slug, cache_directory=cache_directory)
             (
                 merge_status,
                 merge_fingerprint,
@@ -87,51 +96,109 @@ def merger(  # pylint: disable=too-many-locals
                 right_commit=merge_data["right"],
                 timeout=TIMEOUT_MERGING,
             )
-            log_file: Path = (
-                cache_prefix
-                / "merge_logs"
-                / slug_repo_name(repo_slug)
-                / merge_data["left"]
-                / merge_data["right"]
-                / (merge_tool.name + f".log")
-            )
-            log_file.parent.mkdir(parents=True, exist_ok=True)
-            if log_file.exists():
-                log_file.unlink()
-            with open(log_file, "w") as f:
-                f.write(explanation)
+            if i == 0:  # Only write the log file once.
+                with open(log_file, "w") as f:
+                    f.write(explanation)
+
             cache_data[merge_tool.name]["results"].append(merge_status.name)
             cache_data[merge_tool.name]["log_file"] = str(log_file)
             cache_data[merge_tool.name]["run_time"].append(run_time)
             if "merge_fingerprint" not in cache_data[merge_tool.name]:
                 cache_data[merge_tool.name]["merge_fingerprint"] = merge_fingerprint
-            else:
-                if (
-                    cache_data[merge_tool.name]["merge_fingerprint"]
-                    != merge_fingerprint
-                ):
-                    raise Exception(
-                        "merge_tools_comparator: Merge fingerprint mismatch",
-                        i,
-                        repo_slug,
-                        merge_data["left"],
-                        merge_data["right"],
-                        merge_tool.name,
-                        merge_status,
-                        cache_data[merge_tool.name]["merge_fingerprint"],
-                        merge_fingerprint,
-                        cache_data,
-                    )
-
-            if "left_tree_fingerprint" not in cache_data:
                 cache_data["left_tree_fingerprint"] = left_fingerprint
                 cache_data["right_tree_fingerprint"] = right_fingerprint
             else:
+                assert (
+                    cache_data[merge_tool.name]["merge_fingerprint"]
+                    == merge_fingerprint
+                )
                 assert cache_data["left_tree_fingerprint"] == left_fingerprint
                 assert cache_data["right_tree_fingerprint"] == right_fingerprint
-            del repo
-    set_in_cache(cache_entry, cache_data, repo_slug, merge_cache_prefix)
+
+    set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
     return cache_data
+
+
+def check_if_two_merges_differ(cache_data: dict) -> bool:
+    """Returns true if two merge tools differ on the same merge.
+    Args:
+        cache_data (dict): A dictionary containing the merge data.
+    Returns:
+        bool: True if two merge tools differ on the same merge.
+    """
+    for merge_tool1 in MERGE_TOOL:
+        for merge_tool2 in MERGE_TOOL:
+            if is_merge_success(
+                cache_data[merge_tool1.name]["results"][0]
+            ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
+                return True
+            if is_merge_success(
+                cache_data[merge_tool1.name]["results"][0]
+            ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
+                if (
+                    cache_data[merge_tool1.name]["merge_fingerprint"]
+                    != cache_data[merge_tool2.name]["merge_fingerprint"]
+                ):
+                    return True
+    return False
+
+
+def build_merge_arguments(args: argparse.Namespace, repo_slug: str):
+    """
+    Creates the arguments for the merger function.
+    Args:
+        args (argparse.Namespace): The arguments to the script.
+        repo_slug (str): The repository slug.
+    Returns:
+        list: A list of arguments for the merger function.
+    """
+    merge_list_file = Path(
+        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
+    )
+    output_file = Path(
+        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
+    )
+    if not merge_list_file.exists():
+        raise Exception(
+            "merge_tools_comparator:",
+            repo_slug,
+            "does not have a list of merges. Missing file: ",
+            merge_list_file,
+        )
+
+    if output_file.exists():
+        print(
+            "merge_tools_comparator: Skipping",
+            repo_slug,
+            "because it is already computed.",
+        )
+        return []
+
+    merges = pd.read_csv(
+        merge_list_file,
+        names=["idx", "branch_name", "merge", "left", "right", "notes"],
+        dtype={
+            "idx": int,
+            "branch_name": str,
+            "merge": str,
+            "left": str,
+            "right": str,
+            "notes": str,
+        },
+        header=0,
+        index_col="idx",
+    )
+    merges["notes"].replace(np.nan, "", inplace=True)
+
+    if args.only_trivial_merges:
+        merges = merges[merges["notes"].str.contains("a parent is the base")]
+    elif not args.include_trivial_merges:
+        merges = merges[~merges["notes"].str.contains("a parent is the base")]
+    arguments = [
+        (repo_slug, merge_data, Path(args.cache_dir))
+        for _, merge_data in merges.iterrows()
+    ]
+    return arguments
 
 
 if __name__ == "__main__":
@@ -152,55 +219,8 @@ if __name__ == "__main__":
     print("merge_tools_comparator: Constructing Inputs")
     merger_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        merges_repo = []
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-        )
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
-        if not merge_list_file.exists():
-            raise Exception(
-                "merge_tools_comparator:",
-                repo_slug,
-                "does not have a list of merges. Missing file: ",
-                merge_list_file,
-            )
-
-        if output_file.exists():
-            print(
-                "merge_tools_comparator: Skipping",
-                repo_slug,
-                "because it is already computed.",
-            )
-            continue
-
-        merges = pd.read_csv(
-            merge_list_file,
-            names=["idx", "branch_name", "merge", "left", "right", "notes"],
-            dtype={
-                "idx": int,
-                "branch_name": str,
-                "merge": str,
-                "left": str,
-                "right": str,
-                "notes": str,
-            },
-            header=0,
-            index_col="idx",
-        )
-        merges["notes"].replace(np.nan, "", inplace=True)
-
-        if args.only_trivial_merges:
-            merges = merges[merges["notes"].str.contains("a parent is the base")]
-        elif not args.include_trivial_merges:
-            merges = merges[~merges["notes"].str.contains("a parent is the base")]
-
-        merger_arguments += [
-            (repo_slug, merge_data, Path(args.cache_dir))
-            for _, merge_data in merges.iterrows()
-        ]
+        merger_arguments += build_merge_arguments(args, repo_slug)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
@@ -224,21 +244,8 @@ if __name__ == "__main__":
         repo_slug = merger_arguments[i][0]
         merge_data = merger_arguments[i][1]
         cache_data = merger_results[i]
-        two_merge_tools_differ = False
-        for merge_tool1 in MERGE_TOOL:
-            for merge_tool2 in MERGE_TOOL:
-                if is_merge_success(
-                    cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
-                    two_merge_tools_differ = True
-                if is_merge_success(
-                    cache_data[merge_tool1.name]["results"][0]
-                ) and is_merge_success(cache_data[merge_tool2.name]["results"][0]):
-                    if (
-                        cache_data[merge_tool1.name]["merge_fingerprint"]
-                        != cache_data[merge_tool2.name]["merge_fingerprint"]
-                    ):
-                        two_merge_tools_differ = True
+        two_merge_tools_differ = check_if_two_merges_differ(cache_data)
+
         merge_data["two merge tools differ"] = two_merge_tools_differ
         merge_data["left_tree_fingerprint"] = cache_data["left_tree_fingerprint"]
         merge_data["right_tree_fingerprint"] = cache_data["right_tree_fingerprint"]
