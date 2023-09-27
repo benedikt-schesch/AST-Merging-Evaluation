@@ -233,7 +233,7 @@ def merge_edits_on_different_lines(
 
     ### Interleaved deletions, with an empty merge outcome.
     if base_len != 0:
-        if issubsequence(parent1, base) and issubsequence(parent2, base):
+        if is_subsequence(parent1, base) and is_subsequence(parent2, base):
             return []
 
     print("merge_edits_on_different_lines =>", result)
@@ -264,7 +264,7 @@ def merge_base_is_prefix_or_suffix(
     return None
 
 
-def issubsequence(s1: List[str], s2: List[str]) -> bool:
+def is_subsequence(s1: List[T], s2: List[T]) -> bool:
     """Returns true if s1 is subsequence of s2."""
 
     # Iterative implementation.
