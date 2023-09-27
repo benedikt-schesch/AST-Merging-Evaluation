@@ -22,7 +22,14 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import List, Union, Tuple
+
+from typing import List, Union, Tuple, TypeVar
+from collections.abc import Sequence
+
+T = TypeVar("T")  # Type variable for use in type hints
+
+# If true, print diagnostic output
+debug = False
 
 
 def main():  # pylint: disable=too-many-locals
@@ -86,6 +93,7 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     If not, returns None.
     If so, returns a 4-tuple of (base, parent1, parent2, num_lines_in_conflict)
     where the first 3 elements of the tuple are lists of lines.
+    The filename argument is used only for diagnostic messages.
     """
 
     if not lines[start_index].startswith("<<<<<<<"):
@@ -105,7 +113,7 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
         parent1.append(lines[index])
         index = index + 1
         if index == num_lines:
-            print(
+            debug_print(
                 "Starting at line "
                 + str(start_index)
                 + ", did not find ||||||| or ======= in "
@@ -115,13 +123,13 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     if lines[index].startswith("|||||||"):
         index = index + 1
         if index == num_lines:
-            print("File ends with |||||||: " + filename)
+            debug_print("File ends with |||||||: " + filename)
             return None
         while not lines[index].startswith("======="):
             base.append(lines[index])
             index = index + 1
             if index == num_lines:
-                print(
+                debug_print(
                     "Starting at line "
                     + str(start_index)
                     + ", did not find ======= in "
@@ -131,13 +139,13 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     assert lines[index].startswith("=======")
     index = index + 1  # skip over "=======" line
     if index == num_lines:
-        print("File ends with =======: " + filename)
+        debug_print("File ends with =======: " + filename)
         return None
     while not lines[index].startswith(">>>>>>>"):
         parent2.append(lines[index])
         index = index + 1
         if index == num_lines:
-            print(
+            debug_print(
                 "Starting at line "
                 + str(start_index)
                 + ", did not find >>>>>>> in "
@@ -167,8 +175,6 @@ def merge(
         a list of lines, or None if it cannot do merging.
     """
 
-    print(base, parent1, parent2)
-
     if java_imports:
         if (
             all_import_lines(base)
@@ -176,7 +182,9 @@ def merge(
             and all_import_lines(parent2)
         ):
             # A simplistic merge that retains all import lines in either parent.
-            return list(set(parent1 + parent2)).sort()
+            result = list(set(parent1 + parent2))
+            result.sort()
+            return result
 
     if adjacent_lines:
         adjacent_line_merge = merge_edits_on_different_lines(base, parent1, parent2)
@@ -198,7 +206,7 @@ def merge_edits_on_different_lines(
     Otherwise, return None.
     """
 
-    print("Entered merge_edits_on_different_lines")
+    debug_print("Entered merge_edits_on_different_lines", len(parent1), len(parent2))
 
     ### No lines are added or removed, only modified.
     base_len = len(base)
@@ -208,7 +216,7 @@ def merge_edits_on_different_lines(
         for base_line, parent1_line, parent2_line in itertools.zip_longest(
             base, parent1, parent2
         ):
-            print("Considering line:", base_line, parent1_line, parent2_line)
+            debug_print("Considering line:", base_line, parent1_line, parent2_line)
             if parent1_line == parent2_line:
                 result.append(parent1_line)
             elif base_line == parent1_line:
@@ -218,9 +226,9 @@ def merge_edits_on_different_lines(
             else:
                 result = None
                 break
-        print("merge_edits_on_different_lines =>", result)
+        debug_print("merge_edits_on_different_lines: first attempt =>", result)
     if result is not None:
-        print("merge_edits_on_different_lines =>", result)
+        debug_print("merge_edits_on_different_lines =>", result)
         return result
 
     ### Deletions at the beginning or end.
@@ -236,7 +244,7 @@ def merge_edits_on_different_lines(
         if is_subsequence(parent1, base) and is_subsequence(parent2, base):
             return []
 
-    print("merge_edits_on_different_lines =>", result)
+    debug_print("merge_edits_on_different_lines =>", result)
     return result
 
 
@@ -256,15 +264,15 @@ def merge_base_is_prefix_or_suffix(
     parent2_len = len(parent2)
     if base_len < parent1_len:
         if parent1[:base_len] == base:
-            print("startswith", parent1, base)
+            debug_print("startswith", parent1, base)
             return parent2 + parent1[base_len:]
         if parent1[-base_len:] == base:
-            print("endswith", parent1, base)
+            debug_print("endswith", parent1, base)
             return parent1[:-base_len] + parent2
     return None
 
 
-def is_subsequence(s1: List[T], s2: List[T]) -> bool:
+def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
     """Returns true if s1 is subsequence of s2."""
 
     # Iterative implementation.
@@ -279,6 +287,12 @@ def is_subsequence(s1: List[T], s2: List[T]) -> bool:
     # If i reaches end of s1, we found all characters of s1 in s2,
     # so s1 is a subsequence of s2.
     return i == n
+
+
+def debug_print(*args):
+    """If debugging is enabled, pass the arguments to `print`."""
+    if True:
+        print(*args)
 
 
 if __name__ == "__main__":
