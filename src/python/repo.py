@@ -59,13 +59,11 @@ MERGE_STATE = Enum(
 )
 
 
-def compute_explanation(
+def stdout_and_stderr(
     command: List[str],
     source: Union[subprocess.TimeoutExpired, subprocess.CompletedProcess],
 ) -> str:
-    """Produces the explanation string of a timedout process or
-    a completed process.
-    """
+    """Produces the standard output and standard error of a timedout process."""
     explanation = "Run Command: " + " ".join(command) + "\nTimed out"
     if source.stdout:
         explanation += "\nstdout:\n" + source.stdout.decode("utf-8")
@@ -97,10 +95,10 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as e:
-        explanation = compute_explanation(command, e)
+        explanation = stdout_and_stderr(command, e)
         return TEST_STATE.Tests_timedout, explanation
     rc = p.returncode
-    explanation = compute_explanation(command, p)
+    explanation = stdout_and_stderr(command, p)
     if rc == 0:  # Success
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
@@ -357,7 +355,7 @@ class Repository:
                 check=False,
             )
         except subprocess.TimeoutExpired as e:
-            explanation = explanation + "\n" + compute_explanation(command, e)
+            explanation = explanation + "\n" + stdout_and_stderr(command, e)
             sha = self.compute_tree_fingerprint()
             return (
                 MERGE_STATE.Merge_timedout,
@@ -368,7 +366,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = explanation + "\n" + compute_explanation(command, p)
+        explanation = explanation + "\n" + stdout_and_stderr(command, p)
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )
