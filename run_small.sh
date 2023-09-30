@@ -11,4 +11,4 @@
 set -e
 set -o nounset
 
-./run.sh input_data/repos_small.csv results-small 2 test_cache "$@"
+./run.sh input_data/repos_small.csv results-small 50 cache-small "$@"

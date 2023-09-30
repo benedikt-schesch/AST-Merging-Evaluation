@@ -2,7 +2,7 @@
 .vscode
 venv
 **/*_explanation.txt
-test_cache/
+cache-small/
 apache-maven-3.9.2/
 results/local_repos.csv
 machines.txt
@@ -10,6 +10,7 @@ machines.txt
 cache/
 artifacts/
 artifacts.tar.gz
+*.hprof
 
 output/
 merge_repo/
@@ -108,3 +109,5 @@ docs/_build/
 
 # Emacs
 TAGS
+
+!JSCover/**

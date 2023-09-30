@@ -48,8 +48,8 @@ import org.plumelib.util.StringsPlume;
  * <p>The input is a .csv file, one of whose columns is named "repository" and contains "org/repo".
  *
  * <p>The output is a set of {@code .csv} files with columns: branch name, merge commit SHA, parent
- * 1 commit SHA, parent 2 commit SHA, base commit SHA, notes. The "notes" column contains "trivial
- * merge", "two initial commits", or is blank.
+ * 1 commit SHA, parent 2 commit SHA, base commit SHA, notes. The "notes" column contains "a parent
+ * is the base", "two initial commits", or is blank.
  *
  * <p>Requires (because JGit requires authentication for cloning and fetching public repositories):
  *
@@ -67,7 +67,7 @@ import org.plumelib.util.StringsPlume;
 // filling up the disk.
 public class FindMergeCommits {
 
-  /** The GitHub repositories to search for merge commits. Each is in the format "org/repo". */
+  /** The GitHub repositories to search for merge commits. */
   final List<OrgAndRepo> repos;
 
   /** The output directory. */
@@ -82,7 +82,7 @@ public class FindMergeCommits {
   /**
    * Outputs a list of merge commits from the given repositories.
    *
-   * @param args the first element is a .csv file containing GitHub repositories, in "org/repo"
+   * @param args the first element is a .csv file containing GitHub repository slugs, in "org/repo"
    *     format, in a column named "repository"; the second element is an output directory
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
@@ -94,7 +94,6 @@ public class FindMergeCommits {
     }
 
     String inputFileName = args[0];
-    // A list of "org/repo" strings.
     List<OrgAndRepo> repos = reposFromCsv(inputFileName);
 
     String outputDirectoryName = args[1];
@@ -108,7 +107,7 @@ public class FindMergeCommits {
   /**
    * Creates an instance of FindMergeCommits.
    *
-   * @param repos a list of GitHub repositories, in "org/repository" format
+   * @param repos a list of GitHub repositories
    * @param outputDir where to write results; is created if it does not exist
    * @throws IOException if there is trouble reading or writing files
    */
@@ -148,7 +147,8 @@ public class FindMergeCommits {
           new UsernamePasswordCredentialsProvider("Bearer", environmentGithubToken);
     } else {
       System.err.println(
-          "Need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
+          "FindMergeCommits: "
+              + "need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
       System.exit(3);
       throw new Error("unreachable"); // needed due to javac definite assignment check
     }
@@ -236,6 +236,7 @@ public class FindMergeCommits {
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
     System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
+    // Parallel execution for each repository.
     repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
 
@@ -308,7 +309,7 @@ public class FindMergeCommits {
 
     try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
       // Write the CSV header
-      writer.write("branch_name,merge_commit,parent_1,parent_2,base_commit,notes");
+      writer.write("idx,branch_name,merge_commit,parent_1,parent_2,notes");
       writer.newLine();
 
       writeMergeCommitsForBranches(git, repo, orgName, repoName, writer);
@@ -340,25 +341,35 @@ public class FindMergeCommits {
     // The SHA ids of the merge commits that have already been output.
     Set<ObjectId> written = new HashSet<>();
 
+    // The index within the output file; incremented for each line of each file.
+    int index = 1;
+    // This loop cannot be parallelized, because of the `index` variable.
     for (Ref branch : branches) {
-      writeMergeCommitsForBranch(git, repo, branch, writer, written);
+      index = writeMergeCommitsForBranch(index, git, repo, branch, writer, written);
     }
   }
 
   /**
    * Write, to {@code writer}, all the merge commits in one branch of the given repository.
    *
+   * @param index the first index to use for output lines
    * @param git the JGit porcelain
    * @param repo the JGit file system repository
    * @param branch the branch whose commits to output
    * @param writer where to write the merge commits
    * @param written a set of refs that have already been written, to prevent duplicates in the
    *     output
+   * @return the next index to use for output lines
    * @throws IOException if there is trouble reading or writing files
    * @throws GitAPIException if there is trouble running Git commands
    */
-  void writeMergeCommitsForBranch(
-      Git git, FileRepository repo, Ref branch, BufferedWriter writer, Set<ObjectId> written)
+  int writeMergeCommitsForBranch(
+      int index,
+      Git git,
+      FileRepository repo,
+      Ref branch,
+      BufferedWriter writer,
+      Set<ObjectId> written)
       throws IOException, GitAPIException {
 
     ObjectId branchId = branch.getObjectId();
@@ -366,6 +377,7 @@ public class FindMergeCommits {
       throw new Error("no ObjectId for " + branch);
     }
     Iterable<RevCommit> commits = git.log().add(branchId).call();
+    // This loop cannot be parallelized, beacuse of the `index` variable.
     for (RevCommit commit : commits) {
       RevCommit[] parents = commit.getParents();
       if (parents.length != 2) {
@@ -389,7 +401,7 @@ public class FindMergeCommits {
       } else {
         mergeBaseId = mergeBase.toObjectId();
         if (mergeBaseId.equals(parent1Id) || mergeBaseId.equals(parent2Id)) {
-          notes = "trivial merge";
+          notes = "a parent is the base";
         } else {
           notes = "";
         }
@@ -399,19 +411,20 @@ public class FindMergeCommits {
       // Whenever an already-processed merge is seen, all older merges have also been processed, but
       // don't depend on the order of results from `git log`.
       if (newMerge) {
-        // "org_repo,branch_name,merge_commit,parent_1,parent_2,base_commit"
+        // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
         writer.write(
             String.format(
                 "%s,%s,%s,%s,%s,%s",
+                index++,
                 branch.getName(),
                 ObjectId.toString(mergeId),
                 ObjectId.toString(parent1Id),
                 ObjectId.toString(parent2Id),
-                mergeBaseId == null ? "null" : ObjectId.toString(mergeBaseId),
                 notes));
         writer.newLine();
       }
     }
+    return index;
   }
 
   /**
@@ -455,8 +468,11 @@ public class FindMergeCommits {
    * If there is none (because the two commits have different initial commits!), then this returns
    * null.
    *
-   * <p>This always returns an existing commit (or null), never a synthetic one. When a criss-cross
-   * merge exists in the history, this outputs an arbitrary one of the best merge bases.
+   * <p>This always returns an existing commit (or null), never a synthetic one.
+   *
+   * <p>When a criss-cross merge exists in the history, this outputs an arbitrary one of the best
+   * merge bases (likely the earliest one). It doesn't matter which one is output, for the uses of
+   * this method in this program.
    *
    * @param git the JGit porcelain
    * @param repo the JGit repository
@@ -514,6 +530,7 @@ public class FindMergeCommits {
   }
 
   // This doesn't work; I don't know why.
+  // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *
@@ -551,6 +568,7 @@ public class FindMergeCommits {
   }
 
   // This doesn't work; I don't know why.
+  // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
    *

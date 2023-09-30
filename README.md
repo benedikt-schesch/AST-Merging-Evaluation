@@ -8,23 +8,21 @@
 
 ### Python
 
-To install all the python requirements:
+To install all the python requirements create a conda environment:
+
+With mamba (faster https://github.com/mamba-org/mamba):
 
 ```bash
-pip install -r requirements.txt
+mamba env create -f environment.yml
+mamba activate AST
 ```
 
-### Alternative Python installation
-
-If you don't want to mess with your local python installation you can create a python virtual environment to install all dependencies with the following commands:
+With conda:
 
 ```bash
-pip3 install virtualenv
-python3 -m venv venv
-source venv/bin/activate
+conda env create -f environment.yml
+conda activate AST
 ```
-
-If you did the previous step make sure the virtual environemnt is activated when you use the repo (`source venv/bin/activate`).
 
 ### Maven
 
@@ -68,9 +66,16 @@ make small-test
 
 This runs the entire code on two small repos.
 The output data appears in `results-small/`.
- * `results-small/result.csv`: the final result
- * `results-small/merges_small/` contains all the merges.
- * `results-small/merges_small_valid/` contains all the merges and also records whether the parents of a merge pass tests.
+
+* `results-small/result.csv`: the final result
+
+* `results-small/merges/` contains all the merges.
+
+* `results-small/merges_compared/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
+
+* `results-small/merges_tested/` contains all merges that have been tested.
+
+* `results-small/result.csv` contains the final result.
 
 ### Perform full analysis
 
@@ -90,13 +95,7 @@ This will run the entire code on all the repos and automatically decompress the 
 All the output data can be found in `results/`.
 The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
-Directory `results/merges_valid` contains all the merges and also stores if the parents of a merge pass tests.
-
-To delete cache entries on failed merges, inconsistent merges, failed trivial merges and reexecute the stack multiple times over and over:
-
-```bash
-./run_full_restart.sh <n_repeat>
-```
+Directory `results/merges_tested` contains all the merges that have been tested.
 
 To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
@@ -126,9 +125,13 @@ To run style checking run `make style`.
 
 ---
 
+## Code structure
+
+![alt text](illustrations/Architecture.drawio.png "Title")
+
 ## Directory structure
 
-### Commited files
+### Committed files
 
 * run.sh -> This file executes each step of the stack.
 
@@ -136,64 +139,63 @@ To run style checking run `make style`.
 
 * run_full.sh -> This file executes the stack on all the repositories.
 
-* run_full_restart.sh -> This file executes the stack and repeats failed merges, inconsistent merges and failed trivial multiple times.
-
 * src/ -> contains the following scripts:
 
   * python/ -> contains the following scripts:
 
     * merge_tester.py -> Main file which performs merges and evaluates all the results across all projects.
 
-    * validate_repos.py -> Checks out all repos and removes all repos that fail their tests on main branch.
+    * test_repo_heads.py -> Checks out all repos and removes all repos that fail their tests on main branch.
 
     * latex_output.py -> Output latex code for the resulting plots and table.
 
-    * test_parent_commits.py -> Tests if the parents of a commit pass their tests.
+    * merge_tools_comparator.py -> Compares merges that produce different output.
 
     * get_repos.py -> Downloads the repos list.
 
-    * cache_merger.py -> Merges the current cache with the cache.tar
+    * cache_utils.py -> Contains functions to store and load the cache.
 
-    * delete_cache_entries.py -> Delete specific cache entries.
+    * clean_cache_placeholders.py -> Removes all the cache placeholders.
 
-    * delete_inconsistent_merge_results.py -> Delete inconsistent merge results.
+    * repo.py -> Contains the Repo class which represents a repo.
 
-    * delete_failed_trivial_merge_results.py -> Delete failed trivial merge results.
+    * split_repos.py -> Splits the repos for parallel execution.
+
+    * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 
   * scripts/ -> contains the following scripts:
 
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
-    * merge_tools/ -> contains the following scripts:
-      * gitmerge.sh -> Executes git merge on a specific merge.
-      * intellimerge.sh -> Executes intellimerge on a specific merge.
-      * spork.sh -> Executes spork on a specific merge.
+    * merge_tools/ -> Contains all the merge tools scripts.
 
     * utils/
+
       * run_remotely.sh -> Runs the full stack on a remote machine.
+
       * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
 
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
 
-### Uncommited Files
+### Uncommitted Files
 
 * cache/ -> This folder is a cache for each computation. contains:
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the run time.
 
   * merge_diff_results/ -> Caches the diff results for specific merges.
 
-* test_cache/ -> This folder is a cache for each test computation. contains:
+* cache-small/ -> This folder is a cache for each test computation. contains:
 
   * test_result/ -> Caches the test results for a specific commit. Used for parent testing and repo validation.
 
-  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the runtime.
+  * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the run time.
 
-* .workdir/ -> This folder is used for the local computations of each process and contaent is named by Unix process (using "$$").
+* .workdir/ -> This folder is used for the local computations of each process and content is named by Unix process (using "$$"). If `DELETE_WORKDIRS` is set to `false` in `src/python/repo.py` this folder is not deleted after the computation and can be inspectedx.
 
 * repos/ -> In this folder each repo is cloned.
 
@@ -201,6 +203,4 @@ To run style checking run `make style`.
 
 * results-small/ -> Contains all the results for the small analysis.
 
-* jars/ -> Location for the Intellimerge and Spork jars.
-
-* scratch/ -> If STORE_SCRATCH is enabled in `merge_tester.py`, each merge will be stored in this location.
+* jars/ -> Location for the IntelliMerge and Spork jars.

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run the code for a certain branch on a remote machine.
+# Run the code of a specific branch of this repository on a remote machine.
 # Usage: ./run_remotely.sh <branch> <machine_ssh> <machine_id> <num_machines> <root_path_on_machine>
 # <branch> is the branch to run
 # <machine_ssh> is the ssh address of the machine
