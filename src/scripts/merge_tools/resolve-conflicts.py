@@ -23,8 +23,7 @@ import shutil
 import sys
 import tempfile
 
-from typing import List, Union, Tuple, TypeVar
-from collections.abc import Sequence
+from typing import List, Union, Tuple, TypeVar, Sequence
 
 T = TypeVar("T")  # Type variable for use in type hints
 
