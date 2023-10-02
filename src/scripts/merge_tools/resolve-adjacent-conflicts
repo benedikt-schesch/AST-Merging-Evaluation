@@ -1,0 +1,61 @@
+#!/bin/bash
+# bash, not POSIX sh, because of "readarray".
+
+# This script edits files in place to resolve conflict markers due to edits on
+# adjacent lines.  (This is like the behavior of SVN and darcs, but different
+# than the default behavior of Git, Mercurial, and Bazaar.)  This script leaves
+# other conflict markers untouched.
+# Usage:
+#   resolve-adjacent-conflicts [file ...]
+#
+# The script works on all files given on the command line.
+# If none are given, the script works on all files in or under the current directory.
+#
+# The status code is 0 (success) if all conflicts are resolved.
+# The status code is 1 (failure) if any conflict remains.
+#
+# This is not a git mergetool.  A git mergetool is given the base, parent 1, and
+# parent 2 files, all without conflict markers.
+# However, this can be run after a git mergetool that leaves conflict markers
+# in files, as the default git mergetool does.
+
+# Comparison to other tools
+#
+# git-hires-merge does more than this script:  it resolves non-overlapping
+# changes at the character level rather than just the line level.  Also,
+# git-hires-merge is a mergetool whereas this script is not.
+#
+# kdiff3 can resolve some conflicts that are on adjacent lines (but not as many
+# as this script does).  kdiff3 has no way of outputting a file containing
+# conflict markers.  Invoked like this, it still goes into a GUI if there are
+# any merge conflicts that a human must resolve:
+#   kdiff3 --auto --cs "ShowInfoDialogs=0" base.txt parent1.txt parent2.txt -o merged.txt
+# Also, the `--auto` option is ignored for folder comparison.
+
+DEBUG=1
+
+if [ "$#" -eq 0 ] ; then
+  readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
+else
+  files=("$@")
+fi
+
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+
+status=0
+
+for file in "${files[@]}" ; do
+  if [ "$DEBUG" ] ; then
+    echo "before resolve-conflicts.py: $(sha256sum "$file")"
+    cat "$file"
+  fi
+  if ! "${SCRIPTDIR}"/resolve-conflicts.py --adjacent_lines "$file" ; then
+    status=1
+  fi
+  if [ "$DEBUG" ] ; then
+    echo "after resolve-conflicts.py: (status=$status: $(sha256sum "$file")"
+    cat "$file"
+  fi
+done
+
+exit $status

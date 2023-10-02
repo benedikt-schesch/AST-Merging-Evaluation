@@ -23,7 +23,8 @@ import shutil
 import sys
 import tempfile
 
-from typing import List, Union, Tuple, TypeVar, Sequence
+from typing import List, Union, Tuple, TypeVar
+from collections.abc import Sequence
 
 T = TypeVar("T")  # Type variable for use in type hints
 
@@ -290,7 +291,7 @@ def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
 
 def debug_print(*args):
     """If debugging is enabled, pass the arguments to `print`."""
-    if True:
+    if debug:
         print(*args)
 
 
