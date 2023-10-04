@@ -21,7 +21,10 @@ strategy=$4
 
 # perform merge
 cd "$clone_dir" || exit 1
+
 git checkout "$branch1" --force
+git config merge.conflictstyle zdiff3
+
 echo "Running: git merge --no-edit $strategy $branch2"
 # shellcheck disable=SC2086
 git merge --no-edit $strategy "$branch2"
