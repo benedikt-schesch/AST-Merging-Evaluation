@@ -40,13 +40,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if ! command -v git-hires-merge &> /dev/null
-then
-    echo "git-hires-merge is not on the PATH"
-    echo "Run: export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH"
-    echo "Alternatively, you can run: echo 'export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH' >> ~/.bashrc"
-    exit 1
-fi
+export PATH=$(pwd)/src/scripts/merge_tools/:\$PATH
 
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
