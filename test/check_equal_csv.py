@@ -47,6 +47,7 @@ if __name__ == "__main__":
             # Print the differences.
             print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
             # Now print details, after diffs so it is not obscured by the diff output.
+            different_columns = []
             for col in goal_df.columns:
                 if "run_time" in col:
                     raise Exception(
@@ -55,11 +56,19 @@ if __name__ == "__main__":
                 if not col in actual_df:
                     print(f"Column {col} is not in actual_df")
                     print(goal_df[col])
+                    different_columns.append(col)
                 elif not goal_df[col].equals(actual_df[col]):
                     print(f"Column {col} is not equal.  Printing goal then actual.")
                     print(goal_df[col])
                     print(actual_df[col])
-            print(f"{goal_file} and {actual_file} are not equal")
+                    different_columns.append(col)
+            print(
+                f"{goal_file} and {actual_file} are not equal in columns: {different_columns}"
+            )
             # Print the differences
-            print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
+            print(
+                os.system(
+                    f"diff {goal_folder/goal_file} {actual_file} in columns: {different_columns}"
+                )
+            )
             raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")
