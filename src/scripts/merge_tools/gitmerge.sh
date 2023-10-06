@@ -22,6 +22,7 @@ strategy=$4
 
 # perform merge
 cd "$clone_dir"
+echo "Path: $clone_dir"
 git checkout "$branch1" --force
 echo "Running: git merge --no-edit $strategy $branch2"
 # shellcheck disable=SC2086
@@ -31,7 +32,6 @@ retVal=$?
 # report conflicts
 if [ $retVal -ne 0 ]; then
     echo "Conflict"
-    git merge --abort
 fi
 
 cd -
