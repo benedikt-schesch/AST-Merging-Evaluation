@@ -122,7 +122,7 @@ if __name__ == "__main__":
     print("write_head_hashes: Finished cloning repos and collecting head hashes")
 
     result_df = pd.DataFrame([i for i in get_latest_hash_result if i is not None])
-    result_df = result_df.set_index(result_df.columns[0]).reset_index(drop=True)
+    result_df = result_df.reset_index(drop=True)
     print("write_head_hashes: Started storing repo HEAD hashes")
     result_df.to_csv(args.output_path, index_label="idx")
     print("write_head_hashes: Finished storing repo HEAD hashes")

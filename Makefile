@@ -49,7 +49,8 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 
 # Compresses the cache.
 compress-cache:
-	rm -r cache.tar
+	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
+	if [ -f cache.tar ]; then rm -f cache.tar; fi
 	tar --exclude="lock" -czf cache.tar cache
 
 # Decompresses the cache.

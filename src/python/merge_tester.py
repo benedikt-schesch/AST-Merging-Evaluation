@@ -57,8 +57,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     for branch in ["left", "right"]:
         commit_sha = merge_data[branch]
         repo = Repository(repo_slug, cache_directory=cache_directory)
-        repo.checkout(commit_sha)
-        tree_fingerprint = repo.compute_tree_fingerprint()
+        test_result, tree_fingerprint = repo.checkout_and_test(commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS)
         if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
             raise Exception(
                 "merge_tester: Tree fingerprint mismatch",
@@ -70,11 +69,11 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
                 merge_data[f"{branch}_tree_fingerprint"],
                 repo.path,
             )
-        test_result = repo.test(TIMEOUT_TESTING_PARENT, N_TESTS)
         merge_data[f"{branch} test result"] = test_result.name
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
 
+    print("merge_tester: Parents pass", repo_slug, merge_data["left"], merge_data["right"])
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
@@ -109,6 +108,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             # Update the status from merge success to test result.
             merge_data[merge_tool.name] = result.name
         assert merge_tool.name in merge_data
+    print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
     return merge_data
 
 
@@ -204,7 +204,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     for i in tqdm(range(len(merge_tester_arguments))):
         repo_slug = merge_tester_arguments[i][0]
         merge_results = merge_tester_results[i]
-        if merge_results["parents pass"]:
+        if len(merge_results) > 0 and merge_results["parents pass"]:
             n_merges_parents_pass += 1
         repo_result[repo_slug].append(merge_results)
 
@@ -229,7 +229,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             df.sort_index(inplace=True)
             df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
-        n_total_merges_parents_pass += len(df[df["parents pass"]])
+        n_total_merges_parents_pass += len(df[df["parents pass"]]) if len(df) > 0 else 0
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
     print(
