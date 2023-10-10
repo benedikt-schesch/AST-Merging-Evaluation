@@ -57,7 +57,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     for branch in ["left", "right"]:
         commit_sha = merge_data[branch]
         repo = Repository(repo_slug, cache_directory=cache_directory)
-        test_result, tree_fingerprint = repo.checkout_and_test(commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS)
+        test_result, tree_fingerprint = repo.checkout_and_test(
+            commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS
+        )
         if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
             raise Exception(
                 "merge_tester: Tree fingerprint mismatch",
@@ -73,7 +75,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         if test_result != TEST_STATE.Tests_passed:
             return merge_data
 
-    print("merge_tester: Parents pass", repo_slug, merge_data["left"], merge_data["right"])
+    print(
+        "merge_tester: Parents pass", repo_slug, merge_data["left"], merge_data["right"]
+    )
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:

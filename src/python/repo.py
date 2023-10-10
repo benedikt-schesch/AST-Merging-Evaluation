@@ -460,7 +460,7 @@ class Repository:
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> Tuple[TEST_STATE,Union[str,None]]:
+    ) -> Tuple[TEST_STATE, Union[str, None]]:
         """Helper function for `checkout_and_test`,
         which checks out the given commit and tests the repository.
         This function does not check the cache.
@@ -484,7 +484,7 @@ class Repository:
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> Tuple[TEST_STATE,Union[str,None]]:
+    ) -> Tuple[TEST_STATE, Union[str, None]]:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.

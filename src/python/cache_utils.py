@@ -56,7 +56,7 @@ def set_in_cache(
         f.write(output)
         f.flush()
     if acquire_lock:
-        lock.release_write_lock() # type: ignore
+        lock.release_write_lock()  # type: ignore
 
 
 def lookup_in_cache(
