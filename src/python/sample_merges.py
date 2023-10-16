@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 "because it does not contain any merges.",
             )
             continue
-        
+
         merges["notes"].replace(np.nan, "", inplace=True)
         if args.only_trivial_merges:
             merges = merges[merges["notes"].str.contains("a parent is the base")]
