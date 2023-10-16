@@ -97,7 +97,7 @@ python3 src/python/sample_merges.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_sampled/" \
-    --n_merges "${expr 20 \* $N_MERGES}" \
+    --n_merges "$((20 * "$N_MERGES"))" \
     "${merge_comparator_flags[@]}"
 
 python3 src/python/merge_tools_comparator.py \
