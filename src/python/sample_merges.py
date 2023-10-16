@@ -12,12 +12,12 @@ If the flag --only_trivial_merges is set, then the script will only output
 merges that are trivial.
 """
 
+import os
+import argparse
+from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
-import argparse
-import os
-from pathlib import Path
 from cache_utils import slug_repo_name
 
 if __name__ == "__main__":
