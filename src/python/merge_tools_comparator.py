@@ -4,16 +4,10 @@ usage: python3 merge_tools_comparator.py --repos_head_passes_csv <path_to_repos_
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --cache_dir <cache_dir>
-                                --include_trivial_merges (optional flag)
-                                --only_trivial_merges (optional flag)
 This script flags merges that have different results for different merge tools.
 The output is written in output_dir and consists of the same files as the input
 files, but with an additional column that indicates whether the merge tools
 differ.
-If the flag --include_trivial_merges is set, then the script will also output
-merges that are trivial.
-If the flag --only_trivial_merges is set, then the script will only output
-merges that are trivial.
 """
 
 import os
@@ -159,12 +153,13 @@ def build_merge_arguments(args: argparse.Namespace, repo_slug: str):
         os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
     )
     if not merge_list_file.exists():
-        raise Exception(
+        print(
             "merge_tools_comparator:",
             repo_slug,
             "does not have a list of merges. Missing file: ",
             merge_list_file,
         )
+        return []
 
     if output_file.exists():
         print(
@@ -190,10 +185,6 @@ def build_merge_arguments(args: argparse.Namespace, repo_slug: str):
     )
     merges["notes"].replace(np.nan, "", inplace=True)
 
-    if args.only_trivial_merges:
-        merges = merges[merges["notes"].str.contains("a parent is the base")]
-    elif not args.include_trivial_merges:
-        merges = merges[~merges["notes"].str.contains("a parent is the base")]
     arguments = [
         (repo_slug, merge_data, Path(args.cache_dir))
         for _, merge_data in merges.iterrows()
@@ -208,8 +199,6 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
-    parser.add_argument("--include_trivial_merges", action="store_true")
-    parser.add_argument("--only_trivial_merges", action="store_true")
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)

@@ -47,7 +47,7 @@ def set_in_cache(
     """
     if acquire_lock:
         lock = get_cache_lock(repo_slug, cache_directory)
-        lock.acquire_write_lock()
+        lock.acquire()
     cache_path = get_cache_path(repo_slug, cache_directory)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
@@ -56,7 +56,7 @@ def set_in_cache(
         f.write(output)
         f.flush()
     if acquire_lock:
-        lock.release_write_lock()  # type: ignore
+        lock.release()  # type: ignore
 
 
 def lookup_in_cache(
@@ -77,7 +77,7 @@ def lookup_in_cache(
         Union[dict,None]: The cache entry if it exists, None otherwise.
     """
     lock = get_cache_lock(repo_slug, cache_directory)
-    lock.acquire_read_lock()
+    lock.acquire()
     cache_entry = get_cache_path(repo_slug, cache_directory)
     cache_entry.parent.mkdir(parents=True, exist_ok=True)
     if is_in_cache(cache_key, repo_slug, cache_directory):
@@ -87,17 +87,17 @@ def lookup_in_cache(
             cache_data = cache[cache_key]
             if cache_data is not None:
                 break
-            lock.release_read_lock()
+            lock.release()
             time.sleep(CACHE_BACKOFF_TIME)
             total_time += CACHE_BACKOFF_TIME
             if total_time > TIMEOUT:
                 return None
-            lock.acquire_read_lock()
-        lock.release_read_lock()
+            lock.acquire()
+        lock.release()
         return cache_data
     if set_run:
         set_in_cache(cache_key, None, repo_slug, cache_directory, acquire_lock=False)
-    lock.release_read_lock()
+    lock.release()
     return None
 
 
@@ -116,7 +116,7 @@ def get_cache_lock(repo_slug: str, cache_directory: Path):
     """
     lock_path = cache_directory / "locks" / (slug_repo_name(repo_slug) + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    lock = fasteners.InterProcessReaderWriterLock(lock_path)
+    lock = fasteners.InterProcessLock(lock_path)
     return lock
 
 
