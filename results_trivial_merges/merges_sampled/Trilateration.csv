@@ -1,4 +1,0 @@
-idx,branch_name,merge_commit,parent_1,parent_2,notes
-1,refs/heads/master,fdd7b34d7ed96e8eb1ddb3da75a87a3668b2cd9d,89732406f90bcb26d8a60f8e8b5c4de47c6098b2,f014c7d891a9bf2b5695c1bfb1b0871a567391e2,a parent is the base
-2,refs/heads/master,48fefce56dbf055ee48b4453f4489aa43a850fb9,e0ce9ee519fba7742f46424c3534c3c32c010b86,2050722bd3d7a5cdf01416922cfc06c8b5c648e5,a parent is the base
-3,refs/heads/master,12bdb6cf448c7e9303c145635759419024b2afb6,77100f94d395907bc09956c579d20743f049aac2,0cb698e7dc1e189569222d6241bc70de65d278d5,a parent is the base

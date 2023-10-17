@@ -18,4 +18,4 @@ if [ -f cache.tar ] && [ ! -d cache ]; then
     make decompress-cache
 fi
 
-./run.sh input_data/repos_1000.csv results_trivial_merges 20 cache "$@"
+./run.sh input_data/repos_1000.csv results-trivial-merges 20 cache "$@"
