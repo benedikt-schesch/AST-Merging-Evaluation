@@ -124,7 +124,7 @@ class Repository:
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
-        shutil.copytree(self.path, self.repo_path)
+        shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
         self.test_cache_directory = cache_directory / "test_cache"
         self.sha_cache_directory = cache_directory / "sha_cache_entry"
@@ -460,7 +460,7 @@ class Repository:
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> TEST_STATE:
+    ) -> Tuple[TEST_STATE, Union[str, None]]:
         """Helper function for `checkout_and_test`,
         which checks out the given commit and tests the repository.
         This function does not check the cache.
@@ -470,19 +470,21 @@ class Repository:
             n_tests (int): The number of times to run the test suite.
         Returns:
             TEST_STATE: The result of the test.
+            Union[str,None]: The tree fingerprint of the result.
         """
         result, explanation = self.checkout(commit)
         if not result:
             print("Checkout failed for", self.repo_slug, commit, explanation)
-            return TEST_STATE.Git_checkout_failed
-        return self.test(timeout, n_tests)
+            return TEST_STATE.Git_checkout_failed, None
+        sha = self.compute_tree_fingerprint()
+        return self.test(timeout, n_tests), sha
 
     def checkout_and_test(
         self,
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> TEST_STATE:
+    ) -> Tuple[TEST_STATE, Union[str, None]]:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
@@ -491,16 +493,17 @@ class Repository:
             check_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             TEST_STATE: The result of the test.
+            Union[str,None]: The tree fingerprint of the result.
         """
         sha_cache_entry = self.get_sha_cache_entry(commit, start_merge=True)
         if sha_cache_entry is None:
             return self._checkout_and_test(commit, timeout, n_tests)
         if sha_cache_entry["sha"] is None:
-            return TEST_STATE.Git_checkout_failed
+            return TEST_STATE.Git_checkout_failed, None
         result = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._checkout_and_test(commit, timeout, n_tests)
-        return result
+        return result, sha_cache_entry["sha"]
 
     def test(self, timeout: int, n_tests: int) -> TEST_STATE:
         """Tests the repository. The test results of multiple runs is combined into one result.

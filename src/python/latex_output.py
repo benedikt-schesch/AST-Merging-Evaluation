@@ -156,6 +156,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+            if len(merges) == 0:
+                raise pd.errors.EmptyDataError
         except pd.errors.EmptyDataError:
             print(
                 "latex_output: Skipping",
@@ -487,7 +489,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         )
         if not os.path.isfile(merge_list_file):
             continue
-        merges = pd.read_csv(merge_list_file, index_col=0)
+        try:
+            merges = pd.read_csv(merge_list_file, index_col=0)
+        except pd.errors.EmptyDataError:
+            continue
         if len(merges) > 0:
             repos += 1
         count += len(merges)
