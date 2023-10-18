@@ -22,16 +22,12 @@ import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE
 from write_head_hashes import num_processes
-from merge_tools_comparator import is_merge_success
 from cache_utils import slug_repo_name
 from tqdm import tqdm
+from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE, N_TESTS
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
-
-TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes, in seconds
-TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
-N_TESTS = 3
 
 
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
@@ -81,37 +77,25 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     merge_data["parents pass"] = True
 
     for merge_tool in MERGE_TOOL:
-        if is_merge_success(merge_data[merge_tool.name]):
-            repo = Repository(repo_slug, cache_directory=cache_directory)
-            (
-                result,
-                merge_fingerprint,
-                left_fingerprint,
-                right_fingerprint,
-                _,
-            ) = repo.merge_and_test(
-                tool=merge_tool,
-                left_commit=merge_data["left"],
-                right_commit=merge_data["right"],
-                timeout=TIMEOUT_TESTING_MERGE,
-                n_tests=N_TESTS,
-            )
-            assert left_fingerprint == merge_data["left_tree_fingerprint"]
-            assert right_fingerprint == merge_data["right_tree_fingerprint"]
-            if merge_fingerprint != merge_data[merge_tool.name + "_merge_fingerprint"]:
-                raise Exception(
-                    "merge_tester: Merge fingerprint mismatch",
-                    repo_slug,
-                    merge_data["left"],
-                    merge_data["right"],
-                    merge_tool.name,
-                    result,
-                    merge_fingerprint,
-                    merge_data[merge_tool.name + "_merge_fingerprint"],
-                )
-            # Update the status from merge success to test result.
-            merge_data[merge_tool.name] = result.name
-        assert merge_tool.name in merge_data
+        repo = Repository(repo_slug, cache_directory=cache_directory)
+        (
+            result,
+            merge_fingerprint,
+            left_fingerprint,
+            right_fingerprint,
+            _,
+        ) = repo.merge_and_test(
+            tool=merge_tool,
+            left_commit=merge_data["left"],
+            right_commit=merge_data["right"],
+            timeout=TIMEOUT_TESTING_MERGE,
+            n_tests=N_TESTS,
+        )
+        assert left_fingerprint == merge_data["left_tree_fingerprint"]
+        assert right_fingerprint == merge_data["right_tree_fingerprint"]
+
+        merge_data[merge_tool.name] = result.name
+        merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
     print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
     return merge_data
 
@@ -119,11 +103,13 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 def build_arguments(
     args: argparse.Namespace,
     repo_slug: str,
+    n_sampled_merges: int,
 ) -> list:
     """Builds the arguments for the merge_tester function.
     Args:
         args (argparse.Namespace): The arguments of the script.
         repo_slug (str): The slug of the repository.
+        n_sampled_merges (int): The number of merges to sample.
     Returns:
         list: The arguments for the merge_tester function.
     """
@@ -158,6 +144,12 @@ def build_arguments(
             "because it does not contain any merges.",
         )
         return []
+    merges = merges[merges["test merge"]]
+    merges = (
+        merges.sample(n_sampled_merges, random_state=42)
+        if len(merges) > n_sampled_merges
+        else merges
+    )
     return [
         (repo_slug, merge_data, Path(args.cache_dir))
         for _, merge_data in merges.iterrows()
@@ -169,6 +161,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
+    parser.add_argument("--n_sampled_merges", type=int)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
@@ -182,7 +175,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_tester_arguments += build_arguments(args, repo_slug)
+        merge_tester_arguments += build_arguments(
+            args, repo_slug, args.n_sampled_merges
+        )
 
     # Shuffle input to reduce cache contention
     random.seed(42)
