@@ -93,7 +93,7 @@ java -cp build/libs/astmergeevaluation-all.jar \
 
 # Sample 20*<n_merges> merges
 read -ra merge_comparator_flags <<<"${comparator_flags}"
-python3 src/python/sample_merges.py \
+python3 src/python/merges_sampler.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_sampled/" \

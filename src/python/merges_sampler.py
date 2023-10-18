@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ Samples n_merges for each repository.
-usage: python3 sample_merges.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
+usage: python3 merges_sampler.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
                                 --include_trivial_merges (optional)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         )
         if not merge_list_file.exists():
             print(
-                "sample_merges:",
+                "merges_sampler:",
                 repo_slug,
                 "does not have a list of merges. Missing file: ",
                 merge_list_file,
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
         if output_file.exists():
             print(
-                "sample_merges: Skipping",
+                "merges_sampler: Skipping",
                 repo_slug,
                 "because it is already computed.",
             )
@@ -61,7 +61,7 @@ if __name__ == "__main__":
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
             print(
-                "sample_merges: Skipping",
+                "merges_sampler: Skipping",
                 repo_slug,
                 "because it does not contain any merges.",
             )
