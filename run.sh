@@ -93,23 +93,24 @@ java -cp build/libs/astmergeevaluation-all.jar \
 
 # Sample 20*<n_merges> merges
 read -ra merge_comparator_flags <<<"${comparator_flags}"
-python3 src/python/sample_merges.py \
+python3 src/python/merges_sampler.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_sampled/" \
     --n_merges "$((20 * "$N_MERGES"))" \
     "${merge_comparator_flags[@]}"
 
-python3 src/python/merge_tools_comparator.py \
+python3 src/python/merge_analyzer.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
-    --output_dir "$OUT_DIR/merges_compared/" \
+    --output_dir "$OUT_DIR/merges_analyzed/" \
     --cache_dir "$CACHE_DIR" \
 
 python3 src/python/merge_tester.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --merges_path "$OUT_DIR/merges_compared/" \
+    --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
+    --n_sampled_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR" \
 
 python3 src/python/merge_differ.py \
