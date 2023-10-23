@@ -408,6 +408,14 @@ public class FindMergeCommits {
       }
 
       ObjectId mergeId = commit.toObjectId();
+
+      boolean newMerge = written.add(mergeId);
+      // Whenever an already-processed merge is seen, all older merges have also been processed, but
+      // this code does not depend on the order of results from `git log`.
+      if (!newMerge) {
+        continue;
+      }
+
       RevCommit parent1 = parents[0];
       ObjectId parent1Id = parent1.toObjectId();
       RevCommit parent2 = parents[1];
@@ -429,22 +437,17 @@ public class FindMergeCommits {
         }
       }
 
-      boolean newMerge = written.add(mergeId);
-      // Whenever an already-processed merge is seen, all older merges have also been processed, but
-      // don't depend on the order of results from `git log`.
-      if (newMerge) {
-        // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
-        writer.write(
-            String.format(
-                "%s,%s,%s,%s,%s,%s",
-                index++,
-                branch.getName(),
-                ObjectId.toString(mergeId),
-                ObjectId.toString(parent1Id),
-                ObjectId.toString(parent2Id),
-                notes));
-        writer.newLine();
-      }
+      // "idx,branch_name,merge_commit,parent_1,parent_2,notes"
+      writer.write(
+          String.format(
+              "%s,%s,%s,%s,%s,%s",
+              index++,
+              branch.getName(),
+              ObjectId.toString(mergeId),
+              ObjectId.toString(parent1Id),
+              ObjectId.toString(parent2Id),
+              notes));
+      writer.newLine();
     }
     return index;
   }
