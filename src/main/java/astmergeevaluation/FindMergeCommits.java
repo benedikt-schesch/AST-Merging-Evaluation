@@ -392,7 +392,7 @@ public class FindMergeCommits {
     }
     if (mergeCommits.size() > MAX_MERGE_COMMITS) {
       System.out.printf(
-          "FindMergeCommits: selecting %d commits from %d on branch %s of %s%n",
+          "FindMergeCommits: selecting %d merges from %d on branch %s of %s%n",
           MAX_MERGE_COMMITS, mergeCommits.size(), branch, repo);
       Random r = new Random(0);
       Collections.shuffle(mergeCommits, r);
