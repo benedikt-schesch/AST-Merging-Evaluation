@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -66,6 +67,9 @@ import org.plumelib.util.StringsPlume;
 // TODO: This program should delete files from /tmp directory after using them, in order to avoid
 // filling up the disk.
 public class FindMergeCommits {
+
+  /** The maximum number of merge commits to output for any given branch. */
+  private static final int MAX_MERGE_COMMITS = 2000;
 
   /** The GitHub repositories to search for merge commits. */
   final List<OrgAndRepo> repos;
@@ -376,9 +380,27 @@ public class FindMergeCommits {
     if (branchId == null) {
       throw new Error("no ObjectId for " + branch);
     }
+
+    List<RevCommit> mergeCommits = new ArrayList<>();
     Iterable<RevCommit> commits = git.log().add(branchId).call();
-    // This loop cannot be parallelized, beacuse of the `index` variable.
     for (RevCommit commit : commits) {
+      RevCommit[] parents = commit.getParents();
+      if (parents.length == 2) {
+        // This is a merge commit.
+        mergeCommits.add(commit);
+      }
+    }
+    if (mergeCommits.size() > MAX_MERGE_COMMITS) {
+      System.out.printf(
+          "FindMergeCommits: selecting %d merges from %d on branch %s of %s%n",
+          MAX_MERGE_COMMITS, mergeCommits.size(), branch, repo);
+      Random r = new Random(0);
+      Collections.shuffle(mergeCommits, r);
+      mergeCommits = mergeCommits.subList(0, MAX_MERGE_COMMITS);
+    }
+
+    // This loop cannot be parallelized, beacuse of the `index` variable.
+    for (RevCommit commit : mergeCommits) {
       RevCommit[] parents = commit.getParents();
       if (parents.length != 2) {
         // This is not a merge commit.
