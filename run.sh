@@ -59,7 +59,7 @@ echo "Options: $comparator_flags"
 length=${#REPOS_CSV}
 REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
 
-./gradlew assemble -g ../.gradle/
+./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
 
