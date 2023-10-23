@@ -235,7 +235,7 @@ public class FindMergeCommits {
    * @throws GitAPIException if there is trouble running Git commands
    */
   void writeMergeCommitsForRepos() throws IOException, GitAPIException {
-    System.out.printf("Finding merge commits for %d repositories.%n", repos.size());
+    System.out.printf("FindMergeCommits: %d repositories.%n", repos.size());
     // Parallel execution for each repository.
     repos.parallelStream().forEach(this::writeMergeCommitsForRepo);
   }
@@ -246,7 +246,7 @@ public class FindMergeCommits {
    * @param orgAndRepo the GitHub organization name and repository name
    */
   void writeMergeCommitsForRepo(OrgAndRepo orgAndRepo) {
-    String msgPrefix = StringsPlume.rpad("Find merge commits: " + orgAndRepo + " ", 69) + " ";
+    String msgPrefix = StringsPlume.rpad("FindMergeCommits: " + orgAndRepo + " ", 69) + " ";
     System.out.println(msgPrefix + "STARTED");
     try {
       writeMergeCommits(orgAndRepo);
@@ -525,11 +525,14 @@ public class FindMergeCommits {
 
       return history1.get(commonPrefixLength - 1);
     } catch (Exception e) {
-      throw new Error(e);
+      throw new Error(
+          String.format("getMergeBaseCommit(%s, %s, %s, %s)", git, repo, commit1, commit2), e);
     }
   }
 
-  // This doesn't work; I don't know why.
+  // I got the error
+  //   java.lang.Error: org.eclipse.jgit.errors.MissingObjectException: Missing unknown
+  // 7f8b42c391eaa92fdfcaae4e7cb37cc84be91d4e
   // Maybe see https://www.eclipse.org/forums/index.php/t/1091725/ ??
   /**
    * Given two commits, return their merge base commit. It is the nearest ancestor of both commits.
@@ -563,7 +566,8 @@ public class FindMergeCommits {
               "Wrong number of base commits for getMergeBaseCommit(%s, \"%s\", \"%s\"): %s",
               repo, commit1, commit2, baseCommits));
     } catch (IOException e) {
-      throw new Error(e);
+      throw new Error(
+          String.format("getMergeBaseCommit2(%s, %s, %s, %s)", git, repo, commit1, commit2), e);
     }
   }
 
@@ -603,7 +607,8 @@ public class FindMergeCommits {
       }
       return baseCommit;
     } catch (Exception e) {
-      throw new Error(e);
+      throw new Error(
+          String.format("getMergeBaseCommit3(%s, %s, %s, %s)", git, repo, commit1, commit2), e);
     }
   }
 }
