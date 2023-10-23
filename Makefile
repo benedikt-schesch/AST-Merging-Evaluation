@@ -89,10 +89,10 @@ small-test-diff:
 	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all
 
 gradle-assemble:
-	./gradlew assemble -g ../.gradle/
+	./gradlew -q assemble -g ../.gradle/
 
 java-style:
-	./gradlew spotlessCheck javadoc requireJavadoc -g ../.gradle/
+	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
 download-merge-tools: jars/IntelliMerge-1.0.9-all.jar jars/spork.jar
 
