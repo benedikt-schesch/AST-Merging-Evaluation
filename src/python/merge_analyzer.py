@@ -96,9 +96,9 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         cache_data["parents pass"] = False
     else:
         cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
-        cache_data["left test result"] = repo_left.test(
-            TIMEOUT_TESTING_PARENT, N_TESTS
-        ).name
+        result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+        cache_data["left test result"] = result.name
+        cache_data["left test coverage"] = test_coverage
         cache_data["parents pass"] = is_test_passed(cache_data["left test result"])
 
     # Test right parent
@@ -108,15 +108,18 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         cache_data["parents pass"] = False
     else:
         cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
-        cache_data["right test result"] = repo_right.test(
-            TIMEOUT_TESTING_PARENT, N_TESTS
-        ).name
+        result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+        cache_data["right test result"] = result.name
+        cache_data["right test coverage"] = test_coverage
         cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
             cache_data["right test result"]
         )
 
     cache_data["test merge"] = (
-        cache_data["parents pass"] and cache_data["diff_contains_java_file"]
+        cache_data["parents pass"]
+        and cache_data["diff_contains_java_file"]
+        and cache_data["left test coverage"] > 0.8
+        and cache_data["right test coverage"] > 0.8
     )
 
     set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)

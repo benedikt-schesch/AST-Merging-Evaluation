@@ -7,6 +7,7 @@ dependencies:
   - ld_impl_linux-64
   - libffi
   - libuuid
+  - lxml
   - ncurses
   - openssl
   - pip

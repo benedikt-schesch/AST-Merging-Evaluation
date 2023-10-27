@@ -41,6 +41,7 @@ while [ $# -gt 0 ]; do
 done
 
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
+PATH=$(pwd)/jars/jacoco-0.8.11/lib/:$PATH
 export PATH
 
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
