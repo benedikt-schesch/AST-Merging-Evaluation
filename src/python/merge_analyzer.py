@@ -100,7 +100,9 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
         cache_data["left parent test result"] = result.name
         cache_data["left parent test coverage"] = test_coverage
-        cache_data["parents pass"] = is_test_passed(cache_data["left test result"])
+        cache_data["parents pass"] = is_test_passed(
+            cache_data["left parent test result"]
+        )
 
     # Test right parent
     if not right_success:
@@ -114,7 +116,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         cache_data["right parent test result"] = result.name
         cache_data["right parent test coverage"] = test_coverage
         cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
-            cache_data["right test result"]
+            cache_data["right parent test result"]
         )
 
     cache_data["test merge"] = (
