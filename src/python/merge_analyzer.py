@@ -91,26 +91,28 @@ def merge_analyzer(  # pylint: disable=too-many-locals
 
     # Test left parent
     if not left_success:
-        cache_data["left test result"] = TEST_STATE.Git_checkout_failed.name
+        cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["left_tree_fingerprint"] = None
+        cache_data["left parent test coverage"] = None
         cache_data["parents pass"] = False
     else:
         cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
         result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["left test result"] = result.name
-        cache_data["left test coverage"] = test_coverage
+        cache_data["left parent test result"] = result.name
+        cache_data["left parent test coverage"] = test_coverage
         cache_data["parents pass"] = is_test_passed(cache_data["left test result"])
 
     # Test right parent
     if not right_success:
-        cache_data["right test result"] = TEST_STATE.Git_checkout_failed.name
+        cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["right_tree_fingerprint"] = None
+        cache_data["right parent test coverage"] = None
         cache_data["parents pass"] = False
     else:
         cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
         result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["right test result"] = result.name
-        cache_data["right test coverage"] = test_coverage
+        cache_data["right parent test result"] = result.name
+        cache_data["right parent test coverage"] = test_coverage
         cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
             cache_data["right test result"]
         )
