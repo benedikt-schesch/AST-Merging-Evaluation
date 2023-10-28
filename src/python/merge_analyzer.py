@@ -122,8 +122,10 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     cache_data["test merge"] = (
         cache_data["parents pass"]
         and cache_data["diff_contains_java_file"]
-        and cache_data["left test coverage"] > 0.8
-        and cache_data["right test coverage"] > 0.8
+        and cache_data["left parent test coverage"] is not None
+        and cache_data["right parent test coverage"] is not None
+        and cache_data["left parent test coverage"] > 0.8
+        and cache_data["right parent test coverage"] > 0.8
     )
 
     set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
