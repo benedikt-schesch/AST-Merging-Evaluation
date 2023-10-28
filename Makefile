@@ -17,7 +17,7 @@ showvars:
 
 python-style:
 	black ${PYTHON_FILES}
-	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
+	pylint -f parseable --disable=W,invalid-name,c-extension-no-member,duplicate-code ${PYTHON_FILES}
 
 check-python-style:
 	black ${PYTHON_FILES} --check

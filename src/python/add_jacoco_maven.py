@@ -1,3 +1,5 @@
+""" Adds Jacoco plugin configuration to a Maven pom.xml file. """
+
 from typing import Any
 import argparse
 from lxml import etree
