@@ -53,7 +53,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     for branch in ["left", "right"]:
         commit_sha = merge_data[branch]
         repo = Repository(repo_slug, cache_directory=cache_directory)
-        test_result, tree_fingerprint = repo.checkout_and_test(
+        test_result, test_coverage, tree_fingerprint = repo.checkout_and_test(
             commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS
         )
         if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
@@ -83,6 +83,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             merge_fingerprint,
             left_fingerprint,
             right_fingerprint,
+            test_coverage,
             _,
         ) = repo.merge_and_test(
             tool=merge_tool,

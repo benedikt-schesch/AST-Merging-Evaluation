@@ -10,6 +10,7 @@ from enum import Enum
 import uuid
 import subprocess
 import os
+import xml.etree.ElementTree as ET
 import shutil
 import time
 from git.repo import Repo
@@ -173,6 +174,7 @@ class Repository:
         Union[str, None],
         Union[str, None],
         float,
+        float,
     ]:
         """Merges the given commits using the given tool and tests the result.
         The test results of multiple runs is combined into one result.
@@ -187,6 +189,7 @@ class Repository:
             str: The tree fingerprint of the merge result.
             str: The left fingerprint.
             str: The right fingerprint.
+            float: The test coverage.
             float: The time it took to run the merge, in seconds. Does not include
                 the test time.
         """
@@ -199,13 +202,14 @@ class Repository:
             run_time,
         ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
-            return merge_status, None, None, None, -1
-        test_result = self.test(timeout, n_tests)
+            return merge_status, None, None, None, 0, -1
+        test_result, test_coverage = self.test(timeout, n_tests)
         return (
             test_result,
             merge_fingerprint,
             left_fingerprint,
             right_fingerprint,
+            test_coverage,
             run_time,
         )
 
@@ -222,6 +226,7 @@ class Repository:
         Union[str, None],
         Union[str, None],
         float,
+        float,
     ]:
         """Merges the given commits using the given tool and tests the result.
         The test results of multiple runs is combined into one result.
@@ -236,6 +241,7 @@ class Repository:
             str: The tree fingerprint of the result.
             str: The left fingerprint.
             str: The right fingerprint.
+            float: The test coverage.
             float: The time it took to run the merge, in seconds.
         """
         sha_cache_entry = self.get_sha_cache_entry(
@@ -246,8 +252,8 @@ class Repository:
                 tool, left_commit, right_commit, timeout, n_tests
             )
         if sha_cache_entry["sha"] is None:
-            return TEST_STATE.Git_checkout_failed, None, None, None, -1
-        result = self.get_test_cache_entry(sha_cache_entry["sha"])
+            return TEST_STATE.Git_checkout_failed, None, None, None, 0, -1
+        result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
@@ -257,6 +263,7 @@ class Repository:
             sha_cache_entry["sha"],
             sha_cache_entry["left_fingerprint"],
             sha_cache_entry["right_fingerprint"],
+            test_coverage,
             -1,
         )
 
@@ -436,7 +443,7 @@ class Repository:
 
     def get_test_cache_entry(
         self, sha: str, start_test: bool = False
-    ) -> Union[None, TEST_STATE]:
+    ) -> Tuple[Union[None, TEST_STATE], float]:
         """Gets a test cache entry.
         Args:
             sha (str): The tree fingerprint of the repository.
@@ -445,22 +452,23 @@ class Repository:
         Returns:
             Union[None,TEST_STATE]: The result of the test if the repository is in the cache,
                     None otherwise.
+            float: The test coverage.
         """
         cache = lookup_in_cache(
             sha, self.repo_slug, self.test_cache_directory, set_run=start_test
         )
         if cache is None:
-            return None
+            return None, 0
         if not isinstance(cache, dict):
             raise Exception("Cache entry should be a dictionary")
-        return TEST_STATE[cache["test_result"]]
+        return TEST_STATE[cache["test_result"]], cache["test_coverage"][-1]
 
     def _checkout_and_test(
         self,
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> Tuple[TEST_STATE, Union[str, None]]:
+    ) -> Tuple[TEST_STATE, float, Union[str, None]]:
         """Helper function for `checkout_and_test`,
         which checks out the given commit and tests the repository.
         This function does not check the cache.
@@ -470,21 +478,23 @@ class Repository:
             n_tests (int): The number of times to run the test suite.
         Returns:
             TEST_STATE: The result of the test.
+            float: The test coverage.
             Union[str,None]: The tree fingerprint of the result.
         """
         result, explanation = self.checkout(commit)
         if not result:
             print("Checkout failed for", self.repo_slug, commit, explanation)
-            return TEST_STATE.Git_checkout_failed, None
+            return TEST_STATE.Git_checkout_failed, 0, None
         sha = self.compute_tree_fingerprint()
-        return self.test(timeout, n_tests), sha
+        result, test_coverage = self.test(timeout, n_tests)
+        return result, test_coverage, sha
 
     def checkout_and_test(
         self,
         commit: str,
         timeout: int,
         n_tests: int,
-    ) -> Tuple[TEST_STATE, Union[str, None]]:
+    ) -> Tuple[TEST_STATE, float, Union[str, None]]:
         """Checks out the given commit and tests the repository.
         Args:
             commit (str): The commit to checkout.
@@ -493,19 +503,20 @@ class Repository:
             check_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             TEST_STATE: The result of the test.
+            float: The test coverage.
             Union[str,None]: The tree fingerprint of the result.
         """
         sha_cache_entry = self.get_sha_cache_entry(commit, start_merge=True)
         if sha_cache_entry is None:
             return self._checkout_and_test(commit, timeout, n_tests)
         if sha_cache_entry["sha"] is None:
-            return TEST_STATE.Git_checkout_failed, None
-        result = self.get_test_cache_entry(sha_cache_entry["sha"])
+            return TEST_STATE.Git_checkout_failed, 0, None
+        result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._checkout_and_test(commit, timeout, n_tests)
-        return result, sha_cache_entry["sha"]
+        return result, test_coverage, sha_cache_entry["sha"]
 
-    def test(self, timeout: int, n_tests: int) -> TEST_STATE:
+    def test(self, timeout: int, n_tests: int) -> Tuple[TEST_STATE, float]:
         """Tests the repository. The test results of multiple runs is combined into one result.
         If one of the runs passes then the entire test is marked as passed.
         If one of the runs timeouts then the entire test is marked as timeout.
@@ -515,16 +526,18 @@ class Repository:
             n_tests (int): The number of times to run the test suite.
         Returns:
             TEST_STATE: The result of the test.
+            float: The test coverage.
         """
         sha = self.compute_tree_fingerprint()
         cache_data = {}
 
-        result = self.get_test_cache_entry(sha, start_test=True)
+        result, test_coverage = self.get_test_cache_entry(sha, start_test=True)
         if result is not None:
-            return result
+            return result, test_coverage
 
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
+        cache_data["test_coverage"] = []
         for i in range(n_tests):
             test_state, test_output = repo_test(self.repo_path, timeout)
             test_log_file = Path(
@@ -543,11 +556,39 @@ class Repository:
             cache_data["test_results"].append(test_state.name)
             cache_data["test_log_file"].append(str(test_log_file))
             cache_data["test_result"] = test_state.name
+            cache_data["test_coverage"].append(self.compute_test_coverage())
             if test_state in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
 
         set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_directory)
-        return TEST_STATE[cache_data["test_result"]]
+        return TEST_STATE[cache_data["test_result"]], cache_data["test_coverage"][-1]
+
+    def compute_test_coverage(self) -> float:
+        """Computes the test coverage of the given commit.
+        Args:
+            commit (str): The commit to checkout.
+        Returns:
+            float: The test coverage.
+        """
+        jacoco_file = self.repo_path / Path("target/site/jacoco/jacoco.xml")
+        if not jacoco_file.exists():
+            print("Jacoco file does not exist", jacoco_file, self.repo_path)
+            return 0
+        print("Jacoco file exists", jacoco_file)
+        tree = ET.parse(jacoco_file)
+        root = tree.getroot()
+
+        total_missed = 0
+        total_covered = 0
+
+        for counter in root.findall(".//counter[@type='INSTRUCTION']"):
+            total_missed += int(counter.attrib["missed"])
+            total_covered += int(counter.attrib["covered"])
+
+        total = total_missed + total_covered
+        if total == 0:
+            return 0
+        return total_covered / total
 
     def __del__(self) -> None:
         """Deletes the repository."""

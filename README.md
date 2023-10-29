@@ -165,6 +165,10 @@ To run style checking run `make style`.
 
     * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 
+    * add_jacoco_gradle.py -> Adds jacoco to gradle projects.
+
+    * add_jacoco_maven.py -> Adds jacoco to maven projects.
+
   * scripts/ -> contains the following scripts:
 
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
