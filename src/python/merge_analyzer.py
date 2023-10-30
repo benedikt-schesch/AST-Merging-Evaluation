@@ -64,9 +64,13 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     right_success, _ = repo_right.checkout(merge_data["right"])
 
     if not left_success:
-        raise Exception("git checkout failed: ", repo_left, merge_data["left"])
+        raise Exception(
+            "git checkout failed: ", repo_left.repo_path, merge_data["left"]
+        )
     if not right_success:
-        raise Exception("git checkout failed: ", repo_right, merge_data["right"])
+        raise Exception(
+            "git checkout failed: ", repo_right.repo_path, merge_data["right"]
+        )
 
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
