@@ -63,6 +63,11 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     left_success, _ = repo_left.checkout(merge_data["left"])
     right_success, _ = repo_right.checkout(merge_data["right"])
 
+    if not left_success:
+        raise Exception("git checkout failed: ", repo_left, merge_data["left"])
+    if not right_success:
+        raise Exception("git checkout failed: ", repo_right, merge_data["right"])
+
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
     assert repo_right.repo_path.exists()
@@ -90,34 +95,20 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     cache_data["diff_contains_java_file"] = contains_java_file
 
     # Test left parent
-    if not left_success:
-        cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
-        cache_data["left_tree_fingerprint"] = None
-        cache_data["left parent test coverage"] = None
-        cache_data["parents pass"] = False
-    else:
-        cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
-        result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["left parent test result"] = result.name
-        cache_data["left parent test coverage"] = test_coverage
-        cache_data["parents pass"] = is_test_passed(
-            cache_data["left parent test result"]
-        )
+    cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
+    result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+    cache_data["left parent test result"] = result.name
+    cache_data["left parent test coverage"] = test_coverage
+    cache_data["parents pass"] = is_test_passed(cache_data["left parent test result"])
 
     # Test right parent
-    if not right_success:
-        cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
-        cache_data["right_tree_fingerprint"] = None
-        cache_data["right parent test coverage"] = None
-        cache_data["parents pass"] = False
-    else:
-        cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
-        result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["right parent test result"] = result.name
-        cache_data["right parent test coverage"] = test_coverage
-        cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
-            cache_data["right parent test result"]
-        )
+    cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
+    result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+    cache_data["right parent test result"] = result.name
+    cache_data["right parent test coverage"] = test_coverage
+    cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
+        cache_data["right parent test result"]
+    )
 
     cache_data["test merge"] = (
         cache_data["parents pass"]
