@@ -63,7 +63,7 @@ if __name__ == "__main__":
                     print(actual_df[col])
                     different_columns.append(col)
             print(
-                f"{goal_file} and {actual_file} are not equal in columns: {different_columns}"
+                f"{goal_folder / goal_file} and {actual_file} are not equal in columns: {different_columns}"
             )
             # Print the differences
             print(
