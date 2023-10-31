@@ -66,9 +66,5 @@ if __name__ == "__main__":
                 f"{goal_file} and {actual_file} are not equal in columns: {different_columns}"
             )
             # Print the differences
-            print(
-                os.system(
-                    f"diff {goal_folder/goal_file} {actual_file} in columns: {different_columns}"
-                )
-            )
+            print(os.system(f"diff -u {goal_folder/goal_file} {actual_file}"))
             raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")
