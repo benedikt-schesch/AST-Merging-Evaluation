@@ -417,6 +417,7 @@ class Repository:
             .decode("utf-8")
             .split()[0]
         )
+        print("fingerprint of", str(self.repo_path), "=", result)
         return result
 
     def get_sha_cache_entry(
