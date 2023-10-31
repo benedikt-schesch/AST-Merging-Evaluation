@@ -15,6 +15,7 @@ Args:
 from argparse import ArgumentParser
 from pathlib import Path
 import json
+import shutil
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -27,8 +28,12 @@ if __name__ == "__main__":
 
     n_deleted = 0
     for file in cache_directory.glob("**/*.json"):
-        with open(file, "r") as f:
-            data = json.load(f)
+        try:
+            with open(file, "r") as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            print(f"Could not read {file}")
+            file.unlink()
 
         for key in list(data.keys()):
             if data[key] is None:
