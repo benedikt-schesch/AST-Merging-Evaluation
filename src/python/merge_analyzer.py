@@ -58,14 +58,20 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         return merge_data
 
     cache_data = {}
+    left_sha = merge_data["left"]
+    right_sha = merge_data["right"]
     repo_left = Repository(
-        repo_slug, cache_directory=cache_directory, workdir_id=merge_data["left"]
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id="left-" + left_sha + "-" + right_sha,
     )
     repo_right = Repository(
-        repo_slug, cache_directory=cache_directory, workdir_id=merge_data["right"]
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id="right-" + left_sha + "-" + right_sha,
     )
-    left_success, _ = repo_left.checkout(merge_data["left"])
-    right_success, _ = repo_right.checkout(merge_data["right"])
+    left_success, _ = repo_left.checkout(left_sha)
+    right_success, _ = repo_right.checkout(right_sha)
 
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()

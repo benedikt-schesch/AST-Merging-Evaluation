@@ -54,7 +54,7 @@ def get_merge_fingerprint(
     repo = Repository(
         repo_slug,
         cache_directory=cache_directory,
-        workdir_id="merge-" + left + "-" + right,
+        workdir_id="merge-differ-" + left + "-" + right,
     )
     (
         merge_status,

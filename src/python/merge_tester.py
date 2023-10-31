@@ -53,7 +53,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     for branch in ["left", "right"]:
         commit_sha = merge_data[branch]
         repo = Repository(
-            repo_slug, cache_directory=cache_directory, workdir_id=commit_sha
+            repo_slug,
+            cache_directory=cache_directory,
+            workdir_id="test-" + branch + "-" + commit_sha,
         )
         test_result, test_coverage, tree_fingerprint = repo.checkout_and_test(
             commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS
