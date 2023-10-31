@@ -42,7 +42,9 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     repo_slug = repo_info["repository"]
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
-    repo = Repository(repo_slug, cache_directory=cache)
+    repo = Repository(
+        repo_slug, cache_directory=cache, workdir_id="head-" + repo_info["head hash"]
+    )
     test_state, _, _ = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )

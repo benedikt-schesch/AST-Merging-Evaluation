@@ -113,6 +113,7 @@ class Repository:
         self,
         repo_slug: str,
         cache_directory: Path = Path(""),
+        workdir_id=uuid.uuid4().hex,  # uuid4 is a random UID
     ) -> None:
         """Initializes the repository.
         Args:
@@ -121,7 +122,6 @@ class Repository:
         """
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug.split("/")[1]
-        workdir_id = uuid.uuid4().hex
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
@@ -417,6 +417,7 @@ class Repository:
             .decode("utf-8")
             .split()[0]
         )
+        print("fingerprint of", str(self.repo_path), "=", result)
         return result
 
     def get_sha_cache_entry(
