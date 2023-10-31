@@ -42,7 +42,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     Merges two branches and returns the result.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repo slug,
-                the merge data, and the cache path.
+                the merge data (which is side-effected), and the cache path.
     Returns:
         dict: A dictionary containing the merge result.
     """
@@ -58,8 +58,12 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         return merge_data
 
     cache_data = {}
-    repo_left = Repository(repo_slug, cache_directory=cache_directory)
-    repo_right = Repository(repo_slug, cache_directory=cache_directory)
+    repo_left = Repository(
+        repo_slug, cache_directory=cache_directory, workdir_id=merge_data["left"]
+    )
+    repo_right = Repository(
+        repo_slug, cache_directory=cache_directory, workdir_id=merge_data["right"]
+    )
     left_success, _ = repo_left.checkout(merge_data["left"])
     right_success, _ = repo_right.checkout(merge_data["right"])
 

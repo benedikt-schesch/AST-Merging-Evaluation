@@ -51,7 +51,11 @@ def get_merge_fingerprint(
         return None, None
     left = merge_data["left"]
     right = merge_data["right"]
-    repo = Repository(repo_slug, cache_directory=cache_directory)
+    repo = Repository(
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id="merge-" + left + "-" + right,
+    )
     (
         merge_status,
         merge_fingerprint,
