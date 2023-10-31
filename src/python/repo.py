@@ -572,9 +572,7 @@ class Repository:
         """
         jacoco_file = self.repo_path / Path("target/site/jacoco/jacoco.xml")
         if not jacoco_file.exists():
-            print("Jacoco file does not exist", jacoco_file, self.repo_path)
             return 0
-        print("Jacoco file exists", jacoco_file)
         tree = ET.parse(jacoco_file)
         root = tree.getroot()
 

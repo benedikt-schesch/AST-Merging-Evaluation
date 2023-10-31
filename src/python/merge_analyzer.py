@@ -279,8 +279,8 @@ if __name__ == "__main__":
         n_new_analyzed,
     )
     print(
-        "merge_analyzer: Number of merge tool outputs that have been newly \
-            compared and are to test:",
+        "merge_analyzer: Number of merge tool outputs that have been newly compared",
+        "and are to test:",
         n_new_to_test,
     )
     print(
@@ -288,8 +288,8 @@ if __name__ == "__main__":
         n_total_analyzed,
     )
     print(
-        "merge_analyzer: Total number of merge tool outputs that have been compared \
-            and are to test:",
+        "merge_analyzer: Total number of merge tool outputs that have been compared",
+        "and are to test:",
         n_total_to_test,
     )
     print("merge_analyzer: Finished Constructing Output")
