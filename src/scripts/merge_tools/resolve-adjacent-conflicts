@@ -32,7 +32,7 @@
 #   kdiff3 --auto --cs "ShowInfoDialogs=0" base.txt parent1.txt parent2.txt -o merged.txt
 # Also, the `--auto` option is ignored for folder comparison.
 
-DEBUG=1
+DEBUG=0
 
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
