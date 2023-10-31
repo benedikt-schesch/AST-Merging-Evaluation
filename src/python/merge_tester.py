@@ -84,7 +84,8 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         repo = Repository(
             repo_slug,
             cache_directory=cache_directory,
-            workdir_id=f'merge-tester-{merge_tool}-{merge_data["left"]}-{merge_data["right"]}',
+            workdir_id=f"merge-tester-{merge_tool.name}-"
+            + f'{merge_data["left"]}-{merge_data["right"]}',
         )
         (
             result,
