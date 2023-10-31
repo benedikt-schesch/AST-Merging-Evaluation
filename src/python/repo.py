@@ -408,7 +408,7 @@ class Repository:
         """
         assert self.repo_path.exists()
         command = (
-            "sha256sum <(export LC_COLLATE=C; cd "
+            "sha256sum <(export LC_ALL=C; cd "
             + str(self.repo_path)
             + " ;find . -type f -not -path '*/\\.git*' -exec sha256sum {} \\; | sort)"
         )
