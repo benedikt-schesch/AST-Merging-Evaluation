@@ -101,6 +101,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
 
     # Test left parent
     if not left_success:
+        # This should never happen.  Search output for "Git_checkout_failed"
         cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["left_tree_fingerprint"] = None
         cache_data["left parent test coverage"] = None
@@ -116,6 +117,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
 
     # Test right parent
     if not right_success:
+        # This should never happen.  Search output for "Git_checkout_failed"
         cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["right_tree_fingerprint"] = None
         cache_data["right parent test coverage"] = None
