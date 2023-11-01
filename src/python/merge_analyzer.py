@@ -42,7 +42,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     Merges two branches and returns the result.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repo slug,
-                the merge data, and the cache path.
+                the merge data (which is side-effected), and the cache path.
     Returns:
         dict: A dictionary containing the merge result.
     """
@@ -58,10 +58,20 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         return merge_data
 
     cache_data = {}
-    repo_left = Repository(repo_slug, cache_directory=cache_directory)
-    repo_right = Repository(repo_slug, cache_directory=cache_directory)
-    left_success, _ = repo_left.checkout(merge_data["left"])
-    right_success, _ = repo_right.checkout(merge_data["right"])
+    left_sha = merge_data["left"]
+    right_sha = merge_data["right"]
+    repo_left = Repository(
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id="left-" + left_sha + "-" + right_sha,
+    )
+    repo_right = Repository(
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id="right-" + left_sha + "-" + right_sha,
+    )
+    left_success, _ = repo_left.checkout(left_sha)
+    right_success, _ = repo_right.checkout(right_sha)
 
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
@@ -91,6 +101,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
 
     # Test left parent
     if not left_success:
+        # This should never happen.  Search output for "Git_checkout_failed"
         cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["left_tree_fingerprint"] = None
         cache_data["left parent test coverage"] = None
@@ -106,6 +117,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
 
     # Test right parent
     if not right_success:
+        # This should never happen.  Search output for "Git_checkout_failed"
         cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["right_tree_fingerprint"] = None
         cache_data["right parent test coverage"] = None
@@ -269,8 +281,8 @@ if __name__ == "__main__":
         n_new_analyzed,
     )
     print(
-        "merge_analyzer: Number of merge tool outputs that have been newly \
-            compared and are to test:",
+        "merge_analyzer: Number of merge tool outputs that have been newly compared",
+        "and are to test:",
         n_new_to_test,
     )
     print(
@@ -278,8 +290,8 @@ if __name__ == "__main__":
         n_total_analyzed,
     )
     print(
-        "merge_analyzer: Total number of merge tool outputs that have been compared \
-            and are to test:",
+        "merge_analyzer: Total number of merge tool outputs that have been compared",
+        "and are to test:",
         n_total_to_test,
     )
     print("merge_analyzer: Finished Constructing Output")
