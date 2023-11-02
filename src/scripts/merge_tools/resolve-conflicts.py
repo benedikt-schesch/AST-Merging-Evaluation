@@ -6,11 +6,18 @@
 """Edits a file in place to remove certain conflict markers.
 
 Usage: resolve-conflicts.py [options] <filenme>
+Only one option is acted upon.  To address multiple types of conflict markers,
+run the program more than once.
+
+--adjacent_lines: Resolves conflicts on adjacent lines, by accepting both edits.
+This is like the behavior of SVN and darcs, but different than the default
+behavior of Git, Mercurial, and Bazaar.
+
+--blank_lines: Resolves conflicts due to blank lines.
+If "ours" and "theirs" differ only in whitespace (including blank lines), then accept "ours".
 
 --java_imports: Resolves conflicts related to Java import statements
 The output includes every `import` statements that is in either of the parents.
-
---adjacent_lines: Resolves conflicts on adjacent lines, by accepting both edits.
 
 Exit status is 0 (success) if no conflicts remain.
 Exit status is 1 (failure) if conflicts remain.
@@ -41,12 +48,28 @@ def main():  # pylint: disable=too-many-locals
         help="If set, resolve conflicts related to Java import statements",
     )
     arg_parser.add_argument(
+        "--blank_lines",
+        action="store_true",
+        help="If set, resolve conflicts due to blank lines",
+    )
+    arg_parser.add_argument(
         "--adjacent_lines",
         action="store_true",
         help="If set, resolve conflicts on adjacent lines",
     )
     args = arg_parser.parse_args()
     filename = args.filename
+
+    num_options = 0
+    if args.adjacent_lines:
+        num_options += 1
+    if args.blank_lines:
+        num_options += 1
+    if args.java_imports:
+        num_options += 1
+    if num_options != 1:
+        print("resolve-conflicts.py: supply exactly one option.")
+        sys.exit(1)
 
     with open(filename) as file:
         lines = file.readlines()
@@ -64,7 +87,12 @@ def main():  # pylint: disable=too-many-locals
             else:
                 (base, parent1, parent2, num_lines) = conflict
                 merged = merge(
-                    base, parent1, parent2, args.java_imports, args.adjacent_lines
+                    base,
+                    parent1,
+                    parent2,
+                    args.adjacent_lines,
+                    args.blank_lines,
+                    args.java_imports,
                 )
                 if merged is None:
                     tmp.write(lines[i])
@@ -160,8 +188,9 @@ def merge(
     base: List[str],
     parent1: List[str],
     parent2: List[str],
-    java_imports: bool,
     adjacent_lines: bool,
+    blank_lines: bool,
+    java_imports: bool,
 ) -> Union[List[str], None]:
     """Given text for the base and two parents, return merged text.
 
@@ -174,6 +203,16 @@ def merge(
         a list of lines, or None if it cannot do merging.
     """
 
+    if adjacent_lines:
+        adjacent_line_merge = merge_edits_on_different_lines(base, parent1, parent2)
+        if adjacent_line_merge is not None:
+            return adjacent_line_merge
+
+    if blank_lines:
+        blank_line_merge = merge_blank_lines(base, parent1, parent2)
+        if blank_line_merge is not None:
+            return blank_line_merge
+
     if java_imports:
         if (
             all_import_lines(base)
@@ -184,11 +223,6 @@ def merge(
             result = list(set(parent1 + parent2))
             result.sort()
             return result
-
-    if adjacent_lines:
-        adjacent_line_merge = merge_edits_on_different_lines(base, parent1, parent2)
-        if adjacent_line_merge is not None:
-            return adjacent_line_merge
 
     return None
 
@@ -255,7 +289,8 @@ def merge_base_is_prefix_or_suffix(
     deleted all the lines, possibly replacing them by something else.  (We know
     this because there is no common line in base and parent2.  If there were, it
     would also be in parent1, and the hunk would have been split into two at the
-    common line that's in all three texts.)
+    common line that's in all three texts.  The Git Merge output doesn't include
+    any common context lines within the conflict markers.)
     We know the relative position of the additions in parent1.
     """
     base_len = len(base)
@@ -286,6 +321,25 @@ def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
     # If i reaches end of s1, we found all characters of s1 in s2,
     # so s1 is a subsequence of s2.
     return i == n
+
+
+def merge_blank_lines(base, parent1, parent2):
+    "Returns parent1 if parent1 and parent2 differ only in whitespace."
+    if with_one_space(parent1) == with_one_space(parent2):
+        return parent1
+    return None
+
+
+def with_one_space(lines):
+    """Turns a list of strings into a single string, with each run of whitespace replaced
+    by a single space."""
+    # TODO: This could be more efficient.  Even better, I could write a loop in
+    # merge_blank_lines that wouldn't need to create new strings at all. But this is
+    # expedient to write and is probably fast enough.
+    result_lines = []
+    for line in lines:
+        result_lines += line.split()
+    return " ".join(result_lines)
 
 
 def debug_print(*args):
