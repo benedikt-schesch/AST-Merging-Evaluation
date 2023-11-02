@@ -1,0 +1,42 @@
+#!/bin/bash
+# bash, not POSIX sh, because of "readarray".
+
+# This script edits files in place to resolve conflict markers in which the
+# differences are only in whitespace, including blank lines.  This script
+# leaves other conflict markers untouched.
+# Usage:
+#   resolve-blank-lines [file ...]
+#
+# The script works on all files given on the command line.
+# If none are given, the script works on all files in or under the current directory.
+#
+# The exit status code is 0 (success) if all conflicts are resolved.
+# The exit status code is 1 (failure) if any conflict remains.
+#
+# This is not a git mergetool.  A git mergetool is given the base, parent 1, and
+# parent 2 files, all without conflict markers.
+# However, this can be run after a git mergetool that leaves conflict markers
+# in files, as the default git mergetool does.
+
+# Comparison to other tools
+#
+# `git diff` has a `--ignore-blank-lines` option, but `git merge` has
+# no option for ignoring blank lines.  This script addresses that shortcoming.
+
+if [ "$#" -eq 0 ] ; then
+  readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
+else
+  files=("$@")
+fi
+
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+
+status=0
+
+for file in "${files[@]}" ; do
+  if ! "${SCRIPTDIR}"/resolve-conflicts.py --blank_lines "$file" ; then
+    status=1
+  fi
+done
+
+exit $status
