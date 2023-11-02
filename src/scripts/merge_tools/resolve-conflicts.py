@@ -184,7 +184,7 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
     return (base, parent1, parent2, index - start_index)
 
 
-def merge(
+def merge(  # pylint: disable=too-many-arguments
     base: List[str],
     parent1: List[str],
     parent2: List[str],
