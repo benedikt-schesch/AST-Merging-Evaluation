@@ -86,6 +86,8 @@ python3 src/python/test_repo_heads.py \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
+exit 0
+
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \
