@@ -113,6 +113,7 @@ class Repository:
         self,
         repo_slug: str,
         cache_directory: Path = Path(""),
+        workdir_id: str=uuid.uuid4().hex,  # uuid4 is a random UID
     ) -> None:
         """Initializes the repository.
         Args:
@@ -121,7 +122,6 @@ class Repository:
         """
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug.split("/")[1]
-        workdir_id = uuid.uuid4().hex
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
@@ -408,7 +408,7 @@ class Repository:
         """
         assert self.repo_path.exists()
         command = (
-            "sha256sum <(export LC_COLLATE=C; cd "
+            "sha256sum <(export LC_ALL=C; export LC_COLLATE=C; cd "
             + str(self.repo_path)
             + " ;find . -type f -not -path '*/\\.git*' -exec sha256sum {} \\; | sort)"
         )
