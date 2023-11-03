@@ -37,7 +37,7 @@ if __name__ == "__main__":
             print(f"Could not read {file}")
             file.unlink()
             continue
-        
+
         for key in list(data.keys()):
             if data[key] is None:
                 data.pop(key)
