@@ -28,12 +28,15 @@ if __name__ == "__main__":
 
     n_deleted = 0
     for file in cache_directory.glob("**/*.json"):
+        if file.is_dir():
+            continue
         try:
             with open(file, "r") as f:
                 data = json.load(f)
         except json.JSONDecodeError:
             print(f"Could not read {file}")
             file.unlink()
+            continue
 
         for key in list(data.keys()):
             if data[key] is None:

@@ -113,7 +113,7 @@ class Repository:
         self,
         repo_slug: str,
         cache_directory: Path = Path(""),
-        workdir_id=uuid.uuid4().hex,  # uuid4 is a random UID
+        workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
     ) -> None:
         """Initializes the repository.
         Args:
