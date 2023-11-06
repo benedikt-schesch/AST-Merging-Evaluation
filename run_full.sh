@@ -18,4 +18,4 @@ if [ -f cache.tar ] && [ ! -d cache ]; then
     make decompress-cache
 fi
 
-./run.sh input_data/repos.csv results 20 cache "$@"
+./run.sh input_data/repos.csv results 10 cache "$@"
