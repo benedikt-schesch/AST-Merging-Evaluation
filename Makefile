@@ -87,6 +87,9 @@ small-test-diff:
 gradle-assemble:
 	./gradlew -q assemble -g ../.gradle/
 
+clean-local:
+	rm -rf repos .workdir
+
 java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
