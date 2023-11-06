@@ -56,6 +56,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         for key, value in cache_data.items():
             merge_data[key] = value
         return merge_data
+    print("merge_analyzer: Analyzing", repo_slug, cache_key)
 
     cache_data = {}
     left_sha = merge_data["left"]
@@ -63,12 +64,12 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     repo_left = Repository(
         repo_slug,
         cache_directory=cache_directory,
-        workdir_id="left-" + left_sha + "-" + right_sha,
+        workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
     )
     repo_right = Repository(
         repo_slug,
         cache_directory=cache_directory,
-        workdir_id="right-" + left_sha + "-" + right_sha,
+        workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
     )
     left_success, _ = repo_left.checkout(left_sha)
     right_success, _ = repo_right.checkout(right_sha)
@@ -136,11 +137,11 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         and cache_data["diff_contains_java_file"]
         and cache_data["left parent test coverage"] is not None
         and cache_data["right parent test coverage"] is not None
-        and cache_data["left parent test coverage"] > 0.8
-        and cache_data["right parent test coverage"] > 0.8
     )
 
     set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
+
+    print("merge_analyzer: Analyzed", repo_slug, cache_key)
 
     for key, value in cache_data.items():
         merge_data[key] = value

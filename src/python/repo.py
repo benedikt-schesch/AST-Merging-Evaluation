@@ -591,4 +591,4 @@ class Repository:
     def __del__(self) -> None:
         """Deletes the repository."""
         if DELETE_WORKDIRS:
-            shutil.rmtree(self.workdir)
+            shutil.rmtree(self.workdir, ignore_errors=True)

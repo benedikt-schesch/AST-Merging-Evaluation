@@ -68,6 +68,9 @@ if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
 fi
 
+# Delete .workdir
+rm -rf .workdir
+
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
@@ -105,6 +108,8 @@ python3 src/python/merge_analyzer.py \
     --merges_path "$OUT_DIR/merges_sampled/" \
     --output_dir "$OUT_DIR/merges_analyzed/" \
     --cache_dir "$CACHE_DIR" \
+
+exit 0
 
 python3 src/python/merge_tester.py \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
