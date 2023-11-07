@@ -81,6 +81,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals
         ["diff", "-r", str(repo_left.repo_path), str(repo_right.repo_path)],
         stdout=subprocess.PIPE,
         text=True,
+        universal_newlines=True,
     )
 
     diff_size = len(process.stdout.split("\n")) if process.stdout else 0
