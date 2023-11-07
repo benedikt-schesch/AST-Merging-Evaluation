@@ -48,11 +48,11 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
         print(repo_slug, " : Finished cloning")
         try:
             repo.remote().fetch()
+            repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
             repo.submodule_update()
         except Exception as e:
             print(repo_slug, "Exception during cloning:\n", e)
             raise
-    repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
     return repo
 
 
