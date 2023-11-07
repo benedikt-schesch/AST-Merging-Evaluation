@@ -77,14 +77,14 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
     assert repo_right.repo_path.exists()
-    process = subprocess.run(
-        ["diff", "-r", str(repo_left.repo_path), str(repo_right.repo_path)],
-        stdout=subprocess.PIPE,
-        text=True,
-        universal_newlines=True,
+    command = "diff -r {} {} | grep -a '^>' | wc -l".format(
+        str(repo_left.repo_path), str(repo_right.repo_path)
+    )
+    process = process = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
     )
 
-    diff_size = len(process.stdout.split("\n")) if process.stdout else 0
+    diff_size = int(process.stdout.strip())
     cache_data["diff_size"] = diff_size
 
     # List all files that are different between left and right
