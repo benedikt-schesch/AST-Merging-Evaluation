@@ -97,14 +97,14 @@ java -cp build/libs/astmergeevaluation-all.jar \
 # Sample 5*<n_merges> merges
 read -ra merge_comparator_flags <<<"${comparator_flags}"
 python3 src/python/merges_sampler.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_sampled/" \
     --n_merges "$((5 * "$N_MERGES"))" \
     "${merge_comparator_flags[@]}"
 
 python3 src/python/merge_analyzer.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
     --output_dir "$OUT_DIR/merges_analyzed/" \
     --cache_dir "$CACHE_DIR" \
@@ -112,14 +112,14 @@ python3 src/python/merge_analyzer.py \
 exit 0
 
 python3 src/python/merge_tester.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --n_sampled_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR" \
 
 python3 src/python/merge_differ.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_tested" \
     --cache_dir "$CACHE_DIR"
 
@@ -127,6 +127,6 @@ python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --n_merges "$N_MERGES" \
     --output_dir "$OUT_DIR"
