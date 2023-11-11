@@ -263,6 +263,8 @@ if __name__ == "__main__":
         if output_file.exists():
             try:
                 df = pd.read_csv(output_file, header=0)
+                if len(df) == 0:
+                    continue
                 n_total_analyzed += len(df)
                 n_total_to_test += len(df[df["test merge"]])
             except pd.errors.EmptyDataError:
@@ -273,6 +275,8 @@ if __name__ == "__main__":
                 )
             continue
         df = pd.DataFrame(repo_result[repo_slug])
+        if len(df) == 0:
+            continue
         df.sort_index(inplace=True)
         df.to_csv(output_file, index_label="idx")
         n_total_analyzed += len(df)
