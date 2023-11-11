@@ -97,8 +97,6 @@ python3 src/python/merges_sampler.py \
     --n_merges "$((5 * "$N_MERGES"))" \
     "${merge_comparator_flags[@]}"
 
-exit 0
-
 python3 src/python/split_repos.py \
     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
     --machine_id "$machine_id" \
