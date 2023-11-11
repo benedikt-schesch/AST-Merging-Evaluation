@@ -48,7 +48,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
             cache_directory=cache,
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
         )
-    except FileNotFoundError as e:
+    except Exception as e:
         print("test_repo_heads:", repo_slug, ": head_passes_tests :", e)
         return TEST_STATE.Git_checkout_failed
     test_state, _, _ = repo.checkout_and_test(

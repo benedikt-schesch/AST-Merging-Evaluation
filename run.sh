@@ -78,12 +78,6 @@ python3 src/python/write_head_hashes.py \
     --repos_csv "$REPOS_CSV" \
     --output_path "$REPOS_CSV_WITH_HASHES"
 
-python3 src/python/split_repos.py \
-    --repos_csv "$REPOS_CSV_WITH_HASHES" \
-    --machine_id "$machine_id" \
-    --num_machines "$num_machines" \
-    --output_file "$OUT_DIR/local_repos.csv"
-
 python3 src/python/test_repo_heads.py \
     --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
@@ -97,11 +91,19 @@ java -cp build/libs/astmergeevaluation-all.jar \
 # Sample 5*<n_merges> merges
 read -ra merge_comparator_flags <<<"${comparator_flags}"
 python3 src/python/merges_sampler.py \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges/" \
     --output_dir "$OUT_DIR/merges_sampled/" \
     --n_merges "$((5 * "$N_MERGES"))" \
     "${merge_comparator_flags[@]}"
+
+exit 0
+
+python3 src/python/split_repos.py \
+    --repos_csv "$OUT_DIR/repos_head_passes.csv" \
+    --machine_id "$machine_id" \
+    --num_machines "$num_machines" \
+    --output_file "$OUT_DIR/local_repos.csv"
 
 python3 src/python/merge_analyzer.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \

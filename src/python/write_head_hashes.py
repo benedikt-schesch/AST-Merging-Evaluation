@@ -44,9 +44,10 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         github_url = "https://:@github.com/" + repo_slug + ".git"
-        repo = git.repo.Repo.clone_from(github_url, repo_dir)
         print(repo_slug, " : Finished cloning")
         try:
+            repo = git.repo.Repo.clone_from(github_url, repo_dir)
+            print(repo_slug, " : Finished cloning")
             repo.remote().fetch()
             repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
             repo.submodule_update()
