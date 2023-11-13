@@ -79,7 +79,7 @@ python3 src/python/write_head_hashes.py \
     --output_path "$REPOS_CSV_WITH_HASHES"
 
 python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$OUT_DIR/local_repos.csv" \
+    --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
