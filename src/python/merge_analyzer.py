@@ -35,7 +35,7 @@ def is_test_passed(test_state: str) -> bool:
     return test_state == TEST_STATE.Tests_passed.name
 
 
-def merge_analyzer(  # pylint: disable=too-many-locals
+def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     args: Tuple[str, pd.Series, Path]
 ) -> pd.Series:
     """
@@ -77,8 +77,8 @@ def merge_analyzer(  # pylint: disable=too-many-locals
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
     assert repo_right.repo_path.exists()
-    command = "diff -r {} {} | grep -a '^>' | wc -l".format(
-        str(repo_left.repo_path), str(repo_right.repo_path)
+    command = (
+        f"diff -r {repo_left.repo_path} {repo_right.repo_path} | grep -a '^>' | wc -l"
     )
     process = process = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True

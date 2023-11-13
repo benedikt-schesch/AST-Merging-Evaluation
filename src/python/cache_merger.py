@@ -6,12 +6,11 @@ import shutil
 import json
 from argparse import ArgumentParser
 from pathlib import Path
-from tqdm import tqdm
 from typing import List
+from tqdm import tqdm
 
 
-
-def merge_json_data(paths:List[Path], output_path:Path):
+def merge_json_data(paths: List[Path], output_path: Path):
     """Merge multiple json files into one"""
     data = {}
     for path in paths:
@@ -23,7 +22,7 @@ def merge_json_data(paths:List[Path], output_path:Path):
         json.dump(data, f, indent=4, sort_keys=True)
 
 
-def copy_file(source:Path, destination:Path):
+def copy_file(source: Path, destination: Path):
     """Copy a file from source to destination"""
     if not destination.exists():
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -31,7 +30,7 @@ def copy_file(source:Path, destination:Path):
         shutil.copy(source, destination)
 
 
-def process_directory(directory:Path, other_caches:List[Path], output_cache:Path):
+def process_directory(directory: Path, other_caches: List[Path], output_cache: Path):
     """Process a directory recursively"""
     for path in tqdm(directory.rglob("*"), desc=f"Processing {directory}"):
         if path.is_file():
@@ -50,7 +49,7 @@ def process_directory(directory:Path, other_caches:List[Path], output_cache:Path
                 copy_file(path, output_cache / relative_path)
 
 
-def merge_caches(caches:List[Path], output_cache:Path):
+def merge_caches(caches: List[Path], output_cache: Path):
     """Merge multiple caches into one"""
     if output_cache.exists():
         shutil.rmtree(output_cache)
