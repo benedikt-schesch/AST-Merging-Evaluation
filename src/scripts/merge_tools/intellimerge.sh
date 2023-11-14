@@ -23,7 +23,7 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 temp_dir=".workdir/intelli_temp_$$/"
-mkdir $temp_dir
+mkdir -p $temp_dir
 
 # run intellimerge
 java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
