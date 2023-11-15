@@ -71,6 +71,7 @@ def clone_repo(repo_name: str) -> git.repo.Repo:
         raise
     return repo
 
+
 def clone_repo2(repo_name: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
