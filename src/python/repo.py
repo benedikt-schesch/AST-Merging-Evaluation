@@ -127,6 +127,7 @@ class Repository:
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         repo = clone_repo(repo_slug)
+        assert self.path.exists()
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
         self.test_cache_directory = cache_directory / "test_cache"

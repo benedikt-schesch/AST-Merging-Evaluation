@@ -13,6 +13,7 @@ artifacts.tar.gz
 *.hprof
 cache*/
 cache.tar
+output.txt
 
 output/
 merge_repo/

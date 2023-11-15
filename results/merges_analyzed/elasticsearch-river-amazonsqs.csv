@@ -1,2 +1,0 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,test merge
-2,refs/heads/master,14668f4eca90daa51e2852f570d9cd67dcb0a264,48b92051dc66e7a3013f60dd93dff9d53a913b89,8d2cb238ec3191d178260f8c6dad4c8e13676c4e,,False,78,0,Tests_failed,2909a5d7253de6cad52153ca78cbbfc03061fefd0572d8e9f56ee2589f1a4462,False,0,Tests_failed,8c0e158cfc44f4a388ac0f439db05dd3d237f9888f1fe0ea37b8e4b09a5bf7c1,False

@@ -20,11 +20,12 @@ from typing import Tuple
 import random
 import numpy as np
 import pandas as pd
-from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
+from repo import Repository, TEST_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
 from write_head_hashes import num_processes
 from variables import TIMEOUT_MERGING, TIMEOUT_TESTING_PARENT, N_TESTS
+import matplotlib.pyplot as plt
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -66,13 +67,33 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
     )
+    left_success, _ = repo_left.checkout(left_sha)
+    if not left_success:
+        cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
+        cache_data["left_tree_fingerprint"] = None
+        cache_data["test merge"] = False
+        for key, value in cache_data.items():
+            merge_data[key] = value
+        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
+        print(f"merge_analyzer: left parent checkout failed for {repo_slug} {left_sha} {right_sha} {repo_left.repo_path}")
+        return merge_data
+
+
     repo_right = Repository(
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
     )
-    left_success, _ = repo_left.checkout(left_sha)
     right_success, _ = repo_right.checkout(right_sha)
+    if not right_success:
+        cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
+        cache_data["right_tree_fingerprint"] = None
+        cache_data["test merge"] = False
+        for key, value in cache_data.items():
+            merge_data[key] = value
+        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
+        print(f"merge_analyzer: right parent checkout failed for {repo_slug} {left_sha} {right_sha} {repo_right.repo_path}")
+        return merge_data
 
     # Compute diff size in lines between left and right
     assert repo_left.repo_path.exists()
@@ -101,43 +122,39 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     contains_java_file = any(file.endswith(".java") for file in diff_files)
     cache_data["diff_contains_java_file"] = contains_java_file
 
-    # Test left parent
-    if not left_success:
-        # This should never happen.  Search output for "Git_checkout_failed"
-        cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
-        cache_data["left_tree_fingerprint"] = None
-        cache_data["left parent test coverage"] = None
-        cache_data["parents pass"] = False
-    else:
-        cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
-        result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["left parent test result"] = result.name
-        cache_data["left parent test coverage"] = test_coverage
-        cache_data["parents pass"] = is_test_passed(
-            cache_data["left parent test result"]
+    if not contains_java_file:
+        print(
+            "merge_analyzer: Skipping",
+            repo_slug,
+            cache_key,
+            "because the diff does not contain a java file.",
         )
+        cache_data["test merge"] = False
+        for key, value in cache_data.items():
+            merge_data[key] = value
+        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
+        return merge_data
 
-    # Test right parent
-    if not right_success:
-        # This should never happen.  Search output for "Git_checkout_failed"
-        cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
-        cache_data["right_tree_fingerprint"] = None
-        cache_data["right parent test coverage"] = None
-        cache_data["parents pass"] = False
-    else:
-        cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
-        result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-        cache_data["right parent test result"] = result.name
-        cache_data["right parent test coverage"] = test_coverage
-        cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
-            cache_data["right parent test result"]
-        )
+    # Test left parent
+    cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
+    result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+    cache_data["left parent test result"] = result.name
+    cache_data["left parent test coverage"] = test_coverage
+    cache_data["parents pass"] = is_test_passed(
+        cache_data["left parent test result"]
+    )
+    
+    cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
+    result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
+    cache_data["right parent test result"] = result.name
+    cache_data["right parent test coverage"] = test_coverage
+    cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
+        cache_data["right parent test result"]
+    )
 
     cache_data["test merge"] = (
         cache_data["parents pass"]
         and cache_data["diff_contains_java_file"]
-        and cache_data["left parent test coverage"] is not None
-        and cache_data["right parent test coverage"] is not None
     )
 
     set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
@@ -205,6 +222,15 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     return arguments
 
 
+# Plotting function using matplotlib
+def plot_vertical_histogram(data, title, ax):
+    """Plot a vertical histogram with the given data"""
+    ax.bar(range(len(data)), data)
+    ax.set_title(title)
+    ax.set_xlabel("Repository Index")
+    ax.set_ylabel("Count")
+
+
 if __name__ == "__main__":
     print("merge_analyzer: Start")
     parser = argparse.ArgumentParser()
@@ -212,6 +238,7 @@ if __name__ == "__main__":
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
+    parser.add_argument("--n_sampled_merges", type=int, default=20)
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
@@ -244,7 +271,8 @@ if __name__ == "__main__":
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_analyzer: Constructing Output")
     n_new_analyzed = 0
-    n_new_to_test = 0
+    n_new_candidates_to_test = 0
+    n_new_passing_parents = 0
     for i in tqdm(range(len(merger_arguments))):
         repo_slug = merger_arguments[i][0]
         results_data = merger_results[i]
@@ -252,53 +280,121 @@ if __name__ == "__main__":
         repo_result[repo_slug].append(merger_results[i])
         n_new_analyzed += 1
         if results_data["test merge"]:
-            n_new_to_test += 1
+            n_new_candidates_to_test += 1
+        if results_data["parents pass"]:
+            n_new_passing_parents += 1
 
+    # Initialize counters
     n_total_analyzed = 0
-    n_total_to_test = 0
+    n_candidates_to_test = 0
+    n_passing_parents = 0
+    n_sampled_for_testing = 0
+
+    # Data collection for histograms
+    repo_data = []
+
     for repo_slug in repo_result:
         output_file = Path(
             os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
         )
+
         if output_file.exists():
             try:
                 df = pd.read_csv(output_file, header=0)
                 if len(df) == 0:
                     continue
-                n_total_analyzed += len(df)
-                n_total_to_test += len(df[df["test merge"]])
             except pd.errors.EmptyDataError:
                 print(
                     "merge_analyzer: Skipping",
                     repo_slug,
                     "because it does not contain any merges.",
                 )
-            continue
-        df = pd.DataFrame(repo_result[repo_slug])
-        if len(df) == 0:
-            continue
-        df.sort_index(inplace=True)
-        df.to_csv(output_file, index_label="idx")
-        n_total_analyzed += len(df)
-        n_total_to_test += len(df[df["test merge"]])
+                continue
+        else:
+            df = pd.DataFrame(repo_result[repo_slug])
+            if len(df) == 0:
+                continue
 
-    print(
-        "merge_analyzer: Number of merge tool outputs that have been newly compared:",
-        n_new_analyzed,
-    )
-    print(
-        "merge_analyzer: Number of merge tool outputs that have been newly compared",
-        "and are to test:",
-        n_new_to_test,
-    )
+            # Pick randomly n_sampled_merges merges to test from the ones that are candidates
+            df["sampled for testing"] = False
+            testable_merges = df[df["test merge"]]
+            testable_merges = testable_merges.sample(frac=1.0, random_state=42)
+            sampled_merges = testable_merges[: args.n_sampled_merges]
+            df.loc[sampled_merges.index, "sampled for testing"] = True
+
+            df.sort_index(inplace=True)
+            df.to_csv(output_file, index_label="idx")
+
+        # Collect data for histograms
+        repo_data.append(
+            (
+                repo_slug,
+                len(df),
+                len(df[df["test merge"]]),
+                len(df[df["parents pass"]]),
+                len(df[df["sampled for testing"]]),
+            )
+        )
+
+        # Update global counters
+        n_total_analyzed += len(df)
+        n_candidates_to_test += len(df[df["test merge"]])
+        n_passing_parents += len(df[df["parents pass"]])
+        n_sampled_for_testing += len(df[df["sampled for testing"]])
+
+    # Print summaries
     print(
         "merge_analyzer: Total number of merge tool outputs that have been compared:",
         n_total_analyzed,
     )
     print(
-        "merge_analyzer: Total number of merge tool outputs that have been compared",
-        "and are to test:",
-        n_total_to_test,
+        "merge_analyzer: Total number of merge tool outputs that have been compared and have passing parents:",
+        n_passing_parents,
+    )
+    print(
+        "merge_analyzer: Total number of merge tool outputs that have been compared and are testable (Has Java Diff + Parents Pass)",
+        n_candidates_to_test,
+    )
+    print(
+        "merge_analyzer: Total number of merge tool outputs that have are testable which have been sampled",
+        n_sampled_for_testing,
     )
     print("merge_analyzer: Finished Constructing Output")
+    print("merge_analyzer: Done")
+
+    # Unpacking data for histograms
+    repo_slugs, totals, candidates, passings, sampled = zip(*repo_data)
+
+    # Sort data for better visualization
+    sorted_indices = sorted(range(len(totals)), key=lambda i: totals[i], reverse=True)
+    sorted_totals = [
+        totals[i]
+        for i in sorted(range(len(totals)), key=lambda i: totals[i], reverse=True)
+    ]
+    sorted_candidates = [
+        candidates[i]
+        for i in sorted(range(len(totals)), key=lambda i: candidates[i], reverse=True)
+    ]
+    sorted_passings = [
+        passings[i]
+        for i in sorted(range(len(totals)), key=lambda i: passings[i], reverse=True)
+    ]
+    sorted_sampled = [
+        sampled[i]
+        for i in sorted(range(len(totals)), key=lambda i: sampled[i], reverse=True)
+    ]
+
+    # Creating the plots
+    fig, axs = plt.subplots(4, 1, figsize=(10, 20), tight_layout=True)
+    plot_vertical_histogram(sorted_totals, "Total Analyzed per Repository", axs[0])
+    plot_vertical_histogram(sorted_passings, "Merges with Passing Parents per Repository", axs[1])
+    plot_vertical_histogram(
+        sorted_candidates, "Testable (Has Java Diff + Parents Pass) Merge Candidates per Repository", axs[2]
+    )
+    plot_vertical_histogram(
+        sorted_sampled, "Sampled Merges for Testing per Repository", axs[3]
+    )
+
+    parent_output_dir = args.output_dir.parent
+    plt.savefig(parent_output_dir / "histograms.pdf")
     print("merge_analyzer: Done")

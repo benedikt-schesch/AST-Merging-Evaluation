@@ -107,13 +107,13 @@ python3 src/python/merge_analyzer.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
     --output_dir "$OUT_DIR/merges_analyzed/" \
+    --n_sampled_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR"
-
+exit 0
 python3 src/python/merge_tester.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
-    --n_sampled_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_differ.py \
