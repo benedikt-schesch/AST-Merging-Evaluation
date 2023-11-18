@@ -45,7 +45,11 @@ if __name__ == "__main__":
                 data.pop(key)
                 n_deleted += 1
                 continue
-            if "right parent test result" in data[key] and data[key]["right parent test result"] == TEST_STATE.Git_checkout_failed.name:
+            if (
+                "right parent test result" in data[key]
+                and data[key]["right parent test result"]
+                == TEST_STATE.Git_checkout_failed.name
+            ):
                 data.pop(key)
                 n_deleted += 1
 

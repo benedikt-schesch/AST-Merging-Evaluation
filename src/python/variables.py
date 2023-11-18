@@ -18,4 +18,3 @@ TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds
 TIMEOUT_TESTING_PARENT = 60 * 30  # 30 minutes, in seconds
 TIMEOUT_TESTING_MERGE = 60 * 45  # 45 minutes, in seconds
 N_TESTS = 5
-

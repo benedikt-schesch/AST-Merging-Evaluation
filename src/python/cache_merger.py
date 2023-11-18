@@ -26,7 +26,6 @@ def copy_file(source: Path, destination: Path):
     """Copy a file from source to destination"""
     if not destination.exists():
         destination.parent.mkdir(parents=True, exist_ok=True)
-        print(destination)
         shutil.copy(source, destination)
 
 
