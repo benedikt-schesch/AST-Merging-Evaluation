@@ -14,6 +14,7 @@ fi
 BRANCH="$1"
 MACHINE_ADDRESS_PATH="$2"
 ROOT_PATH_ON_MACHINE="$3"
+CURRENT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Read machine addresses from file
 MACHINE_ADDRESSES=()
@@ -46,5 +47,7 @@ for i in "${!MACHINE_ADDRESSES[@]}"; do
     MACHINE_ADDRESS="${MACHINE_ADDRESSES[$i]}"
     echo "Running on machine $i with address $MACHINE_ADDRESS"
     echo "Executing: gnome-terminal --tab -- bash -ic \"./src/scripts/utils/run_remotely.sh $BRANCH $MACHINE_ADDRESS $i $NUM_MACHINES $ROOT_PATH_ON_MACHINE; bash\""
-    gnome-terminal --tab -- bash -ic "./src/scripts/utils/run_remotely.sh $BRANCH $MACHINE_ADDRESS $i $NUM_MACHINES $ROOT_PATH_ON_MACHINE; bash"
+    # gnome-terminal --tab -- bash -ic "./src/scripts/utils/run_remotely.sh $BRANCH $MACHINE_ADDRESS $i $NUM_MACHINES $ROOT_PATH_ON_MACHINE; bash"
+    cmd="cd $CURRENT_PATH && ./run_remotely.sh $BRANCH $MACHINE_ADDRESS $i $NUM_MACHINES $ROOT_PATH_ON_MACHINE; bash"
+    osascript -e 'tell application "Terminal" to do script "'"$cmd"'"'
 done

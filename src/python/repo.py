@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 import shutil
 import time
 from git.repo import Repo
+from write_head_hashes import clone_repo
 from cache_utils import (
     set_in_cache,
     lookup_in_cache,
@@ -125,6 +126,8 @@ class Repository:
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
+        repo = clone_repo(repo_slug)
+        assert self.path.exists()
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
         self.test_cache_directory = cache_directory / "test_cache"
@@ -591,4 +594,4 @@ class Repository:
     def __del__(self) -> None:
         """Deletes the repository."""
         if DELETE_WORKDIRS:
-            shutil.rmtree(self.workdir)
+            shutil.rmtree(self.workdir, ignore_errors=True)

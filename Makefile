@@ -87,6 +87,9 @@ small-test-diff:
 gradle-assemble:
 	./gradlew -q assemble -g ../.gradle/
 
+clean-local:
+	rm -rf repos .workdir
+
 java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
@@ -103,6 +106,9 @@ jars/spork.jar:
 TAGS: tags
 tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
+
+run:
+	nice -n 5 sh run_full.sh | tee output.txt
 
 # Create a tarball of the artifacts for the paper.
 # Keep this target last in the file.
