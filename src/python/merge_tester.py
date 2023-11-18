@@ -114,13 +114,11 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 def build_arguments(
     args: argparse.Namespace,
     repo_slug: str,
-    n_sampled_merges: int,
 ) -> list:
     """Builds the arguments for the merge_tester function.
     Args:
         args (argparse.Namespace): The arguments of the script.
         repo_slug (str): The slug of the repository.
-        n_sampled_merges (int): The number of merges to sample.
     Returns:
         list: The arguments for the merge_tester function.
     """
@@ -155,12 +153,7 @@ def build_arguments(
             "because it does not contain any merges.",
         )
         return []
-    merges = merges[merges["test merge"]]
-    merges = (
-        merges.sample(n_sampled_merges, random_state=42)
-        if len(merges) > n_sampled_merges
-        else merges
-    )
+    merges = merges[merges["sampled for testing"]]
     return [
         (repo_slug, merge_data, Path(args.cache_dir))
         for _, merge_data in merges.iterrows()
@@ -172,7 +165,6 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     print("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
-    parser.add_argument("--n_sampled_merges", type=int)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
@@ -187,7 +179,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
         merge_tester_arguments += build_arguments(
-            args, repo_slug, args.n_sampled_merges
+            args, repo_slug
         )
 
     # Shuffle input to reduce cache contention
