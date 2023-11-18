@@ -178,9 +178,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_tester_arguments += build_arguments(
-            args, repo_slug
-        )
+        merge_tester_arguments += build_arguments(args, repo_slug)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
