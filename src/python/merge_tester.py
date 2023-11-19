@@ -13,24 +13,75 @@ but with the test results.
 import os
 import multiprocessing
 import argparse
+import filecmp
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple
+from typing import Tuple, List
 import random
 import time
 import psutil
 import pandas as pd
-from repo import Repository, MERGE_TOOL, TEST_STATE
+from cache_utils import lookup_in_cache, set_in_cache, slug_repo_name
+from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from write_head_hashes import num_processes
-from cache_utils import slug_repo_name
 from tqdm import tqdm
-from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE, N_TESTS
+from variables import (
+    TIMEOUT_TESTING_PARENT,
+    TIMEOUT_TESTING_MERGE,
+    N_TESTS,
+    TIMEOUT_MERGING,
+)
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
+def compare_files_with_reference(
+    path1: Path, path2: Path
+) -> List[Tuple[str, List[Tuple[int, str]]]]:
+    """
+    Compare files in two directories using path1 as the reference
+    and return a list of files with their differing lines.
+    """
+    differences = []
+
+    # List all files in both directories
+    files1 = {f for f in os.listdir(path1) if os.path.isfile(os.path.join(path1, f))}
+    files2 = {f for f in os.listdir(path2) if os.path.isfile(os.path.join(path2, f))}
+
+    # Find common files
+    common_files = files1.intersection(files2)
+
+    # Compare each file
+    for file in common_files:
+        file1 = os.path.join(path1, file)
+        file2 = os.path.join(path2, file)
+
+        if not filecmp.cmp(file1, file2, shallow=False):
+            with open(file1, "r") as f1, open(file2, "r") as f2:
+                lines1 = f1.readlines()
+                lines2 = f2.readlines()
+
+            # Adjust for different file lengths
+            len_diff = len(lines1) - len(lines2)
+            if len_diff > 0:
+                lines2.extend([""] * len_diff)
+            elif len_diff < 0:
+                lines1.extend([""] * -len_diff)
+
+            # Find differing lines with path1 as reference
+            diff_lines = [
+                (i + 1, line1)
+                for i, (line1, line2) in enumerate(zip(lines1, lines2))
+                if line1 != line2
+            ]
+            differences.append((file, diff_lines))
+    return differences
+
+
+def merge_tester(  # pylint: disable=too-many-locals
+    args: Tuple[str, pd.Series, Path]
+) -> pd.Series:
     """Tests the parents of a merge and in case of success, it tests the merge.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
@@ -49,36 +100,27 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         time.sleep(60)
     print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
-    merge_data["parents pass"] = False
-    for branch in ["left", "right"]:
-        commit_sha = merge_data[branch]
-        repo = Repository(
-            repo_slug,
-            cache_directory=cache_directory,
-            workdir_id=repo_slug + "/test-" + branch + "-" + commit_sha,
-        )
-        test_result, test_coverage, tree_fingerprint = repo.checkout_and_test(
-            commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS
-        )
-        if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
-            raise Exception(
-                "merge_tester: Tree fingerprint mismatch",
-                repo_slug,
-                merge_data["left"],
-                merge_data["right"],
-                branch,
-                tree_fingerprint,
-                merge_data[f"{branch}_tree_fingerprint"],
-                repo.path,
-            )
-        merge_data[f"{branch} test result"] = test_result.name
-        if test_result != TEST_STATE.Tests_passed:
-            return merge_data
+    cache_key = merge_data["left"] + "_" + merge_data["right"]
+    merge_cache_directory = cache_directory / "merge_tester"
+    cache_data = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
+    if cache_data is not None and isinstance(cache_data, dict):
+        for key, value in cache_data.items():
+            merge_data[key] = value
+        return merge_data
+    cache_data = {}
 
-    print(
-        "merge_tester: Parents pass", repo_slug, merge_data["left"], merge_data["right"]
+    repo_left = Repository(
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id=repo_slug + "/test-left-" + merge_data["left"],
     )
-    merge_data["parents pass"] = True
+    repo_left.checkout(merge_data["left"])
+    repo_right = Repository(
+        repo_slug,
+        cache_directory=cache_directory,
+        workdir_id=repo_slug + "/test-right-" + merge_data["right"],
+    )
+    repo_right.checkout(merge_data["right"])
 
     for merge_tool in MERGE_TOOL:
         repo = Repository(
@@ -89,24 +131,33 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             + f'{merge_data["left"]}-{merge_data["right"]}',
         )
         (
-            result,
+            merge_result,
             merge_fingerprint,
             left_fingerprint,
             right_fingerprint,
-            test_coverage,
-            _,
-        ) = repo.merge_and_test(
-            tool=merge_tool,
-            left_commit=merge_data["left"],
-            right_commit=merge_data["right"],
-            timeout=TIMEOUT_TESTING_MERGE,
-            n_tests=N_TESTS,
+            explanation,
+            runtime,
+        ) = repo.merge(
+            merge_tool, merge_data["left"], merge_data["right"], timeout=TIMEOUT_MERGING
         )
+
         assert left_fingerprint == merge_data["left_tree_fingerprint"]
         assert right_fingerprint == merge_data["right_tree_fingerprint"]
 
-        merge_data[merge_tool.name] = result.name
-        merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
+        if merge_result == MERGE_STATE.Merge_success:
+            result, coverage = repo.test(
+                TIMEOUT_TESTING_MERGE,
+                N_TESTS,
+            )
+        else:
+            result = merge_result
+
+        cache_data[merge_tool.name] = result.name
+        cache_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
+
+    set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
+    for key, value in cache_data.items():
+        merge_data[key] = value
     print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
     return merge_data
 
