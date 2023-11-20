@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./run_xp.sh [-i <machine_id> -n <num_machines>] [-d]
+# usage: ./run_greatest_hits.sh [-i <machine_id> -n <num_machines>] [-d]
 # Runs the stack all the repositories
 # The output appears in result/ .
 # <machine_id> optional argument to specify the id of the current machine.
@@ -12,10 +12,4 @@
 set -e
 set -o nounset
 
-# Check if cache.tar exists and cache is missing
-if [ -f cache.tar ] && [ ! -d cache ]; then
-    echo "Decompressing cache.tar"
-    make decompress-cache
-fi
-
-./run.sh input_data/repos_xp.csv results-xp 20 cache "$@"
+./run.sh input_data/repos_greatest_hits.csv results_greatest_hits 100 cache "$@"
