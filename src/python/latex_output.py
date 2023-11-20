@@ -33,7 +33,7 @@ from prettytable import PrettyTable
 from tqdm import tqdm
 import seaborn as sns
 
-from merge_tester import TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
+from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
 from cache_utils import slug_repo_name
 
@@ -165,7 +165,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 "because it does not contain any merges.",
             )
             continue
-        merges = merges[merges["parents pass"]]
+        
         if len(merges) > args.n_merges:
             merges = merges.sample(args.n_merges, random_state=42)
             merges.sort_index(inplace=True)

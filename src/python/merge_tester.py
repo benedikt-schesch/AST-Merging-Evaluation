@@ -13,12 +13,14 @@ but with the test results.
 import os
 import multiprocessing
 import argparse
-import filecmp
+import difflib
 from pathlib import Path
+from collections import defaultdict
 from functools import partialmethod
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import random
 import time
+from xml.etree import ElementTree
 import psutil
 import pandas as pd
 from cache_utils import lookup_in_cache, set_in_cache, slug_repo_name
@@ -26,7 +28,6 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from write_head_hashes import num_processes
 from tqdm import tqdm
 from variables import (
-    TIMEOUT_TESTING_PARENT,
     TIMEOUT_TESTING_MERGE,
     N_TESTS,
     TIMEOUT_MERGING,
@@ -36,14 +37,44 @@ if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-def compare_files_with_reference(
-    path1: Path, path2: Path
-) -> List[Tuple[str, List[Tuple[int, str]]]]:
+def parse_tested_lines(jacoco_xml: Path) -> Dict[str, List[int]]:
+    """
+    Parses the provided 'jacoco.xml' example and returns the files and lines that have been tested.
+    """
+    tested_lines = {}
+
+    # Parse the XML string
+    root = ElementTree.parse(jacoco_xml)
+
+    # Iterate over source files
+    for sourcefile in root.findall(".//sourcefile"):
+        filename = sourcefile.get("name")
+        file_lines = []
+
+        # Iterate over lines in the source file
+        for line in sourcefile.findall("line"):
+            if (
+                int(line.get("ci")) > 0  # type: ignore
+            ):  # 'ci' attribute represents how many times the line was covered
+                line_number = int(line.get("nr"))  # type: ignore
+                file_lines.append(line_number)
+
+        if file_lines:
+            tested_lines[filename] = file_lines
+
+    return tested_lines
+
+
+def compare_files_with_reference(  # pylint: disable=too-many-locals
+    path1: Path,
+    path2: Path,
+) -> Dict[str, List[int]]:
     """
     Compare files in two directories using path1 as the reference
     and return a list of files with their differing lines.
+    This version uses the `difflib` library to find differences.
     """
-    differences = []
+    differences: Dict[str, List[int]] = defaultdict(list)
 
     # List all files in both directories
     files1 = {f for f in os.listdir(path1) if os.path.isfile(os.path.join(path1, f))}
@@ -57,26 +88,61 @@ def compare_files_with_reference(
         file1 = os.path.join(path1, file)
         file2 = os.path.join(path2, file)
 
-        if not filecmp.cmp(file1, file2, shallow=False):
-            with open(file1, "r") as f1, open(file2, "r") as f2:
-                lines1 = f1.readlines()
-                lines2 = f2.readlines()
+        with open(file1, "r") as f1, open(file2, "r") as f2:
+            lines1 = f1.readlines()
+            lines2 = f2.readlines()
 
-            # Adjust for different file lengths
-            len_diff = len(lines1) - len(lines2)
-            if len_diff > 0:
-                lines2.extend([""] * len_diff)
-            elif len_diff < 0:
-                lines1.extend([""] * -len_diff)
+        # Using difflib to find differences
+        diff = difflib.unified_diff(
+            lines1, lines2, fromfile=file1, tofile=file2, lineterm=""
+        )
+        curr_file = ""
+        for line in diff:
+            if line.startswith("---"):
+                line = line.replace("---", "")
+                curr_file = line.replace(f" {str(path1)}/", "")
+            if line.startswith("@@"):
+                # Extract line numbers part
+                line_numbers = line.split(" ")[1]  # This gets the '-x,y' or '-x' part
 
-            # Find differing lines with path1 as reference
-            diff_lines = [
-                (i + 1, line1)
-                for i, (line1, line2) in enumerate(zip(lines1, lines2))
-                if line1 != line2
-            ]
-            differences.append((file, diff_lines))
+                # Remove the leading '-' sign
+                start_line = line_numbers.lstrip("-")
+
+                # Check if there is a range indicated (x,y format)
+                if "," in start_line:
+                    start_line_number = int(
+                        start_line.split(",")[0]
+                    )  # Extract the starting line number
+                    end_line_number = int(start_line.split(",")[1])
+                else:
+                    start_line_number = int(
+                        start_line
+                    )  # Convert the single number to an integer
+                    end_line_number = start_line_number
+                for i in range(start_line_number, end_line_number + 1):
+                    differences[curr_file].append(i)
+    # Add all lines that are only in path1
+    for file in files1.difference(files2):
+        file1 = os.path.join(path1, file)
+        with open(file1, "r") as f1:
+            lines1 = f1.readlines()
+        for i in range(len(lines1)):
+            differences[file].append(i)
+
     return differences
+
+
+def check_if_lines_are_tested(
+    differences: Dict[str, List[int]],
+    tested_lines: Dict[str, List[int]],
+) -> bool:
+    """Checks if the lines in the differences are tested."""
+    for file in differences.keys():
+        tested_lines_in_file = tested_lines.get(file, [])
+        for line in differences[file]:
+            if line in tested_lines_in_file:
+                return True
+    return False
 
 
 def merge_tester(  # pylint: disable=too-many-locals
@@ -145,10 +211,25 @@ def merge_tester(  # pylint: disable=too-many-locals
         assert right_fingerprint == merge_data["right_tree_fingerprint"]
 
         if merge_result == MERGE_STATE.Merge_success:
+            diff_list = compare_files_with_reference(
+                repo_left.repo_path, repo.repo_path
+            )
             result, coverage = repo.test(
                 TIMEOUT_TESTING_MERGE,
                 N_TESTS,
             )
+            if result in (TEST_STATE.Tests_passed, TEST_STATE.Tests_failed):
+                test_xml_path = repo.repo_path / Path("target/site/jacoco/jacoco.xml")
+                if test_xml_path.exists():
+                    tested_lines = parse_tested_lines(test_xml_path)
+
+                    cache_data[
+                        f"{merge_tool.name} merge_lines_are_tested"
+                    ] = check_if_lines_are_tested(diff_list, tested_lines)
+                else:
+                    cache_data[
+                        f"{merge_tool.name} merge_lines_are_tested"
+                    ] = "No test coverage data available"
         else:
             result = merge_result
 

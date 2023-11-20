@@ -533,11 +533,6 @@ class Repository:
         """
         sha = self.compute_tree_fingerprint()
         cache_data = {}
-
-        result, test_coverage = self.get_test_cache_entry(sha, start_test=True)
-        if result is not None:
-            return result, test_coverage
-
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
         cache_data["test_coverage"] = []
