@@ -20,7 +20,7 @@ import random
 import time
 import psutil
 import pandas as pd
-from repo import Repository, MERGE_TOOL, TEST_STATE
+from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from write_head_hashes import num_processes
 from cache_utils import slug_repo_name
 from tqdm import tqdm
@@ -71,8 +71,26 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             timeout=TIMEOUT_TESTING_MERGE,
             n_tests=N_TESTS,
         )
-        assert left_fingerprint == merge_data["left_tree_fingerprint"]
-        assert right_fingerprint == merge_data["right_tree_fingerprint"]
+        if result not in (
+            MERGE_STATE.Merge_failed,
+            MERGE_STATE.Git_checkout_failed,
+            TEST_STATE.Git_checkout_failed,
+        ) and (
+            left_fingerprint != merge_data["left_tree_fingerprint"]
+            or right_fingerprint != merge_data["right_tree_fingerprint"]
+        ):
+            raise Exception(
+                "merge_tester: The merge tester is not testing the correct merge.",
+                result,
+                repo_slug,
+                merge_data["left"],
+                merge_data["right"],
+                left_fingerprint,
+                right_fingerprint,
+                merge_data["left_tree_fingerprint"],
+                merge_data["right_tree_fingerprint"],
+                merge_data,
+            )
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint

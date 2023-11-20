@@ -69,9 +69,9 @@ def stdout_and_stderr(
     """Produces the standard output and standard error of a timedout process."""
     explanation = "Run Command: " + " ".join(command) + "\nTimed out"
     if source.stdout:
-        explanation += "\nstdout:\n" + source.stdout.decode("utf-8")
+        explanation += "\nstdout:\n" + source.stdout.decode("utf-8", "replace")
     if source.stderr:
-        explanation += "\nstderr:\n" + source.stderr.decode("utf-8")
+        explanation += "\nstderr:\n" + source.stderr.decode("utf-8", "replace")
     return explanation
 
 
