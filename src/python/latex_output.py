@@ -165,7 +165,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 "because it does not contain any merges.",
             )
             continue
-        
+
         if len(merges) > args.n_merges:
             merges = merges.sample(args.n_merges, random_state=42)
             merges.sort_index(inplace=True)
