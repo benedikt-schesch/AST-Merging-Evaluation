@@ -43,15 +43,15 @@ TEST_STATE = Enum(
     ],
 )
 
-
 def clone_repo(repo_name: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
+        path (str): The name of the folder for the path to be copied to
     Returns:
         git.repo.Repo: The repository
     """
-    repo_dir = os.path.join("repos/", repo_name)
+    repo_dir = os.path.join("./repos", repo_name)
     if os.path.isdir(repo_dir):
         repo = git.repo.Repo(repo_dir)
     else:
@@ -72,14 +72,15 @@ def clone_repo(repo_name: str) -> git.repo.Repo:
     return repo
 
 
-def clone_repo2(repo_name: str) -> git.repo.Repo:
+def clone_repo_to_path(repo_name: str, path: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
+        path (str): The name of the folder for the path to be copied to
     Returns:
         git.repo.Repo: The repository
     """
-    repo_dir = os.path.join("repos2/", repo_name)
+    repo_dir = os.path.join(path, repo_name)
     if os.path.isdir(repo_dir):
         repo = git.repo.Repo(repo_dir)
     else:
@@ -89,7 +90,7 @@ def clone_repo2(repo_name: str) -> git.repo.Repo:
         print(repo_name, " : Cloning repo")
         git_url = "https://:@github.com/" + repo_name + ".git"
         repo = git.repo.Repo.clone_from(git_url, repo_dir)
-        print(f"Repository '{repo_name}' cloned to path: {repo_dir}")
+        print(f"Repository '{repo_name}' cloned to path: {repo_dir}", flush=True)
         print(repo_name, " : Finished cloning")
     try:
         repo.remote().fetch()
