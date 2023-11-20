@@ -49,37 +49,6 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         time.sleep(60)
     print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
-    merge_data["parents pass"] = False
-    for branch in ["left", "right"]:
-        commit_sha = merge_data[branch]
-        repo = Repository(
-            repo_slug,
-            cache_directory=cache_directory,
-            workdir_id=repo_slug + "/test-" + branch + "-" + commit_sha,
-        )
-        test_result, test_coverage, tree_fingerprint = repo.checkout_and_test(
-            commit_sha, TIMEOUT_TESTING_PARENT, N_TESTS
-        )
-        if tree_fingerprint != merge_data[f"{branch}_tree_fingerprint"]:
-            raise Exception(
-                "merge_tester: Tree fingerprint mismatch",
-                repo_slug,
-                merge_data["left"],
-                merge_data["right"],
-                branch,
-                tree_fingerprint,
-                merge_data[f"{branch}_tree_fingerprint"],
-                repo.path,
-            )
-        merge_data[f"{branch} test result"] = test_result.name
-        if test_result != TEST_STATE.Tests_passed:
-            return merge_data
-
-    print(
-        "merge_tester: Parents pass", repo_slug, merge_data["left"], merge_data["right"]
-    )
-    merge_data["parents pass"] = True
-
     for merge_tool in MERGE_TOOL:
         repo = Repository(
             repo_slug,
