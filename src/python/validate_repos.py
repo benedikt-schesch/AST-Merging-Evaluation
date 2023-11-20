@@ -43,11 +43,11 @@ TEST_STATE = Enum(
     ],
 )
 
+
 def clone_repo(repo_name: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if it is already cloned.
     Args:
         repo_name (str): The name of the repository to be cloned
-        path (str): The name of the folder for the path to be copied to
     Returns:
         git.repo.Repo: The repository
     """
