@@ -8,8 +8,8 @@ import pandas as pd
 from validate_repos import clone_repo_to_path
 from merge_tester import MERGE_STATE
 
+# pylint: disable-msg=too-many-locals
 
-# pylint: disable=too-many-locals
 def diff3_analysis(merge_tool: str, repo_num: int):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
@@ -72,7 +72,9 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         repo.remote().fetch()
         repo.git.checkout(df.iloc[repo_num]["merge"], force=True)
         repo.submodule_update()
-        conflict_path_programmer_merge = os.path.join("./repos/programmer_merge", conflict_path)
+        conflict_path_programmer_merge = os.path.join(
+            "./repos/programmer_merge", conflict_path
+        )
 
         diff_results = subprocess.run(
             [
@@ -88,12 +90,24 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         # Use a temporary file to store the diff results
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
             temp_file.write(diff_results.stdout)
-        
+
         # Deletes base, programmer_merge, and merge_attempt folders in repos dir
         # We do this to prevent errors if cloning the same repo into the folder twice
-        subprocess.run(["rm", "-rf", "./repos/base"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        subprocess.run(["rm", "-rf", "./repos/merge_attempt"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        subprocess.run(["rm", "-rf", "./repos/programmer_merge"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        subprocess.run(
+            ["rm", "-rf", "./repos/base"],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        subprocess.run(
+            ["rm", "-rf", "./repos/merge_attempt"],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        subprocess.run(
+            ["rm", "-rf", "./repos/programmer_merge"],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
 
         # Open the saved text file with the default application
         subprocess.run(["xdg-open", temp_file.name], check=True)
