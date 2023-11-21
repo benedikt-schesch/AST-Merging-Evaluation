@@ -65,19 +65,19 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         conflict_path_base = os.path.join("./repos/base", conflict_path)
 
         repo = clone_repo_to_path(
-            repo_name, "./repos/merge"
+            repo_name, "./repos/programmer_merge"
         )  # Return a Git-Python repo object
         repo.remote().fetch()
         repo.git.checkout(df.iloc[repo_num]["merge"], force=True)
         repo.submodule_update()
-        conflict_path_merge = os.path.join("./repos/merge", conflict_path)
+        conflict_path_programmer_merge = os.path.join("./repos/programmer_merge", conflict_path)
 
         diff_results = subprocess.run(
             [
                 "diff3",
                 conflict_path_base,
                 conflict_path_merge_attempt,
-                conflict_path_merge,
+                conflict_path_programmer_merge,
             ],
             stdout=subprocess.PIPE,
             text=True,
@@ -86,6 +86,12 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         # Use a temporary file to store the diff results
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
             temp_file.write(diff_results.stdout)
+        
+        # Deletes base, programmer_merge, and merge_attempt folders in repos dir
+        # We do this to prevent errors if cloning the same repo into the folder twice
+        subprocess.run(["rm", "-rf", "./repos/base"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        subprocess.run(["rm", "-rf", "./repos/merge_attempt"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        subprocess.run(["rm", "-rf", "./repos/programmer_merge"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Open the saved text file with the default application
         subprocess.run(["xdg-open", temp_file.name], check=True)
