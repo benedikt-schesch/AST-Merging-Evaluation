@@ -9,6 +9,7 @@ from validate_repos import clone_repo_to_path
 from merge_tester import MERGE_STATE
 
 
+# pylint: disable=too-many-locals
 def diff3_analysis(merge_tool: str, repo_num: int):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
@@ -28,7 +29,8 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         repo_name, "./repos/merge_attempt"
     )  # Return a Git-Python repo object
     repo.remote().fetch()
-    repo.git.checkout(df.iloc[repo_num]["left"], force=True)
+    left_sha = df.iloc[repo_num]["left"]
+    repo.git.checkout(left_sha, force=True)
     repo.submodule_update()
     repo.git.checkout("-b", "TEMP_LEFT_BRANCH", force=True)
     repo.git.checkout(df.iloc[repo_num]["right"], force=True)
