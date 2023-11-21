@@ -9,6 +9,7 @@ from validate_repos import clone_repo_to_path
 from merge_tester import MERGE_STATE
 
 
+# pylint: disable=too-many-locals
 def diff3_analysis(merge_tool: str, repo_num: int):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
