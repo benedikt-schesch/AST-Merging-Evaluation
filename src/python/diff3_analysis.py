@@ -1,4 +1,4 @@
-"""Runs a merge and uses diff to compare it to the base and final branch of a given repo.
+"""Runs a merge and uses diff3 to compare it to the base and final branch of a given repo.
 """
 import subprocess
 import re
@@ -9,6 +9,7 @@ from validate_repos import clone_repo_to_path
 from merge_tester import MERGE_STATE
 
 # pylint: disable-msg=too-many-locals
+
 
 def diff3_analysis(merge_tool: str, repo_num: int):
     """
