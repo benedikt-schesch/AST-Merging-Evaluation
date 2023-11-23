@@ -77,6 +77,8 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
         )
         if "head hash" in repo_info:
+            cache_data["head hash"] = repo_info["head hash"]
+        else:
             cache_data["head hash"] = repo.get_head_hash()
         cache_data["tree fingerprint"] = repo.compute_tree_fingerprint()
     except Exception as e:
