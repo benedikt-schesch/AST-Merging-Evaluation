@@ -21,7 +21,7 @@ import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
-from write_head_hashes import num_processes
+from test_repo_heads import num_processes
 from cache_utils import slug_repo_name
 
 if os.getenv("TERM", "dumb") == "dumb":

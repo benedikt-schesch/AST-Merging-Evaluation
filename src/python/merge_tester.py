@@ -21,7 +21,7 @@ import time
 import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
-from write_head_hashes import num_processes
+from test_repo_heads import num_processes
 from cache_utils import slug_repo_name
 from tqdm import tqdm
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE, N_TESTS

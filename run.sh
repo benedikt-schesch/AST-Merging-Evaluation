@@ -62,9 +62,6 @@ echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
 
-length=${#REPOS_CSV}
-REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
-
 ./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
@@ -80,15 +77,11 @@ rm -rf .workdir
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
-python3 src/python/write_head_hashes.py \
-    --repos_csv "$REPOS_CSV" \
-    --output_path "$REPOS_CSV_WITH_HASHES"
-
 python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
+    --repos_csv_with_hashes "$REPOS_CSV" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
-exit 0
+# exit 0
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \

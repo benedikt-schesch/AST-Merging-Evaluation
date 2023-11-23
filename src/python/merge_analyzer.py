@@ -23,7 +23,7 @@ import pandas as pd
 from repo import Repository, TEST_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
-from write_head_hashes import num_processes
+from test_repo_heads import num_processes
 from variables import TIMEOUT_MERGING, TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 
