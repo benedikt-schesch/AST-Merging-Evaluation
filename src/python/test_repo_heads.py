@@ -69,11 +69,11 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
             cache_directory=cache,
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
         )
-        if repo_info["head hash"] is not None:
+        if "head hash" in repo_info["head hash"]:
             cache_data["head hash"] = repo.get_head_hash()
         cache_data["tree fingerprint"] = repo.compute_tree_fingerprint()
     except Exception as e:
-        print("test_repo_heads:", repo_slug, ": head_passes_tests :", e)
+        print("test_repo_heads:", repo_slug, ": exception head_passes_tests :", e)
         cache_data["head test result"] = TEST_STATE.Git_checkout_failed.name
         cache_data["explanation"] = str(e)
         set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory, True)
