@@ -34,7 +34,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
-    repo_dir = REPOS_PATH / repo_slug.split("/")[1]
+    repo_dir = REPOS_PATH / repo_slug
     if repo_dir.exists():
         repo = git.repo.Repo(repo_dir)
     else:
@@ -75,7 +75,7 @@ def get_latest_hash(args):
         pd.Series: repo information with the hash of the HEAD
     """
     _, row = args
-    repo_slug = row["repository"]
+    repo_slug:str = row["repository"]
     print("write_head_hashes:", repo_slug, ": Started get_latest_hash")
 
     try:
@@ -90,6 +90,9 @@ def get_latest_hash(args):
             e,
         )
         return None
+    
+    # Delete the repo to save space
+    (REPOS_PATH / repo_slug).unlink(missing_ok=True)
 
     print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row

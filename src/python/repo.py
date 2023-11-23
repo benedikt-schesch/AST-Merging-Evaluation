@@ -122,7 +122,7 @@ class Repository:
             cache_directory (Path): The prefix of the cache.
         """
         self.repo_slug = repo_slug
-        self.path = REPOS_PATH / repo_slug.split("/")[1]
+        self.path = REPOS_PATH / repo_slug
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name

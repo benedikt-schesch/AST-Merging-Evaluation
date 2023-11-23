@@ -54,6 +54,9 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
     test_state, _, _ = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )
+    if test_state != TEST_STATE.Tests_passed:
+        repo.path.unlink()
+
     print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return test_state
 
@@ -69,18 +72,18 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
 
-    print("test_repo_heads: Started cloning repos")
-    with multiprocessing.Pool(processes=num_processes()) as pool:
-        results = [
-            pool.apply_async(clone_repo, args=(row["repository"],))
-            for _, row in df.iterrows()
-        ]
-        for result in tqdm(results, total=len(results)):
-            try:
-                return_value = result.get(10 * 60)
-            except Exception as e:
-                print("Couldn't clone repo", e)
-    print("test_repo_heads: Finished cloning repos")
+    # print("test_repo_heads: Started cloning repos")
+    # with multiprocessing.Pool(processes=num_processes()) as pool:
+    #     results = [
+    #         pool.apply_async(clone_repo, args=(row["repository"],))
+    #         for _, row in df.iterrows()
+    #     ]
+    #     for result in tqdm(results, total=len(results)):
+    #         try:
+    #             return_value = result.get(10 * 60)
+    #         except Exception as e:
+    #             print("Couldn't clone repo", e)
+    # print("test_repo_heads: Finished cloning repos")
 
     if os.path.exists(args.output_path):
         print("test_repo_heads: Output file already exists. Exiting.")
