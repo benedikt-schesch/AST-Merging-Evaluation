@@ -39,6 +39,7 @@ def num_processes() -> int:
     processes_used = int(0.7 * cpu_count) if cpu_count > 3 else cpu_count
     return processes_used
 
+
 def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     """Runs tests on the head of the main branch.
     Args:
@@ -57,7 +58,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         for key, value in cache_data.items():
             repo_info[key] = value
         return repo_info
-    
+
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
     cache_data = {}
 
@@ -79,20 +80,20 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         for key, value in cache_data.items():
             repo_info[key] = value
         return repo_info
-    
+
     # Test repo
     test_state, _, _ = repo.checkout_and_test(
         cache_data["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
     )
     cache_data["head test result"] = test_state.name
     set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory, True)
-    
+
     if test_state != TEST_STATE.Tests_passed:
         shutil.rmtree(repo.path, ignore_errors=True)
-    
+
     for key, value in cache_data.items():
-            repo_info[key] = value
-    
+        repo_info[key] = value
+
     print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return repo_info
 
@@ -133,5 +134,7 @@ if __name__ == "__main__":
     if len(filtered_df) == 0:
         raise Exception("No repos found whose head passes tests")
     filtered_df.to_csv(args.output_path, index_label="idx")
-    df.to_csv(args.output_path.parent / "all_repos_head_test_results.csv", index_label="idx")
+    df.to_csv(
+        args.output_path.parent / "all_repos_head_test_results.csv", index_label="idx"
+    )
     print("test_repo_heads: Done")

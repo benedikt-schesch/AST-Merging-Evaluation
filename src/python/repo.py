@@ -50,6 +50,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
             raise
     return repo
 
+
 TEST_STATE = Enum(
     "TEST_STATE",
     [
@@ -622,9 +623,9 @@ class Repository:
             return 0
         return total_covered / total
 
-    def get_head_hash(self)->str:
+    def get_head_hash(self) -> str:
         return self.repo.head.commit.hexsha
-    
+
     def __del__(self) -> None:
         """Deletes the repository."""
         if DELETE_WORKDIRS:
