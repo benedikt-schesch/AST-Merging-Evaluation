@@ -17,6 +17,7 @@ as column "head hash".
 import os
 import sys
 import argparse
+import shutil
 from pathlib import Path
 import multiprocessing
 from functools import partialmethod
@@ -75,7 +76,7 @@ def get_latest_hash(args):
         pd.Series: repo information with the hash of the HEAD
     """
     _, row = args
-    repo_slug:str = row["repository"]
+    repo_slug: str = row["repository"]
     print("write_head_hashes:", repo_slug, ": Started get_latest_hash")
 
     try:
@@ -90,9 +91,9 @@ def get_latest_hash(args):
             e,
         )
         return None
-    
+
     # Delete the repo to save space
-    (REPOS_PATH / repo_slug).unlink(missing_ok=True)
+    shutil.rmtree(REPOS_PATH / repo_slug, ignore_errors=True)
 
     print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row

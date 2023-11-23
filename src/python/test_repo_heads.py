@@ -19,6 +19,7 @@ import sys
 from functools import partialmethod
 from typing import Tuple
 from repo import Repository, TEST_STATE
+import shutil
 
 from tqdm import tqdm
 import pandas as pd
@@ -55,7 +56,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> TEST_STATE:
         repo_info["head hash"], timeout=TIMEOUT_TESTING, n_tests=3
     )
     if test_state != TEST_STATE.Tests_passed:
-        repo.path.unlink()
+        shutil.rmtree(repo.path, ignore_errors=True)
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return test_state
