@@ -57,6 +57,13 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     if cache_data is not None and isinstance(cache_data, dict):
         for key, value in cache_data.items():
             repo_info[key] = value
+        if cache_data["head test result"] == TEST_STATE.Tests_passed.name:
+            # Make sure the repo is cloned
+            repo = Repository(
+                repo_slug,
+                cache_directory=cache,
+                workdir_id=repo_slug + "/head-" + repo_info["repository"],
+            )
         return repo_info
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
