@@ -624,6 +624,10 @@ class Repository:
         return total_covered / total
 
     def get_head_hash(self) -> str:
+        """Gets the hash of the head commit.
+        Returns:
+            str: The hash of the head commit.
+        """
         return self.repo.head.commit.hexsha
 
     def __del__(self) -> None:

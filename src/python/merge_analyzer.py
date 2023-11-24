@@ -139,7 +139,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     )
 
     diff_files = process.stdout.split("\n") if process.stdout else []
-    diff_files = [line.split()[-1] for line in diff_files if line]
+    diff_files = [line.split()[-1] for line in diff_files if len(line) > 0]
 
     # Check if diff contains a java file
     contains_java_file = any(file.endswith(".java") for file in diff_files)
