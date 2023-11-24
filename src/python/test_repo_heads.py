@@ -15,11 +15,10 @@ import multiprocessing
 import os
 import argparse
 from pathlib import Path
-import sys
+import shutil
 from functools import partialmethod
 from typing import Tuple
 from repo import Repository, TEST_STATE
-import shutil
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
