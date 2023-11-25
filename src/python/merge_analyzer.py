@@ -63,7 +63,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     """
     repo_slug, merge_data, cache_directory = args
 
-    cache_key = merge_data["left"] + "_" + merge_data["right"]
+    cache_key = str(merge_data["left"]) + "_" + str(merge_data["right"])
     merge_cache_directory = cache_directory / "merge_analysis"
 
     cache_data = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
@@ -139,7 +139,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     )
 
     diff_files = process.stdout.split("\n") if process.stdout else []
-    diff_files = [line.split()[-1] for line in diff_files if len(line) > 0]
+    diff_files = [line.split()[-1] for line in diff_files if len(line.split()) > 0]
 
     # Check if diff contains a java file
     contains_java_file = any(file.endswith(".java") for file in diff_files)
@@ -233,6 +233,8 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
         header=0,
         index_col="idx",
     )
+    merges['left'] = merges['left'].astype(str)
+    merges['right'] = merges['right'].astype(str)
     merges["notes"].replace(np.nan, "", inplace=True)
 
     arguments = [
