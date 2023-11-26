@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Adds Jacoco plugin configuration to a Maven pom.xml file. """
 
 from typing import Any

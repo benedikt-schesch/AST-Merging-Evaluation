@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """ Compare the results of two merge tools on the same merge.
-usage: python3 merge_differ.py --repos_head_passes_csv <repos_head_passes_csv> 
+usage: python3 merge_differ.py --repos_head_passes_csv <repos_head_passes_csv>
                                 --merges_path <merges_path>
                                 --cache_dir <cache_dir>
 This script compares the results of two merge tools on the same merge.
 It outputs the diff of the two merge results if their results differ.
-It does not produce output for merges that have the same result or merges that 
+It does not produce output for merges that have the same result or merges that
 are not successful.
 The output is written in cache_dir/merge_diffs.
 """
@@ -51,6 +52,7 @@ def get_merge_fingerprint(
         return None, None
     left = merge_data["left"]
     right = merge_data["right"]
+    repo_slug = merge_data["repository"]
     repo = Repository(
         repo_slug,
         cache_directory=cache_directory,
@@ -98,16 +100,16 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
     diff_file_directory = cache_directory / "merge_diffs"
     diff_file_directory.mkdir(parents=True, exist_ok=True)
 
-    for merge_tool1 in MERGE_TOOL:
+    for merge_tool_1 in MERGE_TOOL:
         repo1, merge_fingerprint1 = get_merge_fingerprint(
-            merge_data, merge_tool1, cache_directory
+            merge_data, merge_tool_1, cache_directory
         )
         if repo1 is None or merge_fingerprint1 is None:
             continue
 
-        for merge_tool2 in MERGE_TOOL:
+        for merge_tool_2 in MERGE_TOOL:
             repo2, merge_fingerprint2 = get_merge_fingerprint(
-                merge_data, merge_tool2, cache_directory
+                merge_data, merge_tool_2, cache_directory
             )
             if repo2 is None or merge_fingerprint2 is None:
                 continue
@@ -120,7 +122,7 @@ def merge_differ(args: Tuple[pd.Series, Path]) -> None:
             command = ["diff", "-u", "-r", "-x", "*/\\.git*"]
             command.append(str(repo1.repo_path))
             command.append(str(repo2.repo_path))
-            with open(diff_file, "w") as f:
+            with open(diff_file, "w", encoding="utf-8") as f:
                 subprocess.run(command, stdout=f, stderr=f)
 
 
@@ -144,12 +146,12 @@ if __name__ == "__main__":
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
-    args = parser.parse_args()
-    cache_dir = Path(args.cache_dir)
+    arguments = parser.parse_args()
+    cache_dir = Path(arguments.cache_dir)
     cache_diffs_path = cache_dir / "merge_diffs"
     cache_diffs_path.mkdir(parents=True, exist_ok=True)
 
-    repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
+    repos = pd.read_csv(arguments.repos_head_passes_csv, index_col="idx")
 
     print("merge_differ: Started collecting diffs to compute")
     merge_differ_arguments = []
@@ -157,7 +159,7 @@ if __name__ == "__main__":
         merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
+            os.path.join(arguments.merges_path, slug_repo_name(repo_slug) + ".csv")
         )
         if not merge_list_file.exists():
             print(

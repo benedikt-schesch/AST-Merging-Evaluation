@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Output LaTeX tables and plots.
 
 usage: python3 latex_output.py
@@ -33,7 +34,7 @@ from prettytable import PrettyTable
 from tqdm import tqdm
 import seaborn as sns
 
-from merge_tester import TIMEOUT_TESTING_MERGE, TIMEOUT_TESTING_PARENT
+from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
 from cache_utils import slug_repo_name
 
@@ -141,7 +142,6 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     result_df_list = []
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        merges_repo = []
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
             os.path.join(args.tested_merges_path, slug_repo_name(repo_slug) + ".csv")
@@ -207,7 +207,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                     ):
                         result[idx][idx2 + idx + 1] += 1
                         result[idx2 + idx + 1][idx] += 1
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         result = np.tril(result)
         latex_merge_tool = [
             "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
@@ -236,12 +236,16 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
         plt.close()
         # Correct the path to the stored image in the pgf file.
-        with open(os.path.join(plots_output_path, "heatmap.pgf"), "rt") as f:
+        with open(
+            os.path.join(plots_output_path, "heatmap.pgf"), "rt", encoding="utf-8"
+        ) as f:
             file_content = f.read()
         file_content = file_content.replace(
             "heatmap-img0.png", f"plots/{plot_category}/heatmap-img0.png"
         )
-        with open(os.path.join(plots_output_path, "heatmap.pgf"), "wt") as f:
+        with open(
+            os.path.join(plots_output_path, "heatmap.pgf"), "wt", encoding="utf-8"
+        ) as f:
             f.write(file_content)
 
         incorrect = []
@@ -264,7 +268,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
         # Cost plot
         MAX_COST = 120
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
             for cost_factor in np.linspace(1, MAX_COST, 1000):
@@ -282,7 +286,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
-        plt.ylabel("\mbox{Merge\_Score}")
+        plt.ylabel("\\mbox{Merge_Score}")
         plt.xlim(0, 20)
         plt.ylim(0.75, 0.95)
         plt.legend()
@@ -291,7 +295,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pdf"))
 
         # Cost plot with manual merges
-        line = ax.plot(
+        ax.plot(
             np.linspace(1, MAX_COST, 1000),
             np.zeros(1000),
             label="Manual Merging",
@@ -335,7 +339,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             table += f" & {incorrect[merge_tool_idx]:5} & {round(incorrect_percentage):3}\\% \\\\\n"
         table += "\\end{tabular}\n"
 
-        with open(os.path.join(tables_output_path, "table_summary.tex"), "w") as file:
+        with open(
+            os.path.join(tables_output_path, "table_summary.tex"), "w", encoding="utf-8"
+        ) as file:
             file.write(table)
 
         # Printed Table
@@ -431,7 +437,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         table2 += "\\end{tabular}\n"
 
         with open(
-            os.path.join(tables_output_path, "table_feature_main_summary.tex"), "w"
+            os.path.join(tables_output_path, "table_feature_main_summary.tex"),
+            "w",
+            encoding="utf-8",
         ) as file:
             file.write(table2)
 
@@ -530,7 +538,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output += latex_def("parentTestTimeout", str(TIMEOUT_TESTING_PARENT // 60))
     output += latex_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
 
-    with open(os.path.join(args.output_dir, "defs.tex"), "w") as file:
+    with open(os.path.join(args.output_dir, "defs.tex"), "w", encoding="utf-8") as file:
         file.write(output)
 
 

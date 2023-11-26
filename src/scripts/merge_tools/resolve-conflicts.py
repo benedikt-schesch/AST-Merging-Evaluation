@@ -1,4 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env python  # pylint: skip-file
+# -*- coding: utf-8 -*-
 
 # This is a helper script for `resolve-adjacent-conflicts` and
 # `resolve-import-conflicts`.

@@ -7,7 +7,7 @@
 
 set -o nounset
 
-# Test side effects can be seen in the /tmp directory which are created by 
+# Test side effects can be seen in the /tmp directory which are created by
 # testing infrastructure. We delete them to avoid filling up the disk.
 # We delete all the files older than 2h and owned by the current user.
 find /tmp -maxdepth 1 -user "$(whoami)" -mmin +120 -exec rm -rf {} \;

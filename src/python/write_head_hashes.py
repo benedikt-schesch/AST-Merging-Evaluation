@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Write the hash of the HEAD of the default branch for each repository to its own file.
 If the file already exists, do nothing.
 After this is done, the resulting files are used indefinitely, for reproducible results.
@@ -102,14 +103,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_csv", type=Path)
     parser.add_argument("--output_path", type=Path)
-    args = parser.parse_args()
+    arguments = parser.parse_args()
 
     # If file exists ignore this step
-    if os.path.isfile(args.output_path):
+    if os.path.isfile(arguments.output_path):
         print("write_head_hashes: Cached")
         sys.exit(0)
 
-    df = pd.read_csv(args.repos_csv, index_col="idx")
+    df = pd.read_csv(arguments.repos_csv, index_col="idx")
 
     print("write_head_hashes: Started cloning repos and collecting head hashes")
 
@@ -126,5 +127,5 @@ if __name__ == "__main__":
     result_df = pd.DataFrame([i for i in get_latest_hash_result if i is not None])
     result_df = result_df.reset_index(drop=True)
     print("write_head_hashes: Started storing repo HEAD hashes")
-    result_df.to_csv(args.output_path, index_label="idx")
+    result_df.to_csv(arguments.output_path, index_label="idx")
     print("write_head_hashes: Finished storing repo HEAD hashes")

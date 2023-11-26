@@ -791,7 +791,7 @@ for line in tmp:
     # beginning of conflict zone
     if line.startswith(marker_start):
         zone = 1
-        for f in hunk: 
+        for f in hunk:
             f.truncate(0)
             f.seek(0)
 

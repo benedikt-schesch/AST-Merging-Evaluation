@@ -10,4 +10,3 @@ To refresh the contents of this directory, run script `get_repos.py`.
   * repos_small.csv -> List of only 2 repos.
 
   * repos_small_with_hashes.csv -> repos_small.csv but with the tested commit for repository validation
-

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" 
+# -*- coding: utf-8 -*-
+"""
 Deletes all placeholders from the cache. Placeholders are created when a
 a process starts; it indicates that is has started and is still running.
 If the process fails, the placeholder is not replaced with the actual
@@ -15,7 +16,6 @@ Args:
 from argparse import ArgumentParser
 from pathlib import Path
 import json
-import shutil
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         if file.is_dir():
             continue
         try:
-            with open(file, "r") as f:
+            with open(file, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except json.JSONDecodeError:
             print(f"Could not read {file}")
@@ -43,6 +43,6 @@ if __name__ == "__main__":
                 data.pop(key)
                 n_deleted += 1
 
-        with open(file, "w") as f:
+        with open(file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
     print(f"Deleted {n_deleted} placeholders")

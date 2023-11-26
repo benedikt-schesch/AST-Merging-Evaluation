@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Contains all used variables."""
 
 from pathlib import Path

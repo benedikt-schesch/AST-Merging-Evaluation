@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Split the repos list according to the number of machines used.
 
 usage: python3 get_repos.py --repos_csv <path_to_repos.csv>
