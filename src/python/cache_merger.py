@@ -1,4 +1,5 @@
-""" Merge multiple caches into one 
+# -*- coding: utf-8 -*-
+""" Merge multiple caches into one
 Usage: python cache_merger.py cache1 cache2 cache3 --output_cache cache_merged
 """
 

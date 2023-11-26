@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Adds Jacoco plugin configuration to a Gradle build file. """
 
 
@@ -14,7 +15,7 @@ def update_gradle_for_jacoco(gradle_path: str) -> None:
         + "        html.enabled true\n    }\n}"
     )
 
-    with open(gradle_path, "r+") as f:
+    with open(gradle_path, "r+", encoding="utf-8") as f:
         content = f.read()
 
         # Only add Jacoco plugin if it's not already there

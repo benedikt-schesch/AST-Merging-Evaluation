@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """Compare all csv files except for the run_time columns."""
 
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             different_columns = []
             for col in goal_df.columns:
                 if "run_time" in col:
-                    raise Exception(
+                    raise ValueError(
                         f'goal_df.columns contains "run_time": {goal_df.columns}'
                     )
                 if not col in actual_df:

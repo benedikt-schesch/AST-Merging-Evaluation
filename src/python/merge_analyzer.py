@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """ Analyze the merges i.e. check if the parents pass tests and statistics between merges.
 usage: python3 merge_analyzer.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
@@ -24,7 +25,7 @@ from repo import Repository, TEST_STATE
 from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
 from write_head_hashes import num_processes
-from variables import TIMEOUT_MERGING, TIMEOUT_TESTING_PARENT, N_TESTS
+from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 
 if os.getenv("TERM", "dumb") == "dumb":
