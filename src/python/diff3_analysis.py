@@ -89,10 +89,10 @@ def diff3_analysis(merge_tool: str, repo_num: int):
             text=True,
         )
 
-        # Check for the specific error message
+        # Check that diff3 didn't run into missing files in the base
         error_message = "No such file or directory"
         if error_message in diff_results.stderr:
-            # Run diff in the other way
+            # Since the conflict file was added in both parents we can't diff the base.
             diff_results = subprocess.run(
                 [
                     "diff",
@@ -113,7 +113,6 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         # Delete the temporary file
         os.remove(temp_file.name)
 
-    print("reached delete repo")
     # Deletes base, programmer_merge, and merge_attempt folders in repos dir
     # We do this to prevent errors if cloning the same repo into the folder twice
     subprocess.run(
