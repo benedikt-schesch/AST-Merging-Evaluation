@@ -27,6 +27,8 @@ def slug_repo_name(repo_slug: str) -> str:
     Returns:
         str: The reponame.
     """
+    if len(repo_slug.split("/")) < 2:
+        print(repo_slug.split("/"))
     return repo_slug.split("/")[1]
 
 
