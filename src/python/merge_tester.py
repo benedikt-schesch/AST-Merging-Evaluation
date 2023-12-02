@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Test the merges and check if the parents pass tests.
 usage: python3 merge_tester.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
@@ -24,7 +25,7 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
 from cache_utils import slug_repo_name
 from tqdm import tqdm
-from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE, N_TESTS
+from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -62,7 +63,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             merge_fingerprint,
             left_fingerprint,
             right_fingerprint,
-            test_coverage,
+            _,
             _,
         ) = repo.merge_and_test(
             tool=merge_tool,

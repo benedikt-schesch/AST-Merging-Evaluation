@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """ Contains all the functions related to the caches. The functions to interact with each
-of the caches are in this file. Each cache is interacted with through the functions 
+of the caches are in this file. Each cache is interacted with through the functions
 of this file. The caches are all JSON files and are stored in the cache directory.
 There will be 4 caches in total which are stored on disk after running the run.sh script:
 1) cache/sha_cache_entry:  A cache that maps the commit hash to a sha256 hash of the repository.
 2) cache/test_cache: A cache that maps a sha256 to test results.
-3) cache/merge_results: A cache that maps a merge to the result 
+3) cache/merge_results: A cache that maps a merge to the result
         of the merge (sha256, run time, and MERGE_STATE).
 4) cache/merge_diffs: A cache that stores the diff between merge tools.
 """
@@ -47,12 +48,14 @@ def set_in_cache(
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_directory (Path): The path to the cache directory.
     """
+    lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
-        lock = get_cache_lock(repo_slug, cache_directory)
         lock.acquire()
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
     write_cache(cache, repo_slug, cache_directory)
+    if acquire_lock and lock is not None:
+        lock.release()
 
 
 def lookup_in_cache(
@@ -156,7 +159,7 @@ def load_cache(repo_slug: str, cache_directory: Path) -> dict:
     cache_path = get_cache_path(repo_slug, cache_directory)
     if not cache_path.exists():
         return {}
-    with open(cache_path, "r") as f:
+    with open(cache_path, "r", encoding="utf-8") as f:
         cache_data = json.load(f)
         return cache_data
 

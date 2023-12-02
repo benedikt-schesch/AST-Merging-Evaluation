@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Tests the HEAD commits of multiple repos and considers them as valid if the test passes.
 
 usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes.csv>
@@ -7,7 +8,7 @@ usage: python3 test_repo_heads.py --repos_csv_with_hashes <repos_csv_with_hashes
 
 Input: a csv of repos.  It must contain a header, one of whose columns is "repository".
 That column contains "ORGANIZATION/REPO" for a GitHub repository. The csv must also
-contain a column "head hash" which contains a commit hash that will be tested. 
+contain a column "head hash" which contains a commit hash that will be tested.
 Cache_dir is the directory where the cache will be stored.
 Output: the rows of the input for which the commit at head hash passes tests.
 """
@@ -114,14 +115,31 @@ if __name__ == "__main__":
     parser.add_argument("--repos_csv_with_hashes", type=Path)
     parser.add_argument("--output_path", type=Path)
     parser.add_argument("--cache_dir", type=Path, default="cache/")
-    args = parser.parse_args()
+    arguments = parser.parse_args()
 
-    Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+    Path(arguments.cache_dir).mkdir(parents=True, exist_ok=True)
 
-    df = pd.read_csv(args.repos_csv_with_hashes, index_col="idx")
+    df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
+
+    print("test_repo_heads: Started cloning repos")
+    with multiprocessing.Pool(processes=num_processes()) as pool:
+        results = [
+            pool.apply_async(clone_repo, args=(row["repository"],))
+            for _, row in df.iterrows()
+        ]
+        for result in tqdm(results, total=len(results)):
+            try:
+                return_value = result.get(10 * 60)
+            except Exception as exception:
+                print("Couldn't clone repo", exception)
+    print("test_repo_heads: Finished cloning repos")
+
+    if os.path.exists(arguments.output_path):
+        print("test_repo_heads: Output file already exists. Exiting.")
+        sys.exit(0)
 
     print("test_repo_heads: Started Testing")
-    head_passes_tests_arguments = [(v, args.cache_dir) for _, v in df.iterrows()]
+    head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=num_processes()) as pool:
         head_passes_tests_results = list(
             tqdm(

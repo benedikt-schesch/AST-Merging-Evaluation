@@ -60,4 +60,3 @@ jobs:
         make small-test
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-

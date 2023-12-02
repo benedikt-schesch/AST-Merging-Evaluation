@@ -15,7 +15,7 @@ attributes_file=".git/info/attributes"
 echo "* merge=git-hires-merge" >> "$attributes_file"
 
 git config merge.conflictStyle zdiff3
-git merge --no-edit "$branch2" 
+git merge --no-edit "$branch2"
 retVal=$?
 
 # report conflicts

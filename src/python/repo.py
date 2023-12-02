@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 This script contains the Repository class that represents a repository.
 It also contains the functions that are used to test the repository.
@@ -19,8 +20,14 @@ from cache_utils import (
     lookup_in_cache,
     slug_repo_name,
 )
-from variables import *
 import git.repo
+from variables import (
+    REPOS_PATH,
+    WORKDIR_DIRECTORY,
+    LEFT_BRANCH_NAME,
+    RIGHT_BRANCH_NAME,
+    DELETE_WORKDIRS,
+)
 
 
 def clone_repo(repo_slug: str) -> git.repo.Repo:
@@ -155,7 +162,7 @@ class Repository:
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
-        repo = clone_repo(repo_slug)
+        clone_repo(repo_slug)
         assert self.path.exists()
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
@@ -470,7 +477,7 @@ class Repository:
         if cache is None:
             return None
         if not isinstance(cache, dict):
-            raise Exception("Cache entry should be a dictionary")
+            raise TypeError("Cache entry should be a dictionary")
         return cache
 
     def get_test_cache_entry(
@@ -492,7 +499,7 @@ class Repository:
         if cache is None:
             return None, 0
         if not isinstance(cache, dict):
-            raise Exception("Cache entry should be a dictionary")
+            raise TypeError("Cache entry should be a dictionary")
         return TEST_STATE[cache["test_result"]], cache["test_coverage"][-1]
 
     def _checkout_and_test(
@@ -583,7 +590,7 @@ class Repository:
             test_log_file.parent.mkdir(parents=True, exist_ok=True)
             if test_log_file.exists():
                 test_log_file.unlink()
-            with open(test_log_file, "w") as f:
+            with open(test_log_file, "w", encoding="utf-8") as f:
                 f.write(test_output)
             cache_data["test_results"].append(test_state.name)
             cache_data["test_log_file"].append(str(test_log_file))

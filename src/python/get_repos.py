@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Download repo list."""
 
 # usage: python3 get_repos.py
@@ -10,8 +11,6 @@
 import gzip
 import urllib.request
 from io import BytesIO
-import os
-import sys
 
 import pandas as pd
 import numpy as np
