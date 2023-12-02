@@ -233,8 +233,8 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
         header=0,
         index_col="idx",
     )
-    merges['left'] = merges['left'].astype(str)
-    merges['right'] = merges['right'].astype(str)
+    merges["left"] = merges["left"].astype(str)
+    merges["right"] = merges["right"].astype(str)
     merges["notes"].replace(np.nan, "", inplace=True)
 
     arguments = [

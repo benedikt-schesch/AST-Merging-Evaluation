@@ -1,0 +1,10 @@
+idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
+3,refs/heads/master,0d45be8cc58271d225df5381003a4e5688460abe,ab0c9b423d71cc9efa31424a089bd21176709efe,e76323eb340f94efff647b788f81034e28721b81,,False,169e6821dbe0742c81ae0c318e34d7f9ee2ca5e88eae5d78fce1c72c783feef9,616451936c3d0a7b60ab248ccd9acd837a557e271fc5349ab190e58c73f2b15d,10,True,Tests_failed,0.0,Tests_failed,0.0,False,False
+4,refs/heads/master,7420f8cf754f4bc0986b135f2d4ab965c21846ec,8b1a8c66df3c757a128737c1e7293cf665c967b5,8aa145522aeafff9aef653b2e86e077b8d633bcd,,False,,,26,False,,,,,,False
+5,refs/heads/master,8b1a8c66df3c757a128737c1e7293cf665c967b5,9ce8b406507fe354a7ad7773574c2eb4aa550afa,6cdaebadac97f1c8338a870bb7b89e2d53ece33f,,False,,,12,False,,,,,,False
+6,refs/heads/master,9ce8b406507fe354a7ad7773574c2eb4aa550afa,bb2e366dfbe7418ceeff5892aa1c209044a24ed5,6f3231d3037172b9ae63e04beacb40967e942111,,False,,,11,False,,,,,,False
+7,refs/heads/master,9d7be8ae192cd0e03e8d085e0a670775e5103368,80837f9645b85c9700ca64de7f3c1b2e013db789,c8a5a85c1b48ea75dee2b7fe3ee63b53cbb625d8,,False,,,4,False,,,,,,False
+10,refs/heads/master,34c7b9651d2e717892f1138b76fc47859cd330fe,45c3de1a382db1f659121a231096cd56b63f576e,bb1691559348f83ffb7098c6de6323a68b1ee11e,,False,,,39,False,,,,,,False
+11,refs/heads/master,3983be561b8029d69528f46868a17336330b23b8,59395b9219d2b2d24b7354d49f1cf95930d2d1c9,a94185462ad5ffc2c2412100cd89e64c65456d94,two initial commits,False,,,26,False,,,,,,False
+12,refs/heads/master,59395b9219d2b2d24b7354d49f1cf95930d2d1c9,e0c3921ac09f32c4bdabe896e1320124633550a4,5180526814b746200966b716b23c33066f8562c1,two initial commits,False,,,15,False,,,,,,False
+14,refs/remotes/origin/mc-1.16,094facbeaf8a4fa1e360f9e1b1296ef452a762c3,135d6ac5f6308f86a487d252f20363783230c260,94e4e09d9328e3abaec55e7059d3c9e61bd62dfb,,False,,,164,False,,,,,,False

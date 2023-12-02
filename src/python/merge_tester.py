@@ -187,16 +187,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_tester: Started Writing Output")
 
-    n_merges_parents_pass = 0
     for i in tqdm(range(len(merge_tester_arguments))):
         repo_slug = merge_tester_arguments[i][0]
         merge_results = merge_tester_results[i]
-        if len(merge_results) > 0 and merge_results["parents pass"]:
-            n_merges_parents_pass += 1
         repo_result[repo_slug].append(merge_results)
 
     n_total_merges = 0
-    n_total_merges_parents_pass = 0
     for repo_slug in repo_result:
         output_file = Path(
             os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
@@ -216,18 +212,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             df.sort_index(inplace=True)
             df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
-        n_total_merges_parents_pass += len(df[df["parents pass"]]) if len(df) > 0 else 0
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
-    print(
-        'merge_tester: Number of newly tested merges with "parents pass":',
-        n_merges_parents_pass,
-    )
     print("merge_tester: Total number of tested merges:", n_total_merges)
-    print(
-        'merge_tester: Total number of merges with "parents pass":',
-        n_total_merges_parents_pass,
-    )
     print("merge_tester: Finished Writing Output")
     print("merge_tester: Done")
 

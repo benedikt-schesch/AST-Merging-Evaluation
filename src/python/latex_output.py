@@ -183,7 +183,16 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
     # Check if undesirable states are present
     for merge_tool in MERGE_TOOL:
-        assert result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() == 0
+        if result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() != 0:
+            result_df[result_df[merge_tool.name].isin(UNDESIRABLE_STATES)].to_csv(
+                os.path.join(args.output_dir, "undesirable_states.csv"),
+                index_label="idx",
+            )
+            raise Exception(
+                "latex_output.py:",
+                "Undesirable states found in the results.",
+                result_df[result_df[merge_tool.name].isin(UNDESIRABLE_STATES)],
+            )
 
     result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
 

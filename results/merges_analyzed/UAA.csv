@@ -1,0 +1,5 @@
+idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
+1,refs/heads/master,63b7e1a9af6d3fa525dbceb91d2ac5cf71dab8f2,d1881c42316ae84727297099553d058af9614dc2,1ef2faf6ae039f15714651718ec78f2838c062a0,,False,,,32,False,,,,,,False
+2,refs/heads/master,59d43c1890f3af7859ca66c6b83e9ce5c1e81ddd,8aefddcd167e4a7f78a35ff99010b1f81daf1dca,fc58011287e22126f5bf50446a7b46525baa8c19,,False,,,23,False,,,,,,False
+3,refs/heads/master,fa70db481dc0f7c080866d0c31a1adb9c6334cad,6713434b879c7630bbb746a94e21054061dc753b,b9f77066584e2266eb70dadb0f3bccafc5611ad0,,True,5d1926aabbe7fe967ea8fb9b399bad17bdae783e42ab4f29213a5e93f7a80431,9281537d5a62e3fae5a3ce3670c1ff86d1e6fb5882ff4585f92a575c9c3d4ffe,201,True,Tests_passed,0.0,Tests_passed,0.0,True,True
+4,refs/heads/master,058817e4956e68d976a66fd9b638bbaf6e420de1,11919ed358200654eb228459a900727771f50121,7a17911f8b410e301cb0f6cd397f7a9d4f10e6d6,two initial commits,False,,,2,False,,,,,,False

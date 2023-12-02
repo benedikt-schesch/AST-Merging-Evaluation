@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
+2,refs/remotes/origin/pull/2,c91b62a4589a6dafb9a910dedcfaeff861fb05fd,443968050923b97dc46cb0b0d0279a8edb655d4a,2bb6a3307bd2fc1798a7b185caa369db8d230875,,False,,,243,False,,,,,,False
+3,refs/remotes/origin/pull/2,75fb2ff17d00bd2a2f1f478901a13de2149b3f15,eb47dbe7b5f96148b77d94f0a1471de1d01830a2,3aa119cc6425360f76cb96fb5c7f103db1c92ca8,,False,,,150,False,,,,,,False

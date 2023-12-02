@@ -1,0 +1,24 @@
+idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
+2,refs/heads/master,2adb4cd42a3b39e7aa6a801da19db1be5c60572b,40debe9f0b1c84641ca7f37cec33b5718da1d086,5c845d557687e6fb3f28e6e46cfc4c70a034b5d4,,False,,,148,False,,,,,,False
+3,refs/heads/master,40debe9f0b1c84641ca7f37cec33b5718da1d086,e2cfbb35fc1bfc6cb2e76c3228638ee68968bf4d,4be69b3fa67b7fb704ce6fa0e198ee9b7a9adb97,,False,,,4,False,,,,,,False
+5,refs/heads/master,f3daa2d9bcc9d09e049bad380faf0b0ee4ee58d3,5e68972227044e8b6630e7799dee3535464ae985,a9545087244aabbdbda284ddab3b9907da14ec8a,,False,,,186,False,,,,,,False
+6,refs/heads/master,3037d669a51072e685079c32d2f80bea0fc9424a,f1cd962e68e859bf529e84426e1f1d157329e80b,623e49abbb4e1d764ebeb8b3c03a0d2db6804384,,False,,,271,False,,,,,,False
+7,refs/heads/master,f1cd962e68e859bf529e84426e1f1d157329e80b,9897d78892f5337c77824d9ab10f471643d63536,282e23ffd469af2f135f23590ffd186cc0ec9876,,False,,,125,False,,,,,,False
+9,refs/heads/master,fb865a88e94844829c8513bf71f6140b7cbaab22,7e31a6cbad9aed1b78fc0b87e85ceaf1bacf581a,282e23ffd469af2f135f23590ffd186cc0ec9876,,False,,,132,False,,,,,,False
+10,refs/heads/master,059e04f391b0e53be296dc4c275db34c60fda67d,fb72e69f3a2ed4bfff4980f24276eea425df2e38,45a8738c8c1675e911aaa7189dda8e787429ca8b,,False,deddefa7fbdff5edcb5fbf421afb8b0e09de23c5a7aed45d7edf31b370283614,408faf5b3b794e69b605d67351edb01496565607957695fd68bb2ee57cba441b,959,True,Tests_failed,0.0,Tests_failed,0.0,False,False
+12,refs/heads/master,cfcb87db42986469c27d1b2d09348cb426ca5971,5df064b3d30c48768f6ec6ea3de8e744ba0390ab,5522a7bc95c7ebcd5461d5a996fdd7a4da2a6d81,,False,,,3,False,,,,,,False
+13,refs/heads/master,5522a7bc95c7ebcd5461d5a996fdd7a4da2a6d81,33901bf86c80515965dfcfe3d5f5129fa529272b,da6e68025c6417ffefce589df73d1498cb274879,,False,,,54,False,,,,,,False
+14,refs/heads/master,8196dec6dad0b0c5906aa4905cffb422956f9004,6092095ce4ffc6f50e18fc3ab5789801d64a6c75,b0f45b8cdd8c22b6c9a4c65204dcc8f693083f0d,,False,,,5,False,,,,,,False
+15,refs/heads/master,b0f45b8cdd8c22b6c9a4c65204dcc8f693083f0d,298082d887b74257d4c25028fdbeedbc8dac4db8,c7378e1b7905799bb00b0687daabe77cefec620c,,False,,,253,False,,,,,,False
+16,refs/heads/master,29013ad51b45f8f0d6a308404fcfa439a527a114,03f95921f458db9966346c6c83d363394c79ba25,23512b9cc9b4887b1bbf9ac127e01606f561d053,,False,ad9ad99381a04fa656ae02ca8e3fc13f7a26643be397b9bde361a41d42bc1001,081539363b8756f772264425ce84870378a7b0794658ced819e45793ff341cab,1255,True,Tests_failed,0.0,Tests_failed,0.0,False,False
+17,refs/heads/master,03f95921f458db9966346c6c83d363394c79ba25,25a12cfaece2e85c7e7b75e8ea503c36b6acbb42,ea9a55bfa726b0bb85f30c148d074f7fb1c4c0e0,,False,,,481,False,,,,,,False
+19,refs/heads/master,1ba7c5264963bd86b3f2733fbb6276b72c72c5bc,9cc9f1fa0b45c01fcc87ec75feb8d3bb8e7d8ba1,45e6fae44085ae022193536f9214edf7dbbf8c18,,False,,,229,False,,,,,,False
+20,refs/heads/master,cc17c8b7d99e961427ed69c95c192e81e84d8061,c5792ca8f7c415246088e43afdc8c50093c602ff,45e6fae44085ae022193536f9214edf7dbbf8c18,,False,,,20,False,,,,,,False
+21,refs/heads/master,f9a422c80882119f2234ec6dc12fc7dab9f312ef,2ec466d8138ad14dc306cd94cb92784f919d186d,55b159bed0a38bb1e42f68d485a34719337050b3,,False,,,2,False,,,,,,False
+23,refs/heads/master,3c8c0eb32966c28053b40da0e7093965ef6d5f18,a20c4968f0c8a50b3f68e1e70692c715fb05870b,6764ec1d1d732ad6625f5e296e6d202119103717,,False,,,18,False,,,,,,False
+25,refs/heads/master,b809b7fb96101b4eef8693498fcdc922561b103d,2627f4e0e08c9fd246ba1abbed8aaf3f782b8b99,f59d1eb040cdb5e0b8d4a721781908de3da32385,,False,,,2,False,,,,,,False
+26,refs/heads/master,f59d1eb040cdb5e0b8d4a721781908de3da32385,f68a30f39c49b911073ff73f94c3556ff4a8a920,f915eaa7cac0de6ca66de1047a87181d81c088b1,,False,,,13,False,,,,,,False
+27,refs/heads/master,2627f4e0e08c9fd246ba1abbed8aaf3f782b8b99,f68a30f39c49b911073ff73f94c3556ff4a8a920,f915eaa7cac0de6ca66de1047a87181d81c088b1,,False,,,13,False,,,,,,False
+29,refs/heads/master,147de8593c4861b7aac0aa6a85371e611e3bc41c,249d48196b4e642c74987fc84510ba172c302e77,7357d1ed7cbffbea224662518e9f5328df8f9a00,,False,8aa6b6df0f02ede1e01bd04f91500eb5e54e819e2600ece579caffb3bb821595,91b8e7551cd21f0bc12cad59043f84ce3012ebce472b6c332e0535b1f5b0d6a0,265,True,Tests_failed,0.0,Tests_failed,0.0,False,False
+31,refs/heads/master,382a314b350cad3398fe115f12390f517e80019b,f55c918160e367722b29a6dd6dafd772494d8dcd,e3e46418d754df885e0e39b0f7d9ab3fd84f20ee,two initial commits,False,,,2,False,,,,,,False
+33,refs/remotes/origin/pull/3,94c90555799d9ea59226159a7180ebd64f35cbac,1df4910fc90b2fadd0c6ad39af3b15c3d0770292,8d91502e14b6aa1d56ac6588c1ad30ff6bc9a1dd,,False,,,11,False,,,,,,False

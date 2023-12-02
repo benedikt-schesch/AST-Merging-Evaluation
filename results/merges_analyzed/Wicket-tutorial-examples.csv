@@ -1,0 +1,8 @@
+idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
+6,refs/heads/master,4954961160f71a0b87128543b3fc57370dbeec03,eff21c732e2d9fd3d4f07716d96935ac89106e2c,0a7e1321c69e7c80e22a230f4c731cbefcf616c5,,False,,,175,False,,,,,,False
+7,refs/heads/master,b070f43b163c641ba38c411e4fc4c7fcfd01bf69,c28887a96c36453dbeba66cce6554fe85197e18d,86b575b2e6e35893f871867d9de65fe5fa6918ca,,False,,,30,False,,,,,,False
+8,refs/heads/master,97a0c5e0114f4bcd849a5b250c0a400c2b957d06,b4f10aaf2986bd1731a7625935ce7cdd8f8f1008,2700771a6ce434a36c440dd78a944da1eeb8f993,,False,,,203,False,,,,,,False
+9,refs/heads/master,b4f10aaf2986bd1731a7625935ce7cdd8f8f1008,f8798b5709ff5bc88ae8a1f08388830c53867325,fbfe0e248aca404c6beed101f8cf58479e13f7bc,,False,,,194,False,,,,,,False
+10,refs/heads/master,d0abaef7071be88b2caec13488af4edc02ab1d98,214e269e343da272fa3c260866449c7358c2c690,23ba896ebf68e430dd52d1fdab8e552c14f2c4d4,,False,,,31,False,,,,,,False
+11,refs/heads/master,214e269e343da272fa3c260866449c7358c2c690,d630a085c0cbdbee62bf3c7e464a90d757bf0b87,57cc38746b1e3cd2a1e8b7c0daec1933911fe038,,False,,,9,False,,,,,,False
+16,refs/remotes/origin/wicket-8.x,752c54b718dc37c4ffac93e61667cdab235a005f,c2cdbeb5f1a134d39e6e5c5a1a8891b014953d97,dd6d861554f6f51b5d3f84ad0673e9dfd72fa6a0,,False,,,720,False,,,,,,False

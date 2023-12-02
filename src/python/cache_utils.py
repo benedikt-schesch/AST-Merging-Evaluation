@@ -48,15 +48,9 @@ def set_in_cache(
     if acquire_lock:
         lock = get_cache_lock(repo_slug, cache_directory)
         lock.acquire()
-    cache_path = get_cache_path(repo_slug, cache_directory)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
-    output = json.dumps(cache, indent=4)
-    with open(cache_path, "w") as f:
-        f.write(output)
-        f.flush()
-    if acquire_lock:
-        lock.release()  # type: ignore
+    write_cache(cache, repo_slug, cache_directory)
 
 
 def lookup_in_cache(
@@ -163,3 +157,22 @@ def load_cache(repo_slug: str, cache_directory: Path) -> dict:
     with open(cache_path, "r") as f:
         cache_data = json.load(f)
         return cache_data
+
+
+def write_cache(
+    cache: dict,
+    repo_slug: str,
+    cache_directory: Path,
+) -> None:
+    """Writes the cache to disk.
+    Args:
+        cache (dict): The cache to write.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
+        cache_directory (Path): The path to the cache directory.
+    """
+    cache_path = get_cache_path(repo_slug, cache_directory)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    output = json.dumps(cache, indent=4)
+    with open(cache_path, "w") as f:
+        f.write(output)
+        f.flush()
