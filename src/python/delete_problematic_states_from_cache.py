@@ -1,7 +1,9 @@
 """ 
 Deletes problematic states from the cache. 
-A problematic state is when the merge analyzer did not have a checkout failure but the merge tester did.
+A problematic state is when the merge analyzer did not have a checkout failure 
+but the merge tester did.
 """
+import sys
 from argparse import ArgumentParser
 from pathlib import Path
 import pandas as pd
@@ -12,7 +14,9 @@ def cleanup_cache(
     merges_to_cleanup: pd.DataFrame, cache_root: Path, delete: bool = False
 ) -> int:
     """Deletes problematic states from the cache.
-    A problematic state is when the merge analyzer did not have a checkout failure but the merge tester did.
+    A problematic state is when the merge analyzer did not have a checkout
+    failure but the merge tester did.
+
     Args:
         merges_to_cleanup (pd.DataFrame): The merges to cleanup.
         cache_root (Path): The path to the cache directory.
@@ -70,7 +74,7 @@ if __name__ == "__main__":
     confirm = input(f"Confirm deletion of {potential_deletions} cache entries? (y/n): ")
     if confirm.lower() != "y":
         print("Aborting...")
-        exit(0)
+        sys.exit(0)
 
     deletetions = cleanup_cache(merges_to_cleanup, cache_root, delete=True)
     print("Deleted", deletetions, "entries from the cache.")

@@ -49,8 +49,8 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     repo_info, cache = args
     repo_slug = repo_info["repository"]
     if "/" not in repo_slug:
-         repo_info["head test result"] = "Wrong format"
-         return repo_info
+        repo_info["head test result"] = "Wrong format"
+        return repo_info
     cache_key = repo_slug
     merge_cache_directory = cache / "repos_head_info"
     cache_data = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
