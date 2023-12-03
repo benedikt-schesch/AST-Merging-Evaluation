@@ -5,6 +5,7 @@ from pathlib import Path
 from tqdm import tqdm
 import pandas as pd
 from cache_utils import slug_repo_name, write_cache
+from renaming_files import check_conflicts
 
 
 def old_path(repo_slug: str, cache_directory: Path):
@@ -26,28 +27,19 @@ if __name__ == "__main__":
         ]
     ]
     repos_df = pd.read_csv("input_data/repos.csv")
+    conflicts = check_conflicts(repos_df)
     for cache_directory in tqdm(cache_dirs):
-        for idx, row in tqdm(repos_df.iterrows(), total=len(repos_df)):
-            analyze = True
-            # Check if name conflict exists
-            for idx2, row2 in repos_df.iterrows():
-                if idx2 == idx:
-                    continue
-                if slug_repo_name(row["repository"]) == slug_repo_name(
-                    row2["repository"]
-                ):
-                    print("Name conflict exists", row["repository"], row2["repository"])
-                    analyze = False
-            if not analyze:
-                continue
-
-            repo_slug = row["repository"]
+        for idx, repo_slug in tqdm(repos_df.loc[~conflicts, "repository"].items()):
             old_cache_path = old_path(repo_slug, cache_directory)
-            try:
-                with open(old_cache_path, "r", encoding="utf-8") as f:
-                    cache = json.load(f)
-            except FileNotFoundError:
+            if not old_cache_path.exists():
                 continue
 
+            old_cache_path = old_path(repo_slug, cache_directory)
+            with open(old_cache_path, "r", encoding="utf-8") as f:
+                cache = json.load(f)
             write_cache(cache, repo_slug, cache_directory)
-            old_cache_path.unlink()
+
+        print("Removing old cache files")
+        for idx, repo_slug in tqdm(repos_df.loc[:, "repository"].items()):
+            old_cache_path = old_path(repo_slug, cache_root)
+            old_cache_path.unlink(missing_ok=True)
