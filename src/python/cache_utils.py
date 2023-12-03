@@ -127,7 +127,7 @@ def get_cache_path(repo_slug: str, cache_directory: Path) -> Path:
     Returns:
         Path: The path to the cache file.
     """
-    cache_file_name = slug_repo_name(repo_slug) + ".json"
+    cache_file_name = repo_slug + ".json"
     cache_path = cache_directory / cache_file_name
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     return cache_path
