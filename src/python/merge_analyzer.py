@@ -23,9 +23,9 @@ import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
 from tqdm import tqdm
-from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
+from cache_utils import set_in_cache, lookup_in_cache
 from test_repo_heads import num_processes
-from variables import TIMEOUT_MERGING, TIMEOUT_TESTING_PARENT, N_TESTS
+from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -197,12 +197,8 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     Returns:
         list: A list of arguments for the merger function.
     """
-    merge_list_file = Path(
-        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-    )
-    output_file = Path(
-        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-    )
+    merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
+    output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
     if not merge_list_file.exists():
         print(
             "merge_analyzer:",
@@ -320,9 +316,7 @@ if __name__ == "__main__":
     repo_data = []
 
     for repo_slug in repo_result:
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
 
         if output_file.exists():
             try:

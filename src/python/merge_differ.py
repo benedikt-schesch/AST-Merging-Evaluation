@@ -23,7 +23,6 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from tqdm import tqdm
 from test_repo_heads import num_processes
-from cache_utils import slug_repo_name
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -158,9 +157,7 @@ if __name__ == "__main__":
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         merges_repo = []
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(arguments.merges_path, slug_repo_name(repo_slug) + ".csv")
-        )
+        merge_list_file = Path(os.path.join(arguments.merges_path, repo_slug + ".csv"))
         if not merge_list_file.exists():
             print(
                 "merge_differ.py:",

@@ -23,7 +23,6 @@ import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
-from cache_utils import slug_repo_name
 from tqdm import tqdm
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
@@ -110,12 +109,8 @@ def build_arguments(
     Returns:
         list: The arguments for the merge_tester function.
     """
-    merge_list_file = Path(
-        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-    )
-    output_file = Path(
-        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-    )
+    merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
+    output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
     if not merge_list_file.exists():
         print(
             "merge_tester:",
@@ -195,9 +190,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     n_total_merges = 0
     for repo_slug in repo_result:
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
         if output_file.exists():
             try:
                 df = pd.read_csv(output_file, header=0)

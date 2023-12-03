@@ -113,7 +113,7 @@ def get_cache_lock(repo_slug: str, cache_directory: Path):
     Returns:
         fasteners.InterProcessLock: A lock for the repository.
     """
-    lock_path = cache_directory / "locks" / (slug_repo_name(repo_slug) + ".lock")
+    lock_path = cache_directory / "locks" / (str(repo_slug) + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock = fasteners.InterProcessLock(lock_path)
     return lock
@@ -178,6 +178,6 @@ def write_cache(
     cache_path = get_cache_path(repo_slug, cache_directory)
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     output = json.dumps(cache, indent=4)
-    with open(cache_path, "w") as f:
+    with open(cache_path, "w", encoding="utf-8") as f:
         f.write(output)
         f.flush()

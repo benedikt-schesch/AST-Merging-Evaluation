@@ -36,7 +36,6 @@ import seaborn as sns
 
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
-from cache_utils import slug_repo_name
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -144,7 +143,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
         merge_list_file = Path(
-            os.path.join(args.tested_merges_path, slug_repo_name(repo_slug) + ".csv")
+            os.path.join(args.tested_merges_path, repo_slug + ".csv")
         )
         if not merge_list_file.exists():
             raise Exception(
@@ -181,18 +180,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
 
-    # Check if undesirable states are present
+    # Remove undesired states
     for merge_tool in MERGE_TOOL:
-        if result_df[merge_tool.name].isin(UNDESIRABLE_STATES).sum() != 0:
-            result_df[result_df[merge_tool.name].isin(UNDESIRABLE_STATES)].to_csv(
-                os.path.join(args.output_dir, "undesirable_states.csv"),
-                index_label="idx",
-            )
-            raise Exception(
-                "latex_output.py:",
-                "Undesirable states found in the results.",
-                result_df[result_df[merge_tool.name].isin(UNDESIRABLE_STATES)],
-            )
+        result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
 
     result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
 
@@ -502,7 +492,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
         merge_list_file = os.path.join(
             args.merges_path,
-            slug_repo_name(repository_data["repository"] + ".csv"),
+            repository_data["repository"] + ".csv",
         )
         if not os.path.isfile(merge_list_file):
             continue

@@ -19,7 +19,6 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
-from cache_utils import slug_repo_name
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -37,12 +36,8 @@ if __name__ == "__main__":
     total_valid_repos = 0
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-        )
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
         if not merge_list_file.exists():
             print(
                 f"merges_sampler: {repo_slug} does not have a list of merges."
