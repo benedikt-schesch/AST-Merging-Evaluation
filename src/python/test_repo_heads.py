@@ -20,12 +20,11 @@ from pathlib import Path
 import shutil
 from functools import partialmethod
 from typing import Tuple
-from repo import Repository, TEST_STATE
+from repo import Repository, TEST_STATE, clone_repo
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
 from cache_utils import set_in_cache, lookup_in_cache
-from repo import clone_repo
 
 
 if os.getenv("TERM", "dumb") == "dumb":
