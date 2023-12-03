@@ -14,6 +14,7 @@ Output: the rows of the input for which the commit at head hash passes tests.
 """
 import multiprocessing
 import os
+import sys
 import argparse
 from pathlib import Path
 import shutil
@@ -24,6 +25,7 @@ from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
 from cache_utils import set_in_cache, lookup_in_cache
+from repo import clone_repo
 
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -162,8 +164,9 @@ if __name__ == "__main__":
     )
     if len(filtered_df) == 0:
         raise Exception("No repos found whose head passes tests")
-    filtered_df.to_csv(args.output_path, index_label="idx")
+    filtered_df.to_csv(arguments.output_path, index_label="idx")
     df.to_csv(
-        args.output_path.parent / "all_repos_head_test_results.csv", index_label="idx"
+        arguments.output_path.parent / "all_repos_head_test_results.csv",
+        index_label="idx",
     )
     print("test_repo_heads: Done")
