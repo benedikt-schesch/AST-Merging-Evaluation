@@ -1,6 +1,7 @@
-""" 
-Deletes problematic states from the cache. 
-A problematic state is when the merge analyzer did not have a checkout failure 
+# -*- coding: utf-8 -*-
+"""
+Deletes problematic states from the cache.
+A problematic state is when the merge analyzer did not have a checkout failure
 but the merge tester did.
 """
 import sys
