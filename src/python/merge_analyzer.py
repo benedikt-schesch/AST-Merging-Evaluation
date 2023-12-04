@@ -343,6 +343,7 @@ if __name__ == "__main__":
             df.loc[sampled_merges.index, "sampled for testing"] = True
 
             df.sort_index(inplace=True)
+            output_file.parent.mkdir(parents=True, exist_ok=True)
             df.to_csv(output_file, index_label="idx")
 
         # Collect data for histograms

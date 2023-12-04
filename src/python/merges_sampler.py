@@ -71,6 +71,7 @@ if __name__ == "__main__":
         sample = merges.sample(frac=1.0, random_state=42)
         sample = sample[:n_merges]
         sample.sort_index(inplace=True)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
         sample.to_csv(output_file)
 
     print(

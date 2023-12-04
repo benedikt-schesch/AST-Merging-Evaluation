@@ -204,6 +204,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         else:
             df = pd.DataFrame(repo_result[repo_slug])
             df.sort_index(inplace=True)
+            output_file.parent.mkdir(parents=True, exist_ok=True)
             df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
 

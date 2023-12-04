@@ -41,5 +41,5 @@ if __name__ == "__main__":
 
         print("Removing old cache files")
         for idx, repo_slug in tqdm(repos_df.loc[:, "repository"].items()):
-            old_cache_path = old_path(repo_slug, cache_root)
+            old_cache_path = old_path(repo_slug, cache_directory)
             old_cache_path.unlink(missing_ok=True)
