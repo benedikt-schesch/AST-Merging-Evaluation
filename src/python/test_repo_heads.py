@@ -20,7 +20,7 @@ from pathlib import Path
 import shutil
 from functools import partialmethod
 from typing import Tuple
-from repo import Repository, TEST_STATE, clone_repo
+from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
