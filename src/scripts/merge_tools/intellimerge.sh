@@ -30,10 +30,6 @@ java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" 
 # run git merge
 cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
-# collect initial counts of strings that are conflict markers, but appear in the clone.
-m1a=$(grep -ro '^<<<<<<<$' . | wc -l)
-m2a=$(grep -ro '^=======$' . | wc -l)
-m3a=$(grep -ro 'n^>>>>>>>$' . | wc -l)
 git merge --no-edit "$branch2"
 cd - || exit 1
 
@@ -46,11 +42,9 @@ done
 rm -rf $temp_dir
 
 # report conflicts
-m1b=$(grep -ro '^<<<<<<<$' "$clone_dir" | wc -l)
-m2b=$(grep -ro '^=======$' "$clone_dir" | wc -l)
-m3b=$(grep -ro '^>>>>>>>$' "$clone_dir" | wc -l)
-if [ "$m1a" -ne "$m1b" ] && [ "$m2a" -ne "$m2b" ] && [ "$m3a" -ne "$m3b" ]; then
-    echo "Conflict"
+conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
+if [ "$conflict_markers" -gt 0 ]; then
+    echo "Conflict detected"
     exit 1
 fi
 exit 0

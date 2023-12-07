@@ -9,11 +9,9 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
-DELETE_WORKDIRS = False
-
 
 def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
-    """Tests the parents of a merge and in case of success, it tests the merge.
+    """Replay a merge and its test results.
     Args:
         args (Tuple[str,pd.Series]): A tuple containing the repository slug,
                     the repository info, and the cache path.
@@ -30,6 +28,7 @@ def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
             workdir_id=repo_slug
             + f"/merge-tester-{merge_tool.name}-"
             + f'{merge_data["left"]}-{merge_data["right"]}',
+            delete_workdir=False,
         )
         (
             merge_result,
@@ -141,7 +140,7 @@ if __name__ == "__main__":
     repo_slug = df.loc[arguments.idx, "repository"]
     merge_data = df.loc[arguments.idx]
     repo = Repository(  # To clone the repo
-        repo_slug,
+        str(repo_slug),
         cache_directory=Path("no_cache/"),
         workdir_id="todelete",
     )
@@ -156,4 +155,4 @@ if __name__ == "__main__":
             print("Merge test result:", row["merge test result"])
             print("Merge test log path:", row["merge test log path"])
         print("merge data test result:", merge_data[idx])
-        print("repo location:", merge_data["left"], merge_data["right"])
+        print("repo location:", row["repo path"])

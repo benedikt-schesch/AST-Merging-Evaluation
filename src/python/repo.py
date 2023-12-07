@@ -142,7 +142,7 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     return TEST_STATE.Tests_failed, explanation
 
 
-class Repository:
+class Repository:  # pylint: disable=too-many-instance-attributes
     """A class that represents a repository."""
 
     def __init__(
@@ -150,6 +150,7 @@ class Repository:
         repo_slug: str,
         cache_directory: Path = Path(""),
         workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
+        delete_workdir: bool = DELETE_WORKDIRS,
     ) -> None:
         """Initializes the repository.
         Args:
@@ -167,6 +168,7 @@ class Repository:
         self.repo = Repo(self.repo_path)
         self.test_cache_directory = cache_directory / "test_cache"
         self.sha_cache_directory = cache_directory / "sha_cache_entry"
+        self.delete_workdir = delete_workdir
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -660,5 +662,5 @@ class Repository:
 
     def __del__(self) -> None:
         """Deletes the repository."""
-        if DELETE_WORKDIRS:
+        if self.delete_workdir:
             shutil.rmtree(self.workdir, ignore_errors=True)
