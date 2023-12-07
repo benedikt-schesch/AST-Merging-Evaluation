@@ -20,7 +20,7 @@ from pathlib import Path
 import shutil
 from functools import partialmethod
 from typing import Tuple
-from repo import Repository, TEST_STATE, clone_repo
+from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
@@ -121,19 +121,6 @@ if __name__ == "__main__":
     Path(arguments.cache_dir).mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
-
-    print("test_repo_heads: Started cloning repos")
-    with multiprocessing.Pool(processes=num_processes()) as pool:
-        results = [
-            pool.apply_async(clone_repo, args=(row["repository"],))
-            for _, row in df.iterrows()
-        ]
-        for result in tqdm(results, total=len(results)):
-            try:
-                return_value = result.get(10 * 60)
-            except Exception as exception:
-                print("Couldn't clone repo", exception)
-    print("test_repo_heads: Finished cloning repos")
 
     if os.path.exists(arguments.output_path):
         print("test_repo_heads: Output file already exists. Exiting.")
