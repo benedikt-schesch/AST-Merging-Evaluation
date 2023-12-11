@@ -14,7 +14,6 @@ Output: the rows of the input for which the commit at head hash passes tests.
 """
 import multiprocessing
 import os
-import sys
 import argparse
 from pathlib import Path
 import shutil
@@ -31,13 +30,15 @@ if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
 
-def num_processes() -> int:
+def num_processes(percentage: float = 0.7) -> int:
     """Compute the number of CPUs to be used
+    Args:
+        percentage (float, optional): Percentage of CPUs to be used. Defaults to 0.7.
     Returns:
         int: the number of CPUs to be used.
     """
     cpu_count = os.cpu_count() or 1
-    processes_used = int(0.7 * cpu_count) if cpu_count > 3 else cpu_count
+    processes_used = int(percentage * cpu_count) if cpu_count > 3 else cpu_count
     return processes_used
 
 
@@ -59,15 +60,30 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
 
     # Check if data is in cache
     if cache_data is not None and isinstance(cache_data, dict):
+        print(
+            "test_repo_heads:",
+            repo_slug,
+            ": head_passes_tests : cache hit",
+            cache_data["head test result"],
+        )
         for key, value in cache_data.items():
             repo_info[key] = value
         if cache_data["head test result"] == TEST_STATE.Tests_passed.name:
-            # Make sure the repo is cloned
-            repo = Repository(
-                repo_slug,
-                cache_directory=cache,
-                workdir_id=repo_slug + "/head-" + repo_info["repository"],
-            )
+            try:
+                # Make sure the repo is cloned
+                repo = Repository(
+                    repo_slug,
+                    cache_directory=cache,
+                    workdir_id=repo_slug + "/head-" + repo_info["repository"],
+                )
+            except Exception as e:
+                cache_data["head test result"] = TEST_STATE.Git_checkout_failed.name
+                cache_data["explanation"] = str(e)
+                set_in_cache(
+                    cache_key, cache_data, repo_slug, merge_cache_directory, True
+                )
+                for key, value in cache_data.items():
+                    repo_info[key] = value
         return repo_info
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
@@ -122,9 +138,9 @@ if __name__ == "__main__":
 
     df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
 
-    if os.path.exists(arguments.output_path):
-        print("test_repo_heads: Output file already exists. Exiting.")
-        sys.exit(0)
+    # if os.path.exists(arguments.output_path):
+    #     print("test_repo_heads: Output file already exists. Exiting.")
+    #     sys.exit(0)
 
     print("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]

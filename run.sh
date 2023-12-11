@@ -46,7 +46,7 @@ export PATH
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
-    make decompress-cache
+    # make decompress-cache
 fi
 
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
@@ -77,37 +77,37 @@ rm -rf .workdir
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
-python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$REPOS_CSV" \
-    --output_path "$OUT_DIR/repos_head_passes.csv" \
-    --cache_dir "$CACHE_DIR"
+# python3 src/python/test_repo_heads.py \
+#     --repos_csv_with_hashes "$REPOS_CSV" \
+#     --output_path "$OUT_DIR/repos_head_passes.csv" \
+#     --cache_dir "$CACHE_DIR"
 
-java -cp build/libs/astmergeevaluation-all.jar \
-    astmergeevaluation.FindMergeCommits \
-    "$OUT_DIR/repos_head_passes.csv" \
-    "$OUT_DIR/merges"
+# java -cp build/libs/astmergeevaluation-all.jar \
+#     astmergeevaluation.FindMergeCommits \
+#     "$OUT_DIR/repos_head_passes.csv" \
+#     "$OUT_DIR/merges"
 
-# Sample 5*<n_merges> merges
-read -ra merge_comparator_flags <<<"${comparator_flags}"
-python3 src/python/merges_sampler.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_sampled/" \
-    --n_merges "$((5 * "$N_MERGES"))" \
-    "${merge_comparator_flags[@]}"
+# # Sample 5*<n_merges> merges
+# read -ra merge_comparator_flags <<<"${comparator_flags}"
+# python3 src/python/merges_sampler.py \
+#     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+#     --merges_path "$OUT_DIR/merges/" \
+#     --output_dir "$OUT_DIR/merges_sampled/" \
+#     --n_merges "$((5 * "$N_MERGES"))" \
+#     "${merge_comparator_flags[@]}"
 
-python3 src/python/split_repos.py \
-    --repos_csv "$OUT_DIR/repos_head_passes.csv" \
-    --machine_id "$machine_id" \
-    --num_machines "$num_machines" \
-    --output_file "$OUT_DIR/local_repos.csv"
+# python3 src/python/split_repos.py \
+#     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
+#     --machine_id "$machine_id" \
+#     --num_machines "$num_machines" \
+#     --output_file "$OUT_DIR/local_repos.csv"
 
-python3 src/python/merge_analyzer.py \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
-    --merges_path "$OUT_DIR/merges_sampled/" \
-    --output_dir "$OUT_DIR/merges_analyzed/" \
-    --n_sampled_merges "$N_MERGES" \
-    --cache_dir "$CACHE_DIR"
+# python3 src/python/merge_analyzer.py \
+#     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+#     --merges_path "$OUT_DIR/merges_sampled/" \
+#     --output_dir "$OUT_DIR/merges_analyzed/" \
+#     --n_sampled_merges "$N_MERGES" \
+#     --cache_dir "$CACHE_DIR"
 
 python3 src/python/merge_tester.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
@@ -124,6 +124,6 @@ python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
     --output_dir "$OUT_DIR"

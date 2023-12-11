@@ -56,6 +56,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             workdir_id=repo_slug
             + f"/merge-tester-{merge_tool.name}-"
             + f'{merge_data["left"]}-{merge_data["right"]}',
+            lazy_clone=True,
         )
         (
             result,

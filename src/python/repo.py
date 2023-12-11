@@ -44,7 +44,6 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         github_url = "https://:@github.com/" + repo_slug + ".git"
-        print(repo_slug, " : Finished cloning")
         try:
             repo = git.repo.Repo.clone_from(github_url, repo_dir)
             print(repo_slug, " : Finished cloning")
@@ -145,12 +144,13 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
 class Repository:  # pylint: disable=too-many-instance-attributes
     """A class that represents a repository."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         repo_slug: str,
         cache_directory: Path = Path(""),
         workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
         delete_workdir: bool = DELETE_WORKDIRS,
+        lazy_clone: bool = False,
     ) -> None:
         """Initializes the repository.
         Args:
@@ -162,13 +162,21 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
-        clone_repo(repo_slug)
+        self.delete_workdir = delete_workdir
+        self.lazy_clone = lazy_clone
+        self.initialized = False
+        if not lazy_clone:
+            self.clone_repo()
+        self.test_cache_directory = cache_directory / "test_cache"
+        self.sha_cache_directory = cache_directory / "sha_cache_entry"
+
+    def clone_repo(self) -> None:
+        """Clones the repository."""
+        clone_repo(self.repo_slug)
         assert self.path.exists()
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
-        self.test_cache_directory = cache_directory / "test_cache"
-        self.sha_cache_directory = cache_directory / "sha_cache_entry"
-        self.delete_workdir = delete_workdir
+        self.initialized = True
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -179,6 +187,8 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             bool: True if the checkout succeeded, False otherwise.
             str: explanation. The explanation of the result.
         """
+        if self.lazy_clone and not self.initialized:
+            self.clone_repo()
         try:
             self.repo.git.checkout(commit, force=True)
             explanation = f"Checked out {commit} for {self.repo_slug}"
