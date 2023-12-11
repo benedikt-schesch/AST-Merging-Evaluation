@@ -22,8 +22,8 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     Returns:
         None
     """
-    df = pd.read_csv("../../results/result.csv")
-    repo_name = df.iloc[repo_num]["repo_name"]
+    df = pd.read_csv("../../results_greatest_hits/result.csv")
+    repo_name = df.iloc[repo_num]["repository"]
 
     script = "../scripts/merge_tools/" + merge_tool + ".sh"
     repo = clone_repo_to_path(
@@ -59,11 +59,13 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     repo.git.checkout(df.iloc[repo_num]["merge"], force=True)
     repo.submodule_update()
 
+    '''
     repo = clone_repo_to_path(
         repo_name, "./repos/base"
     )  # Return a Git-Python repo object
     repo.git.checkout(df.iloc[repo_num]["base"], force=True)
     repo.submodule_update()
+    '''
 
     for conflict_file_match in conflict_file_matches:
         conflicting_file = str(conflict_file_match)
@@ -72,11 +74,13 @@ def diff3_analysis(merge_tool: str, repo_num: int):
             "./repos/merge_attempt", conflict_path
         )
 
+        '''
         conflict_path_base = os.path.join("./repos/base", conflict_path)
-
+        '''
         conflict_path_programmer_merge = os.path.join(
             "./repos/programmer_merge", conflict_path
         )
+        '''
         diff_results = subprocess.run(
             [
                 "diff3",
@@ -92,16 +96,17 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         # Check that diff3 didn't run into missing files in the base
         error_message = "No such file or directory"
         if error_message in diff_results.stderr:
-            # Since the conflict file was added in both parents we can't diff the base.
-            diff_results = subprocess.run(
-                [
-                    "diff",
-                    conflict_path_merge_attempt,
-                    conflict_path_programmer_merge,
-                ],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
+        '''
+        # Since the conflict file was added in both parents we can't diff the base.
+        diff_results = subprocess.run(
+            [
+                "diff",
+                conflict_path_merge_attempt,
+                conflict_path_programmer_merge,
+            ],
+            stdout=subprocess.PIPE,
+            text=True,
+        )
 
         # Use a temporary file to store the diff results
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
@@ -115,11 +120,13 @@ def diff3_analysis(merge_tool: str, repo_num: int):
 
     # Deletes base, programmer_merge, and merge_attempt folders in repos dir
     # We do this to prevent errors if cloning the same repo into the folder twice
+    '''
     subprocess.run(
         ["rm", "-rf", "./repos/base"],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
+    '''
     subprocess.run(
         ["rm", "-rf", "./repos/merge_attempt"],
         stderr=subprocess.PIPE,
