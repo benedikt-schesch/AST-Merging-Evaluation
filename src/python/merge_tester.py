@@ -47,7 +47,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             merge_data["right"],
         )
         time.sleep(60)
-    print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
+    # print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
     for merge_tool in MERGE_TOOL:
         repo = Repository(
@@ -95,7 +95,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
-    print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
+    # print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
     return merge_data
 
 

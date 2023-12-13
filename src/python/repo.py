@@ -257,7 +257,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             run_time,
         ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
+            # print("Merge failed for", self.repo_slug, merge_fingerprint)
             return merge_status, None, None, None, 0, -1
+        # print("Testing", self.repo_slug, merge_fingerprint)
         test_result, test_coverage = self.test(timeout, n_tests)
         return (
             test_result,
@@ -303,13 +305,28 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             left_commit + "_" + right_commit + "_" + tool.name
         )
         if sha_cache_entry is None:
+            print(
+                f"Cache miss (sha cache) for {self.repo_slug} {left_commit} {right_commit} {tool}"
+            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
-        if sha_cache_entry["sha"] is None:
-            return TEST_STATE.Git_checkout_failed, None, None, None, 0, -1
+        merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
+        if merge_result != MERGE_STATE.Merge_success:
+            return (
+                merge_result,
+                sha_cache_entry["left_fingerprint"],
+                sha_cache_entry["right_fingerprint"],
+                None,
+                0,
+                -1,
+            )
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
+            print(
+                f"Cache miss (test cache) for {self.repo_slug}"
+                f"{left_commit} {right_commit} {tool} {sha_cache_entry['sha']}"
+            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
@@ -380,22 +397,26 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             float: The time it took to run the merge, in seconds.
         """
         cache_entry_name = left_commit + "_" + right_commit + "_" + tool.name
-
+        cache_entry = {"sha": None}
         # Checkout left
         left_fingerprint, left_explanation = self.create_branch(
             LEFT_BRANCH_NAME, left_commit, use_cache=use_cache
         )
+        cache_entry["left_fingerprint"] = left_fingerprint
 
         # Checkout right
         right_fingerprint, right_explanation = self.create_branch(
             RIGHT_BRANCH_NAME, right_commit, use_cache=use_cache
         )
+        cache_entry["right_fingerprint"] = right_fingerprint
         explanation = left_explanation + "\n" + right_explanation
         if right_fingerprint is None or left_fingerprint is None:
             if use_cache:
+                cache_entry["merge status"] = MERGE_STATE.Git_checkout_failed.name
+                cache_entry["explanation"] = explanation
                 set_in_cache(
                     cache_entry_name,
-                    {"sha": None, "explanation": explanation},
+                    cache_entry,
                     self.repo_slug,
                     self.sha_cache_directory,
                 )
@@ -425,10 +446,18 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
         except subprocess.TimeoutExpired as e:
             explanation = explanation + "\n" + stdout_and_stderr(command, e)
-            sha = self.compute_tree_fingerprint()
+            if use_cache:
+                cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
+                cache_entry["explanation"] = explanation
+                set_in_cache(
+                    cache_entry_name,
+                    cache_entry,
+                    self.repo_slug,
+                    self.sha_cache_directory,
+                )
             return (
                 MERGE_STATE.Merge_timedout,
-                sha,
+                None,
                 left_fingerprint,
                 right_fingerprint,
                 explanation,
@@ -442,10 +471,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         sha = self.compute_tree_fingerprint()
         cache_entry = {
             "sha": sha,
-            "left_fingerprint": left_fingerprint,
-            "right_fingerprint": right_fingerprint,
         }
         if use_cache:
+            cache_entry["merge status"] = merge_status.name
             set_in_cache(
                 cache_entry_name,
                 cache_entry,
