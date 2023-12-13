@@ -126,13 +126,13 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results/result.csv",
+        default="test/small-goal-files/result.csv",
     )
     parser.add_argument(
         "--idx",
         help="Index of the merge to replay",
         type=int,
-        default=3497,
+        default=5,
     )
     arguments = parser.parse_args()
 
