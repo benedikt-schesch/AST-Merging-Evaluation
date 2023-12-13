@@ -313,6 +313,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
         merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
         if merge_result != MERGE_STATE.Merge_success:
+            print(sha_cache_entry)
             return (
                 merge_result,
                 sha_cache_entry["left_fingerprint"],
@@ -330,6 +331,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
+        print(sha_cache_entry)
         return (
             result,
             sha_cache_entry["sha"],
@@ -469,10 +471,8 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )
         sha = self.compute_tree_fingerprint()
-        cache_entry = {
-            "sha": sha,
-        }
         if use_cache:
+            cache_entry["sha"] = sha
             cache_entry["merge status"] = merge_status.name
             set_in_cache(
                 cache_entry_name,
