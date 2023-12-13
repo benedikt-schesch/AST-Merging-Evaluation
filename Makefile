@@ -78,6 +78,9 @@ small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh --include_trivial_merges
 	${MAKE} small-test-diff
+	rm -rf results-small
+	./run_small.sh --include_trivial_merges
+	${MAKE} small-test-diff
 
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
