@@ -64,7 +64,6 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             left_fingerprint,
             right_fingerprint,
             _,
-            _,
         ) = repo.merge_and_test(
             tool=merge_tool,
             left_commit=merge_data["left"],

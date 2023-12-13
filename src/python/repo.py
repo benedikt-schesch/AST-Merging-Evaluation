@@ -229,7 +229,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         Union[str, None],
         Union[str, None],
         float,
-        float,
     ]:
         """Merges the given commits using the given tool and tests the result.
         The test results of multiple runs is combined into one result.
@@ -245,8 +244,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             str: The left fingerprint.
             str: The right fingerprint.
             float: The test coverage.
-            float: The time it took to run the merge, in seconds. Does not include
-                the test time.
         """
         (
             merge_status,
@@ -254,11 +251,17 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             left_fingerprint,
             right_fingerprint,
             _,
-            run_time,
+            _,
         ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
             # print("Merge failed for", self.repo_slug, merge_fingerprint)
-            return merge_status, None, None, None, 0, -1
+            return (
+                merge_status,
+                merge_fingerprint,
+                left_fingerprint,
+                right_fingerprint,
+                -1,
+            )
         # print("Testing", self.repo_slug, merge_fingerprint)
         test_result, test_coverage = self.test(timeout, n_tests)
         return (
@@ -267,7 +270,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             left_fingerprint,
             right_fingerprint,
             test_coverage,
-            run_time,
         )
 
     def merge_and_test(  # pylint: disable=too-many-arguments
@@ -282,7 +284,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         Union[str, None],
         Union[str, None],
         Union[str, None],
-        float,
         float,
     ]:
         """Merges the given commits using the given tool and tests the result.
@@ -299,7 +300,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             str: The left fingerprint.
             str: The right fingerprint.
             float: The test coverage.
-            float: The time it took to run the merge, in seconds.
         """
         sha_cache_entry = self.get_sha_cache_entry(
             left_commit + "_" + right_commit + "_" + tool.name
@@ -316,10 +316,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             print(sha_cache_entry)
             return (
                 merge_result,
+                sha_cache_entry["sha"],
                 sha_cache_entry["left_fingerprint"],
                 sha_cache_entry["right_fingerprint"],
-                None,
-                0,
                 -1,
             )
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
@@ -338,7 +337,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             sha_cache_entry["left_fingerprint"],
             sha_cache_entry["right_fingerprint"],
             test_coverage,
-            -1,
         )
 
     def create_branch(
