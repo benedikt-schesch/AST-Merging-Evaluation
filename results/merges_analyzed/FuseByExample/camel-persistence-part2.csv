@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-2,refs/heads/jboss-fuse-6.2.1,acb82d5290c9226462d0d42945cc40bb49dfca2a,d4e440f4bb3b573ae07404d7ab3c5235302442d6,088cc8c8f3ea9a0bc51012fd4ca35630e6cbf6b2,,False,,,43,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+2,refs/heads/jboss-fuse-6.2.1,acb82d5290c9226462d0d42945cc40bb49dfca2a,d4e440f4bb3b573ae07404d7ab3c5235302442d6,088cc8c8f3ea9a0bc51012fd4ca35630e6cbf6b2,,False,43,,,,,,,,False,False

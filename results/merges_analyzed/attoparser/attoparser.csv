@@ -1,11 +1,11 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-1,refs/heads/master,6131e6f61b4e94bb3333f63bbb31a4bab5db303b,0bcc5f7b93ec0939c034f293e4b6cfb6a6974908,83e9e4c55175ada242bdd10e8fdd4c8d31d33669,,False,,,2,False,,,,,,False
-2,refs/heads/master,0bcc5f7b93ec0939c034f293e4b6cfb6a6974908,e9a975fbc4468b9e43a372edda8275d4e75376ba,03c9421d5560c3dd823f22d1cd9622a83dabca4a,,False,,,6,False,,,,,,False
-3,refs/heads/master,e9a975fbc4468b9e43a372edda8275d4e75376ba,55eb54c5eac38107bf346b1aa30c1095e224d2f9,a7a8b91632be267a88d21759215d7a6a84e4af80,,False,,,63,False,,,,,,False
-4,refs/heads/master,b79c9a6e65c7ab6e84be113083bd3111d6024c66,f6844f68b7f24f5bf514efb3a320ffaa8e76b545,cc55a448626453714e280ba50f435d087b19eefa,,False,,,14,False,,,,,,False
-5,refs/heads/master,ba576620240afc388d72c91fd4efdce498d8496c,798b83b78f7a4821456d8ec3d36f9f86cbc1d5b0,441faffb38e09b8829fb993a5faebe2e7ac58ace,,False,,,20,False,,,,,,False
-6,refs/heads/master,798b83b78f7a4821456d8ec3d36f9f86cbc1d5b0,2c0f34f7637d172a354518387ece1ef19c01fb4c,9ea8984c9828d2f35f6754195a5e23b740c546eb,,False,,,5,False,,,,,,False
-7,refs/heads/master,2c0f34f7637d172a354518387ece1ef19c01fb4c,e3edcff122d11a0d9f0f320d54339e86cfbeffae,58899e114743b14d0fe6776d2b33f536937500eb,,False,,,83,False,,,,,,False
-8,refs/heads/master,fb839e756f189408e1ea86f9eeea487e96068269,c3ace43ac6a7e9142e5c8c19e8cc1982cdb8cf8b,d1b5a8a2048e75cf6856d0c4bffe3e504eb496ff,,False,,,7,False,,,,,,False
-9,refs/heads/master,0f5021ee85f296682a60cb1b91c4ea913be5bd0b,33bdfa320a54f3f582e4b3b63645d07c2e28f155,aad59a1272042d2ee51630289c5830edf243ac48,,False,,,161,False,,,,,,False
-10,refs/heads/master,0b74a494cb60730a2b1739258fbe6ae7f00b5db1,d3eb8049155f2c37526ae611618acff6f764c268,e52e8c96e51f7236e7d442a68db4901d8692c2df,,True,4cb798c12471fb9327d5a3e811593ae0d871d890b83134d353d6a8c38160dd83,652ad2341cbfba9dafc0aee5f36c0b181ddbfefe69788a828ee0d8def2e890c3,402,True,Tests_passed,0.7073805842623484,Tests_passed,0.7011138095636882,True,True
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+1,refs/heads/master,6131e6f61b4e94bb3333f63bbb31a4bab5db303b,0bcc5f7b93ec0939c034f293e4b6cfb6a6974908,83e9e4c55175ada242bdd10e8fdd4c8d31d33669,,False,2,,,,,,,,False,False
+2,refs/heads/master,0bcc5f7b93ec0939c034f293e4b6cfb6a6974908,e9a975fbc4468b9e43a372edda8275d4e75376ba,03c9421d5560c3dd823f22d1cd9622a83dabca4a,,False,6,,,,,,,,False,False
+3,refs/heads/master,e9a975fbc4468b9e43a372edda8275d4e75376ba,55eb54c5eac38107bf346b1aa30c1095e224d2f9,a7a8b91632be267a88d21759215d7a6a84e4af80,,False,63,,,,,,,,False,False
+4,refs/heads/master,b79c9a6e65c7ab6e84be113083bd3111d6024c66,f6844f68b7f24f5bf514efb3a320ffaa8e76b545,cc55a448626453714e280ba50f435d087b19eefa,,False,14,,,,,,,,False,False
+5,refs/heads/master,ba576620240afc388d72c91fd4efdce498d8496c,798b83b78f7a4821456d8ec3d36f9f86cbc1d5b0,441faffb38e09b8829fb993a5faebe2e7ac58ace,,False,20,,,,,,,,False,False
+6,refs/heads/master,798b83b78f7a4821456d8ec3d36f9f86cbc1d5b0,2c0f34f7637d172a354518387ece1ef19c01fb4c,9ea8984c9828d2f35f6754195a5e23b740c546eb,,False,5,,,,,,,,False,False
+7,refs/heads/master,2c0f34f7637d172a354518387ece1ef19c01fb4c,e3edcff122d11a0d9f0f320d54339e86cfbeffae,58899e114743b14d0fe6776d2b33f536937500eb,,False,83,,,,,,,,False,False
+8,refs/heads/master,fb839e756f189408e1ea86f9eeea487e96068269,c3ace43ac6a7e9142e5c8c19e8cc1982cdb8cf8b,d1b5a8a2048e75cf6856d0c4bffe3e504eb496ff,,False,7,,,,,,,,False,False
+9,refs/heads/master,0f5021ee85f296682a60cb1b91c4ea913be5bd0b,33bdfa320a54f3f582e4b3b63645d07c2e28f155,aad59a1272042d2ee51630289c5830edf243ac48,,False,161,,,,,,,,False,False
+10,refs/heads/master,0b74a494cb60730a2b1739258fbe6ae7f00b5db1,d3eb8049155f2c37526ae611618acff6f764c268,e52e8c96e51f7236e7d442a68db4901d8692c2df,,True,402,0.7073805842623484,Tests_passed,4cb798c12471fb9327d5a3e811593ae0d871d890b83134d353d6a8c38160dd83,True,0.7011138095636882,Tests_passed,652ad2341cbfba9dafc0aee5f36c0b181ddbfefe69788a828ee0d8def2e890c3,True,True

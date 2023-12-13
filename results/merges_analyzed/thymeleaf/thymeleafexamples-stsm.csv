@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-2,refs/remotes/origin/2.1-master,9f9fee12cf6dee576645d9f5dcb6c84817b66ec6,02aa45c9002bd3ec60c0ac62e9f1b6e8127f4397,4d185f1153e514a62b2c768c52618bdfbaf8d078,,False,,,112,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+2,refs/remotes/origin/2.1-master,9f9fee12cf6dee576645d9f5dcb6c84817b66ec6,02aa45c9002bd3ec60c0ac62e9f1b6e8127f4397,4d185f1153e514a62b2c768c52618bdfbaf8d078,,False,112,,,,,,,,False,False

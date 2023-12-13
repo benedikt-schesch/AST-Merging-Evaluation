@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-2,refs/heads/master,ebb6105e9454863dc04f12cf8372e96f2cae27b0,d3504caceb0345873bc6b77faa4d51724bfe60ca,3be2905d6e75004fa2a66afb47de276c17bff13f,,False,,,114,False,,,,,,False
-3,refs/heads/master,3be2905d6e75004fa2a66afb47de276c17bff13f,4cf163d0d56bdadb1d9ecf7fa5c84a21248e9331,8f08a88cde1c45acefd8c58f5a40391bedcea422,,False,,,53,False,,,,,,False
-4,refs/heads/master,c5e70ebd5c28de2cce81d106435ae11925424a5f,915de25844f3b0709e9c3483be5831a0d0934553,8b4971799bf6ed60232e55c7fbd9b82dfd21e63a,,False,,,3,False,,,,,,False
-8,refs/heads/master,90352936ba983ce2f8c864706460f8da9b5b3809,247ee64c5720cfcaecb204d20398b85bd485b928,dce82d67275ab9becd9f4ba2e14ff5c49b1be8c7,,False,,,24,False,,,,,,False
-10,refs/heads/master,97ea296582d392ab57bf7e3d9f6082f60141b4ba,1123d8337fad4adca50e95e444a0d255d9e527a1,88ed0c5cbc8ab24fc8326cd18f403069fa3fc4ba,two initial commits,False,,,7,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+2,refs/heads/master,ebb6105e9454863dc04f12cf8372e96f2cae27b0,d3504caceb0345873bc6b77faa4d51724bfe60ca,3be2905d6e75004fa2a66afb47de276c17bff13f,,False,114,,,,,,,,False,False
+3,refs/heads/master,3be2905d6e75004fa2a66afb47de276c17bff13f,4cf163d0d56bdadb1d9ecf7fa5c84a21248e9331,8f08a88cde1c45acefd8c58f5a40391bedcea422,,False,53,,,,,,,,False,False
+4,refs/heads/master,c5e70ebd5c28de2cce81d106435ae11925424a5f,915de25844f3b0709e9c3483be5831a0d0934553,8b4971799bf6ed60232e55c7fbd9b82dfd21e63a,,False,3,,,,,,,,False,False
+8,refs/heads/master,90352936ba983ce2f8c864706460f8da9b5b3809,247ee64c5720cfcaecb204d20398b85bd485b928,dce82d67275ab9becd9f4ba2e14ff5c49b1be8c7,,False,24,,,,,,,,False,False
+10,refs/heads/master,97ea296582d392ab57bf7e3d9f6082f60141b4ba,1123d8337fad4adca50e95e444a0d255d9e527a1,88ed0c5cbc8ab24fc8326cd18f403069fa3fc4ba,two initial commits,False,7,,,,,,,,False,False

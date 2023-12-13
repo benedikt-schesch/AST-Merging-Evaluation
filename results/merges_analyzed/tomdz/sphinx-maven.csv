@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-4,refs/remotes/origin/pull/20,281f7d90cbccf610a24fdbfd23bbaf0dc45b9f15,2ef66e153f45aaa2554e86a0580bd6bb852de1a4,b281e8fd9b4eaa589d7ab50dfc3845a60452df42,two initial commits,False,,,2,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+4,refs/remotes/origin/pull/20,281f7d90cbccf610a24fdbfd23bbaf0dc45b9f15,2ef66e153f45aaa2554e86a0580bd6bb852de1a4,b281e8fd9b4eaa589d7ab50dfc3845a60452df42,two initial commits,False,2,,,,,,,,False,False

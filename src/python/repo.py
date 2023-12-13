@@ -306,7 +306,8 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         )
         if sha_cache_entry is None:
             print(
-                f"Cache miss (sha cache) for {self.repo_slug} {left_commit} {right_commit} {tool}"
+                f"Cache miss (sha cache) for {self.repo_slug} {left_commit} "
+                f"{right_commit} {tool} {sha_cache_entry}"
             )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests

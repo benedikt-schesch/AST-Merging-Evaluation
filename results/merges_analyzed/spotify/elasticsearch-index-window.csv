@@ -1,5 +1,5 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-1,refs/remotes/origin/es_1.2.2/master,32d09a063be531c17ea178ffd24c1d250b560e80,5b3824bf910dc1fea1654f85fcc9c9c694b5b93c,ccf1d21762244db2a4231715da4fbfee4a0f2306,,False,,,37,False,,,,,,False
-2,refs/remotes/origin/es_1.2.2/master,5b3824bf910dc1fea1654f85fcc9c9c694b5b93c,01403e3fac4280f520171b57f441e624fba56eba,99d232bbebac7a4908a39c6f25eab4724c25909c,,False,,,115,False,,,,,,False
-3,refs/remotes/origin/es_1.2.2/master,01403e3fac4280f520171b57f441e624fba56eba,634335d9919069b9e58e38c23d82b2661251d787,3cf0e9f7b5e2855b1aaa075f29733b9dbc4940b2,,False,,,22,False,,,,,,False
-4,refs/remotes/origin/es_1.2.2/master,634335d9919069b9e58e38c23d82b2661251d787,c704ee65869330622a1459bed83874fd11515054,0dc5c8b1e324b092b5810e32d312880e7d4d3194,,False,,,28,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+1,refs/remotes/origin/es_1.2.2/master,32d09a063be531c17ea178ffd24c1d250b560e80,5b3824bf910dc1fea1654f85fcc9c9c694b5b93c,ccf1d21762244db2a4231715da4fbfee4a0f2306,,False,37,,,,,,,,False,False
+2,refs/remotes/origin/es_1.2.2/master,5b3824bf910dc1fea1654f85fcc9c9c694b5b93c,01403e3fac4280f520171b57f441e624fba56eba,99d232bbebac7a4908a39c6f25eab4724c25909c,,False,115,,,,,,,,False,False
+3,refs/remotes/origin/es_1.2.2/master,01403e3fac4280f520171b57f441e624fba56eba,634335d9919069b9e58e38c23d82b2661251d787,3cf0e9f7b5e2855b1aaa075f29733b9dbc4940b2,,False,22,,,,,,,,False,False
+4,refs/remotes/origin/es_1.2.2/master,634335d9919069b9e58e38c23d82b2661251d787,c704ee65869330622a1459bed83874fd11515054,0dc5c8b1e324b092b5810e32d312880e7d4d3194,,False,28,,,,,,,,False,False

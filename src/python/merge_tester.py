@@ -111,17 +111,14 @@ def build_arguments(
     """
     merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
     if not merge_list_file.exists():
-        print(
-            "merge_tester:",
+        raise Exception(
+            "merge_tester: The repository does not have a list of merges.",
             repo_slug,
-            "does not have a list of merges. Missing file: ",
             merge_list_file,
         )
-        return []
 
-    try:
-        merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-    except pd.errors.EmptyDataError:
+    merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+    if len(merges) == 0:
         print(
             "merge_tester: Skipping",
             repo_slug,

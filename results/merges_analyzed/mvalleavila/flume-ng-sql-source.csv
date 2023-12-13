@@ -1,9 +1,9 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-2,refs/heads/master,fc864bf68714a708f615c97c0872a54ac33be626,4a0b8adf90c2922129abf90daa0a7c40d249661e,122df287b0c5cdbe3e60de3c49c2e617e316d69e,,False,,,11,False,,,,,,False
-10,refs/heads/master,4f08bc79018fb70a02605640ba1cbef23b3bf9f5,8a3dd33e7dc25c0cbb385134e358acceefe402ad,a624ec6c5bda8af4140b150518825254e58b34f3,,False,,,97,False,,,,,,False
-11,refs/heads/master,c4b62bbb5c0c6836fa4eb17bafe43393d7c39707,fe0bca190476aa075751b7399c7dc197ca623948,a461f70bd99e74891b42d3df4304c79182e970bc,,False,,,67,False,,,,,,False
-18,refs/heads/master,834ef06c718bb61f84e48c4e9b2c2aa736380b40,b4cecf99adb3f2b81d7930432144e2cb1ea03650,a77faddd3888e405c2652c9143865755e5a8e453,,False,,,74,False,,,,,,False
-19,refs/heads/master,aed8449b07c4788ca7db074b2d4af4462a04a4c4,163f7fb725b235e4da00a5e12f8d85bc22c69172,35448170d03d5d982bd345ae7c31cd4ad032d782,,False,,,27,False,,,,,,False
-20,refs/heads/master,b4cecf99adb3f2b81d7930432144e2cb1ea03650,827f1b8ae768ec815711532f6788532e9283170e,e288c297ba30e8463857316bb16c0d4a36158a10,,False,,,16,False,,,,,,False
-22,refs/heads/master,617bdf031588c6d0b7742313e00dfe7f18fa5f35,418f5a313482ef2d60f5d848d1e64bb58645dacf,40d57f51a3c81fe018c679fd7eeef2f6918bbda6,,False,,,2,False,,,,,,False
-24,refs/heads/master,fbc02e1fc65fd6eac6cc6ca5ca14146c29a1d82e,66caad3958cc3d1874fc73dbf74badd69f0ed960,fcc20ddbd0d1780526a28d609ca2aa3b1a9bd3ff,,False,de7650a55acf20ba86db73fcfcb67c5cd943456b7f2136c184ec62a57f6ced82,e394b74ee5b8ecce5c3cecd92422092162990ff27b892a0b9f22dbc66c09acd8,11,True,Tests_timedout,0.0,Tests_timedout,0.0,False,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+2,refs/heads/master,fc864bf68714a708f615c97c0872a54ac33be626,4a0b8adf90c2922129abf90daa0a7c40d249661e,122df287b0c5cdbe3e60de3c49c2e617e316d69e,,False,11,,,,,,,,False,False
+10,refs/heads/master,4f08bc79018fb70a02605640ba1cbef23b3bf9f5,8a3dd33e7dc25c0cbb385134e358acceefe402ad,a624ec6c5bda8af4140b150518825254e58b34f3,,False,97,,,,,,,,False,False
+11,refs/heads/master,c4b62bbb5c0c6836fa4eb17bafe43393d7c39707,fe0bca190476aa075751b7399c7dc197ca623948,a461f70bd99e74891b42d3df4304c79182e970bc,,False,67,,,,,,,,False,False
+18,refs/heads/master,834ef06c718bb61f84e48c4e9b2c2aa736380b40,b4cecf99adb3f2b81d7930432144e2cb1ea03650,a77faddd3888e405c2652c9143865755e5a8e453,,False,74,,,,,,,,False,False
+19,refs/heads/master,aed8449b07c4788ca7db074b2d4af4462a04a4c4,163f7fb725b235e4da00a5e12f8d85bc22c69172,35448170d03d5d982bd345ae7c31cd4ad032d782,,False,27,,,,,,,,False,False
+20,refs/heads/master,b4cecf99adb3f2b81d7930432144e2cb1ea03650,827f1b8ae768ec815711532f6788532e9283170e,e288c297ba30e8463857316bb16c0d4a36158a10,,False,16,,,,,,,,False,False
+22,refs/heads/master,617bdf031588c6d0b7742313e00dfe7f18fa5f35,418f5a313482ef2d60f5d848d1e64bb58645dacf,40d57f51a3c81fe018c679fd7eeef2f6918bbda6,,False,2,,,,,,,,False,False
+24,refs/heads/master,fbc02e1fc65fd6eac6cc6ca5ca14146c29a1d82e,66caad3958cc3d1874fc73dbf74badd69f0ed960,fcc20ddbd0d1780526a28d609ca2aa3b1a9bd3ff,,True,11,0.0,Tests_timedout,de7650a55acf20ba86db73fcfcb67c5cd943456b7f2136c184ec62a57f6ced82,False,0.0,Tests_timedout,e394b74ee5b8ecce5c3cecd92422092162990ff27b892a0b9f22dbc66c09acd8,False,False

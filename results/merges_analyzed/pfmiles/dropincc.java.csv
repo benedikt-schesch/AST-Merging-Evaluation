@@ -1,5 +1,5 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-1,refs/remotes/origin/0.2.x,71012ef9099c5aee06260907238670a65e2d2e7a,65ce5d2b0520659e6e99218c95c57fd3649f0cc7,ef7173af21a2ede8e5ffcb9d7d9a4d11c1097bdb,,False,,,16,False,,,,,,False
-2,refs/remotes/origin/0.2.x,65ce5d2b0520659e6e99218c95c57fd3649f0cc7,dfbafc1c84254836c15443d900703fcb4e002ddc,be15d425071b1e8e2dfbf5995a62150138b4fc22,,False,,,123,False,,,,,,False
-3,refs/remotes/origin/0.2.x,3225e4108144daf44fbccdf58af26711d2677832,5620f93d20d5629cbd35a7c6050523d210c1d129,1c7acad16d44850e36786bed1fca2e24443479e5,,False,,,49,False,,,,,,False
-4,refs/remotes/origin/0.2.x,dafab29bf3bdb7a7ccbcd777eedab95e580536b9,e86aeb8a02664f7f30aeaeca5351547b0e2a2bab,e7cab3976c3365126f91a565dadb721e7940f53f,,False,,,7,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+1,refs/remotes/origin/0.2.x,71012ef9099c5aee06260907238670a65e2d2e7a,65ce5d2b0520659e6e99218c95c57fd3649f0cc7,ef7173af21a2ede8e5ffcb9d7d9a4d11c1097bdb,,False,16,,,,,,,,False,False
+2,refs/remotes/origin/0.2.x,65ce5d2b0520659e6e99218c95c57fd3649f0cc7,dfbafc1c84254836c15443d900703fcb4e002ddc,be15d425071b1e8e2dfbf5995a62150138b4fc22,,False,123,,,,,,,,False,False
+3,refs/remotes/origin/0.2.x,3225e4108144daf44fbccdf58af26711d2677832,5620f93d20d5629cbd35a7c6050523d210c1d129,1c7acad16d44850e36786bed1fca2e24443479e5,,False,49,,,,,,,,False,False
+4,refs/remotes/origin/0.2.x,dafab29bf3bdb7a7ccbcd777eedab95e580536b9,e86aeb8a02664f7f30aeaeca5351547b0e2a2bab,e7cab3976c3365126f91a565dadb721e7940f53f,,False,7,,,,,,,,False,False

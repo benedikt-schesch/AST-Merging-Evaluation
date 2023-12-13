@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-1,refs/heads/master,1842e580665903b7192e06575679fb39870601b5,ff683a4d4ac09672f45d47252cf5d366f17c3a61,6c30f8927d85bfedc3bdca89dcf753a0074f0f4a,,False,,,9,False,,,,,,False
-2,refs/heads/master,cab713e3659abaaee73ba8bcb52f8dd6d4a7620e,03c6610801b0697acb9bbb0efb416aa161e9d9b7,d7f6652d07334920e63acde0ff212eca39490bd9,,False,,,54,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+1,refs/heads/master,1842e580665903b7192e06575679fb39870601b5,ff683a4d4ac09672f45d47252cf5d366f17c3a61,6c30f8927d85bfedc3bdca89dcf753a0074f0f4a,,False,9,,,,,,,,False,False
+2,refs/heads/master,cab713e3659abaaee73ba8bcb52f8dd6d4a7620e,03c6610801b0697acb9bbb0efb416aa161e9d9b7,d7f6652d07334920e63acde0ff212eca39490bd9,,False,54,,,,,,,,False,False

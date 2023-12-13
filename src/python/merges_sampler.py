@@ -47,6 +47,7 @@ if __name__ == "__main__":
             continue
 
         if output_file.exists():
+            total_valid_repos += 1
             print(
                 f"merges_sampler: Skipping {repo_slug}"
                 "because it is already computed."
@@ -75,6 +76,6 @@ if __name__ == "__main__":
         sample.to_csv(output_file)
 
     print(
-        f"merges_sampler: {missing_merges_repos} files were"
+        f"merges_sampler: {missing_merges_repos} files were "
         f"missing and {total_valid_repos} repos were valid."
     )

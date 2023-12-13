@@ -39,6 +39,7 @@ def set_in_cache(
     lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
         lock.acquire()
+    # print("set_in_cache", cache_directory, cache_key, cache_value)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
     write_cache(cache, repo_slug, cache_directory)

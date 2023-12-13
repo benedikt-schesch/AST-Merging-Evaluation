@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-3,refs/heads/master,f3094b6061b1b11160ea4b67cae39f5914efff3c,75bc2588669f7278b7d6504791f1c7f41b34d7a3,76b69fac4766ab2310e8ce0e7f345a93c882e7d4,,False,,,3,False,,,,,,False
-5,refs/heads/master,a9c08150182da8daac3f036ec364213d03d982fc,39ee7b15da1139fbf54c5c809f7e71f249d0c613,ef2948e4033434b0f9b2734e0d91236ec031d01f,,False,,,92,False,,,,,,False
-9,refs/heads/master,1845e9c1c92e2b70412718e5195dd212ecd4fecd,e87fe65818e726d317ec93c036d48205ed914f09,78e3251c443f913ab978b81ece93cc1a5baecf68,,False,,,223,False,,,,,,False
-10,refs/heads/master,e87fe65818e726d317ec93c036d48205ed914f09,025d675787b49b2cdf34ee216d205248afa45f47,0e45353030b440fd729284b632da85770d40b73c,,False,,,535,False,,,,,,False
-11,refs/heads/master,82d5d255d25cc8c63e3732751858ffb492a535ce,b98fb3358c137791e3ca1e6d52689a8c2dbcd27e,18a33fd14d2709333b0d89d8b43962a6086ee09b,,False,,,102,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+3,refs/heads/master,f3094b6061b1b11160ea4b67cae39f5914efff3c,75bc2588669f7278b7d6504791f1c7f41b34d7a3,76b69fac4766ab2310e8ce0e7f345a93c882e7d4,,False,3,,,,,,,,False,False
+5,refs/heads/master,a9c08150182da8daac3f036ec364213d03d982fc,39ee7b15da1139fbf54c5c809f7e71f249d0c613,ef2948e4033434b0f9b2734e0d91236ec031d01f,,False,92,,,,,,,,False,False
+9,refs/heads/master,1845e9c1c92e2b70412718e5195dd212ecd4fecd,e87fe65818e726d317ec93c036d48205ed914f09,78e3251c443f913ab978b81ece93cc1a5baecf68,,False,223,,,,,,,,False,False
+10,refs/heads/master,e87fe65818e726d317ec93c036d48205ed914f09,025d675787b49b2cdf34ee216d205248afa45f47,0e45353030b440fd729284b632da85770d40b73c,,False,535,,,,,,,,False,False
+11,refs/heads/master,82d5d255d25cc8c63e3732751858ffb492a535ce,b98fb3358c137791e3ca1e6d52689a8c2dbcd27e,18a33fd14d2709333b0d89d8b43962a6086ee09b,,False,102,,,,,,,,False,False

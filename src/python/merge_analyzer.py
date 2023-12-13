@@ -198,23 +198,12 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
         list: A list of arguments for the merger function.
     """
     merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
-    output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
     if not merge_list_file.exists():
-        print(
-            "merge_analyzer:",
+        raise Exception(
+            "merge_analyzer: The repository does not have a list of merges.",
             repo_slug,
-            "does not have a list of merges. Missing file: ",
             merge_list_file,
         )
-        return []
-
-    if output_file.exists():
-        print(
-            "merge_analyzer: Skipping",
-            repo_slug,
-            "because it is already computed.",
-        )
-        return []
 
     merges = pd.read_csv(
         merge_list_file,
@@ -318,33 +307,22 @@ if __name__ == "__main__":
     for repo_slug in repo_result:
         output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
 
-        if output_file.exists():
-            try:
-                df = pd.read_csv(output_file, header=0)
-                if len(df) == 0:
-                    continue
-            except pd.errors.EmptyDataError:
-                print(
-                    "merge_analyzer: Skipping",
-                    repo_slug,
-                    "because it does not contain any merges.",
-                )
-                continue
-        else:
-            df = pd.DataFrame(repo_result[repo_slug])
-            if len(df) == 0:
-                continue
+        df = pd.DataFrame(repo_result[repo_slug])
+        output_file.parent.mkdir(parents=True, exist_ok=True)
 
-            # Pick randomly n_sampled_merges merges to test from the ones that are candidates
-            df["sampled for testing"] = False
-            testable_merges = df[df["test merge"]]
-            testable_merges = testable_merges.sample(frac=1.0, random_state=42)
-            sampled_merges = testable_merges[: args.n_sampled_merges]
-            df.loc[sampled_merges.index, "sampled for testing"] = True
-
-            df.sort_index(inplace=True)
-            output_file.parent.mkdir(parents=True, exist_ok=True)
+        if len(df) == 0:
             df.to_csv(output_file, index_label="idx")
+            continue
+
+        # Pick randomly n_sampled_merges merges to test from the ones that are candidates
+        df["sampled for testing"] = False
+        testable_merges = df[df["test merge"]]
+        testable_merges = testable_merges.sample(frac=1.0, random_state=42)
+        sampled_merges = testable_merges[: args.n_sampled_merges]
+        df.loc[sampled_merges.index, "sampled for testing"] = True
+
+        df.sort_index(inplace=True)
+        df.to_csv(output_file, index_label="idx")
 
         # Collect data for histograms
         repo_data.append(
