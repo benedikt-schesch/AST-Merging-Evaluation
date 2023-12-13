@@ -110,7 +110,6 @@ def build_arguments(
         list: The arguments for the merge_tester function.
     """
     merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
-    output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
     if not merge_list_file.exists():
         print(
             "merge_tester:",
@@ -120,13 +119,6 @@ def build_arguments(
         )
         return []
 
-    if output_file.exists():
-        print(
-            "merge_tester: Skipping",
-            repo_slug,
-            "because it is already computed.",
-        )
-        return []
     try:
         merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
     except pd.errors.EmptyDataError:

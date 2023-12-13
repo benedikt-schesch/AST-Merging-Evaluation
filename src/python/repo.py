@@ -313,7 +313,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
         merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
         if merge_result != MERGE_STATE.Merge_success:
-            print(sha_cache_entry)
             return (
                 merge_result,
                 sha_cache_entry["sha"],
@@ -330,7 +329,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
-        print(sha_cache_entry)
         return (
             result,
             sha_cache_entry["sha"],
