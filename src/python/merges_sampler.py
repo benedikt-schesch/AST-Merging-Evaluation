@@ -53,6 +53,7 @@ if __name__ == "__main__":
                 "because it is already computed."
             )
             continue
+        output_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
@@ -60,6 +61,7 @@ if __name__ == "__main__":
                 f"merges_sampler: Skipping {repo_slug}"
                 " because it does not contain any merges."
             )
+            pd.DataFrame(columns=["idx"]).to_csv(output_file)
             continue
 
         merges["notes"].replace(np.nan, "", inplace=True)
@@ -72,7 +74,6 @@ if __name__ == "__main__":
         sample = merges.sample(frac=1.0, random_state=42)
         sample = sample[:n_merges]
         sample.sort_index(inplace=True)
-        output_file.parent.mkdir(parents=True, exist_ok=True)
         sample.to_csv(output_file)
 
     print(

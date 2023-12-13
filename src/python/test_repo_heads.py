@@ -60,12 +60,6 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
 
     # Check if data is in cache
     if cache_data is not None and isinstance(cache_data, dict):
-        print(
-            "test_repo_heads:",
-            repo_slug,
-            ": head_passes_tests : cache hit",
-            cache_data["head test result"],
-        )
         for key, value in cache_data.items():
             repo_info[key] = value
         if cache_data["head test result"] == TEST_STATE.Tests_passed.name:
