@@ -62,7 +62,7 @@ def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
-    repo_dir = REPOS_PATH / Path(repo_slug)
+    repo_dir = Path(path) / Path(repo_slug)
     if repo_dir.exists():
         repo = git.repo.Repo(repo_dir)
     else:

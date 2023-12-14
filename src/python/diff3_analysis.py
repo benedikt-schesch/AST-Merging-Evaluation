@@ -3,6 +3,7 @@
 import subprocess
 import re
 import os
+import shutil
 import tempfile
 import pandas as pd
 from repo import clone_repo_to_path
@@ -22,6 +23,8 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     Returns:
         None
     """
+    shutil.rmtree("./repos", ignore_errors=True)
+
     df = pd.read_csv("../../results_greatest_hits/result.csv")
     repo_name = df.iloc[repo_num]["repository"]
 
@@ -38,6 +41,25 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     repo.submodule_update()
     repo.git.checkout("-b", "TEMP_RIGHT_BRANCH", force=True)
 
+
+    base_sha = subprocess.run(
+        [
+            "git",
+            "merge-base",
+            "TEMP_LEFT_BRANCH",
+            "TEMP_RIGHT_BRANCH",
+        ],
+        cwd="./repos/merge_attempt/" + repo_name,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    print(base_sha.stdout)
+    repo = clone_repo_to_path(
+        repo_name, "./repos/base"
+    )  # Return a Git-Python repo object
+    repo.git.checkout(base_sha.stdout, force=True)
+    repo.submodule_update()
+
     result = subprocess.run(
         [
             script,
@@ -53,19 +75,14 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         r"CONFLICT \(.+\): Merge conflict in (.+)", result.stdout
     )
 
+    print(result.stdout)
+
     repo = clone_repo_to_path(
         repo_name, "./repos/programmer_merge"
     )  # Return a Git-Python repo object
     repo.git.checkout(df.iloc[repo_num]["merge"], force=True)
     repo.submodule_update()
 
-    '''
-    repo = clone_repo_to_path(
-        repo_name, "./repos/base"
-    )  # Return a Git-Python repo object
-    repo.git.checkout(df.iloc[repo_num]["base"], force=True)
-    repo.submodule_update()
-    '''
 
     for conflict_file_match in conflict_file_matches:
         conflicting_file = str(conflict_file_match)
@@ -74,13 +91,11 @@ def diff3_analysis(merge_tool: str, repo_num: int):
             "./repos/merge_attempt", conflict_path
         )
 
-        '''
         conflict_path_base = os.path.join("./repos/base", conflict_path)
-        '''
         conflict_path_programmer_merge = os.path.join(
             "./repos/programmer_merge", conflict_path
         )
-        '''
+
         diff_results = subprocess.run(
             [
                 "diff3",
@@ -96,17 +111,16 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         # Check that diff3 didn't run into missing files in the base
         error_message = "No such file or directory"
         if error_message in diff_results.stderr:
-        '''
-        # Since the conflict file was added in both parents we can't diff the base.
-        diff_results = subprocess.run(
-            [
-                "diff",
-                conflict_path_merge_attempt,
-                conflict_path_programmer_merge,
-            ],
-            stdout=subprocess.PIPE,
-            text=True,
-        )
+            # Since the conflict file was added in both parents we can't diff the base.
+            diff_results = subprocess.run(
+                [
+                    "diff",
+                    conflict_path_merge_attempt,
+                    conflict_path_programmer_merge,
+                ],
+                stdout=subprocess.PIPE,
+                text=True,
+            )
 
         # Use a temporary file to store the diff results
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
@@ -126,7 +140,6 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
-    '''
     subprocess.run(
         ["rm", "-rf", "./repos/merge_attempt"],
         stderr=subprocess.PIPE,
@@ -137,3 +150,4 @@ def diff3_analysis(merge_tool: str, repo_num: int):
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
+    '''
