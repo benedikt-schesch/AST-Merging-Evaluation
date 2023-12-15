@@ -17,7 +17,7 @@ import subprocess
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple
+from typing import Tuple, Dict, Union, Any
 import random
 import numpy as np
 import pandas as pd
@@ -51,71 +51,70 @@ def is_test_passed(test_state: str) -> bool:
     return test_state == TEST_STATE.Tests_passed.name
 
 
-def diff_merge_analyzer(  # pylint: disable=too-many-locals,too-many-arguments
-    repo_left: Repository,
-    repo_right: Repository,
+def diff_merge_analyzer(
     repo_slug: str,
     left_sha: str,
     right_sha: str,
     cache_dir: Path,
-) -> dict:
+) -> Dict[str, Any]:
     """
-    Computes the diff between two branches.
+    Computes the diff between two branches using git diff.
     Args:
-        repo_left (Repository): The repository of the left parent.
-        repo_right (Repository): The repository of the right parent.
+        repo (Repository): The repository object.
+        repo_slug (str): The repository slug.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+        cache_dir (Path): The path to the cache directory.
     Returns:
         dict: A dictionary containing the diff result.
     """
     cache_key = str(left_sha) + "_" + str(right_sha)
 
     diff_cache_dir = cache_dir / "diff_analyzer"
-    cache_data = lookup_in_cache(cache_key, repo_slug, diff_cache_dir, True)
+    cache_data = lookup_in_cache(cache_key, repo_slug, diff_cache_dir, True)  # type: ignore
 
     if cache_data is not None and isinstance(cache_data, dict):
         return cache_data
 
-    left_success, _ = repo_left.checkout(left_sha)
-    right_success, _ = repo_right.checkout(right_sha)
+    repo = Repository(
+        repo_slug,
+        cache_directory=cache_dir,
+        workdir_id=repo_slug + "/diff-" + left_sha + "-" + right_sha,
+        lazy_clone=False,
+    )
 
-    cache_data = {
-        "diff size": None,
+    cache_data: Dict[str, Union[None, bool]] = {
         "diff contains java file": None,
-        "parent checkout failed": True,
     }
 
-    if left_success is False or right_success is False:
-        set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
-        return cache_data
-
-    # Compute diff size in lines between left and right
-    assert repo_left.repo_path.exists()
-    assert repo_right.repo_path.exists()
-    command = (
-        f"diff -r {repo_left.repo_path} {repo_right.repo_path} | grep -a '^>' | wc -l"
-    )
-    process = process = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
-
-    diff_size = int(process.stdout.strip())
-    cache_data["diff size"] = diff_size
-
-    # List all files that are different between left and right
+    # Using git diff to compare the two SHAs
+    command = f"git diff --name-only {left_sha} {right_sha}"
     process = subprocess.run(
-        ["diff", "-r", "--brief", str(repo_left.repo_path), str(repo_right.repo_path)],
+        command,
+        shell=True,
+        cwd=repo.repo_path,  # Ensure the command runs in the repository directory
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
     )
 
+    # Store the diff
+    diff_log = diff_cache_dir / "logs" / repo_slug / (cache_key + ".log")
+    diff_log.parent.mkdir(parents=True, exist_ok=True)
+    with open(diff_log, "w", encoding="utf-8") as f:
+        f.write(process.stdout)
+        f.write(process.stderr)
+    cache_data["logs"] = str(diff_log)
+
+    if process.returncode != 0:
+        set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
+        return cache_data
+
     diff_files = process.stdout.split("\n") if process.stdout else []
-    diff_files = [line.split()[-1] for line in diff_files if len(line.split()) > 0]
 
     # Check if diff contains a java file
     contains_java_file = any(file.endswith(".java") for file in diff_files)
     cache_data["diff contains java file"] = contains_java_file
-
-    cache_data["parent checkout failed"] = False
 
     set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
     return cache_data
@@ -139,6 +138,14 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
 
     print("merge_analyzer: Analyzing", repo_slug, left_sha, right_sha)
 
+    # Compute diff size in lines between left and right
+    cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
+
+    if cache_data["diff contains java file"] is False:
+        merge_data["test merge"] = False
+        print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
+        return merge_data
+
     # Checkout left parent
     repo_left = Repository(
         repo_slug,
@@ -154,16 +161,6 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
         workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
         lazy_clone=True,
     )
-
-    # Compute diff size in lines between left and right
-    cache_data = diff_merge_analyzer(
-        repo_left, repo_right, repo_slug, left_sha, right_sha, cache_directory
-    )
-
-    if cache_data["parent checkout failed"]:
-        merge_data["test merge"] = False
-        print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
-        return merge_data
 
     # Test left parent
     result, test_coverage, left_tree_fingerprint = repo_left.checkout_and_test(
@@ -185,7 +182,6 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     merge_data["parents pass"] = is_test_passed(
         merge_data["left parent test result"]
     ) and is_test_passed(merge_data["right parent test result"])
-    merge_data["diff size"] = cache_data["diff size"]
     merge_data["diff contains java file"] = cache_data["diff contains java file"]
     merge_data["test merge"] = (
         merge_data["parents pass"] and merge_data["diff contains java file"]
