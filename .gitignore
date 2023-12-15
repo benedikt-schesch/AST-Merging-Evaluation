@@ -12,6 +12,7 @@ artifacts/
 artifacts.tar.gz
 *.hprof
 cache*/
+cache*.tar
 cache.tar
 output.txt
 

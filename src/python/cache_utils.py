@@ -21,16 +21,6 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
-def slug_repo_name(repo_slug: str) -> str:
-    """Given a GitHub repository slug ("owner/reponame"), returns the reponame.
-    Args:
-        repo_slug (str): The slug of the repository, which is "owner/reponame".
-    Returns:
-        str: The reponame.
-    """
-    return repo_slug.split("/")[1]
-
-
 def set_in_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],
@@ -49,13 +39,10 @@ def set_in_cache(
     lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
         lock.acquire()
-    cache_path = get_cache_path(repo_slug, cache_directory)
+    # print("set_in_cache", cache_directory, cache_key, cache_value)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
-    output = json.dumps(cache, indent=4)
-    with open(cache_path, "w", encoding="utf-8") as f:
-        f.write(output)
-        f.flush()
+    write_cache(cache, repo_slug, cache_directory)
     if acquire_lock and lock is not None:
         lock.release()
 
@@ -115,7 +102,7 @@ def get_cache_lock(repo_slug: str, cache_directory: Path):
     Returns:
         fasteners.InterProcessLock: A lock for the repository.
     """
-    lock_path = cache_directory / "locks" / (slug_repo_name(repo_slug) + ".lock")
+    lock_path = cache_directory / "locks" / (str(repo_slug) + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock = fasteners.InterProcessLock(lock_path)
     return lock
@@ -129,7 +116,7 @@ def get_cache_path(repo_slug: str, cache_directory: Path) -> Path:
     Returns:
         Path: The path to the cache file.
     """
-    cache_file_name = slug_repo_name(repo_slug) + ".json"
+    cache_file_name = repo_slug + ".json"
     cache_path = cache_directory / cache_file_name
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     return cache_path
@@ -164,3 +151,22 @@ def load_cache(repo_slug: str, cache_directory: Path) -> dict:
     with open(cache_path, "r", encoding="utf-8") as f:
         cache_data = json.load(f)
         return cache_data
+
+
+def write_cache(
+    cache: dict,
+    repo_slug: str,
+    cache_directory: Path,
+) -> None:
+    """Writes the cache to disk.
+    Args:
+        cache (dict): The cache to write.
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
+        cache_directory (Path): The path to the cache directory.
+    """
+    cache_path = get_cache_path(repo_slug, cache_directory)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    output = json.dumps(cache, indent=4)
+    with open(cache_path, "w", encoding="utf-8") as f:
+        f.write(output)
+        f.flush()

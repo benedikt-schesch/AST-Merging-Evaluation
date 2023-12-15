@@ -19,7 +19,6 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
-from cache_utils import slug_repo_name
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -37,12 +36,8 @@ if __name__ == "__main__":
     total_valid_repos = 0
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-        )
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
         if not merge_list_file.exists():
             print(
                 f"merges_sampler: {repo_slug} does not have a list of merges."
@@ -52,11 +47,13 @@ if __name__ == "__main__":
             continue
 
         if output_file.exists():
+            total_valid_repos += 1
             print(
                 f"merges_sampler: Skipping {repo_slug}"
                 "because it is already computed."
             )
             continue
+        output_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
         except pd.errors.EmptyDataError:
@@ -64,6 +61,7 @@ if __name__ == "__main__":
                 f"merges_sampler: Skipping {repo_slug}"
                 " because it does not contain any merges."
             )
+            pd.DataFrame(columns=["idx"]).to_csv(output_file)
             continue
 
         merges["notes"].replace(np.nan, "", inplace=True)
@@ -79,6 +77,6 @@ if __name__ == "__main__":
         sample.to_csv(output_file)
 
     print(
-        f"merges_sampler: {missing_merges_repos} files were"
+        f"merges_sampler: {missing_merges_repos} files were "
         f"missing and {total_valid_repos} repos were valid."
     )

@@ -43,6 +43,12 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
+# Check if cache.tar exists and cache is missing
+if [ -f cache.tar ] && [ ! -d cache ]; then
+    echo "Decompressing cache.tar"
+    # make decompress-cache
+fi
+
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
@@ -55,9 +61,6 @@ echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
-
-length=${#REPOS_CSV}
-REPOS_CSV_WITH_HASHES="${REPOS_CSV::length-4}_with_hashes.csv"
 
 ./gradlew -q assemble -g ../.gradle/
 
@@ -74,12 +77,8 @@ rm -rf .workdir
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
-python3 src/python/write_head_hashes.py \
-    --repos_csv "$REPOS_CSV" \
-    --output_path "$REPOS_CSV_WITH_HASHES"
-
 python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
+    --repos_csv_with_hashes "$REPOS_CSV" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
@@ -125,6 +124,6 @@ python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --full_repos_csv "$REPOS_CSV" \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
     --output_dir "$OUT_DIR"

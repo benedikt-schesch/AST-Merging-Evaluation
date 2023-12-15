@@ -18,54 +18,18 @@ as column "head hash".
 import os
 import sys
 import argparse
+import shutil
 from pathlib import Path
 import multiprocessing
 from functools import partialmethod
 from tqdm import tqdm
 import pandas as pd
-import git.repo
+from repo import Repository
+from test_repo_heads import num_processes
 from variables import REPOS_PATH
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
-
-
-def clone_repo(repo_slug: str) -> git.repo.Repo:
-    """Clones a repository, or runs `git fetch` if the repository is already cloned.
-    Args:
-        repo_slug (str): The slug of the repository, which is "owner/reponame".
-    """
-    repo_dir = REPOS_PATH / repo_slug.split("/")[1]
-    if repo_dir.exists():
-        repo = git.repo.Repo(repo_dir)
-    else:
-        repo_dir.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["GIT_TERMINAL_PROMPT"] = "0"
-        print(repo_slug, " : Cloning repo")
-        # ":@" in URL ensures that we are not prompted for login details
-        # for the repos that are now private.
-        github_url = "https://:@github.com/" + repo_slug + ".git"
-        print(repo_slug, " : Finished cloning")
-        try:
-            repo = git.repo.Repo.clone_from(github_url, repo_dir)
-            print(repo_slug, " : Finished cloning")
-            repo.remote().fetch()
-            repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
-            repo.submodule_update()
-        except Exception as e:
-            print(repo_slug, "Exception during cloning:\n", e)
-            raise
-    return repo
-
-
-def num_processes() -> int:
-    """Compute the number of CPUs to be used
-    Returns:
-        int: the number of CPUs to be used.
-    """
-    cpu_count = os.cpu_count() or 1
-    processes_used = int(0.7 * cpu_count) if cpu_count > 3 else cpu_count
-    return processes_used
 
 
 def get_latest_hash(args):
@@ -76,13 +40,16 @@ def get_latest_hash(args):
         pd.Series: repo information with the hash of the HEAD
     """
     _, row = args
-    repo_slug = row["repository"]
+    repo_slug: str = row["repository"]
     print("write_head_hashes:", repo_slug, ": Started get_latest_hash")
 
     try:
         print("write_head_hashes:", repo_slug, ": Cloning repo")
-        repo = clone_repo(repo_slug)
-        row["head hash"] = repo.head.commit.hexsha
+        repo = Repository(
+            repo_slug,
+            workdir_id=repo_slug + "/head-" + repo_slug,
+        )
+        row["head hash"] = repo.get_head_hash()
     except Exception as e:
         print(
             "write_head_hashes:",
@@ -91,6 +58,9 @@ def get_latest_hash(args):
             e,
         )
         return None
+
+    # Delete the repo to save space
+    shutil.rmtree(REPOS_PATH / repo_slug, ignore_errors=True)
 
     print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row

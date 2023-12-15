@@ -78,11 +78,13 @@ small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh --include_trivial_merges
 	${MAKE} small-test-diff
+	rm -rf results-small
+	./run_small.sh --include_trivial_merges
+	${MAKE} small-test-diff
 
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
 	@echo
-	diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all || (echo && echo "Here is the file content, for which diff failed." && more results-small/*.csv results-small/merges/*.csv results-small/merges_compared/*.csv results-small/merges_tested/*.csv | cat && echo && diff -x table_run_time.tex -r -U3 test/small-goal-files/tables/all test/small-goal-files/tables/all)
 
 gradle-assemble:
 	./gradlew -q assemble -g ../.gradle/

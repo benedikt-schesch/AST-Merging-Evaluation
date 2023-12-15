@@ -22,8 +22,7 @@ import time
 import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
-from write_head_hashes import num_processes
-from cache_utils import slug_repo_name
+from test_repo_heads import num_processes
 from tqdm import tqdm
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
@@ -32,7 +31,7 @@ if os.getenv("TERM", "dumb") == "dumb":
 
 
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
-    """Tests the parents of a merge and in case of success, it tests the merge.
+    """Tests a merge with each merge tool.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
                     the repository info, and the cache path.
@@ -48,7 +47,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             merge_data["right"],
         )
         time.sleep(60)
-    print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
+    # print("merge_tester: Started ", repo_slug, merge_data["left"], merge_data["right"])
 
     for merge_tool in MERGE_TOOL:
         repo = Repository(
@@ -57,13 +56,13 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             workdir_id=repo_slug
             + f"/merge-tester-{merge_tool.name}-"
             + f'{merge_data["left"]}-{merge_data["right"]}',
+            lazy_clone=True,
         )
         (
             result,
             merge_fingerprint,
             left_fingerprint,
             right_fingerprint,
-            _,
             _,
         ) = repo.merge_and_test(
             tool=merge_tool,
@@ -95,7 +94,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
-    print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
+    # print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
     return merge_data
 
 
@@ -110,31 +109,16 @@ def build_arguments(
     Returns:
         list: The arguments for the merge_tester function.
     """
-    merge_list_file = Path(
-        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-    )
-    output_file = Path(
-        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-    )
+    merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
     if not merge_list_file.exists():
-        print(
-            "merge_tester:",
+        raise Exception(
+            "merge_tester: The repository does not have a list of merges.",
             repo_slug,
-            "does not have a list of merges. Missing file: ",
             merge_list_file,
         )
-        return []
 
-    if output_file.exists():
-        print(
-            "merge_tester: Skipping",
-            repo_slug,
-            "because it is already computed.",
-        )
-        return []
-    try:
-        merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-    except pd.errors.EmptyDataError:
+    merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+    if len(merges) == 0:
         print(
             "merge_tester: Skipping",
             repo_slug,
@@ -188,20 +172,14 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     print("merge_tester: Started Writing Output")
 
-    n_merges_parents_pass = 0
     for i in tqdm(range(len(merge_tester_arguments))):
         repo_slug = merge_tester_arguments[i][0]
         merge_results = merge_tester_results[i]
-        if len(merge_results) > 0 and merge_results["parents pass"]:
-            n_merges_parents_pass += 1
         repo_result[repo_slug].append(merge_results)
 
     n_total_merges = 0
-    n_total_merges_parents_pass = 0
     for repo_slug in repo_result:
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
         if output_file.exists():
             try:
                 df = pd.read_csv(output_file, header=0)
@@ -215,20 +193,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         else:
             df = pd.DataFrame(repo_result[repo_slug])
             df.sort_index(inplace=True)
+            output_file.parent.mkdir(parents=True, exist_ok=True)
             df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
-        n_total_merges_parents_pass += len(df[df["parents pass"]]) if len(df) > 0 else 0
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
-    print(
-        'merge_tester: Number of newly tested merges with "parents pass":',
-        n_merges_parents_pass,
-    )
     print("merge_tester: Total number of tested merges:", n_total_merges)
-    print(
-        'merge_tester: Total number of merges with "parents pass":',
-        n_total_merges_parents_pass,
-    )
     print("merge_tester: Finished Writing Output")
     print("merge_tester: Done")
 

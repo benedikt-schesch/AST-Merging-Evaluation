@@ -27,8 +27,8 @@ if __name__ == "__main__":
     df = df[df["language"] == "Java"]
     df = df.replace(to_replace="None", value=np.nan).dropna()
     df["stars"] = df["stars"].astype(int)
-    df = df[df["stars"] > 10]
-    df = df[df["unit_test"] > 0.25]
+    df = df[df["stars"] > 5]
+    # df = df[df["unit_test"] > 0.1]
 
     df.to_csv(repos_csv, index_label="idx")
 

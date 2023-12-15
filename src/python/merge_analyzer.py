@@ -17,14 +17,14 @@ import subprocess
 import argparse
 from pathlib import Path
 from functools import partialmethod
-from typing import Tuple
+from typing import Tuple, Dict, Union, Any
 import random
 import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
 from tqdm import tqdm
-from cache_utils import set_in_cache, lookup_in_cache, slug_repo_name
-from write_head_hashes import num_processes
+from cache_utils import set_in_cache, lookup_in_cache
+from test_repo_heads import num_processes
 from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 
@@ -36,7 +36,7 @@ columns = [
     "left_tree_fingerprint",
     "right_tree_fingerprint",
     "diff_size",
-    "diff_contains_java_file",
+    "diff contains java file",
     "left parent test result",
     "left parent test coverage",
     "right parent test result",
@@ -49,6 +49,75 @@ columns = [
 def is_test_passed(test_state: str) -> bool:
     """Returns true if the test state indicates passed tests."""
     return test_state == TEST_STATE.Tests_passed.name
+
+
+def diff_merge_analyzer(
+    repo_slug: str,
+    left_sha: str,
+    right_sha: str,
+    cache_dir: Path,
+) -> Dict[str, Any]:
+    """
+    Computes the diff between two branches using git diff.
+    Args:
+        repo (Repository): The repository object.
+        repo_slug (str): The repository slug.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+        cache_dir (Path): The path to the cache directory.
+    Returns:
+        dict: A dictionary containing the diff result.
+    """
+    cache_key = str(left_sha) + "_" + str(right_sha)
+
+    diff_cache_dir = cache_dir / "diff_analyzer"
+    cache_data = lookup_in_cache(cache_key, repo_slug, diff_cache_dir, True)  # type: ignore
+
+    if cache_data is not None and isinstance(cache_data, dict):
+        return cache_data
+
+    repo = Repository(
+        repo_slug,
+        cache_directory=cache_dir,
+        workdir_id=repo_slug + "/diff-" + left_sha + "-" + right_sha,
+        lazy_clone=False,
+    )
+
+    cache_data: Dict[str, Union[None, bool]] = {
+        "diff contains java file": None,
+    }
+
+    # Using git diff to compare the two SHAs
+    command = f"git diff --name-only {left_sha} {right_sha}"
+    process = subprocess.run(
+        command,
+        shell=True,
+        cwd=repo.repo_path,  # Ensure the command runs in the repository directory
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    # Store the diff
+    diff_log = diff_cache_dir / "logs" / repo_slug / (cache_key + ".log")
+    diff_log.parent.mkdir(parents=True, exist_ok=True)
+    with open(diff_log, "w", encoding="utf-8") as f:
+        f.write(process.stdout)
+        f.write(process.stderr)
+    cache_data["logs"] = str(diff_log)
+
+    if process.returncode != 0:
+        set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
+        return cache_data
+
+    diff_files = process.stdout.split("\n") if process.stdout else []
+
+    # Check if diff contains a java file
+    contains_java_file = any(file.endswith(".java") for file in diff_files)
+    cache_data["diff contains java file"] = contains_java_file
+
+    set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
+    return cache_data
 
 
 def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
@@ -64,126 +133,61 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     """
     repo_slug, merge_data, cache_directory = args
 
-    cache_key = merge_data["left"] + "_" + merge_data["right"]
-    merge_cache_directory = cache_directory / "merge_analysis"
-
-    cache_data = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
-    if cache_data is not None and isinstance(cache_data, dict):
-        for key, value in cache_data.items():
-            merge_data[key] = value
-        return merge_data
-    print("merge_analyzer: Analyzing", repo_slug, cache_key)
-
-    # Default values
-    cache_data = {}
-    for key in columns:
-        cache_data[key] = None
-    cache_data["test merge"] = False
-
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
+
+    print("merge_analyzer: Analyzing", repo_slug, left_sha, right_sha)
+
+    # Compute diff size in lines between left and right
+    cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
+
+    if cache_data["diff contains java file"] is False:
+        merge_data["test merge"] = False
+        print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
+        return merge_data
 
     # Checkout left parent
     repo_left = Repository(
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
+        lazy_clone=True,
     )
-    left_success, _ = repo_left.checkout(left_sha)
-    if not left_success:
-        cache_data["left parent test result"] = TEST_STATE.Git_checkout_failed.name
-        for key, value in cache_data.items():
-            merge_data[key] = value
-        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
-        print(
-            f"merge_analyzer: left parent checkout failed for {repo_slug} "
-            f"{left_sha} {right_sha} {repo_left.repo_path}"
-        )
-        return merge_data
 
     # Checkout right parent
     repo_right = Repository(
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
+        lazy_clone=True,
     )
-    right_success, _ = repo_right.checkout(right_sha)
-    if not right_success:
-        cache_data["right parent test result"] = TEST_STATE.Git_checkout_failed.name
-        for key, value in cache_data.items():
-            merge_data[key] = value
-        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
-        print(
-            f"merge_analyzer: right parent checkout failed for"
-            f" {repo_slug} {left_sha} {right_sha} {repo_right.repo_path}"
-        )
-        return merge_data
-
-    # Compute diff size in lines between left and right
-    assert repo_left.repo_path.exists()
-    assert repo_right.repo_path.exists()
-    command = (
-        f"diff -r {repo_left.repo_path} {repo_right.repo_path} | grep -a '^>' | wc -l"
-    )
-    process = process = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
-
-    diff_size = int(process.stdout.strip())
-    cache_data["diff_size"] = diff_size
-
-    # List all files that are different between left and right
-    process = subprocess.run(
-        ["diff", "-r", "--brief", str(repo_left.repo_path), str(repo_right.repo_path)],
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-
-    diff_files = process.stdout.split("\n") if process.stdout else []
-    diff_files = [line.split()[-1] for line in diff_files if line]
-
-    # Check if diff contains a java file
-    contains_java_file = any(file.endswith(".java") for file in diff_files)
-    cache_data["diff_contains_java_file"] = contains_java_file
-
-    if not contains_java_file:
-        print(
-            "merge_analyzer: Skipping",
-            repo_slug,
-            cache_key,
-            "because the diff does not contain a java file.",
-        )
-        for key, value in cache_data.items():
-            merge_data[key] = value
-        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
-        return merge_data
 
     # Test left parent
-    cache_data["left_tree_fingerprint"] = repo_left.compute_tree_fingerprint()
-    result, test_coverage = repo_left.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-    cache_data["left parent test result"] = result.name
-    cache_data["left parent test coverage"] = test_coverage
-    cache_data["parents pass"] = is_test_passed(cache_data["left parent test result"])
+    result, test_coverage, left_tree_fingerprint = repo_left.checkout_and_test(
+        left_sha, TIMEOUT_TESTING_PARENT, N_TESTS
+    )
+    merge_data["left_tree_fingerprint"] = left_tree_fingerprint
+    merge_data["left parent test result"] = result.name
+    merge_data["left parent test coverage"] = test_coverage
 
     # Test right parent
-    cache_data["right_tree_fingerprint"] = repo_right.compute_tree_fingerprint()
-    result, test_coverage = repo_right.test(TIMEOUT_TESTING_PARENT, N_TESTS)
-    cache_data["right parent test result"] = result.name
-    cache_data["right parent test coverage"] = test_coverage
-    cache_data["parents pass"] = cache_data["parents pass"] and is_test_passed(
-        cache_data["right parent test result"]
+    result, test_coverage, right_tree_fingerprint = repo_right.checkout_and_test(
+        right_sha, TIMEOUT_TESTING_PARENT, N_TESTS
+    )
+    merge_data["right_tree_fingerprint"] = right_tree_fingerprint
+    merge_data["right parent test result"] = result.name
+    merge_data["right parent test coverage"] = test_coverage
+
+    # Produce the final result
+    merge_data["parents pass"] = is_test_passed(
+        merge_data["left parent test result"]
+    ) and is_test_passed(merge_data["right parent test result"])
+    merge_data["diff contains java file"] = cache_data["diff contains java file"]
+    merge_data["test merge"] = (
+        merge_data["parents pass"] and merge_data["diff contains java file"]
     )
 
-    cache_data["test merge"] = (
-        cache_data["parents pass"] and cache_data["diff_contains_java_file"]
-    )
-
-    set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory)
-
-    print("merge_analyzer: Analyzed", repo_slug, cache_key)
-
-    for key, value in cache_data.items():
-        merge_data[key] = value
+    print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
 
     return merge_data
 
@@ -197,28 +201,13 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     Returns:
         list: A list of arguments for the merger function.
     """
-    merge_list_file = Path(
-        os.path.join(args.merges_path, slug_repo_name(repo_slug) + ".csv")
-    )
-    output_file = Path(
-        os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-    )
+    merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
     if not merge_list_file.exists():
-        print(
-            "merge_analyzer:",
+        raise Exception(
+            "merge_analyzer: The repository does not have a list of merges.",
             repo_slug,
-            "does not have a list of merges. Missing file: ",
             merge_list_file,
         )
-        return []
-
-    if output_file.exists():
-        print(
-            "merge_analyzer: Skipping",
-            repo_slug,
-            "because it is already computed.",
-        )
-        return []
 
     merges = pd.read_csv(
         merge_list_file,
@@ -234,6 +223,8 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
         header=0,
         index_col="idx",
     )
+    merges["left"] = merges["left"].astype(str)
+    merges["right"] = merges["right"].astype(str)
     merges["notes"].replace(np.nan, "", inplace=True)
 
     arguments = [
@@ -318,36 +309,24 @@ if __name__ == "__main__":
     repo_data = []
 
     for repo_slug in repo_result:
-        output_file = Path(
-            os.path.join(args.output_dir, slug_repo_name(repo_slug) + ".csv")
-        )
+        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
 
-        if output_file.exists():
-            try:
-                df = pd.read_csv(output_file, header=0)
-                if len(df) == 0:
-                    continue
-            except pd.errors.EmptyDataError:
-                print(
-                    "merge_analyzer: Skipping",
-                    repo_slug,
-                    "because it does not contain any merges.",
-                )
-                continue
-        else:
-            df = pd.DataFrame(repo_result[repo_slug])
-            if len(df) == 0:
-                continue
+        df = pd.DataFrame(repo_result[repo_slug])
+        output_file.parent.mkdir(parents=True, exist_ok=True)
 
-            # Pick randomly n_sampled_merges merges to test from the ones that are candidates
-            df["sampled for testing"] = False
-            testable_merges = df[df["test merge"]]
-            testable_merges = testable_merges.sample(frac=1.0, random_state=42)
-            sampled_merges = testable_merges[: args.n_sampled_merges]
-            df.loc[sampled_merges.index, "sampled for testing"] = True
-
-            df.sort_index(inplace=True)
+        if len(df) == 0:
             df.to_csv(output_file, index_label="idx")
+            continue
+
+        # Pick randomly n_sampled_merges merges to test from the ones that are candidates
+        df["sampled for testing"] = False
+        testable_merges = df[df["test merge"]]
+        testable_merges = testable_merges.sample(frac=1.0, random_state=42)
+        sampled_merges = testable_merges[: args.n_sampled_merges]
+        df.loc[sampled_merges.index, "sampled for testing"] = True
+
+        df.sort_index(inplace=True)
+        df.to_csv(output_file, index_label="idx")
 
         # Collect data for histograms
         repo_data.append(
@@ -355,14 +334,14 @@ if __name__ == "__main__":
                 repo_slug,
                 len(df),
                 df["test merge"].sum(),
-                df["diff_contains_java_file"].dropna().sum(),
+                df["diff contains java file"].dropna().sum(),
                 df["sampled for testing"].dropna().sum(),
             )
         )
 
         # Update global counters
         n_total_analyzed += len(df)
-        n_java_contains_diff += df["diff_contains_java_file"].sum()
+        n_java_contains_diff += df["diff contains java file"].sum()
         n_candidates_to_test += df["test merge"].dropna().sum()
         n_sampled_for_testing += df["sampled for testing"].dropna().sum()
 
@@ -402,7 +381,7 @@ if __name__ == "__main__":
     )
     plot_vertical_histogram(
         passings,
-        f"Testable (Has Java Diff + Parents Pass) nerge Candidates "
+        f"Testable (Has Java Diff + Parents Pass) merge Candidates "
         f"per Repository (Total: {n_candidates_to_test})",
         axs[2],
     )
