@@ -1,6 +1,0 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-16,refs/heads/master,7795705711fc096749d09e074a61cc0688478171,b0625c87e33f44036320cee78d6aba1fcfc1637e,f8ffb02c07ae2737b6489aab2a8ce2c0f906e743,,False,10,,,,,,,,False,False
-17,refs/heads/master,e7f3a4d1add7f0a5cd399e5299fac5fd2f488724,063d9dc1b3403a2af99662f4e86efca83fff9b8b,deb01bfe03de7ace2499d84d6a341811a6816d3f,,False,17,,,,,,,,False,False
-19,refs/heads/master,0ca74ee31a95ddc168a82dedd7ed77f06ebb86e1,968d74d33f1491c4513ebbf64ccb99de6c04550a,895efc61b8e123c54ccc326b24e7177383da5788,,False,18,,,,,,,,False,False
-22,refs/heads/master,7e60ecea50c8fc79d236fe394decb1295c77fa3c,bdd7711d2cc97798a0f9eecac7a550f8424204a3,eda8a492ef903aba84a79a0fc5c72800764ef66f,two initial commits,False,9,,,,,,,,False,False
-24,refs/remotes/origin/pull/38,f6edc3c022d66b33913deaac59cb7f42ab46303a,b86a722430a5458bc1183b2133b55de75eb71c2e,7d39b4815e3aef9aa5944f44ce7a96fb4915a7ba,,False,10,,,,,,,,False,False

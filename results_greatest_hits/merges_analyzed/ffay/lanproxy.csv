@@ -1,6 +1,0 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-1,refs/heads/master,06bcfe68f690a33543dbdf9d52c32bb67859ed5f,b74ff240132267674aa3ab1b243f1be30bd6ad0d,f28a9816ef4ab43c6414059d94a7f682e554f401,,False,,,7,False,,,,,,False
-2,refs/heads/master,b398ec123de9c959a731c6d19ba4b4bf8d39a9ea,d247ab06fb9f448c690de5fc7e91ba22cd82c19f,ca4d4c4753fcba9783abb3395800abc39afcd019,,False,,,67,False,,,,,,False
-4,refs/remotes/origin/for-io2c-cloud,1e0cfe7542abf06498662d5723d547188e65c673,2b43c685e954366252e425dc2c2b8ae0b3cfa0d2,a680a6565eac57e0eb0aa27b25bd2d39efdd47ee,,False,,,12,False,,,,,,False
-5,refs/remotes/origin/pull/143,5988e75a24983fbc3d6dd1d77fcc3c440092b522,913433d987f411589da9bc6bf4adbe5394c4ddfa,2ce6f29c5b127770c668d675dfd8d66f07140cd2,,False,,,9,False,,,,,,False
-8,refs/remotes/origin/pull/17,40614a24846e866ca5640510cfc6f0ea366601c3,3028509e11645e21abb56b9599d46fcae61b460a,5e409399497123c68b5499a9151d8f19a36abf6f,,False,,,167,False,,,,,,False

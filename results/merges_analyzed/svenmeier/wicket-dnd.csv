@@ -1,2 +1,0 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-3,refs/remotes/origin/wicket-6.x,5fea48fc2041018a1d8670bc91345714cc2b8774,c0b944c56d7bd08d058a674eeb76148bc252f09c,34b4a8531cd788b047060df9221296ccf7b4df06,,False,38,,,,,,,,False,False

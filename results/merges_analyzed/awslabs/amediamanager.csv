@@ -1,4 +1,0 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-2,refs/remotes/origin/docker,392e8fb247dc0b27bb41ff8d8137c6a0776b1b6d,92b3985c34ff6b39c4ec25e9d849d261bfd2850c,7306b03da083da9d81a648a5649575fbd6867b1b,,True,76,0.0,Tests_passed,0e89a97cddf730e1e4ab009217ce0fde1fa56fbac6fb97a6af9d252f18cb906e,True,0.0,Tests_passed,140346a19afacafe48ee5984a00a1cd48e6973d46f63d6a49d09321479d8c2d3,True,True
-3,refs/remotes/origin/docker,f19a47078dbf348dd5c08e7bd95afa8d26b58145,3efaacddb410057f840a8b651077b47071bc6fdd,84e69fdd760039189b486eb7b03ca33c143e1f21,,False,17,,,,,,,,False,False
-4,refs/remotes/origin/docker,037053207a75ef15999314955ed230f735ea1f49,ee37630f7bef3a4125995d1ba369820ffb4dbc36,5cfbdde7dc464c20f1de845642be50fdbec82bad,,False,21,,,,,,,,False,False

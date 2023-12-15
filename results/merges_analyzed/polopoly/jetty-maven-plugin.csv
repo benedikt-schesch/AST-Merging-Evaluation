@@ -1,4 +1,0 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-1,refs/heads/master,ede46d4a7b0140767b4fa80363d1272cd6513610,9ce0700e72e828ce5ff0fe68b4e5808f31186925,e4bd182147d263a680a86b52f80c3abba54d2e5a,,False,34,,,,,,,,False,False
-2,refs/heads/master,bfc17aa246a1ff1e7c301d5a90f4101f82f8ec12,57be9f5949522592799d85e9760e748bc472a098,429f5db8ddccfba6827b259b8131eb64cbca7db2,,False,33,,,,,,,,False,False
-4,refs/remotes/origin/upgrade-jetty-9.4.x,a4afa7bb25b4dfd2f14ed713afbfa49433d8d4ce,0fb397a5f2adb406259eea2f8cda5cdcbaf67c96,e06a1d73db8789fb0fde0a20c551c56759e7ccbb,,True,322,0.0,Tests_passed,6a0b6f061ed24ec17aca8edbe73d56b701dbab65c169e1809dae3ed7473710df,False,0.0,Tests_failed,065b824c54d0c8dcc71546da8b263012a7f78ea3bce19c727da7c1b2be1bc689,False,False
