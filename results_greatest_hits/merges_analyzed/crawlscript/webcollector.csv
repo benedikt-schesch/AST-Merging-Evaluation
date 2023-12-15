@@ -1,4 +1,4 @@
-idx,branch_name,merge,left,right,notes,sampled for testing,left_tree_fingerprint,right_tree_fingerprint,diff_size,diff_contains_java_file,left parent test result,left parent test coverage,right parent test result,right parent test coverage,parents pass,test merge
-3,refs/heads/master,8a987feaf91dadc94579c7fed1a66ce0c33b2ffb,b3c6831bc43d2ac8d020ae2f4700d70d5e39b2be,24a8b57e0b9ca408873f001154f8d50f923d829f,,False,,,4,False,,,,,,False
-4,refs/remotes/origin/gh-pages,d0d44576a2ab67579c16953e18dd28fc82455c67,434acebc8863d00af0c3a7e7420782de16fa85d1,91965d2dfb310720fd4b21a3a029ec40e6d18045,,False,,,2,False,,,,,,False
-5,refs/remotes/origin/pull/6,4f0d46b86976274448895f5befb47690444a22d6,2928163ff5322716da98cae681f1ed922751635a,ebe5b82f394fe9e64b6eb6073a1812cff3106ce1,two initial commits,False,,,2,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
+3,refs/heads/master,8a987feaf91dadc94579c7fed1a66ce0c33b2ffb,b3c6831bc43d2ac8d020ae2f4700d70d5e39b2be,24a8b57e0b9ca408873f001154f8d50f923d829f,,False,4,,,,,,,,False,False
+4,refs/remotes/origin/gh-pages,d0d44576a2ab67579c16953e18dd28fc82455c67,434acebc8863d00af0c3a7e7420782de16fa85d1,91965d2dfb310720fd4b21a3a029ec40e6d18045,,False,2,,,,,,,,False,False
+5,refs/remotes/origin/pull/6,4f0d46b86976274448895f5befb47690444a22d6,2928163ff5322716da98cae681f1ed922751635a,ebe5b82f394fe9e64b6eb6073a1812cff3106ce1,two initial commits,False,2,,,,,,,,False,False
