@@ -7,6 +7,9 @@ It also contains the functions that are used to test the repository.
 
 from pathlib import Path
 from typing import Union, Tuple, List
+import errno
+import signal
+import functools
 from enum import Enum
 import uuid
 import subprocess
@@ -29,6 +32,29 @@ from variables import (
 )
 
 
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    """A decorator that raises a TimeoutError if a function takes too long to run."""
+
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise Exception(error_message)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+@timeout(10 * 60)
 def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
@@ -40,6 +66,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     else:
         repo_dir.parent.mkdir(parents=True, exist_ok=True)
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        os.environ["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes"
         print(repo_slug, " : Cloning repo")
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
@@ -172,7 +199,11 @@ class Repository:  # pylint: disable=too-many-instance-attributes
 
     def clone_repo(self) -> None:
         """Clones the repository."""
-        clone_repo(self.repo_slug)
+        try:
+            clone_repo(self.repo_slug)
+        except Exception as e:
+            print("Exception during cloning:\n", e)
+            raise
         assert self.path.exists()
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
