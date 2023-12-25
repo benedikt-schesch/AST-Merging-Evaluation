@@ -126,7 +126,6 @@ def build_arguments(
         )
         return []
     merges = merges[merges["sampled for testing"]]
-    print(repo_slug, "has", len(merges), "merges to test.")
     return [
         (repo_slug, merge_data, Path(args.cache_dir))
         for _, merge_data in merges.iterrows()

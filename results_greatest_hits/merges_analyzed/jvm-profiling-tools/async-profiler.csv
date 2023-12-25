@@ -84,7 +84,7 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 98,refs/remotes/origin/pull/545,b499dcc0dff94c28f30e7194872e6ce6eddb44bf,29abbd37e153d11144a3395d0126071cb7d425ce,cf17e5efc3aa7cfe7c808f7381fabeb3841a3d49,,False,False,,,,,,,,False
 99,refs/remotes/origin/pull/545,29abbd37e153d11144a3395d0126071cb7d425ce,cf17e97dd344a25425625dfe7cb0724f48cae02f,35b420a941e0d578439b81cf7a46c3d160b48782,,True,True,b4d7e11e0d4423e3fe090b94933863b26905993fccdddb599ebf90a7b923e5fc,Tests_passed,0.0,ef438f9a8c22781be9e15a89d0189695d1be684bc8cfbcf6b1a6edffe267252b,Tests_passed,0.0,True,True
 100,refs/remotes/origin/pull/545,cf17e97dd344a25425625dfe7cb0724f48cae02f,795fdce910c7210a3db0c7500827fe30b529a62a,a57bbf3587c34534dcd5b30c64b8e4d2245c6bfe,,False,False,,,,,,,,False
-101,refs/remotes/origin/pull/545,795fdce910c7210a3db0c7500827fe30b529a62a,11cf2fb429cb9351155f423e24685303cc253d95,9131344d619875d82112981aa726f9ec8beb1481,,False,,,Git_checkout_failed,0.0,,Git_checkout_failed,0.0,False,False
+101,refs/remotes/origin/pull/545,795fdce910c7210a3db0c7500827fe30b529a62a,11cf2fb429cb9351155f423e24685303cc253d95,9131344d619875d82112981aa726f9ec8beb1481,,False,False,,,,,,,,False
 102,refs/remotes/origin/pull/545,11cf2fb429cb9351155f423e24685303cc253d95,364eeb0c3247c85df667cd2322657feb9f7287bf,30905fda4c325531cc3ebfa54bfd5c10357b7052,,False,False,,,,,,,,False
 103,refs/remotes/origin/pull/545,364eeb0c3247c85df667cd2322657feb9f7287bf,df1ecc1c8aced0f9452079539ebe8f066d8d6090,5a11a71db952dbe059233a1c0951d2894b272256,,False,False,,,,,,,,False
 104,refs/remotes/origin/pull/545,df1ecc1c8aced0f9452079539ebe8f066d8d6090,cc79e4fd8efd3e5bc7bff1a8365bf22a67474830,d79a82935f83512dd6203147161abf5a4975849a,,False,False,,,,,,,,False

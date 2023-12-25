@@ -33,4 +33,4 @@ idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test re
 51,refs/heads/master,0e97a336019b2590a5a486cd4d0249a60db36eb7,4147425bcae55b942e8270a5774d1b2bc61b4bb9,6642ef92e599d43a18920efa3553e77d7da9a39c,,774f10e8431729924c116003ec2305a2c0a6009370604722069d969cd952559b,Tests_failed,0.0,fe6108a46939d72a0edc33ca815a406c73c220095e405789070ddc707dbb28c6,Tests_failed,0.0,False,True,False,False
 52,refs/heads/master,6642ef92e599d43a18920efa3553e77d7da9a39c,47f1b1b5159951ae2f4a44c9a08a11c69f8de9cf,e631ef04aebe8cf77840b3d5e9a532471896f845,,f57d2786a5ad16cfdac6d129612cd7ad2cde5a496a8357346a0d989e3bb608d4,Tests_failed,0.0,2f9f6b35a433e00f139a363997e15d91e16827b8d8d325856d811fb4577fc7b4,Tests_failed,0.0,False,True,False,False
 53,refs/heads/master,b1c648bbe2630a21308bb5d11c2dae2d9a1500c8,9ea47faa7f1fc0e4c79e2a3ffae6c7879eb35d78,1a87c33bd18648f484133794840e94bd8d1d4a64,,,,,,,,,False,False,False
-54,refs/heads/master,1a87c33bd18648f484133794840e94bd8d1d4a64,06,nan,,,Git_checkout_failed,0.0,,Git_checkout_failed,0.0,False,,False,False
+54,refs/heads/master,1a87c33bd18648f484133794840e94bd8d1d4a64,06,nan,,,,,,,,,False,False,False

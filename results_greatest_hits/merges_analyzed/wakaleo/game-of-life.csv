@@ -49,7 +49,7 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 52,refs/remotes/origin/continuous-delivery-demo,92bced789a2855da04a89f8e7fa1901d9a4f4797,34ae5fdc591a9e041dbd87c8ccc14902f6417fdb,e7c1043f0a414d0783ecbc61f9bdcde31ba3ff7b,,False,False,,,,,,,,False
 53,refs/remotes/origin/continuous-delivery-demo,34ae5fdc591a9e041dbd87c8ccc14902f6417fdb,0a7ccf0caeff33e27028af5624e34aa4443cdf1f,7be8bb3908467b5908f2741cb3f34e572d93ed8e,,False,False,,,,,,,,False
 54,refs/remotes/origin/continuous-delivery-demo,3ce7ed690e2c4fc4ad712d9cf74f0567efe0e63f,b12e91052659e9ea88822ba99416e1810cc5ff32,20ff04694eb212ea4bd38f8569c2e6eb7c3da99d,,False,False,,,,,,,,False
-55,refs/remotes/origin/continuous-delivery-demo,a02c51c7f4e128cc26aee098abae7bd0fd5a3838,7c732ae160b916fdd8d1190cd96b59af592fa246,068457184c2fff58c174b1419cc32b377872eeba,,False,,,Git_checkout_failed,0.0,,Git_checkout_failed,0.0,False,False
+55,refs/remotes/origin/continuous-delivery-demo,a02c51c7f4e128cc26aee098abae7bd0fd5a3838,7c732ae160b916fdd8d1190cd96b59af592fa246,068457184c2fff58c174b1419cc32b377872eeba,,False,False,,,,,,,,False
 56,refs/remotes/origin/continuous-delivery-demo,7c732ae160b916fdd8d1190cd96b59af592fa246,93777e044bd5176c4429fb12fa67088245b6da96,4e643d5588ba0135f212fa4bd6e44f2b65753e31,,False,False,,,,,,,,False
 57,refs/remotes/origin/continuous-delivery-demo,93777e044bd5176c4429fb12fa67088245b6da96,222f9f0f6c02d37f90903ce63a42977efb109739,e2fb3ae4d4660a77718fe078f951a0b788cdff69,,False,False,,,,,,,,False
 58,refs/remotes/origin/continuous-delivery-demo,222f9f0f6c02d37f90903ce63a42977efb109739,1b5894fbae118fd94883b914381a7b2bc8923242,5baa16a10d9c430dc65a63c3d9ee2c6383ec9231,,False,False,,,,,,,,False
