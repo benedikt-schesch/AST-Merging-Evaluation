@@ -126,6 +126,7 @@ def build_arguments(
         )
         return []
     merges = merges[merges["sampled for testing"]]
+    print(repo_slug, "has", len(merges), "merges to test.")
     return [
         (repo_slug, merge_data, Path(args.cache_dir))
         for _, merge_data in merges.iterrows()
@@ -180,21 +181,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     n_total_merges = 0
     for repo_slug in repo_result:
         output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
-        if output_file.exists():
-            try:
-                df = pd.read_csv(output_file, header=0)
-            except pd.errors.EmptyDataError:
-                print(
-                    "merge_tester: Skipping",
-                    repo_slug,
-                    "because it does not contain any merges.",
-                )
-                continue
-        else:
-            df = pd.DataFrame(repo_result[repo_slug])
-            df.sort_index(inplace=True)
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            df.to_csv(output_file, index_label="idx")
+        df = pd.DataFrame(repo_result[repo_slug])
+        df.sort_index(inplace=True)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))

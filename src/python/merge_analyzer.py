@@ -127,7 +127,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     # Compute diff size in lines between left and right
     cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
 
-    if cache_data["diff contains java file"] is False:
+    if cache_data["diff contains java file"] in (False, None):
         merge_data["test merge"] = False
         merge_data["diff contains java file"] = False
         print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)

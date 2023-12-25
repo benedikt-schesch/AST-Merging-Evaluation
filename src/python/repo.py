@@ -6,7 +6,7 @@ It also contains the functions that are used to test the repository.
 """
 
 from pathlib import Path
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict
 import errno
 import signal
 import functools
@@ -427,7 +427,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             float: The time it took to run the merge, in seconds.
         """
         cache_entry_name = left_commit + "_" + right_commit + "_" + tool.name
-        cache_entry = {"sha": None}
+        cache_entry: Dict[str, Union[str, None]] = {"sha": None}
         # Checkout left
         left_fingerprint, left_explanation = self.create_branch(
             LEFT_BRANCH_NAME, left_commit, use_cache=use_cache
