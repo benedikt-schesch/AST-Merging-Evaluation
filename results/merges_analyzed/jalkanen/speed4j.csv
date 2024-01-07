@@ -1,5 +1,5 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-3,refs/heads/master,bfc819198f954e4593cee1828eb09d8b21e20c79,3e957703264408727e67578124928336662b27c9,beed75212fc11e94322a7a5c2feeca1cd6fce89b,,False,7,,,,,,,,False,False
-4,refs/heads/master,3e957703264408727e67578124928336662b27c9,1268d19430ad081466508c46503de377f35174bc,9136a84b480c5cc0da93cbccbcd042b0753c5c66,,False,10,,,,,,,,False,False
-6,refs/heads/master,18370b95449b0062c7f3286734bb393cf47e02a1,1f224d4a60b62e76f9cdc0893e477e85295c3f13,1164f50c09c8ea4be8d59bc8cb8f01e11180e3ad,,False,16,,,,,,,,False,False
-8,refs/heads/master,5235271fe052c2812a30eebc63dca2c4ba928788,c901166083ec45e52eee86b7df989f7f7a8350c4,14dc69c8475bb1b302ec6bced48436d71147338c,,False,81,,,,,,,,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,left parent test coverage,right_tree_fingerprint,right parent test result,right parent test coverage,parents pass,sampled for testing
+3,refs/heads/master,bfc819198f954e4593cee1828eb09d8b21e20c79,3e957703264408727e67578124928336662b27c9,beed75212fc11e94322a7a5c2feeca1cd6fce89b,,False,False,,,,,,,,False
+4,refs/heads/master,3e957703264408727e67578124928336662b27c9,1268d19430ad081466508c46503de377f35174bc,9136a84b480c5cc0da93cbccbcd042b0753c5c66,,False,False,,,,,,,,False
+6,refs/heads/master,18370b95449b0062c7f3286734bb393cf47e02a1,1f224d4a60b62e76f9cdc0893e477e85295c3f13,1164f50c09c8ea4be8d59bc8cb8f01e11180e3ad,,False,False,,,,,,,,False
+8,refs/heads/master,5235271fe052c2812a30eebc63dca2c4ba928788,c901166083ec45e52eee86b7df989f7f7a8350c4,14dc69c8475bb1b302ec6bced48436d71147338c,,True,True,fa957c7faf3083fe3622f7069ac8387f7ac5169a548615e5fea2f1e0b289dc54,Tests_passed,0.5350500715307582,c49c7c4b520e2f06b279d6746f48add8f981ede1ae6b4628b7400c8b562e1df2,Tests_passed,0.5768500948766604,True,True

@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-2,refs/heads/master,e6d453cdac6b10baa34dc3c6650d4d695c02fd62,0064ef0cc4cacb04190e46cbbfbc0991bc0156c0,e953d9655c498a6d6ba9c9be35300ae847158b55,,False,2,,,,,,,,False,False
-3,refs/heads/master,4f91de4102aec25886a56832a7e1be97164613a0,e2b50ac00f1a69c81b8f82972494d1684051bb09,0036466476042dbd32ade355e2c30eb9b0c5be53,two initial commits,False,2,,,,,,,,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+2,refs/heads/master,e6d453cdac6b10baa34dc3c6650d4d695c02fd62,0064ef0cc4cacb04190e46cbbfbc0991bc0156c0,e953d9655c498a6d6ba9c9be35300ae847158b55,,False,False,False
+3,refs/heads/master,4f91de4102aec25886a56832a7e1be97164613a0,e2b50ac00f1a69c81b8f82972494d1684051bb09,0036466476042dbd32ade355e2c30eb9b0c5be53,two initial commits,False,False,False

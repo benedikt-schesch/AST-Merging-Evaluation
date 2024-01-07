@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff_contains_java_file,diff_size,left parent test coverage,left parent test result,left_tree_fingerprint,parents pass,right parent test coverage,right parent test result,right_tree_fingerprint,sampled for testing,test merge
-2,refs/remotes/origin/gh-pages,08b64baf7b8ee7327b149ad4ec3f79a733300dab,54b5cc24f56fcf727a8cf58e5f6da131909b58a4,db67dad3d3ecee5919f0a47fcac453ca29ea3626,,False,163,,,,,,,,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+2,refs/remotes/origin/gh-pages,08b64baf7b8ee7327b149ad4ec3f79a733300dab,54b5cc24f56fcf727a8cf58e5f6da131909b58a4,db67dad3d3ecee5919f0a47fcac453ca29ea3626,,False,False,False
