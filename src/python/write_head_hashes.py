@@ -18,7 +18,6 @@ as column "head hash".
 import os
 import sys
 import argparse
-import shutil
 from pathlib import Path
 import multiprocessing
 from functools import partialmethod
@@ -26,7 +25,6 @@ from tqdm import tqdm
 import pandas as pd
 from repo import Repository
 from test_repo_heads import num_processes
-from variables import REPOS_PATH
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -48,6 +46,7 @@ def get_latest_hash(args):
         repo = Repository(
             repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
+            lazy_clone=False,
         )
         row["head hash"] = repo.get_head_hash()
     except Exception as e:
@@ -58,9 +57,6 @@ def get_latest_hash(args):
             e,
         )
         return None
-
-    # Delete the repo to save space
-    shutil.rmtree(REPOS_PATH / repo_slug, ignore_errors=True)
 
     print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row
@@ -77,7 +73,7 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(arguments.output_path):
-        print("write_head_hashes: Cached")
+        print("write_head_hashes: File already exists, skipping")
         sys.exit(0)
 
     df = pd.read_csv(arguments.repos_csv, index_col="idx")

@@ -74,11 +74,18 @@ fi
 # Delete .workdir
 rm -rf .workdir
 
+# Add a _with_hashes to the $REPOS_CSV
+REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
+
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
+python3 src/python/write_head_hashes.py \
+    --repos_csv "$REPOS_CSV" \
+    --output_path "$REPOS_CSV_WITH_HASHES"
+
 python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$REPOS_CSV" \
+    --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
@@ -123,7 +130,7 @@ python3 src/python/merge_differ.py \
 python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
-    --full_repos_csv "$REPOS_CSV" \
+    --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
     --output_dir "$OUT_DIR"
