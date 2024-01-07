@@ -150,20 +150,18 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     )
 
     # Test left parent
-    result, test_coverage, left_tree_fingerprint = repo_left.checkout_and_test(
+    result, _, left_tree_fingerprint = repo_left.checkout_and_test(
         left_sha, TIMEOUT_TESTING_PARENT, N_TESTS
     )
     merge_data["left_tree_fingerprint"] = left_tree_fingerprint
     merge_data["left parent test result"] = result.name
-    merge_data["left parent test coverage"] = test_coverage
 
     # Test right parent
-    result, test_coverage, right_tree_fingerprint = repo_right.checkout_and_test(
+    result, _, right_tree_fingerprint = repo_right.checkout_and_test(
         right_sha, TIMEOUT_TESTING_PARENT, N_TESTS
     )
     merge_data["right_tree_fingerprint"] = right_tree_fingerprint
     merge_data["right parent test result"] = result.name
-    merge_data["right parent test coverage"] = test_coverage
 
     # Produce the final result
     merge_data["parents pass"] = is_test_passed(
