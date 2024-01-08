@@ -12,7 +12,7 @@ from merge_tester import MERGE_STATE
 # pylint: disable-msg=too-many-locals
 
 
-def diff3_analysis(merge_tool: str, repo_num: int):
+def diff3_analysis_no_base(merge_tool: str, repo_num: int):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
 
@@ -43,26 +43,6 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     repo.submodule_update()
     repo.git.checkout("-b", "TEMP_RIGHT_BRANCH", force=True)
 
-    base_sha = subprocess.run(
-        [
-            "git",
-            "merge-base",
-            "TEMP_LEFT_BRANCH",
-            "TEMP_RIGHT_BRANCH",
-        ],
-        cwd="./repos/merge_attempt/" + repo_name,
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-    print("Found base sha" + base_sha.stdout)
-
-    repo = clone_repo_to_path(
-        repo_name, "./repos/base"
-    )  # Return a Git-Python repo object
-    repo.remote().fetch()
-    base_sha = base_sha.stdout.strip()
-    repo.git.checkout(base_sha, force=True)
-    repo.submodule_update()
 
     result = subprocess.run(
         [
@@ -95,15 +75,13 @@ def diff3_analysis(merge_tool: str, repo_num: int):
             "./repos/merge_attempt", conflict_path
         )
 
-        conflict_path_base = os.path.join("./repos/base", conflict_path)
         conflict_path_programmer_merge = os.path.join(
             "./repos/programmer_merge", conflict_path
         )
 
         diff_results = subprocess.run(
             [
-                "diff3",
-                conflict_path_base,
+                "diff",
                 conflict_path_merge_attempt,
                 conflict_path_programmer_merge,
             ],
@@ -111,20 +89,6 @@ def diff3_analysis(merge_tool: str, repo_num: int):
             stderr=subprocess.PIPE,
             text=True,
         )
-
-        # Check that diff3 didn't run into missing files in the base
-        error_message = "No such file or directory"
-        if error_message in diff_results.stderr:
-            # Since the conflict file was added in both parents we can't diff the base.
-            diff_results = subprocess.run(
-                [
-                    "diff",
-                    conflict_path_merge_attempt,
-                    conflict_path_programmer_merge,
-                ],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
 
         # Use a temporary file to store the diff results
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
