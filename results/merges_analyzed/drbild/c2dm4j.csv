@@ -1,5 +1,5 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,left parent test coverage,right_tree_fingerprint,right parent test result,right parent test coverage,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/heads/master,dcf64aa6934c7212838f943aff326ebf3cd6733b,f997f3b313e3ab2a436666b81c4b9e34cf3772b9,8f325cc290cc3c917f97936f691bd9ba72b97055,,,,,,,,,False,False,False
-2,refs/heads/master,f997f3b313e3ab2a436666b81c4b9e34cf3772b9,292e2e390a1f7bdac35f0910027e31c0ac03e8ab,66a869276311f7269d9bb463d9fb528e20281672,,,,,,,,,False,False,False
-3,refs/heads/master,280edc1ad687b19534adc3174e42d1cca82c966d,ca442820cb5e78307c2530ff20e1fb4be48893f2,d6624ed34252ae8745b0a2129953c6f13a512a64,,,,,,,,,False,False,False
-4,refs/heads/master,ca442820cb5e78307c2530ff20e1fb4be48893f2,05e9226eef305aa8123f50edfc2cf53a1c1efede,60ba15ab5f10091e898db4edc93516ebeaef1fd1,,3cd16a02d015ae3bf61bbace61b2586229dbcf7c0b2a17954134cf585658acdb,Tests_passed,0.6730486008836525,eb4042d36b4e8df3434ac697479d29672fd3f353af2b76fff878e6d53beb99fc,Tests_passed,0.6731689363268311,True,True,True,True
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
+1,refs/heads/master,dcf64aa6934c7212838f943aff326ebf3cd6733b,f997f3b313e3ab2a436666b81c4b9e34cf3772b9,8f325cc290cc3c917f97936f691bd9ba72b97055,,False,False,,,,,,False
+2,refs/heads/master,f997f3b313e3ab2a436666b81c4b9e34cf3772b9,292e2e390a1f7bdac35f0910027e31c0ac03e8ab,66a869276311f7269d9bb463d9fb528e20281672,,False,False,,,,,,False
+3,refs/heads/master,280edc1ad687b19534adc3174e42d1cca82c966d,ca442820cb5e78307c2530ff20e1fb4be48893f2,d6624ed34252ae8745b0a2129953c6f13a512a64,,False,False,,,,,,False
+4,refs/heads/master,ca442820cb5e78307c2530ff20e1fb4be48893f2,05e9226eef305aa8123f50edfc2cf53a1c1efede,60ba15ab5f10091e898db4edc93516ebeaef1fd1,,True,True,3cd16a02d015ae3bf61bbace61b2586229dbcf7c0b2a17954134cf585658acdb,Tests_passed,eb4042d36b4e8df3434ac697479d29672fd3f353af2b76fff878e6d53beb99fc,Tests_passed,True,True

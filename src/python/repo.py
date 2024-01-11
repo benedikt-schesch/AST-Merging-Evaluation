@@ -18,6 +18,7 @@ import xml.etree.ElementTree as ET
 import shutil
 import time
 from git.repo import Repo
+from git import GitCommandError
 from cache_utils import (
     set_in_cache,
     lookup_in_cache,
@@ -77,9 +78,9 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
             repo.remote().fetch()
             repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
             repo.submodule_update()
-        except Exception as e:
-            print(repo_slug, "Exception during cloning:\n", e)
-            raise
+        except GitCommandError as e:
+            print(repo_slug, "GitCommandError during cloning:\n", e)
+            raise Exception("GitCommandError during cloning") from e
     return repo
 
 
@@ -191,23 +192,35 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.repo_path = self.workdir / self.path.name
         self.delete_workdir = delete_workdir
         self.lazy_clone = lazy_clone
-        self.initialized = False
+        self.cloned_repo = False
+        self.repo_copied = False
         if not lazy_clone:
             self.clone_repo()
+            self.copy_repo()
         self.test_cache_directory = cache_directory / "test_cache"
         self.sha_cache_directory = cache_directory / "sha_cache_entry"
 
     def clone_repo(self) -> None:
         """Clones the repository."""
+        if self.cloned_repo:
+            return
         try:
             clone_repo(self.repo_slug)
         except Exception as e:
             print("Exception during cloning:\n", e)
             raise
         assert self.path.exists()
+        self.cloned_repo = True
+
+    def copy_repo(self) -> None:
+        """Copies the repository."""
+        if not self.cloned_repo:
+            self.clone_repo()
+        if self.repo_copied:
+            return
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
-        self.initialized = True
+        self.repo_copied = True
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -218,8 +231,20 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             bool: True if the checkout succeeded, False otherwise.
             str: explanation. The explanation of the result.
         """
-        if self.lazy_clone and not self.initialized:
-            self.clone_repo()
+        if not self.cloned_repo:
+            try:
+                self.clone_repo()
+            except Exception as e:
+                if use_cache:
+                    cache_entry = {"sha": None, "explanation": str(e)}
+                    set_in_cache(
+                        commit, cache_entry, self.repo_slug, self.sha_cache_directory
+                    )
+                return False, "Failed to clone " + self.repo_slug + " : \n" + str(e)
+        assert self.cloned_repo
+        if not self.repo_copied:
+            self.copy_repo()
+        assert self.repo_copied
         try:
             self.repo.git.checkout(commit, force=True)
             explanation = f"Checked out {commit} for {self.repo_slug}"

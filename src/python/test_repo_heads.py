@@ -54,6 +54,10 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         repo_info["head test result"] = "Wrong format"
         return repo_info
 
+    if len(repo_info["head hash"]) != 40:
+        repo_info["head test result"] = "No valid head hash"
+        return repo_info
+
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
     # Load repo

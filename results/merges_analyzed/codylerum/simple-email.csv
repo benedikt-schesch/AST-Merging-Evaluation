@@ -1,7 +1,7 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,left parent test coverage,right_tree_fingerprint,right parent test result,right parent test coverage,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/heads/master,4ea6af94572e6789a737d1d5f7eb1a98d1534ca1,b5c8dca30349700b0301f132d109f0c0eeea3870,c8cb8eabbeb6a67f6ddacff3aa58b099d6b47c60,,,,,,,,,False,False,False
-2,refs/heads/master,9cff9634937b2b803b53871f83c70f8b248915f1,b9e4f52f179176a62a2fb59ddb2eba5dc73b3f72,9b7218eb603ed787d6a5902e6058f4c46b903a3f,,,,,,,,,False,False,False
-3,refs/heads/master,b9e4f52f179176a62a2fb59ddb2eba5dc73b3f72,b92c4c4446a6cb7dfec670d7281ef5d4f057c5da,09e76d5df1f04a3b1fab593bb571cf9dd33ec348,,,,,,,,,False,False,False
-10,refs/remotes/origin/html-only-email,90caa09ddd6b19ec22efd83b150e241383c20bd2,96dc8b1091ba3902d2fac096d81f7f2e9b5bff6a,579c34021b8ea84b8345b96ded310f6ba3892272,,,,,,,,,False,False,False
-11,refs/remotes/origin/jakarta,a921ff62c17530b9d2aa82917cfdc4d0905ba8e1,010b3bc4fcce181148d435152da8687a8abc1038,bfa75b6eafe2a16a8586ab985c08ad09d035f3e9,,5e4570f92cf3bbd233b0b7ccfc41f974f261a071e0728c341201e8574cf2cef2,Tests_passed,0.6688809402146142,e0fad2c19f83752b22b4218c918863b8d82d17900aed14258f5e7dc8aa04a3c0,Tests_passed,0.6670882873766759,True,True,True,True
-12,refs/remotes/origin/pull/13,f6eff178b1c6e0de745c050b42dd3179fe6fefb6,0ff102de4a837c6b0e728a146de07cfbf9711290,8062d4e4b1a5d1502652ee3625608aa6dc10b9aa,,,,,,,,,False,False,False
+idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
+1,refs/heads/master,4ea6af94572e6789a737d1d5f7eb1a98d1534ca1,b5c8dca30349700b0301f132d109f0c0eeea3870,c8cb8eabbeb6a67f6ddacff3aa58b099d6b47c60,,,,,,,False,False,False
+2,refs/heads/master,9cff9634937b2b803b53871f83c70f8b248915f1,b9e4f52f179176a62a2fb59ddb2eba5dc73b3f72,9b7218eb603ed787d6a5902e6058f4c46b903a3f,,,,,,,False,False,False
+3,refs/heads/master,b9e4f52f179176a62a2fb59ddb2eba5dc73b3f72,b92c4c4446a6cb7dfec670d7281ef5d4f057c5da,09e76d5df1f04a3b1fab593bb571cf9dd33ec348,,,,,,,False,False,False
+10,refs/remotes/origin/html-only-email,90caa09ddd6b19ec22efd83b150e241383c20bd2,96dc8b1091ba3902d2fac096d81f7f2e9b5bff6a,579c34021b8ea84b8345b96ded310f6ba3892272,,,,,,,False,False,False
+11,refs/remotes/origin/jakarta,a921ff62c17530b9d2aa82917cfdc4d0905ba8e1,010b3bc4fcce181148d435152da8687a8abc1038,bfa75b6eafe2a16a8586ab985c08ad09d035f3e9,,5e4570f92cf3bbd233b0b7ccfc41f974f261a071e0728c341201e8574cf2cef2,Tests_passed,e0fad2c19f83752b22b4218c918863b8d82d17900aed14258f5e7dc8aa04a3c0,Tests_passed,True,True,True,True
+12,refs/remotes/origin/pull/13,f6eff178b1c6e0de745c050b42dd3179fe6fefb6,0ff102de4a837c6b0e728a146de07cfbf9711290,8062d4e4b1a5d1502652ee3625608aa6dc10b9aa,,,,,,,False,False,False
