@@ -312,7 +312,7 @@ public class FindMergeCommits {
               .setCloneAllBranches(true)
               .setCredentialsProvider(credentialsProvider)
               .call();
-    } catch(Exception e) {
+    } catch (Exception e) {
       System.out.println("Exception in cloning");
       try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
         writer.write("idx,branch_name,merge_commit,parent_1,parent_2,notes");
