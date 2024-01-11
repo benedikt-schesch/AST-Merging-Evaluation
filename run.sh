@@ -122,11 +122,6 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
-python3 src/python/merge_differ.py \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
-    --merges_path "$OUT_DIR/merges_tested" \
-    --cache_dir "$CACHE_DIR"
-
 python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
