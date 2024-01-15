@@ -361,10 +361,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             left_commit + "_" + right_commit + "_" + tool.name
         )
         if sha_cache_entry is None:
-            print(
-                f"Cache miss (sha cache) for {self.repo_slug} {left_commit} "
-                f"{right_commit} {tool} {sha_cache_entry}"
-            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
@@ -379,10 +375,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
-            print(
-                f"Cache miss (test cache) for {self.repo_slug}"
-                f"{left_commit} {right_commit} {tool} {sha_cache_entry['sha']}"
-            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )

@@ -579,9 +579,9 @@
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetstrokeopacity{0.800000}%
 \pgfsetdash{{3.000000pt}{3.000000pt}}{3.000000pt}%
-\pgfpathmoveto{\pgfqpoint{1.011791in}{1.873605in}}%
-\pgfpathlineto{\pgfqpoint{1.431677in}{0.539691in}}%
-\pgfpathlineto{\pgfqpoint{1.431677in}{0.539691in}}%
+\pgfpathmoveto{\pgfqpoint{1.011791in}{1.872387in}}%
+\pgfpathlineto{\pgfqpoint{1.431294in}{0.539691in}}%
+\pgfpathlineto{\pgfqpoint{1.431294in}{0.539691in}}%
 \pgfusepath{stroke}%
 \end{pgfscope}%
 \begin{pgfscope}%
