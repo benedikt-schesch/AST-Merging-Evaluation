@@ -13,9 +13,9 @@ for json_file in base_path.glob("**/*.json"):
     # Load json file
     with json_file.open() as f:
         data = json.load(f)
-    # Delete all entries that finish with "intellimerge"
+    # Delete all entries that are not fingerprints
     for key in list(data.keys()):
-        if len(key) > 41 and "left_fingerprint" not in data[key]:
+        if len(key) > 41:
             deleted += 1
             del data[key]
     # Save json file

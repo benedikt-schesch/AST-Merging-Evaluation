@@ -21,7 +21,6 @@ retVal=$?
 # report conflicts
 if [ "$retVal" -ne 0 ]; then
     echo "Conflict"
-    git merge --abort
 fi
 
 exit "$retVal"

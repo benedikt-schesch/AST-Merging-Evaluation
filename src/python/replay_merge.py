@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Replay merges and their test results"""
 import argparse
-from typing import Tuple
 import shutil
 from pathlib import Path
 from tqdm import tqdm
@@ -10,7 +9,9 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
 
-def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
+def merge_replay(
+    repo_slug: str, merge_data: pd.Series, test_merge: bool
+) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
         args (Tuple[str,pd.Series]): A tuple containing the repository slug,
@@ -18,7 +19,6 @@ def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
     Returns:
         pd.Series: The result of the test.
     """
-    repo_slug, merge_data = args
     print("merge_replay: Started ", repo_slug, merge_data["left"], merge_data["right"])
     result_df = pd.DataFrame()
     for merge_tool in tqdm(MERGE_TOOL):
@@ -44,6 +44,7 @@ def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
             timeout=TIMEOUT_TESTING_MERGE,
             use_cache=False,
         )
+        assert merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
         root_dir = Path("replay_logs")
         log_path = root_dir / Path(
             "merges/"
@@ -100,23 +101,21 @@ def merge_replay(args: Tuple[str, pd.Series]) -> pd.DataFrame:
                 + merge_tool.name
                 + ".log"
             )
-            test_result, _ = repo.test(
-                timeout=TIMEOUT_TESTING_MERGE,
-                n_tests=N_TESTS,
-                use_cache=False,
-                test_log_file=log_path,
-            )
-            result_df.loc[
-                merge_tool.name,
-                ["merge test result", "merge test log path"],
-            ] = [
-                test_result.name,
-                log_path,
-            ]
-            assert merge_data[f"{merge_tool.name}"] == test_result.name
-            assert (
-                merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
-            )
+            if test_merge:
+                test_result, _ = repo.test(
+                    timeout=TIMEOUT_TESTING_MERGE,
+                    n_tests=N_TESTS,
+                    use_cache=False,
+                    test_log_file=log_path,
+                )
+                result_df.loc[
+                    merge_tool.name,
+                    ["merge test result", "merge test log path"],
+                ] = [
+                    test_result.name,
+                    log_path,
+                ]
+                assert merge_data[f"{merge_tool.name}"] == test_result.name
     return result_df
 
 
@@ -126,17 +125,23 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="test/small-goal-files/result.csv",
+        default="results_greatest_hits/result.csv",
     )
     parser.add_argument(
         "--idx",
         help="Index of the merge to replay",
         type=int,
-        default=5,
+        default=237,
+    )
+    parser.add_argument(
+        "-test",
+        help="Test the replay of a merge",
+        action="store_true",
     )
     arguments = parser.parse_args()
 
     df = pd.read_csv(arguments.merges_csv, index_col="idx")
+
     repo_slug = df.loc[arguments.idx, "repository"]
     merge_data = df.loc[arguments.idx]
     repo = Repository(  # To clone the repo
@@ -145,13 +150,13 @@ if __name__ == "__main__":
         workdir_id="todelete",
     )
     shutil.rmtree(repo.path, ignore_errors=True)
-    results_df = merge_replay((str(repo_slug), merge_data))
+    results_df = merge_replay(str(repo_slug), merge_data, arguments.test)
     for idx, row in results_df.iterrows():
         print("=====================================")
         print("Merge tool:", idx)
         print("Merge result:", row["merge result"])
         print("Merge log path:", row["merge log path"])
-        if row["merge result"] == MERGE_STATE.Merge_success:
+        if row["merge result"] == MERGE_STATE.Merge_success and arguments.test:
             print("Merge test result:", row["merge test result"])
             print("Merge test log path:", row["merge test log path"])
         print("merge data test result:", merge_data[idx])

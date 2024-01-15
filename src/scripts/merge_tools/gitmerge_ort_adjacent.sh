@@ -14,7 +14,6 @@ fi
 cd "$clone_dir" || exit 1
 if ! "$MERGE_SCRIPTS_DIR"/resolve-adjacent-conflicts; then
   echo "Conflict"
-  git merge --abort
   exit 1
 fi
 

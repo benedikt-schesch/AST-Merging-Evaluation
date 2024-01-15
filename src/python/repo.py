@@ -188,7 +188,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug
         self.workdir = WORKDIR_DIRECTORY / workdir_id
-        self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         self.delete_workdir = delete_workdir
         self.lazy_clone = lazy_clone
@@ -218,6 +217,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             self.clone_repo()
         if self.repo_copied:
             return
+        self.workdir.mkdir(parents=True, exist_ok=True)
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
         self.repo_copied = True
