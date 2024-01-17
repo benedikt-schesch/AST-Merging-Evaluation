@@ -24,6 +24,12 @@ branch2=$3
 temp_dir="/tmp/intelli_temp_$$/"
 mkdir $temp_dir
 
+echo "IntelliMerge: $intellimerge_absolutepath"
+echo "Clone dir: $clone_dir"
+echo "Branch 1: $branch1"
+echo "Branch 2: $branch2"
+echo "Temp dir: $temp_dir"
+
 # run intellimerge
 java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" -o $temp_dir
 
@@ -31,7 +37,7 @@ java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" 
 cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
 
-initial_conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
+initial_conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "./" | wc -l)
 
 git merge --no-edit "$branch2"
 cd - || exit 1
@@ -47,6 +53,9 @@ rm -rf $temp_dir
 # report conflicts
 conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
 if [ "$conflict_markers" -ne "$initial_conflict_markers" ]; then
+    echo "Conflict markers changed"
+    echo "Initial conflict markers: $initial_conflict_markers"
+    echo "Final conflict markers: $conflict_markers"
     echo "Conflict detected"
     exit 1
 fi
