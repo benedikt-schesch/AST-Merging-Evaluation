@@ -349,7 +349,6 @@ if __name__ == "__main__":
         n_sampled_for_testing,
     )
     print("merge_analyzer: Finished Constructing Output")
-    print("merge_analyzer: Done")
 
     # Creating the plots
     repo_slugs, totals, candidates, passings, sampled = zip(*repo_data)
