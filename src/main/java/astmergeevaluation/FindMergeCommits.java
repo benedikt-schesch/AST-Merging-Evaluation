@@ -127,6 +127,8 @@ public class FindMergeCommits {
             // OkHttpClient().setCache(cache))))
             .build();
 
+    System.out.printf(
+        "FindMergeCommits: %d repositories, outputDir2 = %s%n", repos.size(), outputDir);
     outputDir.toFile().mkdirs();
 
     File tokenFile = new File(System.getProperty("user.home"), ".github-personal-access-token");
@@ -271,6 +273,9 @@ public class FindMergeCommits {
     String orgName = orgAndRepo.org;
     String repoName = orgAndRepo.repo;
     Path orgOutputDir = Paths.get(this.outputDir.toString(), orgName);
+    // Print orgOutputDir, because it is used in the next line.
+    System.out.printf(
+        "writeMergeCommits(%s, %s) orgOutputDir = %s%n", orgName, repoName, orgOutputDir);
     orgOutputDir.toFile().mkdirs();
     File outputFile = new File(orgOutputDir.toFile(), repoName + ".csv");
     Path outputPath = outputFile.toPath();
@@ -289,6 +294,8 @@ public class FindMergeCommits {
             + "/"
             + repoName;
     File repoDirFile = new File(repoDirName);
+     System.out.printf(
+        "writeMergeCommits(%s, %s) repoDirFile = %s%n", orgName, repoName, repoDirFile);
     repoDirFile.mkdirs();
 
     // With these assignments, git.branchList() always returns an empty list!
