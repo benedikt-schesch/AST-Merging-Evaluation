@@ -131,7 +131,7 @@ if __name__ == "__main__":
         "--idx",
         help="Index of the merge to replay",
         type=int,
-        default=0,
+        default=1500,
     )
     parser.add_argument(
         "-test",
