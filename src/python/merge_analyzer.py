@@ -31,20 +31,6 @@ import matplotlib.pyplot as plt
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
 
-columns = [
-    "sampled for testing",
-    "left_tree_fingerprint",
-    "right_tree_fingerprint",
-    "diff_size",
-    "diff contains java file",
-    "left parent test result",
-    "left parent test coverage",
-    "right parent test result",
-    "right parent test coverage",
-    "parents pass",
-    "test merge",
-]
-
 
 def is_test_passed(test_state: str) -> bool:
     """Returns true if the test state indicates passed tests."""
@@ -83,7 +69,7 @@ def diff_merge_analyzer(
         lazy_clone=False,
     )
 
-    cache_data: Dict[str, Union[None, bool]] = {
+    cache_data: Dict[str, Union[None, bool, str]] = {
         "diff contains java file": None,
     }
 
@@ -141,8 +127,9 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     # Compute diff size in lines between left and right
     cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
 
-    if cache_data["diff contains java file"] is False:
+    if cache_data["diff contains java file"] in (False, None):
         merge_data["test merge"] = False
+        merge_data["diff contains java file"] = False
         print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
         return merge_data
 
@@ -163,20 +150,18 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     )
 
     # Test left parent
-    result, test_coverage, left_tree_fingerprint = repo_left.checkout_and_test(
+    result, _, left_tree_fingerprint = repo_left.checkout_and_test(
         left_sha, TIMEOUT_TESTING_PARENT, N_TESTS
     )
     merge_data["left_tree_fingerprint"] = left_tree_fingerprint
     merge_data["left parent test result"] = result.name
-    merge_data["left parent test coverage"] = test_coverage
 
     # Test right parent
-    result, test_coverage, right_tree_fingerprint = repo_right.checkout_and_test(
+    result, _, right_tree_fingerprint = repo_right.checkout_and_test(
         right_sha, TIMEOUT_TESTING_PARENT, N_TESTS
     )
     merge_data["right_tree_fingerprint"] = right_tree_fingerprint
     merge_data["right parent test result"] = result.name
-    merge_data["right parent test coverage"] = test_coverage
 
     # Produce the final result
     merge_data["parents pass"] = is_test_passed(
@@ -184,7 +169,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     ) and is_test_passed(merge_data["right parent test result"])
     merge_data["diff contains java file"] = cache_data["diff contains java file"]
     merge_data["test merge"] = (
-        merge_data["parents pass"] and merge_data["diff contains java file"]
+        merge_data["parents pass"] and merge_data["diff contains java file"] is True
     )
 
     print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
@@ -335,15 +320,15 @@ if __name__ == "__main__":
                 len(df),
                 df["test merge"].sum(),
                 df["diff contains java file"].dropna().sum(),
-                df["sampled for testing"].dropna().sum(),
+                df["sampled for testing"].sum(),
             )
         )
 
         # Update global counters
         n_total_analyzed += len(df)
-        n_java_contains_diff += df["diff contains java file"].sum()
-        n_candidates_to_test += df["test merge"].dropna().sum()
-        n_sampled_for_testing += df["sampled for testing"].dropna().sum()
+        n_java_contains_diff += df["diff contains java file"].dropna().sum()
+        n_candidates_to_test += df["test merge"].sum()
+        n_sampled_for_testing += df["sampled for testing"].sum()
 
     # Print summaries
     print(
@@ -364,7 +349,6 @@ if __name__ == "__main__":
         n_sampled_for_testing,
     )
     print("merge_analyzer: Finished Constructing Output")
-    print("merge_analyzer: Done")
 
     # Creating the plots
     repo_slugs, totals, candidates, passings, sampled = zip(*repo_data)

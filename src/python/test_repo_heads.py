@@ -23,7 +23,6 @@ from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
-from cache_utils import set_in_cache, lookup_in_cache
 
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -54,34 +53,12 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     if "/" not in repo_slug:
         repo_info["head test result"] = "Wrong format"
         return repo_info
-    cache_key = repo_slug
-    merge_cache_directory = cache / "repos_head_info"
-    cache_data = lookup_in_cache(cache_key, repo_slug, merge_cache_directory, True)
 
-    # Check if data is in cache
-    if cache_data is not None and isinstance(cache_data, dict):
-        for key, value in cache_data.items():
-            repo_info[key] = value
-        if cache_data["head test result"] == TEST_STATE.Tests_passed.name:
-            try:
-                # Make sure the repo is cloned
-                repo = Repository(
-                    repo_slug,
-                    cache_directory=cache,
-                    workdir_id=repo_slug + "/head-" + repo_info["repository"],
-                )
-            except Exception as e:
-                cache_data["head test result"] = TEST_STATE.Git_checkout_failed.name
-                cache_data["explanation"] = str(e)
-                set_in_cache(
-                    cache_key, cache_data, repo_slug, merge_cache_directory, True
-                )
-                for key, value in cache_data.items():
-                    repo_info[key] = value
+    if len(repo_info["head hash"]) != 40:
+        repo_info["head test result"] = "No valid head hash"
         return repo_info
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
-    cache_data = {}
 
     # Load repo
     try:
@@ -89,33 +66,22 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
             repo_slug,
             cache_directory=cache,
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
+            lazy_clone=True,
         )
-        if "head hash" in repo_info:
-            cache_data["head hash"] = repo_info["head hash"]
-        else:
-            cache_data["head hash"] = repo.get_head_hash()
-        cache_data["tree fingerprint"] = repo.compute_tree_fingerprint()
     except Exception as e:
         print("test_repo_heads:", repo_slug, ": exception head_passes_tests :", e)
-        cache_data["head test result"] = TEST_STATE.Git_checkout_failed.name
-        cache_data["explanation"] = str(e)
-        set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory, True)
-        for key, value in cache_data.items():
-            repo_info[key] = value
+        repo_info["head test result"] = TEST_STATE.Git_checkout_failed.name
+        repo_info["head tree fingerprint"] = None
         return repo_info
 
     # Test repo
-    test_state, _, _ = repo.checkout_and_test(
-        cache_data["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
+    test_state, _, repo_info["head tree fingerprint"] = repo.checkout_and_test(
+        repo_info["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
     )
-    cache_data["head test result"] = test_state.name
-    set_in_cache(cache_key, cache_data, repo_slug, merge_cache_directory, True)
+    repo_info["head test result"] = test_state.name
 
     if test_state != TEST_STATE.Tests_passed:
         shutil.rmtree(repo.path, ignore_errors=True)
-
-    for key, value in cache_data.items():
-        repo_info[key] = value
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return repo_info
@@ -131,10 +97,6 @@ if __name__ == "__main__":
     Path(arguments.cache_dir).mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
-
-    # if os.path.exists(arguments.output_path):
-    #     print("test_repo_heads: Output file already exists. Exiting.")
-    #     sys.exit(0)
 
     print("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]

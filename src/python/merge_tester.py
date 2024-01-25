@@ -38,6 +38,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     Returns:
         pd.Series: The result of the test.
     """
+    print("merge_tester: Started", args[0], args[1]["left"], args[1]["right"])
     repo_slug, merge_data, cache_directory = args
     while psutil.cpu_percent() > 90:
         print(
@@ -95,6 +96,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
     # print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
+    print("merge_tester: Finished", args[0], args[1]["left"], args[1]["right"])
     return merge_data
 
 
@@ -180,21 +182,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     n_total_merges = 0
     for repo_slug in repo_result:
         output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
-        if output_file.exists():
-            try:
-                df = pd.read_csv(output_file, header=0)
-            except pd.errors.EmptyDataError:
-                print(
-                    "merge_tester: Skipping",
-                    repo_slug,
-                    "because it does not contain any merges.",
-                )
-                continue
-        else:
-            df = pd.DataFrame(repo_result[repo_slug])
-            df.sort_index(inplace=True)
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            df.to_csv(output_file, index_label="idx")
+        df = pd.DataFrame(repo_result[repo_slug])
+        df.sort_index(inplace=True)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
 
     print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))

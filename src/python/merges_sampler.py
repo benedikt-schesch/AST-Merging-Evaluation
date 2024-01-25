@@ -46,13 +46,6 @@ if __name__ == "__main__":
             missing_merges_repos += 1
             continue
 
-        if output_file.exists():
-            total_valid_repos += 1
-            print(
-                f"merges_sampler: Skipping {repo_slug}"
-                "because it is already computed."
-            )
-            continue
         output_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             merges = pd.read_csv(merge_list_file, header=0, index_col="idx")

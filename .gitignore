@@ -15,6 +15,7 @@ cache*/
 cache*.tar
 cache.tar
 output.txt
+replay_logs/
 
 output/
 merge_repo/

@@ -6,7 +6,10 @@ It also contains the functions that are used to test the repository.
 """
 
 from pathlib import Path
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict
+import errno
+import signal
+import functools
 from enum import Enum
 import uuid
 import subprocess
@@ -15,6 +18,7 @@ import xml.etree.ElementTree as ET
 import shutil
 import time
 from git.repo import Repo
+from git import GitCommandError
 from cache_utils import (
     set_in_cache,
     lookup_in_cache,
@@ -29,6 +33,29 @@ from variables import (
 )
 
 
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    """A decorator that raises a TimeoutError if a function takes too long to run."""
+
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise Exception(error_message)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+@timeout(10 * 60)
 def clone_repo(repo_slug: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
@@ -40,6 +67,7 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     else:
         repo_dir.parent.mkdir(parents=True, exist_ok=True)
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        os.environ["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes"
         print(repo_slug, " : Cloning repo")
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
@@ -50,9 +78,9 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
             repo.remote().fetch()
             repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
             repo.submodule_update()
-        except Exception as e:
-            print(repo_slug, "Exception during cloning:\n", e)
-            raise
+        except GitCommandError as e:
+            print(repo_slug, "GitCommandError during cloning:\n", e)
+            raise Exception("GitCommandError during cloning") from e
     return repo
 
 
@@ -160,23 +188,39 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.repo_slug = repo_slug
         self.path = REPOS_PATH / repo_slug
         self.workdir = WORKDIR_DIRECTORY / workdir_id
-        self.workdir.mkdir(parents=True, exist_ok=True)
         self.repo_path = self.workdir / self.path.name
         self.delete_workdir = delete_workdir
         self.lazy_clone = lazy_clone
-        self.initialized = False
+        self.cloned_repo = False
+        self.repo_copied = False
         if not lazy_clone:
             self.clone_repo()
+            self.copy_repo()
         self.test_cache_directory = cache_directory / "test_cache"
         self.sha_cache_directory = cache_directory / "sha_cache_entry"
 
     def clone_repo(self) -> None:
         """Clones the repository."""
-        clone_repo(self.repo_slug)
+        if self.cloned_repo:
+            return
+        try:
+            clone_repo(self.repo_slug)
+        except Exception as e:
+            print("Exception during cloning:\n", e)
+            raise
         assert self.path.exists()
+        self.cloned_repo = True
+
+    def copy_repo(self) -> None:
+        """Copies the repository."""
+        if not self.cloned_repo:
+            self.clone_repo()
+        if self.repo_copied:
+            return
+        self.workdir.mkdir(parents=True, exist_ok=True)
         shutil.copytree(self.path, self.repo_path, symlinks=True)
         self.repo = Repo(self.repo_path)
-        self.initialized = True
+        self.repo_copied = True
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
         """Checks out the given commit.
@@ -187,8 +231,20 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             bool: True if the checkout succeeded, False otherwise.
             str: explanation. The explanation of the result.
         """
-        if self.lazy_clone and not self.initialized:
-            self.clone_repo()
+        if not self.cloned_repo:
+            try:
+                self.clone_repo()
+            except Exception as e:
+                if use_cache:
+                    cache_entry = {"sha": None, "explanation": str(e)}
+                    set_in_cache(
+                        commit, cache_entry, self.repo_slug, self.sha_cache_directory
+                    )
+                return False, "Failed to clone " + self.repo_slug + " : \n" + str(e)
+        assert self.cloned_repo
+        if not self.repo_copied:
+            self.copy_repo()
+        assert self.repo_copied
         try:
             self.repo.git.checkout(commit, force=True)
             explanation = f"Checked out {commit} for {self.repo_slug}"
@@ -305,10 +361,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             left_commit + "_" + right_commit + "_" + tool.name
         )
         if sha_cache_entry is None:
-            print(
-                f"Cache miss (sha cache) for {self.repo_slug} {left_commit} "
-                f"{right_commit} {tool} {sha_cache_entry}"
-            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
@@ -323,10 +375,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
-            print(
-                f"Cache miss (test cache) for {self.repo_slug}"
-                f"{left_commit} {right_commit} {tool} {sha_cache_entry['sha']}"
-            )
             return self._merge_and_test(
                 tool, left_commit, right_commit, timeout, n_tests
             )
@@ -396,7 +444,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             float: The time it took to run the merge, in seconds.
         """
         cache_entry_name = left_commit + "_" + right_commit + "_" + tool.name
-        cache_entry = {"sha": None}
+        cache_entry: Dict[str, Union[str, None]] = {"sha": None}
         # Checkout left
         left_fingerprint, left_explanation = self.create_branch(
             LEFT_BRANCH_NAME, left_commit, use_cache=use_cache
