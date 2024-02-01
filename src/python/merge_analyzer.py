@@ -13,7 +13,6 @@ but with the test results and statistics.
 
 import os
 import multiprocessing
-import subprocess
 import argparse
 from pathlib import Path
 from functools import partialmethod
@@ -35,6 +34,32 @@ if os.getenv("TERM", "dumb") == "dumb":
 def is_test_passed(test_state: str) -> bool:
     """Returns true if the test state indicates passed tests."""
     return test_state == TEST_STATE.Tests_passed.name
+
+
+def get_diff_files(
+    repo: Repository, left_sha: str, right_sha: str, diff_log_file: Union[None, Path]
+) -> set:
+    """
+    Computes the diff between two branches using git diff.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        set: A set containing the diff result.
+    """
+    # Using git diff to compare the two SHAs
+    command = f"git diff --name-only {left_sha} {right_sha}"
+    stdout, stderr = repo.run_command(command)
+    if diff_log_file:
+        diff_log_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(diff_log_file, "w", encoding="utf-8") as f:
+            f.write(command)
+            f.write("\n stdout: \n")
+            f.write(stdout)
+            f.write("\n stderr: \n")
+            f.write(stderr)
+    return set(stdout.split("\n")) if stdout else set()
 
 
 def diff_merge_analyzer(
@@ -69,38 +94,47 @@ def diff_merge_analyzer(
         lazy_clone=False,
     )
 
-    cache_data: Dict[str, Union[None, bool, str]] = {
+    cache_data: Dict[str, Union[None, bool, str, Dict[str, str]]] = {
         "diff contains java file": None,
     }
 
-    # Using git diff to compare the two SHAs
-    command = f"git diff --name-only {left_sha} {right_sha}"
-    process = subprocess.run(
-        command,
-        shell=True,
-        cwd=repo.repo_path,  # Ensure the command runs in the repository directory
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        # Get the base sha
+        command = f"git merge-base {left_sha} {right_sha}"
+        base_sha = repo.run_command(command)[0].strip()
 
-    # Store the diff
-    diff_log = diff_cache_dir / "logs" / repo_slug / (cache_key + ".log")
-    diff_log.parent.mkdir(parents=True, exist_ok=True)
-    with open(diff_log, "w", encoding="utf-8") as f:
-        f.write(process.stdout)
-        f.write(process.stderr)
-    cache_data["logs"] = str(diff_log)
+        # Using git diff to compare the two SHAs
+        # Store the diff
 
-    if process.returncode != 0:
+        cache_data["diff_logs"] = {
+            "left_right": str(
+                diff_cache_dir / "logs" / repo_slug / (cache_key + "_left_right.log")
+            ),
+            "base_right": str(
+                diff_cache_dir / "logs" / repo_slug / (cache_key + "_base_right.log")
+            ),
+            "base_left": str(
+                diff_cache_dir / "logs" / repo_slug / (cache_key + "_base_left.log")
+            ),
+        }
+        left_right_files = get_diff_files(
+            repo, left_sha, right_sha, Path(cache_data["diff_logs"]["left_right"])
+        )
+        base_right_files = get_diff_files(
+            repo, base_sha, right_sha, Path(cache_data["diff_logs"]["base_right"])
+        )
+        base_left_files = get_diff_files(
+            repo, base_sha, left_sha, Path(cache_data["diff_logs"]["base_left"])
+        )
+    except RuntimeError:
         set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
         return cache_data
 
-    diff_files = process.stdout.split("\n") if process.stdout else []
-
-    # Check if diff contains a java file
-    contains_java_file = any(file.endswith(".java") for file in diff_files)
-    cache_data["diff contains java file"] = contains_java_file
+    # Check that at least one java file is contained in all 3 diffs
+    common_files = left_right_files & base_right_files & base_left_files
+    cache_data["diff contains java file"] = any(
+        file.endswith(".java") for file in common_files
+    )
 
     set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
     return cache_data
@@ -237,7 +271,7 @@ if __name__ == "__main__":
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
     parser.add_argument("--output_dir", type=Path)
-    parser.add_argument("--cache_dir", type=Path, default="cache/merges/")
+    parser.add_argument("--cache_dir", type=Path, default="cache/merge_diffs/")
     parser.add_argument("--n_sampled_merges", type=int, default=20)
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
