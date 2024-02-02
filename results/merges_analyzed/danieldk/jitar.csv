@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/remotes/origin/scala,4e6a13c283dd7a2a1281c4d5120b31faba8885b0,5033243c2fec59928730facb0b3af3df95f5641d,08826c7cd7b3513eb70246a8e8293a701d55f94a,,2a4bcf08e9be879897b5c1a98b0ba528e7579f11dd95b7295a909b8e8a386857,Tests_failed,25aef9ba9463fc0cd6a2f591fb68844ee1c18249ea0a120fa4618499a07f5963,Tests_passed,False,True,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+1,refs/remotes/origin/scala,4e6a13c283dd7a2a1281c4d5120b31faba8885b0,5033243c2fec59928730facb0b3af3df95f5641d,08826c7cd7b3513eb70246a8e8293a701d55f94a,,False,False,False

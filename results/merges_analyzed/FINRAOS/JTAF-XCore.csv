@@ -6,4 +6,4 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 9,refs/heads/master,803e2b8b3fa934d13595e8149b5b53770544196f,e58675a5c36f8af4b368e3c77d1392a17a31bf11,df2addd508a7cd5e8f61a74ca65188d59fb99224,,False,False,,,,,,False
 10,refs/heads/master,e58675a5c36f8af4b368e3c77d1392a17a31bf11,1435efeb91817bc6174aeb82c2d94518d0492132,6b8a474358b0c73b9aaa785b8c4804deaf552106,,False,False,,,,,,False
 11,refs/heads/master,6b8a474358b0c73b9aaa785b8c4804deaf552106,06126cc9d2aaf64b54d2da1274783b1f0c6bb17a,2eb188b744b6f47ff4f70af573ede71401dfae3c,,False,False,,,,,,False
-15,refs/heads/master,34ea50f81cf5312593df644101a138671a2ec319,34a56ceb9208ffbdc6eff3915be061fa46cba8bd,78e3958462567c1c9efa1ed6fd43c8866fb5eab4,,False,True,15f53b536d8369542519ed835d863ba73e31beed6b33e0cf4bd30ea43a22b3cf,Tests_failed,22e99e05b7adaf56148807f2fb39700270468a973ba15d2f064f99722ceedff6,Tests_failed,False,False
+15,refs/heads/master,34ea50f81cf5312593df644101a138671a2ec319,34a56ceb9208ffbdc6eff3915be061fa46cba8bd,78e3958462567c1c9efa1ed6fd43c8866fb5eab4,,False,False,,,,,,False

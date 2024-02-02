@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-3,refs/heads/master,a731421b7e647bb2bf2b89230f1f5b591c811ccd,02ad7c27ab462458536aaa29508becec2e531133,ff716ede3849455c471df02b054ed0f011ef9b5c,,662586626d4a4f30881843706f8c487782c1ce3175714578ea158dc471f0bf67,Tests_failed,a41d35122111401a14ac3f2026e58e01a7c56b357afc85e4a3fab776a7597455,Tests_failed,False,True,False,False
-10,refs/remotes/origin/gh-pages,da9c8520a71889b8a913c6311f6a24ac651c0a61,38343dffef8911e55ba035c783689ea74147a19a,889eede95ce38499c2e833ecbd9c2c8e0bc13faa,,,,,,,False,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+3,refs/heads/master,a731421b7e647bb2bf2b89230f1f5b591c811ccd,02ad7c27ab462458536aaa29508becec2e531133,ff716ede3849455c471df02b054ed0f011ef9b5c,,False,False,False
+10,refs/remotes/origin/gh-pages,da9c8520a71889b8a913c6311f6a24ac651c0a61,38343dffef8911e55ba035c783689ea74147a19a,889eede95ce38499c2e833ecbd9c2c8e0bc13faa,,False,False,False

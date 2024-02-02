@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-2,refs/remotes/origin/hibernate-5.3.4,78289b790a39739cf381b6ebe097e2d7cf628e28,2dde169301b6b765b11ca6cef04778019be90095,db7c3c846889870517a4cb24d464788a62088091,,8c1c871a7a9e94e49fd43629fe5d46acf91e05ca89f7d658b118a8e7d78805eb,Tests_passed,e1cc01747b32125535339dedade71cecae4cce3155359bed061a11a1eebf77a1,Tests_passed,True,True,True,True
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+2,refs/remotes/origin/hibernate-5.3.4,78289b790a39739cf381b6ebe097e2d7cf628e28,2dde169301b6b765b11ca6cef04778019be90095,db7c3c846889870517a4cb24d464788a62088091,,False,False,False
