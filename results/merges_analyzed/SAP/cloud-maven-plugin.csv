@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/heads/master,f2304b4101c331a721afd39199e6e65c3e5d70fb,693ed209efa7cb3190c652536c4b0092b11f638a,87c014aa801da7f6a30fbd142c32b1807a7ddc50,,,,,,,False,False,False
-2,refs/remotes/origin/pull/3,bb735396796f25b794794bfb5dbf3eb4b61595b3,8d4c9e44a844ddfae0a92478211135bb7d290423,4fa858386efd596979bad40e4811e5601bdfe35f,,da4155b09f910db072ff99564770f88e58b889765f9bb6cc91748dea72065e7d,Tests_passed,46f6a9036b7576f2a391d41b0ada34ff4b1566590a72162e10e1212021b27bc1,Tests_passed,True,True,True,True
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+1,refs/heads/master,f2304b4101c331a721afd39199e6e65c3e5d70fb,693ed209efa7cb3190c652536c4b0092b11f638a,87c014aa801da7f6a30fbd142c32b1807a7ddc50,,False,False,False
+2,refs/remotes/origin/pull/3,bb735396796f25b794794bfb5dbf3eb4b61595b3,8d4c9e44a844ddfae0a92478211135bb7d290423,4fa858386efd596979bad40e4811e5601bdfe35f,,False,False,False

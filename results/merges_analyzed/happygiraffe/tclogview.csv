@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/remotes/origin/gh-pages,d256821691b15ae83879a976e07609a88683d305,ba589fe8ba370b1c0c21fe088cca42e288f517bc,c2a52559ecce2c97e153d2e126a0d9b6dee012a7,two initial commits,4d90ce5de0526bf2286652f21acf6332bd0f08c7e931aed4e08f237d5dbf9dc6,Tests_failed,e5106a89681936739951a5bf6cefed8ef9a6204bf6dd816290f25f592cf76ac1,Tests_passed,False,True,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+1,refs/remotes/origin/gh-pages,d256821691b15ae83879a976e07609a88683d305,ba589fe8ba370b1c0c21fe088cca42e288f517bc,c2a52559ecce2c97e153d2e126a0d9b6dee012a7,two initial commits,False,False,False

@@ -743,6 +743,28 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         """
         return self.repo.head.commit.hexsha
 
+    def run_command(self, command: str) -> Tuple[str, str]:
+        """Runs a command in the repository.
+        Args:
+            command (str): The command to run.
+        Returns:
+            Tuple[str,str]: The standard output and standard error of the command.
+        """
+        process = subprocess.run(
+            command,
+            shell=True,
+            cwd=self.repo_path,  # Ensure the command runs in the repository directory
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        if process.returncode != 0:
+            raise RuntimeError(
+                f"Command {command} failed with exit code {process.returncode}:\n"
+                f"stdout: {process.stdout}\nstderr: {process.stderr}"
+            )
+        return process.stdout, process.stderr
+
     def __del__(self) -> None:
         """Deletes the repository."""
         if self.delete_workdir:

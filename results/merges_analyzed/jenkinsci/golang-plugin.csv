@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-4,refs/heads/master,9d90192befb8f1c6cdf4a33ce67c941f49325621,7ff1af73f9cde864bc462c449288f993b4d9bc94,ae07b4d6c15c05804afe2b9eb52d3d9571686b3c,,f5ab02658245bd109d2bf4a6cc5ca6844c376934252d95e10d32cdb9e9149f44,Tests_failed,89d55a43dffe77e7f5997f6be78a19590fea8be07c7090aebf274fb456f3395f,Tests_failed,False,True,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+4,refs/heads/master,9d90192befb8f1c6cdf4a33ce67c941f49325621,7ff1af73f9cde864bc462c449288f993b4d9bc94,ae07b4d6c15c05804afe2b9eb52d3d9571686b3c,,False,False,False
