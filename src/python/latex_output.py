@@ -200,9 +200,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
             for idx, merge_tool1 in enumerate(merge_tools):
                 for idx2, merge_tool2 in enumerate(merge_tools[(idx + 1) :]):
-                    if (
-                        row[merge_tool1 + "_merge_fingerprint"]
-                        != row[merge_tool2 + "_merge_fingerprint"]
+                    if row[merge_tool1 + "_merge_fingerprint"] != row[
+                        merge_tool2 + "_merge_fingerprint"
+                    ] and (
+                        row[merge_tool1] in MERGE_CORRECT_NAMES
+                        or row[merge_tool2] in MERGE_CORRECT_NAMES
                     ):
                         result[idx][idx2 + idx + 1] += 1
                         result[idx2 + idx + 1][idx] += 1
@@ -220,7 +222,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 xticklabels=latex_merge_tool,  # type: ignore
                 yticklabels=latex_merge_tool,  # type: ignore
                 fmt="g",
-                mask=result == 0,
+                mask=np.triu(np.ones_like(result, dtype=bool), k=1),
                 cmap="Blues",
             )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
