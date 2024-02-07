@@ -208,7 +208,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                     ):
                         result[idx][idx2 + idx + 1] += 1
                         result[idx2 + idx + 1][idx] += 1
-        _, ax = plt.subplots()
+        _, ax = plt.subplots(figsize=(8, 6))
         result = np.tril(result)
         latex_merge_tool = [
             "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
@@ -224,6 +224,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 fmt="g",
                 mask=np.triu(np.ones_like(result, dtype=bool), k=1),
                 cmap="Blues",
+                annot_kws={"size": 6},
             )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
         heatmap.set_xticklabels(
