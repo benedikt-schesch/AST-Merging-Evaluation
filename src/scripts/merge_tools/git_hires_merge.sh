@@ -14,7 +14,11 @@ export GIT_HIRES_MERGE_NON_INTERACTIVE_MODE=True
 attributes_file=".git/info/attributes"
 echo "* merge=git-hires-merge" >> "$attributes_file"
 
-git config merge.conflictStyle zdiff3
+git config --local merge.git-hires-merge.name "An interactive merge driver for resolving conflicts on individual or adjacent lines"
+git config --local merge.git-hires-merge.driver "git-hires-merge %O %A %B %L %P"
+git config --local merge.git-hires-merge.recursive "binary"
+git config --local merge.conflictstyle diff3
+
 git merge --no-edit "$branch2"
 retVal=$?
 
