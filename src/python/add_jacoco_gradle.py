@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ Adds Jacoco plugin configuration to a Gradle build file. """
+import argparse
 
 
 def update_gradle_for_jacoco(gradle_path: str) -> None:
@@ -28,5 +29,8 @@ def update_gradle_for_jacoco(gradle_path: str) -> None:
 
 
 if __name__ == "__main__":
-    gradle_path = "path/to/your/build.gradle"
-    update_gradle_for_jacoco(gradle_path)
+    # gradle_path = "path/to/your/build.gradle"
+    parser = argparse.ArgumentParser(description="Add Jacoco plugin to Maven pom.xml.")
+    parser.add_argument("pom_path", type=str, help="Path to the pom.xml file.")
+    args = parser.parse_args()
+    update_gradle_for_jacoco(args.pom_path)
