@@ -1,5 +1,6 @@
 """Runs a merge and uses diff3 to compare it to the base and final branch of a given repo.
 """
+
 import subprocess
 import re
 import os
@@ -12,34 +13,44 @@ from merge_tester import MERGE_STATE
 # pylint: disable-msg=too-many-locals
 
 
-def diff3_analysis(merge_tool: str, repo_num: int):
+def diff3_analysis(merge_tool: str, results_index: int):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
 
     Args:
         merge_tool (str): The merge tool to be used.
-        repo_num (int): The index of the repository in the results DataFrame.
+        results_index (int): The index of the repository in the results DataFrame.
 
     Returns:
         None
     """
+
+    # Deletes base, programmer_merge, and merge_attempt folders in repos dir
+    # We do this to prevent errors if cloning the same repo into the folder twice
     shutil.rmtree("./repos", ignore_errors=True)
 
+    # Ensure the base output directory exists
+    base_output_dir = "./merge_conflict_analysis_diffs"
+    # Create a subdirectory for this specific results_index
+    repo_output_dir = os.path.join(base_output_dir, f"index_{results_index}")
+    os.makedirs(repo_output_dir, exist_ok=True)
+
+    # Retrieve left and right branch from hash in repo
     df = pd.read_csv("../../results_greatest_hits/result.csv")
-    repo_name = df.iloc[repo_num]["repository"]
+    repo_name = df.iloc[results_index]["repository"]
 
     script = "../scripts/merge_tools/" + merge_tool + ".sh"
     repo = clone_repo_to_path(
         repo_name, "./repos/merge_attempt"
     )  # Return a Git-Python repo object
     repo.remote().fetch()
-    left_sha = df.iloc[repo_num]["left"]
+    left_sha = df.iloc[results_index]["left"]
     repo.git.checkout(left_sha, force=True)
     print("Checking out left" + left_sha)
     repo.submodule_update()
     repo.git.checkout("-b", "TEMP_LEFT_BRANCH", force=True)
-    repo.git.checkout(df.iloc[repo_num]["right"], force=True)
-    print("Checking out right" + df.iloc[repo_num]["right"])
+    repo.git.checkout(df.iloc[results_index]["right"], force=True)
+    print("Checking out right" + df.iloc[results_index]["right"])
     repo.submodule_update()
     repo.git.checkout("-b", "TEMP_RIGHT_BRANCH", force=True)
 
@@ -56,13 +67,13 @@ def diff3_analysis(merge_tool: str, repo_num: int):
     )
     print("Found base sha" + base_sha.stdout)
 
-    repo = clone_repo_to_path(
+    repo2 = clone_repo_to_path(
         repo_name, "./repos/base"
     )  # Return a Git-Python repo object
-    repo.remote().fetch()
+    repo2.remote().fetch()
     base_sha = base_sha.stdout.strip()
-    repo.git.checkout(base_sha, force=True)
-    repo.submodule_update()
+    repo2.git.checkout(base_sha, force=True)
+    repo2.submodule_update()
 
     result = subprocess.run(
         [
@@ -81,12 +92,11 @@ def diff3_analysis(merge_tool: str, repo_num: int):
 
     print(result.stdout)
 
-    repo = clone_repo_to_path(
+    repo3 = clone_repo_to_path(
         repo_name, "./repos/programmer_merge"
     )  # Return a Git-Python repo object
-    repo.git.checkout(df.iloc[repo_num]["merge"], force=True)
-    repo.submodule_update()
-
+    repo3.git.checkout(df.iloc[results_index]["merge"], force=True)
+    repo3.submodule_update()
 
     for conflict_file_match in conflict_file_matches:
         conflicting_file = str(conflict_file_match)
@@ -126,32 +136,14 @@ def diff3_analysis(merge_tool: str, repo_num: int):
                 text=True,
             )
 
-        # Use a temporary file to store the diff results
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_file:
-            temp_file.write(diff_results.stdout)
+        # Generate a filename for the diff result, including the new subdirectory
+        diff_filename = os.path.join(
+            repo_output_dir, f"diff_{os.path.basename(conflicting_file)}.txt"
+        )
 
-        # Open the saved text file with the default application
-        subprocess.run(["xdg-open", temp_file.name], check=True)
+        # Write the diff results to the file
+        with open(diff_filename, "w") as diff_file:
+            diff_file.write(diff_results.stdout)
 
-        # Delete the temporary file
-        os.remove(temp_file.name)
-
-    # Deletes base, programmer_merge, and merge_attempt folders in repos dir
-    # We do this to prevent errors if cloning the same repo into the folder twice
-    '''
-    subprocess.run(
-        ["rm", "-rf", "./repos/base"],
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-    )
-    subprocess.run(
-        ["rm", "-rf", "./repos/merge_attempt"],
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-    )
-    subprocess.run(
-        ["rm", "-rf", "./repos/programmer_merge"],
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-    )
-    '''
+        # Optionally, print or log the path of the diff file
+        print(f"Diff results saved to {diff_filename}")
