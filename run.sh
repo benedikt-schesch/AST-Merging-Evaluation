@@ -126,12 +126,14 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
-if [ "$no_timing" = true ]; then
+echo "No timing: $no_timing"
+if [ "$no_timing" = false ]; then
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
         --merges "$OUT_DIR/merges_tested/" \
         --output_dir "$OUT_DIR/merges_timed/" \
         --n_sampled_timing 5
+fi
 
 python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
