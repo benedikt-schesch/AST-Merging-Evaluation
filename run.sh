@@ -21,6 +21,7 @@ N_MERGES=$3
 CACHE_DIR="${4}"
 
 comparator_flags=""
+no_timing=false
 while [ $# -gt 0 ]; do
   case $1 in
     -i | --machine_id)
@@ -36,6 +37,9 @@ while [ $# -gt 0 ]; do
     ;;
     -ot | --only_trivial_merges)
     comparator_flags="$comparator_flags --only_trivial_merges"
+    ;;
+    -nt | --no_timing)
+    no_timing=true
   esac
   shift
 done
@@ -121,6 +125,13 @@ python3 src/python/merge_tester.py \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
+
+if [ "$no_timing" = true ]; then
+    python3 src/python/merge_runtime_measure.py \
+        --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+        --merges "$OUT_DIR/merges_tested/" \
+        --output_dir "$OUT_DIR/merges_timed/" \
+        --n_sampled_timing 5
 
 python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
