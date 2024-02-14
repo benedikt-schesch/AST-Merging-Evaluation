@@ -123,17 +123,18 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     """Main function"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--full_repos_csv", type=str, default="input_data/repos_with_hashes.csv"
+        "--full_repos_csv", type=Path, default="input_data/repos_with_hashes.csv"
     )
     parser.add_argument(
-        "--repos_head_passes_csv", type=str, default="results/repos_head_passes.csv"
+        "--repos_head_passes_csv", type=Path, default="results/repos_head_passes.csv"
     )
     parser.add_argument(
-        "--tested_merges_path", type=str, default="results/merges_tested"
+        "--tested_merges_path", type=Path, default="results/merges_tested"
     )
-    parser.add_argument("--merges_path", type=str, default="results/merges")
+    parser.add_argument("--merges_path", type=Path, default="results/merges")
     parser.add_argument("--n_merges", type=int, default=20)
-    parser.add_argument("--output_dir", type=str, default="results")
+    parser.add_argument("--output_dir", type=Path, default="results")
+    parser.add_argument("--timed_merges_path", type=Path)
     args = parser.parse_args()
     output_dir = args.output_dir
 
@@ -142,9 +143,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
-        merge_list_file = Path(
-            os.path.join(args.tested_merges_path, repo_slug + ".csv")
-        )
+        merge_list_file = args.tested_merges_path / (repo_slug + ".csv")
         if not merge_list_file.exists():
             raise Exception(
                 "latex_ouput.py:",
@@ -184,14 +183,14 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for merge_tool in MERGE_TOOL:
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
 
-    result_df.to_csv(os.path.join(args.output_dir, "result.csv"), index_label="idx")
+    result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
     main = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     for plot_category, merge_tools in PLOTS.items():
-        plots_output_path = os.path.join(output_dir, "plots", plot_category)
-        tables_output_path = os.path.join(output_dir, "tables", plot_category)
+        plots_output_path = output_dir / "plots" / plot_category
+        tables_output_path = output_dir / "tables" / plot_category
         Path(plots_output_path).mkdir(parents=True, exist_ok=True)
         Path(tables_output_path).mkdir(parents=True, exist_ok=True)
 
@@ -234,20 +233,16 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             rotation_mode="anchor",
         )
         plt.tight_layout()
-        plt.savefig(os.path.join(plots_output_path, "heatmap.pgf"))
-        plt.savefig(os.path.join(plots_output_path, "heatmap.pdf"))
+        plt.savefig(plots_output_path / "heatmap.pgf")
+        plt.savefig(plots_output_path / "heatmap.pdf")
         plt.close()
         # Correct the path to the stored image in the pgf file.
-        with open(
-            os.path.join(plots_output_path, "heatmap.pgf"), "rt", encoding="utf-8"
-        ) as f:
+        with open(plots_output_path / "heatmap.pgf", "rt", encoding="utf-8") as f:
             file_content = f.read()
         file_content = file_content.replace(
             "heatmap-img0.png", f"plots/{plot_category}/heatmap-img0.png"
         )
-        with open(
-            os.path.join(plots_output_path, "heatmap.pgf"), "wt", encoding="utf-8"
-        ) as f:
+        with open(plots_output_path / "heatmap.pgf", "wt", encoding="utf-8") as f:
             f.write(file_content)
 
         incorrect = []
@@ -293,8 +288,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         plt.ylim(0.75, 0.95)
         plt.legend()
         plt.tight_layout()
-        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pgf"))
-        plt.savefig(os.path.join(plots_output_path, "cost_without_manual.pdf"))
+        plt.savefig(plots_output_path / "cost_without_manual.pgf")
+        plt.savefig(plots_output_path / "cost_without_manual.pdf")
 
         # Cost plot with manual merges
         ax.plot(
@@ -307,8 +302,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         plt.ylim(-0.1, 1.0)
         plt.legend()
         plt.tight_layout()
-        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pgf"))
-        plt.savefig(os.path.join(plots_output_path, "cost_with_manual.pdf"))
+        plt.savefig(plots_output_path / "cost_with_manual.pgf")
+        plt.savefig(plots_output_path / "cost_with_manual.pdf")
         plt.close()
 
         # Table overall results
@@ -342,7 +337,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         table += "\\end{tabular}\n"
 
         with open(
-            os.path.join(tables_output_path, "table_summary.tex"), "w", encoding="utf-8"
+            tables_output_path / "table_summary.tex", "w", encoding="utf-8"
         ) as file:
             file.write(table)
 
@@ -439,34 +434,47 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         table2 += "\\end{tabular}\n"
 
         with open(
-            os.path.join(tables_output_path, "table_feature_main_summary.tex"),
+            tables_output_path / "table_feature_main_summary.tex",
             "w",
             encoding="utf-8",
         ) as file:
             file.write(table2)
 
-    #         # Table run time
-    #         table3 = """% Do not edit.  This file is automatically generated.
-    # \\begin{tabular}{c|c|c|c}
-    #     & \\multicolumn{3}{c}{Run time (seconds)} \\\\
-    #     Tool & Mean & Median & Max \\\\
-    #     \\hline\n"""
+            # Table run time
+            table3 = """% Do not edit.  This file is automatically generated.
+    \\begin{tabular}{c|c|c|c}
+        & \\multicolumn{3}{c}{Run time (seconds)} \\\\
+        Tool & Mean & Median & Max \\\\
+        \\hline\n"""
+            timed_df = []
+            for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
+                repo_slug = repository_data["repository"]
+                merges = pd.read_csv(
+                    args.timed_merges_path / f"{repo_slug}.csv",
+                    header=0,
+                )
+                timed_df.append(merges)
+            timed_df = pd.concat(timed_df, ignore_index=True)
 
-    #         for merge_tool in merge_tools:
-    #             table3 += f"    {merge_tool_latex_name(merge_tool):32}"
-    #             for f in [np.mean, np.median, np.max]:
-    #                 run_time = f(result_df[merge_tool + "_run_time"])
-    #                 if run_time < 10:
-    #                     table3 += f" & {run_time:0.2f}"
-    #                 elif run_time < 100:
-    #                     table3 += f" & {run_time:0.1f}"
-    #                 else:
-    #                     table3 += f" & {round(run_time)}"
-    #             table3 += " \\\\\n"
-    #         table3 += "\\end{tabular}\n"
+            for merge_tool in merge_tools:
+                table3 += f"    {merge_tool_latex_name(merge_tool):32}"
+                for f in [np.mean, np.median, np.max]:
+                    run_time = f(timed_df[merge_tool + "_run_time"])
+                    if run_time < 10:
+                        table3 += f" & {run_time:0.2f}"
+                    elif run_time < 100:
+                        table3 += f" & {run_time:0.1f}"
+                    else:
+                        table3 += f" & {round(run_time)}"
+                table3 += " \\\\\n"
+            table3 += "\\end{tabular}\n"
 
-    #         with open(os.path.join(tables_output_path, "table_run_time.tex"), "w") as file:
-    #             file.write(table3)
+            with open(
+                tables_output_path / "table_run_time.tex",
+                "w",
+                encoding="utf-8",
+            ) as file:
+                file.write(table3)
 
     # Create defs.tex
     full_repos_df = pd.read_csv(args.full_repos_csv)
@@ -480,7 +488,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for i in tqdm(os.listdir(args.tested_merges_path)):
         if i.endswith(".csv"):
             df = pd.read_csv(
-                os.path.join(args.tested_merges_path, i),
+                args.tested_merges_path / i,
                 header=0,
                 index_col="idx",
             )
@@ -493,10 +501,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     full = 0
     df = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
-        merge_list_file = os.path.join(
-            args.merges_path,
-            repository_data["repository"] + ".csv",
-        )
+        merge_list_file = args.merges_path / (repository_data["repository"] + ".csv")
         if not os.path.isfile(merge_list_file):
             continue
         try:
@@ -540,7 +545,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output += latex_def("parentTestTimeout", str(TIMEOUT_TESTING_PARENT // 60))
     output += latex_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
 
-    with open(os.path.join(args.output_dir, "defs.tex"), "w", encoding="utf-8") as file:
+    with open(args.output_dir / "defs.tex", "w", encoding="utf-8") as file:
         file.write(output)
 
 

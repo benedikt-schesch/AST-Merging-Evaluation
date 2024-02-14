@@ -16,6 +16,8 @@ from pathlib import Path
 from tqdm import tqdm
 import pandas as pd
 from repo import Repository, MERGE_TOOL
+from cache_utils import lookup_in_cache, set_in_cache
+import numpy as np
 
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
@@ -26,8 +28,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     parser.add_argument("--merges", type=Path)
     parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--n_sampled_timing", type=int)
+    parser.add_argument("--cache_dir", type=Path)
+    parser.add_argument("--n_timings", type=int)
     args = parser.parse_args()
+    cache_dir: Path = args.cache_dir / "merge_timing_results"
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    Path(cache_dir).mkdir(parents=True, exist_ok=True)
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
@@ -45,27 +51,54 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     merge_data["left"],
                     merge_data["right"],
                 )
-                repo = Repository(
-                    repo_slug,
-                    workdir_id=repo_slug
-                    + f"/merge-tester-{merge_tool.name}-"
-                    + f"{left_hash}-{right_hash}",
+                cache_key = f"{left_hash}-{right_hash}-{merge_tool.name}"
+                cache_entry = lookup_in_cache(
+                    cache_key, repo_slug, cache_dir, set_run=True
                 )
-                (
-                    _,
-                    _,
-                    _,
-                    _,
-                    _,
-                    run_time,
-                ) = repo.merge(
-                    tool=merge_tool,
-                    left_commit=left_hash,
-                    right_commit=right_hash,
-                    timeout=0,
-                    use_cache=False,
-                )
-                merges.at[idx, f"{merge_tool.name}_merge_runtime"] = run_time
+
+                if cache_entry is not None:
+                    merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                        cache_entry["run_time"]
+                    )  # type: ignore
+                else:
+                    print(
+                        f"merge_timer: Running {merge_tool.name}"
+                        "on {repo_slug} {left_hash} {right_hash}"
+                    )
+                    run_times = []
+                    for _ in range(args.n_timings):
+                        repo = Repository(
+                            repo_slug,
+                            workdir_id=repo_slug
+                            + f"/merge-tester-{merge_tool.name}-"
+                            + f"{left_hash}-{right_hash}",
+                        )
+                        (
+                            _,
+                            _,
+                            _,
+                            _,
+                            _,
+                            run_time,
+                        ) = repo.merge(
+                            tool=merge_tool,
+                            left_commit=left_hash,
+                            right_commit=right_hash,
+                            timeout=0,
+                            use_cache=False,
+                        )
+                        del repo
+                        run_times.append(run_time)
+                    cache_entry = {
+                        "run_time": run_times,
+                    }
+                    set_in_cache(
+                        cache_key, cache_entry, repo_slug, cache_dir, acquire_lock=False
+                    )
+
+                merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                    cache_entry["run_time"]
+                )  # type: ignore
         out_file = args.output_dir / f"{repo_slug}.csv"
         out_file.parent.mkdir(parents=True, exist_ok=True)
         merges.to_csv(out_file, index=False)
