@@ -45,7 +45,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         if len(merges) > args.n_sampled_timing:
             merges = merges.sample(n=args.n_sampled_timing, random_state=42)
 
-        for idx, merge_data in tqdm(merges.iterrows()):
+        for idx, merge_data in tqdm(merges.iterrows(), total=len(merges)):
             for merge_tool in MERGE_TOOL:
                 left_hash, right_hash = (
                     merge_data["left"],
@@ -58,12 +58,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
                 if cache_entry is not None:
                     merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
-                        cache_entry["run_time"]
-                    )  # type: ignore
+                        cache_entry["run_time"]  # type: ignore
+                    )
                 else:
                     print(
-                        f"merge_timer: Running {merge_tool.name}"
-                        "on {repo_slug} {left_hash} {right_hash}"
+                        f"merge_timer: Running {merge_tool.name} "
+                        f"on {repo_slug} {left_hash} {right_hash}"
                     )
                     run_times = []
                     for _ in range(args.n_timings):
@@ -97,8 +97,8 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     )
 
                 merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
-                    cache_entry["run_time"]
-                )  # type: ignore
+                    cache_entry["run_time"]  # type: ignore
+                )
         out_file = args.output_dir / f"{repo_slug}.csv"
         out_file.parent.mkdir(parents=True, exist_ok=True)
         merges.to_csv(out_file, index=False)

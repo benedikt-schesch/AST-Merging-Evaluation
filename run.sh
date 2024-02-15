@@ -132,16 +132,24 @@ if [ "$no_timing" = false ]; then
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
         --merges "$OUT_DIR/merges_tested/" \
         --output_dir "$OUT_DIR/merges_timed/" \
-        --n_sampled_timing 5 \
+        --n_sampled_timing 3 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
-fi
 
-python3 src/python/latex_output.py \
-    --merges_path "$OUT_DIR/merges/" \
-    --tested_merges_path "$OUT_DIR/merges_tested/" \
-    --timed_merges_path "$OUT_DIR/merges_timed/" \
-    --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --n_merges "$N_MERGES" \
-    --output_dir "$OUT_DIR"
+    python3 src/python/latex_output.py \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --timed_merges_path "$OUT_DIR/merges_timed/" \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
+else
+    python3 src/python/latex_output.py \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
+fi
