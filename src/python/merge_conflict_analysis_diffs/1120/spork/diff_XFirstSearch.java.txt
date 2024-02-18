@@ -1,0 +1,34 @@
+====3
+1:21,22c
+2:21,22c
+  import com.graphhopper.coll.MyBitSet;
+  import com.graphhopper.coll.MyBitSetImpl;
+3:21,22c
+  import com.graphhopper.coll.GHBitSet;
+  import com.graphhopper.coll.GHBitSetImpl;
+====1
+1:29c
+   * @author Peter Karich,
+2:29c
+3:29c
+   * @author Peter Karich
+====3
+1:45,46c
+2:45,46c
+      protected MyBitSet createBitSet(int size) {
+          return new MyBitSetImpl(size);
+3:45,46c
+      protected GHBitSet createBitSet(int size) {
+          return new GHBitSetImpl(size);
+====3
+1:56c
+2:56c
+          MyBitSet visited = createBitSet(g.nodes());
+3:56c
+          GHBitSet visited = createBitSet(g.nodes());
+====3
+1:95c
+2:95c
+      static class MyHelperIntQueue extends MyIntDeque implements HelperColl {
+3:95c
+      static class MyHelperIntQueue extends SimpleIntDeque implements HelperColl {

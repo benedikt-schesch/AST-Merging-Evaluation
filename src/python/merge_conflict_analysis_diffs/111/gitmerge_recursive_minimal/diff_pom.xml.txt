@@ -1,0 +1,169 @@
+====1
+1:25c
+      <version>1.4.0-SNAPSHOT</version>
+2:25c
+3:25c
+      <version>1.4.1-SNAPSHOT</version>
+====1
+1:39c
+          <tag>nacos-all-1.4.0-SNAPSHOT</tag>
+2:39c
+3:39c
+          <tag>nacos-all-1.4.1-SNAPSHOT</tag>
+====1
+1:129c
+          <spring-boot-dependencies.version>2.1.16.RELEASE</spring-boot-dependencies.version>
+2:129c
+3:129c
+          <spring-boot-dependencies.version>2.1.17.RELEASE</spring-boot-dependencies.version>
+====1
+1:131c
+          <commons-lang.version>2.6</commons-lang.version>
+2:130a
+3:130a
+====1
+1:133c
+          <commons-io.version>2.2</commons-io.version>
+2:132c
+3:132c
+          <commons-io.version>2.6</commons-io.version>
+====1
+1:144c
+          <async-http-client.version>1.7.17</async-http-client.version>
+2:142a
+3:142a
+====1
+1:170a
+2:169,175c
+3:169,175c
+          <jraft-core.version>1.3.2.beta1</jraft-core.version>
+          <rpc-grpc-impl.version>1.3.2.beta1</rpc-grpc-impl.version>
+          <mapstruct.version>1.3.1.Final</mapstruct.version>
+          <ojdbc.version>19.3.0.0</ojdbc.version>
+          <querydsl.version>4.2.1</querydsl.version>
+          <hikariCP.version>3.4.1</hikariCP.version>
+          <lombok.version>1.18.12</lombok.version>
+====1
+1:279a
+2:285,287c
+3:285,287c
+                          <exclude>**/com/alibaba/nacos/config/server/modules/entity/*.java</exclude>
+                          <exclude>**/com/alibaba/nacos/config/server/modules/mapstruct/*.java</exclude>
+                          <exclude>**/com/alibaba/nacos/config/server/configuration/datasource/DynamicDataSource.java</exclude>
+====
+1:307c
+                      <excludes>**/istio/model/**,**/nacos/test/**</excludes>
+2:315,321c
+  <<<<<<< HEAD
+                      <excludes>**/istio/model/**,**/nacos/test/**,**/com/alibaba/nacos/config/server/modules/**</excludes>
+  ||||||| a41d209d5
+                      <excludes>**/istio/model/**,**/nacos/test/**</excludes>
+  =======
+                      <excludes>**/istio/model/**,**/consistency/entity/**,**/nacos/test/**</excludes>
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:315c
+                      <excludes>**/istio/model/**,**/consistency/entity/**,**/nacos/test/**,**/com/alibaba/nacos/config/server/modules/**</excludes>
+====1
+1:341a
+2:356c
+3:350c
+                          <exclude>/console-ui/**</exclude>
+====1
+1:553a
+2:569,587c
+3:563,581c
+          <profile>
+              <id>remove-test-data</id>
+              <build>
+                  <plugins>
+                      <plugin>
+                          <groupId>org.apache.maven.plugins</groupId>
+                          <artifactId>maven-clean-plugin</artifactId>
+                          <configuration>
+                              <followSymLinks>false</followSymLinks>
+                              <filesets>
+                                  <fileset>
+                                      <directory>${user.home}/nacos/data</directory>
+                                  </fileset>
+                              </filesets>
+                          </configuration>
+                      </plugin>
+                  </plugins>
+              </build>
+          </profile>
+====1
+1:581a
+2:616c
+3:610c
+          <module>sys</module>
+====1
+1:688a
+2:724,728c
+3:718,722c
+              <dependency>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>nacos-sys</artifactId>
+                  <version>${project.version}</version>
+              </dependency>
+====1
+1:712,717c
+              <dependency>
+                  <groupId>commons-lang</groupId>
+                  <artifactId>commons-lang</artifactId>
+                  <version>${commons-lang.version}</version>
+              </dependency>
+  
+2:751a
+3:745a
+====1
+1:817,822c
+              <dependency>
+                  <groupId>com.ning</groupId>
+                  <artifactId>async-http-client</artifactId>
+                  <version>${async-http-client.version}</version>
+              </dependency>
+  
+2:850a
+3:844a
+====1
+1:1027a
+2:1056,1093c
+3:1050,1087c
+  
+              <dependency>
+                  <groupId>org.mapstruct</groupId>
+                  <artifactId>mapstruct-jdk8</artifactId>
+                  <version>${mapstruct.version}</version>
+              </dependency>
+  
+              <dependency>
+                  <groupId>org.mapstruct</groupId>
+                  <artifactId>mapstruct-processor</artifactId>
+                  <version>${mapstruct.version}</version>
+              </dependency>
+  
+              <dependency>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                  <optional>true</optional>
+                  <version>${lombok.version}</version>
+              </dependency>
+  
+              <dependency>
+                  <groupId>com.querydsl</groupId>
+                  <artifactId>querydsl-jpa</artifactId>
+                  <version>${querydsl.version}</version>
+              </dependency>
+  
+              <dependency>
+                  <groupId>com.zaxxer</groupId>
+                  <artifactId>HikariCP</artifactId>
+                  <version>${hikariCP.version}</version>
+              </dependency>
+  
+              <dependency>
+                  <groupId>com.oracle.ojdbc</groupId>
+                  <artifactId>ojdbc8</artifactId>
+                  <version>${ojdbc.version}</version>
+              </dependency>
+  

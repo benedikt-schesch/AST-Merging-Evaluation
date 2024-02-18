@@ -1,0 +1,34 @@
+====
+1:99a
+2:100c
+      private final BojackHorseman bojackHorseman;
+3:100,101c
+      private final BojackHorseman bojackHorseman;
+      private final Basketball basketball;
+====
+1:205a
+2:207c
+          this.bojackHorseman = new BojackHorseman(this);
+3:208,209c
+          this.bojackHorseman = new BojackHorseman(this);
+          this.basketball = new Basketball(this);
+====1
+1:494,496c
+      public Beer beer() {
+          return beer;
+      }
+2:496c
+3:498c
+      public Beer beer() { return beer; }
+====
+1:643a
+2:644,647c
+  
+      public BojackHorseman bojackHorseman() { return bojackHorseman; }
+  
+  
+3:646,649c
+      public BojackHorseman bojackHorseman() { return bojackHorseman; }
+  
+      public Basketball basketball() { return basketball; }
+  

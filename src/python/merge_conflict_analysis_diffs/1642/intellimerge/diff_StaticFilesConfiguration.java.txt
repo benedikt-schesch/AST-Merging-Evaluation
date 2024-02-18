@@ -1,0 +1,324 @@
+====1
+1:20c
+  import java.io.InputStream;
+2:19a
+3:19a
+====1
+1:36c
+  import spark.resource.ClassPathResource;
+2:34a
+3:34a
+====1
+1:40c
+  import spark.resource.JarResourceHandler;
+2:37a
+3:37a
+====1
+1:47c
+   * TODO: Cache-Control and ETAG
+2:44c
+3:44c
+   * TODO: ETAG ?
+====1
+1:53c
+      private List<JarResourceHandler> jarResourceHandlers = null;
+2:49a
+3:49a
+====1
+1:62a
+2:59,62c
+3:59,62c
+       * Attempt consuming using either static resource handlers or jar resource handlers
+       *
+       * @param httpRequest  The HTTP servlet request.
+       * @param httpResponse The HTTP servlet response.
+====1
+1:63a
+2:64c
+3:64c
+       * @throws IOException in case of IO error.
+====1
+1:66a
+2:68,71c
+3:68,71c
+          try {
+              if (consumeWithFileResourceHandlers(httpRequest, httpResponse)) {
+                  return true;
+              }
+====
+1:68,73c
+          if (consumeWithFileResourceHandlers(httpRequest, httpResponse)) {
+              return true;
+          }
+  
+          if (consumeWithJarResourceHandler(httpRequest, httpResponse)) {
+              return true;
+2:73,78c
+              if (consumeWithJarResourceHandler(httpRequest, httpResponse)) {
+                  return true;
+              }
+          } catch (DirectoryTraversal.DirectoryTraversalDetection directoryTraversalDetection) {
+              LOG.warn(directoryTraversalDetection.getMessage() + " directory traversal detection for path: "
+                               + httpRequest.getPathInfo());
+3:73,75c
+          } catch (DirectoryTraversal.DirectoryTraversalDetection directoryTraversalDetection) {
+              LOG.warn(directoryTraversalDetection.getMessage() + " directory traversal detection for path: "
+                               + httpRequest.getPathInfo());
+====
+1:75c
+  
+2:80,89c
+  <<<<<<< HEAD
+  
+  ||||||| 114d245e
+  
+          if (consumeWithJarResourceHandler(httpRequest, httpResponse)) {
+              return true;
+          }
+  
+  =======
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:76a
+====1
+1:89,96c
+                      OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false);
+                      customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
+                      IOUtils.copy(resource.getInputStream(), wrappedOutputStream);
+                      wrappedOutputStream.flush();
+                      wrappedOutputStream.close();
+                      return true;
+                  }
+              }
+2:102a
+3:89a
+====1
+1:98,110c
+          }
+          return false;
+      }
+  
+      private boolean consumeWithJarResourceHandler(HttpServletRequest httpRequest,
+                                                    HttpServletResponse httpResponse) throws IOException {
+          if (jarResourceHandlers != null) {
+  
+              for (JarResourceHandler jarResourceHandler : jarResourceHandlers) {
+                  InputStream stream = jarResourceHandler.getResource(httpRequest);
+  
+                  if (stream != null) {
+                      OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false);
+2:104,106c
+3:91,93c
+                      if (MimeType.shouldGuess()) {
+                          httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource));
+                      }
+====1
+1:111a
+2:108c
+3:95c
+                      OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false);
+====1
+1:113,114c
+                      IOUtils.copy(stream, wrappedOutputStream);
+  
+2:110c
+3:97c
+                      IOUtils.copy(resource.getInputStream(), wrappedOutputStream);
+====1
+1:117c
+  
+2:112a
+3:99a
+====1
+1:120a
+2:116c
+3:103c
+  
+====2
+1:124a
+3:107a
+2:121,171c
+  <<<<<<< HEAD
+  ||||||| 114d245e
+      private boolean consumeWithJarResourceHandler(HttpServletRequest httpRequest,
+                                                    HttpServletResponse httpResponse) throws IOException {
+          if (jarResourceHandlers != null) {
+  
+              for (JarResourceHandler jarResourceHandler : jarResourceHandlers) {
+                  InputStream stream = jarResourceHandler.getResource(httpRequest);
+  
+                  if (stream != null) {
+                      OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false);
+                      customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
+  
+                      IOUtils.copy(stream, wrappedOutputStream);
+  
+                      wrappedOutputStream.flush();
+                      wrappedOutputStream.close();
+  
+                      return true;
+                  }
+              }
+          }
+          return false;
+      }
+  
+  =======
+      private boolean consumeWithJarResourceHandler(HttpServletRequest httpRequest,
+                                                    HttpServletResponse httpResponse) throws IOException {
+          if (jarResourceHandlers != null) {
+  
+              for (JarResourceHandler jarResourceHandler : jarResourceHandlers) {
+                  InputStream stream = jarResourceHandler.getResource(httpRequest);
+  
+                  if (stream != null) {
+                      if (MimeType.shouldGuess()) {
+                          httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromPathInfo(httpRequest.getPathInfo()));
+                      }
+                      customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
+                      OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false);
+  
+                      IOUtils.copy(stream, wrappedOutputStream);
+                      wrappedOutputStream.flush();
+                      wrappedOutputStream.close();
+                      return true;
+                  }
+              }
+          }
+          return false;
+      }
+  
+  >>>>>>> TEMP_RIGHT_BRANCH
+====1
+1:135,139c
+          if (jarResourceHandlers != null) {
+              jarResourceHandlers.clear();
+              jarResourceHandlers = null;
+          }
+  
+2:181a
+3:117a
+====1
+1:153,163c
+              try {
+                  ClassPathResource resource = new ClassPathResource(folder);
+  
+                  if (configureJarCase(folder, resource)) {
+                      return;
+                  }
+  
+                  if (!resource.getFile().isDirectory()) {
+                      LOG.error("Static resource location must be a folder");
+                      return;
+                  }
+2:194a
+3:130a
+====1
+1:165,172c
+                  if (staticResourceHandlers == null) {
+                      staticResourceHandlers = new ArrayList<>();
+                  }
+  
+                  staticResourceHandlers.add(new ClassPathResourceHandler(folder, "index.html"));
+                  LOG.info("StaticResourceHandler configured with folder = " + folder);
+              } catch (IOException e) {
+                  LOG.error("Error when creating StaticResourceHandler", e);
+2:196,197c
+3:132,133c
+              if (staticResourceHandlers == null) {
+                  staticResourceHandlers = new ArrayList<>();
+====
+1:173a
+2:199,207c
+  <<<<<<< HEAD
+  
+              staticResourceHandlers.add(new ClassPathResourceHandler(folder, "index.html"));
+              LOG.info("StaticResourceHandler configured with folder = " + folder);
+  ||||||| 114d245e
+  =======
+  
+              StaticFilesFolder.localConfiguredTo(folder);
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:135,138c
+  
+              staticResourceHandlers.add(new ClassPathResourceHandler(folder, "index.html"));
+              LOG.info("StaticResourceHandler configured with folder = " + folder);
+              StaticFilesFolder.localConfiguredTo(folder);
+====
+1:179,200c
+      private boolean configureJarCase(String folder, ClassPathResource resource) throws IOException {
+          if (resource.getURL().getProtocol().equals("jar")) {
+  
+              InputStream stream = StaticFilesConfiguration.class.getResourceAsStream(folder);
+  
+              if (stream != null) {
+                  if (jarResourceHandlers == null) {
+                      jarResourceHandlers = new ArrayList<>();
+                  }
+  
+                  // Add jar file resource handler
+                  jarResourceHandlers.add(new JarResourceHandler(folder, "index.html"));
+                  staticResourcesSet = true;
+                  return true;
+              } else {
+                  LOG.error("Static file configuration failed.");
+              }
+  
+          }
+          return false;
+      }
+  
+2:213,259c
+  <<<<<<< HEAD
+  ||||||| 114d245e
+      private boolean configureJarCase(String folder, ClassPathResource resource) throws IOException {
+          if (resource.getURL().getProtocol().equals("jar")) {
+  
+              InputStream stream = StaticFilesConfiguration.class.getResourceAsStream(folder);
+  
+              if (stream != null) {
+                  if (jarResourceHandlers == null) {
+                      jarResourceHandlers = new ArrayList<>();
+                  }
+  
+                  // Add jar file resource handler
+                  jarResourceHandlers.add(new JarResourceHandler(folder, "index.html"));
+                  staticResourcesSet = true;
+                  return true;
+              } else {
+                  LOG.error("Static file configuration failed.");
+              }
+  
+          }
+          return false;
+      }
+  
+  =======
+      private boolean configureJarCase(String folder, ClassPathResource resource) throws IOException {
+          if (resource.getURL().getProtocol().equals("jar")) {
+  
+              InputStream stream = StaticFilesConfiguration.class.getResourceAsStream(folder);
+  
+              if (stream != null) {
+                  if (jarResourceHandlers == null) {
+                      jarResourceHandlers = new ArrayList<>();
+                  }
+  
+                  // Add jar file resource handler
+                  jarResourceHandlers.add(new JarResourceHandler(folder, "index.html"));
+                  staticResourcesSet = true;
+                  return true;
+              }
+  
+              LOG.error("Static file configuration failed.");
+          }
+          return false;
+      }
+  
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:143a
+====1
+1:224a
+2:284,285c
+3:168,169c
+  
+              StaticFilesFolder.externalConfiguredTo(folder);

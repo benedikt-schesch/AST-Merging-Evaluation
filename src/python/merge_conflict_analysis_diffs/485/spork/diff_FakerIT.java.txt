@@ -1,0 +1,10 @@
+====3
+1:96a
+2:96a
+3:97c
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.aviation());
+====1
+1:153a
+2:154c
+3:155c
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.princessBride());

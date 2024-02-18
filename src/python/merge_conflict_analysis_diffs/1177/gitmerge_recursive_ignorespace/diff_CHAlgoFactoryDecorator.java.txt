@@ -1,0 +1,123 @@
+====1
+1:19a
+2:20,21c
+3:20,21c
+  import com.carrotsearch.hppc.IntObjectHashMap;
+  import com.carrotsearch.hppc.IntObjectMap;
+====1
+1:28c
+  import com.graphhopper.util.Parameters;
+2:29a
+3:29a
+====1
+1:29a
+2:31c
+3:31c
+  import com.graphhopper.util.Parameters.Routing;
+====1
+1:36a
+2:39c
+3:39c
+  import static com.graphhopper.routing.weighting.TurnWeighting.INFINITE_UTURN_COSTS;
+====1
+1:223c
+       *                       "fastest|u_turn_costs=30 or your own weight-calculation type.
+2:226c
+3:226c
+       *                      "fastest|u_turn_costs=30 or your own weight-calculation type.
+====
+1:254,270c
+          boolean edgeBased = map.getBool(Parameters.Routing.EDGE_BASED, false);
+          List<String> entriesStrs = new ArrayList<>();
+          boolean weightingMatchesButNotEdgeBased = false;
+          for (PrepareContractionHierarchies p : getPreparations()) {
+              boolean weightingMatches = p.getCHProfile().getWeighting().matches(map);
+              if (p.isEdgeBased() == edgeBased && weightingMatches)
+                  return p;
+              else if (weightingMatches)
+                  weightingMatchesButNotEdgeBased = true;
+  
+              entriesStrs.add(p.getCHProfile().getWeighting() + "|" + (p.getCHProfile().isEdgeBased() ? "edge" : "node"));
+          }
+  
+          String hint = weightingMatchesButNotEdgeBased
+                  ? " The '" + Parameters.Routing.EDGE_BASED + "' url parameter is missing or does not fit the weightings. Its value was: '" + edgeBased + "'"
+                  : "";
+          throw new IllegalArgumentException("Cannot find CH RoutingAlgorithmFactory for weighting map " + map + " in entries: " + entriesStrs + "." + hint);
+2:257,324c
+  <<<<<<< HEAD
+          Boolean edgeBased = map.has(Routing.EDGE_BASED) ? map.getBool(Routing.EDGE_BASED, false) : null;
+          Integer uTurnCosts = map.has(Routing.UTURN_COSTS) ? map.getInt(Routing.UTURN_COSTS, INFINITE_UTURN_COSTS) : null;
+          try {
+              return PCHSelector.select(getPreparations(), map, edgeBased, uTurnCosts);
+          } catch (NoSuchCHPreparationException e) {
+              throw new IllegalArgumentException(e.getMessage());
+  ||||||| 34b0d48a78
+          boolean edgeBased = map.getBool(Parameters.Routing.EDGE_BASED, false);
+          List<String> entriesStrs = new ArrayList<>();
+          boolean weightingMatchesButNotEdgeBased = false;
+          for (PrepareContractionHierarchies p : getPreparations()) {
+              boolean weightingMatches = p.getCHProfile().getWeighting().matches(map);
+              if (p.isEdgeBased() == edgeBased && weightingMatches)
+                  return p;
+              else if (weightingMatches)
+                  weightingMatchesButNotEdgeBased = true;
+  
+              entriesStrs.add(p.getCHProfile().getWeighting() + "|" + (p.getCHProfile().isEdgeBased() ? "edge" : "node"));
+          }
+  
+          String hint = weightingMatchesButNotEdgeBased
+                  ? " The '" + Parameters.Routing.EDGE_BASED + "' url parameter is missing or does not fit the weightings. Its value was: '" + edgeBased + "'"
+                  : "";
+          throw new IllegalArgumentException("Cannot find CH RoutingAlgorithmFactory for weighting map " + map + " in entries: " + entriesStrs + "." + hint);
+  =======
+          List<String> entriesStrs = new ArrayList<>();
+          PrepareContractionHierarchies edgeBasedPCH = null;
+          PrepareContractionHierarchies nodeBasedPCH = null;
+          for (PrepareContractionHierarchies p : getPreparations()) {
+              boolean weightingMatches = p.getCHProfile().getWeighting().matches(map);
+              if (weightingMatches) {
+                  if (p.isEdgeBased()) {
+                      edgeBasedPCH = p;
+                  } else {
+                      nodeBasedPCH = p;
+                  }
+              }
+              entriesStrs.add(p.getCHProfile().getWeighting() + "|" + (p.getCHProfile().isEdgeBased() ? "edge" : "node"));
+          }
+  
+          if (edgeBasedPCH == null && nodeBasedPCH == null) {
+              throw new IllegalArgumentException("Cannot find CH RoutingAlgorithmFactory for weighting map " + map + " in entries: " + entriesStrs + ".");
+          }
+          if (map.has(Parameters.Routing.EDGE_BASED)) {
+              boolean edgeBased = map.getBool(Parameters.Routing.EDGE_BASED, false);
+              if (edgeBased && edgeBasedPCH != null) {
+                  return edgeBasedPCH;
+              }
+              if (!edgeBased && nodeBasedPCH != null) {
+                  return nodeBasedPCH;
+              }
+  
+              if (edgeBased) {
+                  throw new IllegalArgumentException("Found a node-based CH preparation for weighting map " + map + ", but requested edge-based CH. " +
+                          "You either need to configure edge-based CH preparation or set the '" + Parameters.Routing.EDGE_BASED + "' " +
+                          "request parameter to 'false' (was 'true'). all entries: " + entriesStrs);
+              } else {
+                  throw new IllegalArgumentException("Found an edge-based CH preparation for weighting map " + map + ", but requested node-based CH. " +
+                          "You either need to configure node-based CH preparation or set the '" + Parameters.Routing.EDGE_BASED + "' " +
+                          "request parameter to 'true' (was 'false'). all entries: " + entriesStrs);
+              }
+          } else {
+              // no edge_based parameter was set, we determine the CH preparation based on what is there (and prefer edge-based
+              // if we can choose)
+              return edgeBasedPCH != null ? edgeBasedPCH : nodeBasedPCH;
+  >>>>>>> TEMP_RIGHT_BRANCH
+          }
+3:257,263c
+          Boolean edgeBased = map.has(Routing.EDGE_BASED) ? map.getBool(Routing.EDGE_BASED, false) : null;
+          Integer uTurnCosts = map.has(Routing.UTURN_COSTS) ? map.getInt(Routing.UTURN_COSTS, INFINITE_UTURN_COSTS) : null;
+          try {
+              return PCHSelector.select(getPreparations(), map, edgeBased, uTurnCosts);
+          } catch (NoSuchCHPreparationException e) {
+              throw new IllegalArgumentException(e.getMessage());
+          }

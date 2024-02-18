@@ -1,0 +1,57 @@
+====3
+1:21,22c
+2:21,22c
+  import com.graphhopper.coll.MyBitSet;
+  import com.graphhopper.coll.MyBitSetImpl;
+3:21,22c
+  import com.graphhopper.coll.GHBitSet;
+  import com.graphhopper.coll.GHBitSetImpl;
+====1
+1:41c
+   * @author Peter Karich,
+2:41c
+3:41c
+   * @author Peter Karich
+====3
+1:151c
+2:151c
+          final MyBitSetImpl bitset = new MyBitSetImpl(nodes);
+3:151c
+          final GHBitSetImpl bitset = new GHBitSetImpl(nodes);
+====3
+1:156c
+2:156c
+                  @Override protected MyBitSet createBitSet(int size) {
+3:156c
+                  @Override protected GHBitSet createBitSet(int size) {
+====3
+1:173c
+2:173c
+          MyBitSet bitset = new MyBitSetImpl(len);
+3:173c
+          GHBitSet bitset = new GHBitSetImpl(len);
+====3
+1:249c
+2:249c
+          MyBitSet bitset = new MyBitSetImpl(len);
+3:249c
+          GHBitSet bitset = new GHBitSetImpl(len);
+====1
+1:271c
+  
+2:270a
+3:270a
+====1
+1:328a
+2:328,337c
+3:328,337c
+          @Override
+          public String name() {
+              throw new UnsupportedOperationException("Not supported yet.");
+          }
+  
+          @Override
+          public void name(String name) {
+              throw new UnsupportedOperationException("Not supported yet.");
+          }
+  

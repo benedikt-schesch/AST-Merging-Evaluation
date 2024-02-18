@@ -1,0 +1,120 @@
+====1
+1:31,33c
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  
+2:30a
+3:30a
+====2
+1:42c
+3:39c
+      
+2:39c
+  
+====2
+1:45c
+3:42c
+      
+2:42c
+  
+====1
+1:49,53c
+       * @param dataId dataId string value.
+       * @param group group string value.
+       * @param tenant tenant string value.
+       * @param appName appName string value.
+       * @param pageNo pageNo string value.
+2:46,50c
+3:46,50c
+       * @param dataId   dataId string value.
+       * @param group    group string value.
+       * @param tenant   tenant string value.
+       * @param appName  appName string value.
+       * @param pageNo   pageNo string value.
+====2
+1:60,66c
+3:57,63c
+              @RequestParam("group") String group, //
+              @RequestParam(value = "tenant", required = false, defaultValue = StringUtils.EMPTY) String tenant,
+              @RequestParam(value = "appName", required = false) String appName,
+              @RequestParam(value = "pageNo", required = false) Integer pageNo,
+              //
+              @RequestParam(value = "pageSize", required = false) Integer pageSize, //
+              ModelMap modelMap) {
+2:57,63c
+                                                       @RequestParam("group") String group, //
+                                                       @RequestParam(value = "tenant", required = false, defaultValue = StringUtils.EMPTY) String tenant,
+                                                       @RequestParam(value = "appName", required = false) String appName,
+                                                       @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                       //
+                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize, //
+                                                       ModelMap modelMap) {
+====2
+1:73c
+3:70c
+      
+2:70c
+  
+====1
+1:75c
+       * Query the detailed configuration history informations.
+2:72,75c
+3:72,75c
+       * Query the detailed configuration history information.
+       *
+       * @param nid history_config_info nid
+       * @return history config info
+====
+1:78,79c
+      public ConfigHistoryInfo getConfigHistoryInfo(HttpServletRequest request, HttpServletResponse response,
+              @RequestParam("nid") Long nid, ModelMap modelMap) {
+2:78,86c
+  <<<<<<< HEAD
+      public ConfigHistoryInfo getConfigHistoryInfo(HttpServletRequest request, HttpServletResponse response,
+                                                    @RequestParam("nid") Long nid, ModelMap modelMap) {
+  ||||||| a41d209d5
+      public ConfigHistoryInfo getConfigHistoryInfo(HttpServletRequest request, HttpServletResponse response,
+              @RequestParam("nid") Long nid, ModelMap modelMap) {
+  =======
+      public ConfigHistoryInfo getConfigHistoryInfo(@RequestParam("nid") Long nid) {
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:78c
+      public ConfigHistoryInfo getConfigHistoryInfo(@RequestParam("nid") Long nid) {
+====2
+1:81a
+3:80a
+2:89,93c
+  <<<<<<< HEAD
+  
+  ||||||| a41d209d5
+      
+  =======
+====
+1:82a
+2:95,107c
+      /**
+       * Query previous config history information.
+       *
+       * @param id config_info id
+       * @return history config info
+       * @since 1.4.0
+       */
+      @GetMapping(value = "/previous")
+      public ConfigHistoryInfo getPreviousConfigHistoryInfo(@RequestParam("id") Long id) {
+          return persistService.detailPreviousConfigHistory(id);
+      }
+      
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:82,93c
+      /**
+       * Query previous config history information.
+       *
+       * @param id config_info id
+       * @return history config info
+       * @since 1.4.0
+       */
+      @GetMapping(value = "/previous")
+      public ConfigHistoryInfo getPreviousConfigHistoryInfo(@RequestParam("id") Long id) {
+          return persistService.detailPreviousConfigHistory(id);
+      }
+      

@@ -1,0 +1,215 @@
+====
+1:21c
+  import com.alibaba.nacos.config.server.service.repository.extrnal.ExternalStoragePersistServiceImpl;
+2:21,31c
+  <<<<<<< HEAD
+  import com.alibaba.nacos.config.server.modules.entity.PermissionsEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QPermissionsEntity;
+  import com.alibaba.nacos.config.server.modules.mapstruct.PermissionsMapStruct;
+  import com.alibaba.nacos.config.server.modules.repository.PermissionsRepository;
+  ||||||| a41d209d5
+  import com.alibaba.nacos.config.server.service.repository.extrnal.ExternalStoragePersistServiceImpl;
+  import com.alibaba.nacos.config.server.service.repository.PaginationHelper;
+  import com.alibaba.nacos.config.server.utils.LogUtil;
+  import org.apache.commons.lang3.StringUtils;
+  =======
+3:20a
+====1
+1:22a
+2:33c
+3:22c
+  import com.alibaba.nacos.config.server.service.repository.extrnal.ExternalStoragePersistServiceImpl;
+====
+1:24a
+2:36c
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:25,28c
+  import com.alibaba.nacos.config.server.modules.entity.PermissionsEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QPermissionsEntity;
+  import com.alibaba.nacos.config.server.modules.mapstruct.PermissionsMapStruct;
+  import com.alibaba.nacos.config.server.modules.repository.PermissionsRepository;
+====1
+1:27,28c
+  import org.springframework.jdbc.CannotGetJdbcConnectionException;
+  import org.springframework.jdbc.core.JdbcTemplate;
+2:39c
+3:31c
+  import org.springframework.data.domain.PageRequest;
+====2
+1:30a
+3:33a
+2:42,49c
+  <<<<<<< HEAD
+  ||||||| a41d209d5
+  import javax.annotation.PostConstruct;
+  import java.util.ArrayList;
+  
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.PERMISSION_ROW_MAPPER;
+  
+  =======
+====1
+1:32a
+2:52,53c
+3:36,37c
+  import java.util.Collections;
+  import java.util.List;
+====2
+1:35a
+3:40a
+2:57c
+  >>>>>>> TEMP_RIGHT_BRANCH
+====1
+1:46,53c
+      private ExternalStoragePersistServiceImpl persistService;
+      
+      private JdbcTemplate jt;
+      
+      @PostConstruct
+      protected void init() {
+          jt = persistService.getJdbcTemplate();
+      }
+2:68c
+3:51c
+      private PermissionsRepository permissionsRepository;
+====
+1:56,83c
+          PaginationHelper<PermissionInfo> helper = persistService.createPaginationHelper();
+          
+          String sqlCountRows = "select count(*) from permissions where ";
+          String sqlFetchRows = "select role,resource,action from permissions where ";
+          
+          String where = " role='" + role + "' ";
+          
+          if (StringUtils.isBlank(role)) {
+              where = " 1=1 ";
+          }
+          
+          try {
+              Page<PermissionInfo> pageInfo = helper
+                      .fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+                              pageSize, PERMISSION_ROW_MAPPER);
+              
+              if (pageInfo == null) {
+                  pageInfo = new Page<>();
+                  pageInfo.setTotalCount(0);
+                  pageInfo.setPageItems(new ArrayList<>());
+              }
+              
+              return pageInfo;
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:71,140c
+  <<<<<<< HEAD
+          org.springframework.data.domain.Page<PermissionsEntity> sPage = permissionsRepository
+                  .findAll(QPermissionsEntity.permissionsEntity.role.eq(role), PageRequest.of(pageNo, pageSize));
+          Page<PermissionInfo> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(PermissionsMapStruct.INSTANCE.convertPermissionInfoList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+  ||||||| a41d209d5
+          PaginationHelper<PermissionInfo> helper = persistService.createPaginationHelper();
+          
+          String sqlCountRows = "select count(*) from permissions where ";
+          String sqlFetchRows = "select role,resource,action from permissions where ";
+          
+          String where = " role='" + role + "' ";
+          
+          if (StringUtils.isBlank(role)) {
+              where = " 1=1 ";
+          }
+          
+          try {
+              Page<PermissionInfo> pageInfo = helper
+                      .fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+                              pageSize, PERMISSION_ROW_MAPPER);
+              
+              if (pageInfo == null) {
+                  pageInfo = new Page<>();
+                  pageInfo.setTotalCount(0);
+                  pageInfo.setPageItems(new ArrayList<>());
+              }
+              
+              return pageInfo;
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+  =======
+          PaginationHelper<PermissionInfo> helper = persistService.createPaginationHelper();
+          
+          String sqlCountRows = "select count(*) from permissions where ";
+          String sqlFetchRows = "select role,resource,action from permissions where ";
+      
+          String where = " role= ? ";
+          List<String> params = new ArrayList<>();
+          if (StringUtils.isNotBlank(role)) {
+              params = Collections.singletonList(role);
+          } else {
+              where = " 1=1 ";
+          }
+          
+          try {
+              Page<PermissionInfo> pageInfo = helper
+                      .fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo,
+                              pageSize, PERMISSION_ROW_MAPPER);
+              
+              if (pageInfo == null) {
+                  pageInfo = new Page<>();
+                  pageInfo.setTotalCount(0);
+                  pageInfo.setPageItems(new ArrayList<>());
+              }
+              
+              return pageInfo;
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:54,61c
+          org.springframework.data.domain.Page<PermissionsEntity> sPage = permissionsRepository
+                  .findAll(QPermissionsEntity.permissionsEntity.role.eq(role), PageRequest.of(pageNo, pageSize));
+          Page<PermissionInfo> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(PermissionsMapStruct.INSTANCE.convertPermissionInfoList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:94,102c
+          
+          String sql = "INSERT into permissions (role, resource, action) VALUES (?, ?, ?)";
+          
+          try {
+              jt.update(sql, role, resource, action);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:151,152c
+3:72,73c
+      
+          permissionsRepository.save(new PermissionsEntity(role, resource, action));
+====1
+1:113,120c
+          
+          String sql = "DELETE from permissions WHERE role=? and resource=? and action=?";
+          try {
+              jt.update(sql, role, resource, action);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:163,167c
+3:84,88c
+      
+          QPermissionsEntity qPermissions = QPermissionsEntity.permissionsEntity;
+          permissionsRepository.findOne(
+                  qPermissions.role.eq(role).and(qPermissions.resource.eq(resource)).and(qPermissions.action.eq(action)))
+                  .ifPresent(p -> permissionsRepository.delete(p));

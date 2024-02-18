@@ -1,0 +1,60 @@
+====3
+1:3a
+2:3a
+3:4c
+  import org.bukkit.plugin.AuthorNagException;
+====3
+1:34a
+2:34a
+3:36c
+       * @throws BukkitAuthorNagException
+====3
+1:36a
+2:36a
+3:39,40c
+          onBlockFlow(event);
+          throw new AuthorNagException("onBlockFlow has been deprecated, use onBlockFromTo");
+====3
+1:38a
+2:38a
+3:43,45c
+      // Prevent compilation of old signatures TODO: Remove after 1.4
+      @Deprecated public void onBlockFlow(BlockFromToEvent event) {}
+  
+====
+1:103a
+2:104,111c
+  
+      /**
+       * Called when a furnace successfully smelts an item
+       *
+       * @param event Relevant event details
+       */
+      public void onFurnaceSmelt(FurnaceSmeltEvent event) {
+      }
+3:111,135c
+  
+      /**
+       * Called when a world is attempting to place a block during a snowfall
+       *
+       * @param event Relevant event details
+       */
+      public void onSnowForm(SnowFormEvent event) {
+      }
+      
+      /**
+       * Called when a block is dispensing an item
+       * 
+       * @param event Relevant event details
+       */
+      public void onBlockDispense(BlockDispenseEvent event) {
+      }
+  
+      /**
+       * Called when a furnace successfully smelts an item
+       *
+       * @param event Relevant event details
+       */
+      public void onFurnaceSmelt(FurnaceSmeltEvent event) {
+      }
+      

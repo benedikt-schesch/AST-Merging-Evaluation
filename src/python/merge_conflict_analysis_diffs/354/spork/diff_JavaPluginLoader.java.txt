@@ -1,0 +1,279 @@
+====3
+1:14a
+2:14a
+3:15c
+  import java.util.logging.Level;
+====3
+1:20a
+2:20a
+3:22c
+  import org.bukkit.event.painting.*;
+====3
+1:25a
+2:25a
+3:28c
+  import org.bukkit.event.weather.*;
+====3
+1:26a
+2:26a
+3:30c
+  import org.yaml.snakeyaml.error.YAMLException;
+====3
+1:43a
+2:43a
+3:48,51c
+          return loadPlugin(file, false);
+      }
+  
+      public Plugin loadPlugin(File file, boolean ignoreSoftDependencies) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException {
+====3
+1:64a
+2:64a
+3:73,74c
+          } catch (YAMLException ex) {
+              throw new InvalidPluginException(ex);
+====3
+1:67c
+2:67c
+          File dataFolder = getDataFolder(file);
+3:77,111c
+          File dataFolder = new File(file.getParentFile(), description.getName());
+          File oldDataFolder = getDataFolder(file);
+  
+          // Found old data folder
+          if (dataFolder.equals(oldDataFolder)) {
+              // They are equal -- nothing needs to be done!
+          } else if (dataFolder.isDirectory() && oldDataFolder.isDirectory()) {
+              server.getLogger().log( Level.INFO, String.format(
+                  "While loading %s (%s) found old-data folder: %s next to the new one: %s",
+                  description.getName(),
+                  file,
+                  oldDataFolder,
+                  dataFolder
+              ));
+          } else if (oldDataFolder.isDirectory() && !dataFolder.exists()) {
+              if (!oldDataFolder.renameTo(dataFolder)) {
+                  throw new InvalidPluginException(new Exception("Unable to rename old data folder: '" + oldDataFolder + "' to: '" + dataFolder + "'"));
+              }
+              server.getLogger().log( Level.INFO, String.format(
+                  "While loading %s (%s) renamed data folder: '%s' to '%s'",
+                  description.getName(),
+                  file,
+                  oldDataFolder,
+                  dataFolder
+              ));
+          }
+  
+          if (dataFolder.exists() && !dataFolder.isDirectory()) {
+              throw new InvalidPluginException(new Exception(String.format(
+                  "Projected datafolder: '%s' for %s (%s) exists and is not a directory",
+                  dataFolder,
+                  description.getName(),
+                  file
+              )));
+          }
+====3
+1:88a
+2:88a
+3:133,154c
+          if (!ignoreSoftDependencies) {
+              ArrayList<String> softDepend;
+              try {
+                  softDepend = (ArrayList)description.getSoftDepend();
+                  if (softDepend == null) {
+                      softDepend = new ArrayList<String>();
+                  }
+              } catch (ClassCastException ex) {
+                   throw new InvalidPluginException(ex);
+              }
+  
+              for (String pluginName : softDepend) {
+                  if (loaders == null) {
+                      throw new UnknownSoftDependencyException(pluginName);
+                  }
+                  PluginClassLoader current = loaders.get(pluginName);
+                  if (current == null) {
+                      throw new UnknownSoftDependencyException(pluginName);
+                  }
+              }
+          }
+  
+====3
+1:154c
+2:154c
+          if(!classes.containsKey(name)) {
+3:220c
+          if (!classes.containsKey(name)) {
+====3
+1:216a
+2:216a
+3:283,288c
+          case PLAYER_INTERACT_ENTITY:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((PlayerListener) listener).onPlayerInteractEntity((PlayerInteractEntityEvent) event);
+                  }
+              };
+====3
+1:222a
+2:222a
+3:295,300c
+          case PLAYER_PRELOGIN:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((PlayerListener) listener).onPlayerPreLogin((PlayerPreLoginEvent) event);
+                  }
+              };
+====3
+1:276a
+2:276a
+3:355,366c
+          case PLAYER_BED_ENTER:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((PlayerListener) listener).onPlayerBedEnter((PlayerBedEnterEvent) event);
+                  }
+              };
+          case PLAYER_BED_LEAVE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((PlayerListener) listener).onPlayerBedLeave((PlayerBedLeaveEvent) event);
+                  }
+              };
+====1
+1:314a
+2:315,320c
+3:405,410c
+          case FURNACE_SMELT:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((BlockListener) listener).onFurnaceSmelt((FurnaceSmeltEvent) event);
+                  }
+              };
+====3
+1:344a
+2:350a
+3:441,452c
+          case SNOW_FORM:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((BlockListener) listener).onSnowForm((SnowFormEvent) event);
+                  }
+              };
+          case BLOCK_DISPENSE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((BlockListener) listener).onBlockDispense((BlockDispenseEvent) event);
+                  }
+              };
+====3
+1:378a
+2:384a
+3:487,492c
+          case SPAWN_CHANGE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((WorldListener) listener).onSpawnChange((SpawnChangeEvent) event);
+                  }
+              };
+====3
+1:391a
+2:397a
+3:506,519c
+          //Painting Events
+          case PAINTING_PLACE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((EntityListener) listener).onPaintingPlace((PaintingPlaceEvent) event);
+                  }
+              };
+          case PAINTING_BREAK:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((EntityListener) listener).onPaintingBreak((PaintingBreakEvent) event);
+                  }
+              };
+  
+====3
+1:428a
+2:434a
+3:557,562c
+          case ENTITY_INTERACT:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((EntityListener) listener).onEntityInteract((EntityInteractEvent) event);
+                  }
+              };
+====3
+1:434a
+2:440a
+3:569,580c
+          case PIG_ZAP:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((EntityListener) listener).onPigZap((PigZapEvent) event);
+                  }
+              };
+          case CREEPER_POWER:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((EntityListener) listener).onCreeperPower((CreeperPowerEvent) event);
+                  }
+              };
+====3
+1:448a
+2:454a
+3:595,599c
+          case VEHICLE_DESTROY:
+              return new EventExecutor() { public void execute( Listener listener, Event event ) {
+                      ((VehicleListener)listener).onVehicleDestroy( (VehicleDestroyEvent)event );
+                  }
+              };
+====3
+1:485a
+2:491a
+3:637,656c
+          // Weather Events
+          case WEATHER_CHANGE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((WeatherListener) listener).onWeatherChange((WeatherChangeEvent) event);
+                  }
+              };
+          case THUNDER_CHANGE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((WeatherListener) listener).onThunderChange((ThunderChangeEvent) event);
+                  }
+              };
+          case LIGHTNING_STRIKE:
+              return new EventExecutor() {
+                  public void execute(Listener listener, Event event) {
+                      ((WeatherListener) listener).onLightningStrike((LightningStrikeEvent) event);
+                  }
+              };
+  
+====3
+1:511c
+2:517c
+              jPlugin.setEnabled(true);
+3:682,690c
+              try {
+                  jPlugin.setEnabled(true);
+              } catch (Throwable ex) {
+                  server.getLogger().log(Level.SEVERE, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?): " + ex.getMessage(), ex);
+              }
+              
+              // Perhaps abort here, rather than continue going, but as it stands,
+              // an abort is not possible the way it's currently written
+              
+====3
+1:525c
+2:531c
+              jPlugin.setEnabled(false);
+3:704,708c
+              try {
+                  jPlugin.setEnabled(false);
+              } catch (Throwable ex) {
+                  server.getLogger().log(Level.SEVERE, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?): " + ex.getMessage(), ex);
+              }

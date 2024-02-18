@@ -1,0 +1,43 @@
+====1
+1:30,31c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.alibaba.nacos.core.utils.InetUtils;
+2:30,32c
+3:30,32c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+  import com.alibaba.nacos.sys.utils.ApplicationUtils;
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====1
+1:109c
+              addMergeTask(item.getDataId(), item.getGroup(), item.getTenant(), InetUtils.getSelfIp());
+2:110c
+3:110c
+              addMergeTask(item.getDataId(), item.getGroup(), item.getTenant(), InetUtils.getSelfIP());
+====1
+1:117c
+          if (ApplicationUtils.getStandaloneMode()) {
+2:118c
+3:118c
+          if (EnvUtil.getStandaloneMode()) {
+====
+1:166c
+                          persistService.removeConfigInfo(dataId, group, tenant, InetUtils.getSelfIp(), null);
+2:167,177c
+  <<<<<<< HEAD
+                          persistService.removeConfigInfo(dataId, group, tenant, InetUtils.getSelfIp(), null);
+                          LOGGER.warn(
+                                  "[merge-delete] delete config info because no datum. dataId=" + dataId + ", groupId="
+                                          + group);
+  ||||||| a41d209d5
+                          persistService.removeConfigInfo(dataId, group, tenant, InetUtils.getSelfIp(), null);
+                          LOGGER.warn("[merge-delete] delete config info because no datum. dataId=" + dataId + ", groupId="
+                                  + group);
+  =======
+                          persistService.removeConfigInfo(dataId, group, tenant, InetUtils.getSelfIP(), null);
+3:167c
+                          persistService.removeConfigInfo(dataId, group, tenant, InetUtils.getSelfIP(), null);
+====2
+1:168a
+3:169a
+2:180c
+  >>>>>>> TEMP_RIGHT_BRANCH

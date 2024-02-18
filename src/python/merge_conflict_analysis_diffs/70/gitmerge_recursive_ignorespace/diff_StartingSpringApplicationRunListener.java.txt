@@ -1,0 +1,48 @@
+====1
+1:21a
+2:22c
+3:22c
+  import com.alibaba.nacos.common.http.HttpClientManager;
+====1
+1:114c
+  
+2:114a
+3:114a
+====
+1:155,157c
+  		LOGGER.error("Nacos failed to start, please see {} for more details.",
+  				Paths.get(ApplicationUtils.getNacosHome(), "logs/nacos.log"));
+  
+2:155,162c
+  <<<<<<< HEAD
+  		HttpClientManager.shutdown();
+  ||||||| b10745b87
+  		LOGGER.error("Nacos failed to start, please see {} for more details.",
+  				Paths.get(ApplicationUtils.getNacosHome(), "logs/nacos.log"));
+  
+  =======
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:155c
+  		HttpClientManager.shutdown();
+====
+1:162a
+2:168,180c
+  
+  <<<<<<< HEAD
+  		LOGGER.error("Nacos failed to start, please see {} for more details.",
+  				Paths.get(ApplicationUtils.getNacosHome(), "logs/nacos.log"));
+  
+  		context.close();
+  ||||||| b10745b87
+  =======
+  		context.close();
+  
+  		LOGGER.error("Nacos failed to start, please see {} for more details.",
+  				Paths.get(ApplicationUtils.getNacosHome(), "logs/nacos.log"));
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:161,165c
+  
+  		context.close();
+  
+  		LOGGER.error("Nacos failed to start, please see {} for more details.",
+  				Paths.get(ApplicationUtils.getNacosHome(), "logs/nacos.log"));

@@ -1,0 +1,168 @@
+====1
+1:15c
+  import static org.assertj.core.api.Assertions.catchThrowable;
+2:15c
+3:15c
+  import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+====1
+1:22a
+2:23,28c
+3:23,28c
+  import java.time.LocalDate;
+  import java.time.LocalDateTime;
+  import java.time.LocalTime;
+  import java.time.OffsetDateTime;
+  import java.time.OffsetTime;
+  import java.time.ZonedDateTime;
+====1
+1:26a
+2:33,37c
+3:33,37c
+  import java.util.Optional;
+  import java.util.OptionalDouble;
+  import java.util.OptionalInt;
+  import java.util.OptionalLong;
+  import java.util.concurrent.CompletableFuture;
+====3
+1:155c
+2:166c
+      return proxy(AbstractComparableAssert.class, Comparable.class, actual);
+3:166c
+      return proxy(GenericComparableAssert.class, Comparable.class, actual);
+====1
+1:455c
+     *    softly.assertThatThrownBy(() -> { throw new Exception("boom!") }).isInstanceOf(Exception.class)
+2:466c
+3:466c
+     *    softly.assertThatThrownBy(() -> { throw new Exception("boom!"); }).isInstanceOf(Exception.class)
+====1
+1:476a
+2:488,573c
+3:488,573c
+   
+    /**
+     * Create assertion for {@link java.util.Optional}.
+     *
+     * @param actual the actual value.
+     * @param <T> the type of the value contained in the {@link java.util.Optional}.
+     *
+     * @return the created assertion object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> OptionalAssert<T> assertThat(Optional<T> actual) {
+      return proxy(OptionalAssert.class, Optional.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalDouble}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalDoubleAssert assertThat(OptionalDouble actual) {
+        return proxy(OptionalDoubleAssert.class, OptionalDouble.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalLong}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalLongAssert assertThat(OptionalLong actual) {
+        return proxy(OptionalLongAssert.class, OptionalLong.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalInt}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalIntAssert assertThat(OptionalInt actual) {
+        return proxy(OptionalIntAssert.class, OptionalInt.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link LocalDateAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public LocalDateAssert assertThat(LocalDate actual) {
+      return proxy(LocalDateAssert.class, LocalDate.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link LocalDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public LocalDateTimeAssert assertThat(LocalDateTime actual) {
+      return proxy(LocalDateTimeAssert.class, LocalDateTime.class, actual);
+    }
+    
+    /**
+     * Creates a new instance of <code>{@link ZonedDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public ZonedDateTimeAssert assertThat(ZonedDateTime actual) {
+      return proxy(ZonedDateTimeAssert.class, ZonedDateTime.class, actual);
+    }
+    
+    /**
+     * Creates a new instance of <code>{@link LocalTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public LocalTimeAssert assertThat(LocalTime actual) {
+      return proxy(LocalTimeAssert.class, LocalTime.class, actual);
+    }
+====1
+1:478a
+2:576,595c
+3:576,595c
+     * Creates a new instance of <code>{@link OffsetTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public OffsetTimeAssert assertThat(OffsetTime actual) {
+        return proxy(OffsetTimeAssert.class, OffsetTime.class, actual);
+    }
+    
+    /**
+     * Creates a new instance of <code>{@link OffsetDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public OffsetDateTimeAssert assertThat(OffsetDateTime actual) {
+      return proxy(OffsetDateTimeAssert.class, OffsetDateTime.class, actual);
+    }
+    
+    /**
+====1
+1:497a
+2:615,627c
+3:615,627c
+    /**
+     * Create assertion for {@link java.util.concurrent.CompletableFuture}.
+     *
+     * @param future the actual value.
+     * @param <T> the type of the value contained in the {@link java.util.concurrent.CompletableFuture}.
+     *
+     * @return the created assertion object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> CompletableFutureAssert<T> assertThat(CompletableFuture<T> actual) {
+      return proxy(CompletableFutureAssert.class, CompletableFuture.class, actual);
+    }
+  

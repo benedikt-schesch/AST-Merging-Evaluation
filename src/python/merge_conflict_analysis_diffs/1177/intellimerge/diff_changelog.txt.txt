@@ -1,0 +1,17 @@
+====
+1:18a
+2:19,27c
+  <<<<<<< HEAD
+      removed the 'traversal_mode` request parameter for /route, instead of 'traversal_mode=edge_based_2dir' use edge_based=true
+      It is now possible to specify finite u-turn costs for CH preparation, #1671
+  ||||||| 34b0d48a78
+  =======
+      removed the 'traversal_mode` request parameter for /route, instead of 'traversal_mode=edge_based_2dir' use edge_based=true
+      removed GraphHopper.set/getTraversalMode() methods, #1705
+      edge-based CH is now chosen by default if it was prepared, #1706
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:19,22c
+      removed the 'traversal_mode` request parameter for /route, instead of 'traversal_mode=edge_based_2dir' use edge_based=true
+      removed GraphHopper.set/getTraversalMode() methods, #1705
+      edge-based CH is now chosen by default if it was prepared, #1706
+      it is now possible to specify finite u-turn costs for CH preparation, #1671

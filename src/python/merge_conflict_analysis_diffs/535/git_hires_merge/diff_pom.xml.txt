@@ -1,0 +1,95 @@
+====1
+1:7c
+      <version>4.1.22-SNAPSHOT</version>
+2:7c
+3:7c
+      <version>4.2.1-SNAPSHOT</version>
+====1
+1:20a
+2:21c
+3:21c
+          <module>metrics-caffeine3</module>
+====1
+1:28a
+2:30,31c
+3:30,31c
+          <module>metrics-jakarta-servlet</module>
+          <module>metrics-jakarta-servlets</module>
+====1
+1:33a
+2:37c
+3:37c
+          <module>metrics-jersey3</module>
+====1
+1:34a
+2:39,40c
+3:39,40c
+          <module>metrics-jetty10</module>
+          <module>metrics-jetty11</module>
+====1
+1:49c
+          <jackson.version>2.9.10.8</jackson.version>
+2:55c
+3:55c
+          <jackson.version>2.12.3</jackson.version>
+====1
+1:50a
+2:57,58c
+3:57,58c
+          <jetty10.version>10.0.2</jetty10.version>
+          <jetty11.version>11.0.2</jetty11.version>
+====1
+1:55a
+2:64c
+3:64c
+          <errorprone.version>2.7.1</errorprone.version>
+====1
+1:178a
+2:188,227c
+3:188,227c
+              <id>jdk16</id>
+              <activation>
+                  <jdk>16</jdk>
+              </activation>
+              <build>
+                  <plugins>
+                      <plugin>
+                          <groupId>org.apache.maven.plugins</groupId>
+                          <artifactId>maven-compiler-plugin</artifactId>
+                          <version>${maven-compiler-plugin.version}</version>
+                          <configuration>
+                              <fork>true</fork>
+                              <compilerArgs>
+                                  <arg>-Xlint:all</arg>
+                                  <arg>-XDcompilePolicy=simple</arg>
+                                  <arg>-Xplugin:ErrorProne -XepExcludedPaths:.*/target/generated-sources/.*</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+                                  <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+                                  <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+                                  <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                              </compilerArgs>
+                              <annotationProcessorPaths>
+                                  <path>
+                                      <groupId>com.google.errorprone</groupId>
+                                      <artifactId>error_prone_core</artifactId>
+                                      <version>${errorprone.version}</version>
+                                  </path>
+                              </annotationProcessorPaths>
+                          </configuration>
+                      </plugin>
+                  </plugins>
+              </build>
+          </profile>
+          <profile>
+====1
+1:295c
+                              <version>2.7.1</version>
+2:344c
+3:344c
+                              <version>${errorprone.version}</version>

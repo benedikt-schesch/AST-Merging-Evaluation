@@ -1,0 +1,47 @@
+====
+1:19a
+2:20,26c
+  <<<<<<< HEAD
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+  ||||||| a41d209d5
+  import com.alibaba.nacos.config.server.constant.Constants;
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+  =======
+  import com.alibaba.nacos.common.task.NacosTask;
+3:20c
+  import com.alibaba.nacos.common.task.NacosTask;
+====
+1:21c
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+2:28c
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:21a
+====1
+1:22a
+2:30c
+3:23c
+  import com.alibaba.nacos.config.server.constant.Constants;
+====1
+1:31c
+  import com.alibaba.nacos.core.utils.InetUtils;
+2:39c
+3:32c
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====1
+1:55c
+      public boolean process(AbstractDelayTask task) {
+2:63c
+3:56c
+      public boolean process(NacosTask task) {
+====1
+1:87c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIp(),
+2:95c
+3:88c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIP(),
+====1
+1:101c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIp(),
+2:109c
+3:102c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIP(),

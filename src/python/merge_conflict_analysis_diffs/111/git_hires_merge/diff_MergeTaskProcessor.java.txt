@@ -1,0 +1,38 @@
+====
+1:20,21c
+  import com.alibaba.nacos.config.server.constant.Constants;
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+2:20c
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+3:20,21c
+  import com.alibaba.nacos.common.task.NacosTask;
+  import com.alibaba.nacos.config.server.constant.Constants;
+====1
+1:22a
+2:22c
+3:23c
+  import com.alibaba.nacos.config.server.constant.Constants;
+====3
+1:31c
+2:31c
+  import com.alibaba.nacos.core.utils.InetUtils;
+3:32c
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====3
+1:55c
+2:55c
+      public boolean process(AbstractDelayTask task) {
+3:56c
+      public boolean process(NacosTask task) {
+====3
+1:87c
+2:87c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIp(),
+3:88c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIP(),
+====3
+1:101c
+2:101c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIp(),
+3:102c
+                          .logPersistenceEvent(dataId, group, tenant, null, time.getTime(), InetUtils.getSelfIP(),

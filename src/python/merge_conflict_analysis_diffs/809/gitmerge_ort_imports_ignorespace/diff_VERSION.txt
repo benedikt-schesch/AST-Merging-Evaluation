@@ -1,0 +1,25 @@
+====
+1:17c
+  2.6.3 (not yet released)
+2:17,26c
+  2.7.0 (not yet released)
+  
+  #198: Add back-references to `JsonParser` / `JsonGenerator` for low-level parsing issues
+   (via `JsonParseException`, `JsonGenerationException`)
+  #211: Typo of function name com.fasterxml.jackson.core.Version.isUknownVersion()
+   (reported by timray@github)
+  - Implemented `ReaderBasedJsonParser.nextFieldName(SerializableString)`
+    (to improved Afterburner performance over String/char[] sources)
+  
+  2.6.3 (not yet released)
+3:17,26c
+  2.7.0 (not yet released)
+  
+  #198: Add back-references to `JsonParser` / `JsonGenerator` for low-level parsing issues
+   (via `JsonParseException`, `JsonGenerationException`)
+  #211: Typo of function name com.fasterxml.jackson.core.Version.isUknownVersion()
+   (reported by timray@github)
+  - Implemented `ReaderBasedJsonParser.nextFieldName(SerializableString)`
+    (to improved Afterburner performance over String/char[] sources)
+  
+  2.6.3 (12-Oct-2015)

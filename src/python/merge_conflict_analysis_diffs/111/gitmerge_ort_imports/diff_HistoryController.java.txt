@@ -1,0 +1,94 @@
+====3
+1:31,33c
+2:31,33c
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  
+3:30a
+====2
+1:42c
+3:39c
+      
+2:42c
+  
+====2
+1:45c
+3:42c
+      
+2:45c
+  
+====3
+1:49,53c
+2:49,53c
+       * @param dataId dataId string value.
+       * @param group group string value.
+       * @param tenant tenant string value.
+       * @param appName appName string value.
+       * @param pageNo pageNo string value.
+3:46,50c
+       * @param dataId   dataId string value.
+       * @param group    group string value.
+       * @param tenant   tenant string value.
+       * @param appName  appName string value.
+       * @param pageNo   pageNo string value.
+====2
+1:60,66c
+3:57,63c
+              @RequestParam("group") String group, //
+              @RequestParam(value = "tenant", required = false, defaultValue = StringUtils.EMPTY) String tenant,
+              @RequestParam(value = "appName", required = false) String appName,
+              @RequestParam(value = "pageNo", required = false) Integer pageNo,
+              //
+              @RequestParam(value = "pageSize", required = false) Integer pageSize, //
+              ModelMap modelMap) {
+2:60,66c
+                                                       @RequestParam("group") String group, //
+                                                       @RequestParam(value = "tenant", required = false, defaultValue = StringUtils.EMPTY) String tenant,
+                                                       @RequestParam(value = "appName", required = false) String appName,
+                                                       @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                       //
+                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize, //
+                                                       ModelMap modelMap) {
+====2
+1:73c
+3:70c
+      
+2:73c
+  
+====3
+1:75c
+2:75c
+       * Query the detailed configuration history informations.
+3:72,75c
+       * Query the detailed configuration history information.
+       *
+       * @param nid history_config_info nid
+       * @return history config info
+====
+1:78,79c
+      public ConfigHistoryInfo getConfigHistoryInfo(HttpServletRequest request, HttpServletResponse response,
+              @RequestParam("nid") Long nid, ModelMap modelMap) {
+2:78,79c
+      public ConfigHistoryInfo getConfigHistoryInfo(HttpServletRequest request, HttpServletResponse response,
+                                                    @RequestParam("nid") Long nid, ModelMap modelMap) {
+3:78c
+      public ConfigHistoryInfo getConfigHistoryInfo(@RequestParam("nid") Long nid) {
+====
+1:82c
+      
+2:82c
+  
+3:81,93c
+      
+      /**
+       * Query previous config history information.
+       *
+       * @param id config_info id
+       * @return history config info
+       * @since 1.4.0
+       */
+      @GetMapping(value = "/previous")
+      public ConfigHistoryInfo getPreviousConfigHistoryInfo(@RequestParam("id") Long id) {
+          return persistService.detailPreviousConfigHistory(id);
+      }
+      

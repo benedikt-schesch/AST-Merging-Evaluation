@@ -1,0 +1,48 @@
+====1
+1:26c
+   * @author Peter Karich,
+2:26c
+3:26c
+   * @author Peter Karich
+====3
+1:30c
+2:30c
+      public abstract MyBitSet createBitSet(int no);
+3:30c
+      public abstract GHBitSet createBitSet(int no);
+====3
+1:34c
+2:34c
+          MyBitSet bs = createBitSet(100);
+3:34c
+          GHBitSet bs = createBitSet(100);
+====3
+1:38c
+2:38c
+          MyBitSet copyBS = createBitSet(10);
+3:38c
+          GHBitSet copyBS = createBitSet(10);
+====3
+1:61c
+2:61c
+          MyBitSet bs = createBitSet(100);
+3:61c
+          GHBitSet bs = createBitSet(100);
+====3
+1:69c
+2:69c
+          MyBitSet bs = createBitSet(100);
+3:69c
+          GHBitSet bs = createBitSet(100);
+====3
+1:80c
+2:80c
+          MyBitSet bs = createBitSet(8);
+3:80c
+          GHBitSet bs = createBitSet(8);
+====3
+1:97c
+2:97c
+          MyBitSet bs = createBitSet(100);
+3:97c
+          GHBitSet bs = createBitSet(100);

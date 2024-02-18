@@ -1,0 +1,49 @@
+====
+1:99a
+2:100,105c
+  <<<<<<< HEAD
+      private final BojackHorseman bojackHorseman;
+  ||||||| 1850b033
+  =======
+      private final Basketball basketball;
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:100,101c
+      private final BojackHorseman bojackHorseman;
+      private final Basketball basketball;
+====
+1:205a
+2:212,217c
+  <<<<<<< HEAD
+          this.bojackHorseman = new BojackHorseman(this);
+  ||||||| 1850b033
+  =======
+          this.basketball = new Basketball(this);
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:208,209c
+          this.bojackHorseman = new BojackHorseman(this);
+          this.basketball = new Basketball(this);
+====1
+1:494,496c
+      public Beer beer() {
+          return beer;
+      }
+2:506c
+3:498c
+      public Beer beer() { return beer; }
+====
+1:643a
+2:654,662c
+  <<<<<<< HEAD
+  
+      public BojackHorseman bojackHorseman() { return bojackHorseman; }
+  
+  
+  ||||||| 1850b033
+  =======
+      public Basketball basketball() { return basketball; }
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:646,649c
+      public BojackHorseman bojackHorseman() { return bojackHorseman; }
+  
+      public Basketball basketball() { return basketball; }
+  

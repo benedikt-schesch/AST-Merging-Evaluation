@@ -1,0 +1,243 @@
+====1
+1:95a
+2:96,100c
+3:96,100c
+           * Represents Entity-based events
+           */
+          ENTITY,
+  
+          /**
+====1
+1:106c
+           * Represents Vehicle-based events
+2:111,116c
+3:111,116c
+           * Represents Weather-based events
+           */
+          WEATHER,
+  
+          /**
+           * Vehicle-based events
+====1
+1:155a
+2:166,172c
+3:166,172c
+           * Called when a player has just been authenticated
+           *
+           * @see org.bukkit.event.player.PlayerPreLoginEvent
+           */
+          PLAYER_PRELOGIN (Category.PLAYER),
+  
+          /**
+====1
+1:218a
+2:236,242c
+3:236,242c
+           * Called when a player right clicks an entity
+           *
+           * @see org.bukkit.event.player.PlayerInteractEntityEvent
+           */
+          PLAYER_INTERACT_ENTITY (Category.PLAYER),
+  
+          /**
+====3
+1:255c
+2:279c
+           * 
+3:279c
+           *
+====3
+1:262c
+2:286c
+           * 
+3:286c
+           *
+====1
+1:267a
+2:292,312c
+3:292,312c
+           * Called when a player interacts with the inventory
+           *
+           * @see org.bukkit.event.player.PlayerInventoryEvent
+           */
+          PLAYER_INVENTORY(Category.PLAYER),
+  
+          /**
+           * Called when a player enter a bed
+           *
+           * @see org.bukkit.event.player.PlayerBedEnterEvent
+           */
+          PLAYER_BED_ENTER(Category.PLAYER),
+  
+          /**
+           * Called when a player leaves a bed
+           *
+           * @see org.bukkit.event.player.PlayerBedEnterEvent
+           */
+          PLAYER_BED_LEAVE(Category.PLAYER),
+  
+          /**
+====1
+1:321a
+2:367,373c
+3:367,373c
+           * Called when a block dispenses something
+           *
+           * @see org.bukkit.event.block.BlockPlaceEvent
+           */
+          BLOCK_DISPENSE (Category.BLOCK),
+  
+          /**
+====
+1:356a
+2:409,424c
+          
+          /**
+  <<<<<<< HEAD
+           * Called when a block is successfully smelted (fully) in a furnace.
+           *
+           * @see org.bukkit.event.block.FurnaceSmeltEvent
+           */
+          FURNACE_SMELT (Category.BLOCK),
+  ||||||| 325fbdc0
+  =======
+           * Called when world attempts to place a snow block during a snowfall
+           *
+           * @see org.bukkit.event.block.SnowFormEvent
+           */
+          SNOW_FORM (Category.BLOCK),
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:409,422c
+          
+          /**
+           * Called when a block is successfully smelted (fully) in a furnace.
+           *
+           * @see org.bukkit.event.block.FurnaceSmeltEvent
+           */
+          FURNACE_SMELT (Category.BLOCK),
+  
+          /**
+           * Called when world attempts to place a snow block during a snowfall
+           *
+           * @see org.bukkit.event.block.SnowFormEvent
+           */
+          SNOW_FORM (Category.BLOCK),
+====1
+1:457a
+2:526,532c
+3:524,530c
+           * Called when a World's spawn is changed
+           *
+           * @see org.bukkit.event.world.SpawnChangeEvent
+           */
+          SPAWN_CHANGE (Category.WORLD),
+  
+          /**
+====3
+1:459c
+2:534c
+           * 
+3:532c
+           *
+====1
+1:468a
+2:544,561c
+3:542,559c
+           * ENTITY EVENTS
+           */
+  
+          /**
+           * Called when a painting is placed by player
+           *
+           * @see org.bukkit.event.painting.PaintingCreateEvent
+           */
+          PAINTING_PLACE (Category.ENTITY),
+  
+          /**
+           * Called when a painting is removed
+           *
+           * @see org.bukkit.event.painting.PaintingRemoveEvent
+           */
+          PAINTING_BREAK (Category.ENTITY),
+  
+          /**
+====3
+1:510c
+2:603c
+           * 
+3:601c
+           *
+====3
+1:513c
+2:606c
+           * 
+3:604c
+           *
+====3
+1:517c
+2:610c
+           * 
+3:608c
+           *
+====1
+1:529a
+2:623,669c
+3:621,667c
+           * Called when an entity interacts with a block
+           * This event specifically excludes player entities
+           *
+           * @see org.bukkit.event.entity.EntityInteractEvent
+           */
+          ENTITY_INTERACT (Category.LIVING_ENTITY),
+  
+          /**
+           * Called when a creeper gains or loses a power shell
+           *
+           * @see org.bukkit.event.entity.CreeperPowerEvent
+           */
+          CREEPER_POWER (Category.LIVING_ENTITY),
+  
+          /**
+           * Called when a pig is zapped, zombifying it
+           *
+           * @see org.bukkit.event.entity.PigZapEvent
+           */
+          PIG_ZAP (Category.LIVING_ENTITY),
+  
+          /**
+           * WEATHER EVENTS
+           */
+  
+          /**
+           * Called when a lightning entity strikes somewhere
+           *
+           * @see org.bukkit.event.weather.LightningStrikeEvent
+           */
+          LIGHTNING_STRIKE (Category.WEATHER),
+  
+          /**
+           * Called when the weather in a world changes
+           *
+           * @see org.bukkit.event.weather.WeatherChangeEvent
+           */
+          WEATHER_CHANGE (Category.WEATHER),
+  
+          /**
+           * Called when the thunder state in a world changes
+           *
+           * @see org.bukkit.event.weather.ThunderChangeEvent
+           */
+          THUNDER_CHANGE (Category.WEATHER),
+  
+          /**
+====1
+1:540a
+2:681,687c
+3:679,685c
+           * Called when a vehicle is destroyed
+           *
+           * @see org.bukkit.event.vehicle.VehicleDestroyEvent
+           */
+          VEHICLE_DESTROY (Category.VEHICLE),
+  
+          /**

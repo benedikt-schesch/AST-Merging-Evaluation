@@ -1,0 +1,28 @@
+====1
+1:6c
+      <version>2.6.1</version>
+2:6c
+3:6c
+      <version>2.6.2</version>
+====1
+1:12c
+    <version>2.6.3-SNAPSHOT</version>
+2:12c
+3:12c
+    <version>2.7.0-SNAPSHOT</version>
+====3
+1:14,15c
+2:14,15c
+    <description>Core Jackson abstractions, basic JSON streaming API implementation
+    </description>
+3:14,15c
+    <description>Core Jackson abstractions, basic JSON streaming API implementation</description>
+    <inceptionYear>2008</inceptionYear>
+====1
+1:25a
+2:26,29c
+3:26,29c
+      <!-- 02-Oct-2015, tatu: Retain Java6/JDK1.6 compatibility for streaming for Jackson 2.7 -->
+      <javac.src.version>1.6</javac.src.version>
+      <javac.target.version>1.6</javac.target.version>
+  

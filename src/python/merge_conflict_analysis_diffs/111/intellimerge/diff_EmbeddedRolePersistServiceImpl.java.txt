@@ -1,0 +1,186 @@
+====1
+1:21c
+  import com.alibaba.nacos.config.server.service.repository.embedded.EmbeddedStoragePersistServiceImpl;
+2:20a
+3:20a
+====1
+1:23a
+2:23c
+3:23c
+  import com.alibaba.nacos.config.server.service.repository.embedded.EmbeddedStoragePersistServiceImpl;
+====1
+1:30a
+2:31c
+3:31c
+  import java.util.Collections;
+====2
+1:43c
+3:44c
+      
+2:44c
+  
+====2
+1:46c
+3:47c
+      
+2:47c
+  
+====2
+1:49c
+3:50c
+      
+2:50c
+  
+====2
+1:51c
+3:52c
+          
+2:52c
+  
+====2
+1:53c
+3:54c
+          
+2:54c
+  
+====2
+1:56c
+3:57c
+          
+2:57c
+  
+====2
+1:58c
+3:59c
+          
+2:59c
+  
+====2
+1:68c
+3:69c
+          
+2:69c
+  
+====2
+1:70c
+3:71c
+      
+2:71c
+  
+====2
+1:72c
+3:73c
+          
+2:73c
+  
+====2
+1:74c
+3:75c
+          
+2:75c
+  
+====
+1:77,80c
+          
+          String where = " username='" + username + "' ";
+          
+          if (StringUtils.isBlank(username)) {
+2:78,95c
+  <<<<<<< HEAD
+  
+          String where = " username='" + username + "' ";
+  
+          if (StringUtils.isBlank(username)) {
+  ||||||| a41d209d5
+          
+          String where = " username='" + username + "' ";
+          
+          if (StringUtils.isBlank(username)) {
+  =======
+      
+          String where = " username= ? ";
+          List<String> params = new ArrayList<>();
+          if (StringUtils.isNotBlank(username)) {
+              params = Collections.singletonList(username);
+          } else {
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:78,83c
+      
+          String where = " username= ? ";
+          List<String> params = new ArrayList<>();
+          if (StringUtils.isNotBlank(username)) {
+              params = Collections.singletonList(username);
+          } else {
+====2
+1:82a
+3:85a
+2:98,104c
+  <<<<<<< HEAD
+  
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+  ||||||| a41d209d5
+          
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+  =======
+====
+1:84c
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+2:106,107c
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo,
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:87c
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo,
+====2
+1:86c
+3:89c
+          
+2:109c
+  
+====2
+1:88c
+3:91c
+      
+2:111c
+  
+====2
+1:96c
+3:99c
+          
+2:119c
+  
+====2
+1:98c
+3:101c
+          
+2:121c
+  
+====2
+1:106c
+3:109c
+      
+2:129c
+  
+====2
+1:121c
+3:124c
+      
+2:144c
+  
+====2
+1:137c
+3:140c
+      
+2:160c
+  
+====2
+1:141c
+3:144c
+          List<String> users = databaseOperate.queryMany(sql, new String[] {"%" + role + "%"}, String.class);
+2:164c
+          List<String> users = databaseOperate.queryMany(sql, new String[]{"%" + role + "%"}, String.class);
+====2
+1:144c
+3:147c
+      
+2:167c
+  

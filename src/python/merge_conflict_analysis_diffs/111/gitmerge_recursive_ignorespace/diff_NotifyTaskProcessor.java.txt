@@ -1,0 +1,67 @@
+====
+1:19a
+2:20,26c
+  <<<<<<< HEAD
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+  ||||||| a41d209d5
+  import com.alibaba.nacos.config.server.constant.Constants;
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+  =======
+  import com.alibaba.nacos.common.task.NacosTask;
+3:20c
+  import com.alibaba.nacos.common.task.NacosTask;
+====
+1:21c
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+2:28c
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:21a
+====1
+1:22a
+2:30c
+3:23c
+  import com.alibaba.nacos.config.server.constant.Constants;
+====1
+1:27,28c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.alibaba.nacos.core.utils.InetUtils;
+2:35,36c
+3:28,29c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====1
+1:49c
+      public boolean process(AbstractDelayTask task) {
+2:57c
+3:50c
+      public boolean process(NacosTask task) {
+====1
+1:76c
+                              NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+2:84c
+3:77c
+                              NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIP());
+====1
+1:78c
+                      .format(URL_PATTERN, serverIp, ApplicationUtils.getContextPath(), dataId, group);
+2:86c
+3:79c
+                      .format(URL_PATTERN, serverIp, EnvUtil.getContextPath(), dataId, group);
+====1
+1:82c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+2:90c
+3:83c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),
+====1
+1:92c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+2:100c
+3:93c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),
+====1
+1:100c
+              ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+2:108c
+3:101c
+              ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),

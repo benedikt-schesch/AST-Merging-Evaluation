@@ -13,14 +13,15 @@ from merge_tester import MERGE_STATE
 # pylint: disable-msg=too-many-locals
 
 
-def diff3_analysis(merge_tool: str, results_index: int):
+def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
 
     Args:
         merge_tool (str): The merge tool to be used.
         results_index (int): The index of the repository in the results DataFrame.
-
+        repo_output_dir (path): The path of where we want to store the results from the analysis    
+    
     Returns:
         None
     """
@@ -28,12 +29,6 @@ def diff3_analysis(merge_tool: str, results_index: int):
     # Deletes base, programmer_merge, and merge_attempt folders in repos dir
     # We do this to prevent errors if cloning the same repo into the folder twice
     shutil.rmtree("./repos", ignore_errors=True)
-
-    # Ensure the base output directory exists
-    base_output_dir = "./merge_conflict_analysis_diffs"
-    # Create a subdirectory for this specific results_index
-    repo_output_dir = os.path.join(base_output_dir, f"index_{results_index}")
-    os.makedirs(repo_output_dir, exist_ok=True)
 
     # Retrieve left and right branch from hash in repo
     df = pd.read_csv("../../results_greatest_hits/result.csv")

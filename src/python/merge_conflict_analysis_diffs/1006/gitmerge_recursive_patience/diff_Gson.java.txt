@@ -1,0 +1,1216 @@
+====1
+1:19,37c
+  import java.io.EOFException;
+  import java.io.IOException;
+  import java.io.Reader;
+  import java.io.StringReader;
+  import java.io.StringWriter;
+  import java.io.Writer;
+  import java.lang.reflect.Type;
+  import java.math.BigDecimal;
+  import java.math.BigInteger;
+  import java.text.DateFormat;
+  import java.util.ArrayList;
+  import java.util.Collections;
+  import java.util.HashMap;
+  import java.util.List;
+  import java.util.Map;
+  import java.util.concurrent.ConcurrentHashMap;
+  import java.util.concurrent.atomic.AtomicLong;
+  import java.util.concurrent.atomic.AtomicLongArray;
+  
+2:18a
+3:18a
+====1
+1:53a
+2:35c
+3:35c
+  import com.google.gson.internal.bind.SerializationDelegatingTypeAdapter;
+====
+1:60a
+2:43,70c
+  import java.io.EOFException;
+  import java.io.IOException;
+  import java.io.Reader;
+  import java.io.StringReader;
+  import java.io.StringWriter;
+  import java.io.Writer;
+  import java.lang.reflect.Type;
+  import java.math.BigDecimal;
+  import java.math.BigInteger;
+  import java.text.DateFormat;
+  import java.util.ArrayList;
+  import java.util.Collections;
+  <<<<<<< HEAD
+  import java.util.Iterator;
+  import java.util.LinkedHashMap;
+  import java.util.List;
+  import java.util.Map;
+  ||||||| 47dea2ee
+  =======
+  import java.util.HashMap;
+  import java.util.List;
+  import java.util.Map;
+  import java.util.Objects;
+  >>>>>>> TEMP_RIGHT_BRANCH
+  import java.util.concurrent.ConcurrentHashMap;
+  import java.util.concurrent.ConcurrentMap;
+  import java.util.concurrent.atomic.AtomicLong;
+  import java.util.concurrent.atomic.AtomicLongArray;
+3:43,63c
+  import java.io.EOFException;
+  import java.io.IOException;
+  import java.io.Reader;
+  import java.io.StringReader;
+  import java.io.StringWriter;
+  import java.io.Writer;
+  import java.lang.reflect.Type;
+  import java.math.BigDecimal;
+  import java.math.BigInteger;
+  import java.text.DateFormat;
+  import java.util.ArrayList;
+  import java.util.Collections;
+  import java.util.Iterator;
+  import java.util.LinkedHashMap;
+  import java.util.List;
+  import java.util.Map;
+  import java.util.Objects;
+  import java.util.concurrent.ConcurrentHashMap;
+  import java.util.concurrent.ConcurrentMap;
+  import java.util.concurrent.atomic.AtomicLong;
+  import java.util.concurrent.atomic.AtomicLongArray;
+====1
+1:78c
+   * String json = gson.toJson(target); // serializes target to Json
+2:88c
+3:81c
+   * String json = gson.toJson(target); // serializes target to JSON
+====1
+1:82,86c
+   * <p>If the object that your are serializing/deserializing is a {@code ParameterizedType}
+   * (i.e. contains at least one type parameter and may be an array) then you must use the
+   * {@link #toJson(Object, Type)} or {@link #fromJson(String, Type)} method. Here is an
+   * example for serializing and deserializing a {@code ParameterizedType}:
+   *
+2:92,98c
+3:85,91c
+   * <p>If the type of the object that you are converting is a {@code ParameterizedType}
+   * (i.e. has at least one type argument, for example {@code List<MyType>}) then for
+   * deserialization you must use a {@code fromJson} method with {@link Type} or {@link TypeToken}
+   * parameter to specify the parameterized type. For serialization specifying a {@code Type}
+   * or {@code TypeToken} is optional, otherwise Gson will use the runtime type of the object.
+   * {@link TypeToken} is a class provided by Gson which helps creating parameterized types.
+   * Here is an example showing how this can be done:
+====1
+1:88,90c
+   * Type listType = new TypeToken&lt;List&lt;String&gt;&gt;() {}.getType();
+   * List&lt;String&gt; target = new LinkedList&lt;String&gt;();
+   * target.add("blah");
+2:100,102c
+3:93,95c
+   * TypeToken&lt;List&lt;MyType&gt;&gt; listType = new TypeToken&lt;List&lt;MyType&gt;&gt;() {};
+   * List&lt;MyType&gt; target = new LinkedList&lt;MyType&gt;();
+   * target.add(new MyType(1, "abc"));
+====1
+1:93,94c
+   * String json = gson.toJson(target, listType);
+   * List&lt;String&gt; target2 = gson.fromJson(json, listType);
+2:105,110c
+3:98,103c
+   * // For serialization you normally do not have to specify the type, Gson will use
+   * // the runtime type of the objects, however you can also specify it explicitly
+   * String json = gson.toJson(target, listType.getType());
+   *
+   * // But for deserialization you have to specify the type
+   * List&lt;MyType&gt; target2 = gson.fromJson(json, listType);
+====1
+1:97c
+   * <p>See the <a href="https://sites.google.com/site/gson/gson-user-guide">Gson User Guide</a>
+2:113c
+3:106c
+   * <p>See the <a href="https://github.com/google/gson/blob/master/UserGuide.md">Gson User Guide</a>
+====1
+1:100c
+   * @see com.google.gson.reflect.TypeToken
+2:116,143c
+3:109,136c
+   * <h2>Lenient JSON handling</h2>
+   * For legacy reasons most of the {@code Gson} methods allow JSON data which does not
+   * comply with the JSON specification, regardless of whether {@link GsonBuilder#setLenient()}
+   * is used or not. If this behavior is not desired, the following workarounds can be used:
+   *
+   * <h3>Serialization</h3>
+   * <ol>
+   *   <li>Use {@link #getAdapter(Class)} to obtain the adapter for the type to be serialized
+   *   <li>When using an existing {@code JsonWriter}, manually apply the writer settings of this
+   *       {@code Gson} instance listed by {@link #newJsonWriter(Writer)}.<br>
+   *       Otherwise, when not using an existing {@code JsonWriter}, use {@link #newJsonWriter(Writer)}
+   *       to construct one.
+   *   <li>Call {@link TypeAdapter#write(JsonWriter, Object)}
+   * </ol>
+   *
+   * <h3>Deserialization</h3>
+   * <ol>
+   *   <li>Use {@link #getAdapter(Class)} to obtain the adapter for the type to be deserialized
+   *   <li>When using an existing {@code JsonReader}, manually apply the reader settings of this
+   *       {@code Gson} instance listed by {@link #newJsonReader(Reader)}.<br>
+   *       Otherwise, when not using an existing {@code JsonReader}, use {@link #newJsonReader(Reader)}
+   *       to construct one.
+   *   <li>Call {@link TypeAdapter#read(JsonReader)}
+   *   <li>Call {@link JsonReader#peek()} and verify that the result is {@link JsonToken#END_DOCUMENT}
+   *       to make sure there is no trailing data
+   * </ol>
+   *
+   * @see TypeToken
+====1
+1:120c
+    private static final TypeToken<?> NULL_KEY_SURROGATE = TypeToken.get(Object.class);
+2:162a
+3:155a
+====
+1:130,133c
+    private final ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>> calls
+        = new ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>>();
+  
+    private final Map<TypeToken<?>, TypeAdapter<?>> typeTokenCache = new ConcurrentHashMap<TypeToken<?>, TypeAdapter<?>>();
+2:172,189c
+  <<<<<<< HEAD
+    // Uses LinkedHashMap because iteration order is important, see getAdapter() implementation below
+    private final ThreadLocal<LinkedHashMap<TypeToken<?>, TypeAdapter<?>>> calls = new ThreadLocal<>();
+  ||||||| 47dea2ee
+    private final ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>> calls
+        = new ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>>();
+  =======
+    private final ThreadLocal<Map<TypeToken<?>, FutureTypeAdapter<?>>> calls
+        = new ThreadLocal<>();
+  >>>>>>> TEMP_RIGHT_BRANCH
+  
+  <<<<<<< HEAD
+    private final ConcurrentMap<TypeToken<?>, TypeAdapter<?>> typeTokenCache = new ConcurrentHashMap<TypeToken<?>, TypeAdapter<?>>();
+  ||||||| 47dea2ee
+    private final Map<TypeToken<?>, TypeAdapter<?>> typeTokenCache = new ConcurrentHashMap<TypeToken<?>, TypeAdapter<?>>();
+  =======
+    private final ConcurrentMap<TypeToken<?>, TypeAdapter<?>> typeTokenCache = new ConcurrentHashMap<>();
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:165,168c
+    // Uses LinkedHashMap because iteration order is important, see getAdapter() implementation below
+    private final ThreadLocal<LinkedHashMap<TypeToken<?>, TypeAdapter<?>>> calls = new ThreadLocal<>();
+  
+    private final ConcurrentMap<TypeToken<?>, TypeAdapter<?>> typeTokenCache = new ConcurrentHashMap<>();
+====1
+1:158a
+2:215c
+3:194c
+    final List<ReflectionAccessFilter> reflectionFilters;
+====1
+1:185c
+     *   <li>The default field naming policy for the output Json is same as in Java. So, a Java class
+2:242c
+3:221c
+     *   <li>The default field naming policy for the output JSON is same as in Java. So, a Java class
+====1
+1:187c
+     *   Json. The same rules are applied for mapping incoming Json to the Java classes. You can
+2:244c
+3:223c
+     *   JSON. The same rules are applied for mapping incoming JSON to the Java classes. You can
+====1
+1:202c
+          Collections.<TypeAdapterFactory>emptyList(), DEFAULT_OBJECT_TO_NUMBER_STRATEGY, DEFAULT_NUMBER_TO_NUMBER_STRATEGY);
+2:259,260c
+3:238,239c
+          Collections.<TypeAdapterFactory>emptyList(), DEFAULT_OBJECT_TO_NUMBER_STRATEGY, DEFAULT_NUMBER_TO_NUMBER_STRATEGY,
+          Collections.<ReflectionAccessFilter>emptyList());
+====1
+1:214c
+        ToNumberStrategy objectToNumberStrategy, ToNumberStrategy numberToNumberStrategy) {
+2:272,273c
+3:251,252c
+        ToNumberStrategy objectToNumberStrategy, ToNumberStrategy numberToNumberStrategy,
+        List<ReflectionAccessFilter> reflectionFilters) {
+====1
+1:218c
+      this.constructorConstructor = new ConstructorConstructor(instanceCreators, useJdkUnsafe);
+2:277c
+3:256c
+      this.constructorConstructor = new ConstructorConstructor(instanceCreators, useJdkUnsafe, reflectionFilters);
+====1
+1:234a
+2:294c
+3:273c
+      this.reflectionFilters = reflectionFilters;
+====1
+1:236c
+      List<TypeAdapterFactory> factories = new ArrayList<TypeAdapterFactory>();
+2:296c
+3:275c
+      List<TypeAdapterFactory> factories = new ArrayList<>();
+====1
+1:299c
+          constructorConstructor, fieldNamingStrategy, excluder, jsonAdapterFactory));
+2:359c
+3:338c
+          constructorConstructor, fieldNamingStrategy, excluder, jsonAdapterFactory, reflectionFilters));
+====1
+1:308a
+2:369c
+3:348c
+     * @since 2.8.3
+====1
+1:371c
+          out.value(value);
+2:432c
+3:411c
+          out.value(doubleValue);
+====1
+1:395c
+          out.value(value);
+2:456,459c
+3:435,438c
+          // For backward compatibility don't call `JsonWriter.value(float)` because that method has
+          // been newly added and not all custom JsonWriter implementations might override it yet
+          Number floatNumber = value instanceof Float ? value : floatValue;
+          out.value(floatNumber);
+====1
+1:452c
+          List<Long> list = new ArrayList<Long>();
+2:516c
+3:495c
+          List<Long> list = new ArrayList<>();
+====1
+1:475c
+    @SuppressWarnings("unchecked")
+2:538a
+3:517a
+====1
+1:477c
+      TypeAdapter<?> cached = typeTokenCache.get(type == null ? NULL_KEY_SURROGATE : type);
+2:540,541c
+3:519,520c
+      Objects.requireNonNull(type, "type must not be null");
+      TypeAdapter<?> cached = typeTokenCache.get(type);
+====1
+1:479c
+        return (TypeAdapter<T>) cached;
+2:543,545c
+3:522,524c
+        @SuppressWarnings("unchecked")
+        TypeAdapter<T> adapter = (TypeAdapter<T>) cached;
+        return adapter;
+====1
+1:482,483c
+      Map<TypeToken<?>, FutureTypeAdapter<?>> threadCalls = calls.get();
+      boolean requiresThreadLocalCleanup = false;
+2:548,549c
+3:527,528c
+      LinkedHashMap<TypeToken<?>, TypeAdapter<?>> threadCalls = calls.get();
+      boolean isInitialAdapterRequest = false;
+====
+1:485c
+        threadCalls = new HashMap<TypeToken<?>, FutureTypeAdapter<?>>();
+2:551,557c
+  <<<<<<< HEAD
+        threadCalls = new LinkedHashMap<>();
+  ||||||| 47dea2ee
+        threadCalls = new HashMap<TypeToken<?>, FutureTypeAdapter<?>>();
+  =======
+        threadCalls = new HashMap<>();
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:530c
+        threadCalls = new LinkedHashMap<>();
+====1
+1:487c
+        requiresThreadLocalCleanup = true;
+2:559c
+3:532c
+        isInitialAdapterRequest = true;
+====
+1:491c
+      FutureTypeAdapter<T> ongoingCall = (FutureTypeAdapter<T>) threadCalls.get(type);
+2:563,570c
+  <<<<<<< HEAD
+      TypeAdapter<T> ongoingCall = (TypeAdapter<T>) threadCalls.get(type);
+  ||||||| 47dea2ee
+      FutureTypeAdapter<T> ongoingCall = (FutureTypeAdapter<T>) threadCalls.get(type);
+  =======
+      @SuppressWarnings("unchecked")
+      FutureTypeAdapter<T> ongoingCall = (FutureTypeAdapter<T>) threadCalls.get(type);
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:536,537c
+      @SuppressWarnings("unchecked")
+      TypeAdapter<T> ongoingCall = (TypeAdapter<T>) threadCalls.get(type);
+====1
+1:495a
+2:575,576c
+3:542,543c
+      int existingAdaptersCount = threadCalls.size();
+      boolean foundCandidate = false;
+====1
+1:497c
+        FutureTypeAdapter<T> call = new FutureTypeAdapter<T>();
+2:578c
+3:545c
+        FutureTypeAdapter<T> call = new FutureTypeAdapter<>();
+====2
+1:502a
+3:550a
+2:584,590c
+            @SuppressWarnings("unchecked")
+            TypeAdapter<T> existingAdapter = (TypeAdapter<T>) typeTokenCache.putIfAbsent(type, candidate);
+            // If other thread concurrently added adapter prefer that one instead
+            if (existingAdapter != null) {
+              candidate = existingAdapter;
+            }
+  
+====
+1:504c
+            typeTokenCache.put(type, candidate);
+2:592,609c
+  <<<<<<< HEAD
+            // Replace future adapter with actual adapter
+            threadCalls.put(type, candidate);
+  
+            if (isInitialAdapterRequest) {
+              // Publish resolved adapters to all threads
+              // Can only do this for the initial request because cyclic dependency TypeA -> TypeB -> TypeA
+              // would otherwise publish adapter for TypeB which uses not yet resolved adapter for TypeA
+              // See https://github.com/google/gson/issues/625
+              for (Map.Entry<TypeToken<?>, TypeAdapter<?>> resolvedAdapterEntry : threadCalls.entrySet()) {
+                typeTokenCache.putIfAbsent(resolvedAdapterEntry.getKey(), resolvedAdapterEntry.getValue());
+              }
+            }
+            foundCandidate = true;
+  ||||||| 47dea2ee
+            typeTokenCache.put(type, candidate);
+  =======
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:552,570c
+            // Replace future adapter with actual adapter
+            threadCalls.put(type, candidate);
+  
+            if (isInitialAdapterRequest) {
+              // Publish resolved adapters to all threads
+              // Can only do this for the initial request because cyclic dependency TypeA -> TypeB -> TypeA
+              // would otherwise publish adapter for TypeB which uses not yet resolved adapter for TypeA
+              // See https://github.com/google/gson/issues/625
+              for (Map.Entry<TypeToken<?>, TypeAdapter<?>> resolvedAdapterEntry : threadCalls.entrySet()) {
+                typeTokenCache.putIfAbsent(resolvedAdapterEntry.getKey(), resolvedAdapterEntry.getValue());
+              }
+  
+              @SuppressWarnings("unchecked")
+              TypeAdapter<T> actualAdapter = (TypeAdapter<T>) typeTokenCache.get(type);
+              // Prefer the actual adapter, in case putIfAbsent call above had no effect because other
+              // thread already concurrently added other adapter instance for the same type
+              candidate = actualAdapter;
+            }
+            foundCandidate = true;
+====1
+1:510,512c
+        threadCalls.remove(type);
+  
+        if (requiresThreadLocalCleanup) {
+2:615c
+3:576c
+        if (isInitialAdapterRequest) {
+====
+1:514a
+2:618,635c
+        if (!foundCandidate) {
+          Iterator<TypeAdapter<?>> adaptersIterator = threadCalls.values().iterator();
+          // Skip existing non-broken adapters
+          for (; existingAdaptersCount > 0; existingAdaptersCount--) {
+            adaptersIterator.next();
+          }
+          // Remove this future adapter and all nested ones because they might
+          // refer to broken adapters
+          while (adaptersIterator.hasNext()) {
+            TypeAdapter<?> brokenAdapter = adaptersIterator.next();
+            if (brokenAdapter instanceof FutureTypeAdapter) {
+              // Mark adapter as broken so user sees useful exception message in
+              // case TypeAdapterFactory leaks reference to broken adapter
+              ((FutureTypeAdapter<T>) brokenAdapter).markBroken();
+            }
+            adaptersIterator.remove();
+          }
+        }
+3:579,596c
+        if (!foundCandidate) {
+          Iterator<TypeAdapter<?>> adaptersIterator = threadCalls.values().iterator();
+          // Skip existing non-broken adapters
+          for (; existingAdaptersCount > 0; existingAdaptersCount--) {
+            adaptersIterator.next();
+          }
+          // Remove this future adapter and all nested ones because they might
+          // refer to broken adapters
+          while (adaptersIterator.hasNext()) {
+            TypeAdapter<?> brokenAdapter = adaptersIterator.next();
+            if (brokenAdapter instanceof FutureTypeAdapter) {
+              // Mark adapter as broken so user sees useful exception message in
+              // case TypeAdapterFactory leaks reference to broken adapter
+              ((FutureTypeAdapter<?>) brokenAdapter).markBroken();
+            }
+            adaptersIterator.remove();
+          }
+        }
+====1
+1:607c
+     * of Java. Note that this method works fine if the any of the object fields are of generic type,
+2:728c
+3:689c
+     * of Java. Note that this method works fine if any of the object fields are of generic type,
+====1
+1:611,612c
+     * @param src the object for which Json representation is to be created setting for Gson
+     * @return Json representation of {@code src}.
+2:732,733c
+3:693,694c
+     * @param src the object for which JSON representation is to be created
+     * @return JSON representation of {@code src}.
+====1
+1:613a
+2:735,736c
+3:696,697c
+     *
+     * @see #toJsonTree(Object, Type)
+====1
+1:636a
+2:760,761c
+3:721,722c
+     *
+     * @see #toJsonTree(Object)
+====1
+1:645c
+     * This method serializes the specified object into its equivalent Json representation.
+2:770c
+3:731c
+     * This method serializes the specified object into its equivalent JSON representation.
+====1
+1:649c
+     * of Java. Note that this method works fine if the any of the object fields are of generic type,
+2:774c
+3:735c
+     * of Java. Note that this method works fine if any of the object fields are of generic type,
+====1
+1:654c
+     * @param src the object for which Json representation is to be created setting for Gson
+2:779c
+3:740c
+     * @param src the object for which JSON representation is to be created
+====1
+1:655a
+2:781,783c
+3:742,744c
+     *
+     * @see #toJson(Object, Appendable)
+     * @see #toJson(Object, Type)
+====1
+1:666c
+     * equivalent Json representation. This method must be used if the specified object is a generic
+2:794c
+3:755c
+     * equivalent JSON representation. This method must be used if the specified object is a generic
+====1
+1:677c
+     * @return Json representation of {@code src}
+2:805,808c
+3:766,769c
+     * @return JSON representation of {@code src}
+     *
+     * @see #toJson(Object, Type, Appendable)
+     * @see #toJson(Object)
+====1
+1:686c
+     * This method serializes the specified object into its equivalent Json representation.
+2:817,818c
+3:778,779c
+     * This method serializes the specified object into its equivalent JSON representation and
+     * writes it to the writer.
+====1
+1:690c
+     * of Java. Note that this method works fine if the any of the object fields are of generic type,
+2:822c
+3:783c
+     * of Java. Note that this method works fine if any of the object fields are of generic type,
+====1
+1:694,695c
+     * @param src the object for which Json representation is to be created setting for Gson
+     * @param writer Writer to which the Json representation needs to be written
+2:826,827c
+3:787,788c
+     * @param src the object for which JSON representation is to be created
+     * @param writer Writer to which the JSON representation needs to be written
+====1
+1:697a
+2:830,832c
+3:791,793c
+     *
+     * @see #toJson(Object)
+     * @see #toJson(Object, Type, Appendable)
+====1
+1:709,710c
+     * equivalent Json representation. This method must be used if the specified object is a generic
+     * type. For non-generic objects, use {@link #toJson(Object, Appendable)} instead.
+2:844,846c
+3:805,807c
+     * equivalent JSON representation and writes it to the writer.
+     * This method must be used if the specified object is a generic type. For non-generic objects,
+     * use {@link #toJson(Object, Appendable)} instead.
+====1
+1:719c
+     * @param writer Writer to which the Json representation of src needs to be written.
+2:855c
+3:816c
+     * @param writer Writer to which the JSON representation of src needs to be written.
+====1
+1:721a
+2:858,860c
+3:819,821c
+     *
+     * @see #toJson(Object, Type)
+     * @see #toJson(Object, Appendable)
+====1
+1:734a
+2:874,882c
+3:835,843c
+     *
+     * <p>The JSON data is written in {@linkplain JsonWriter#setLenient(boolean) lenient mode},
+     * regardless of the lenient mode setting of the provided writer. The lenient mode setting
+     * of the writer is restored once this method returns.
+     *
+     * <p>The 'HTML-safe' and 'serialize {@code null}' settings of this {@code Gson} instance
+     * (configured by the {@link GsonBuilder}) are applied, and the original settings of the
+     * writer are restored once this method returns.
+     *
+====1
+1:737c
+    @SuppressWarnings("unchecked")
+2:884a
+3:845a
+====1
+1:739c
+      TypeAdapter<?> adapter = getAdapter(TypeToken.get(typeOfSrc));
+2:886,887c
+3:847,848c
+      @SuppressWarnings("unchecked")
+      TypeAdapter<Object> adapter = (TypeAdapter<Object>) getAdapter(TypeToken.get(typeOfSrc));
+====1
+1:747c
+        ((TypeAdapter<Object>) adapter).write(writer, src);
+2:895c
+3:856c
+        adapter.write(writer, src);
+====1
+1:778c
+     * @param writer Writer to which the Json representation needs to be written
+2:926c
+3:887c
+     * @param writer Writer to which the JSON representation needs to be written
+====1
+1:832a
+2:981,989c
+3:942,950c
+     *
+     * <p>The JSON data is written in {@linkplain JsonWriter#setLenient(boolean) lenient mode},
+     * regardless of the lenient mode setting of the provided writer. The lenient mode setting
+     * of the writer is restored once this method returns.
+     *
+     * <p>The 'HTML-safe' and 'serialize {@code null}' settings of this {@code Gson} instance
+     * (configured by the {@link GsonBuilder}) are applied, and the original settings of the
+     * writer are restored once this method returns.
+     *
+====1
+1:858c
+     * This method deserializes the specified Json into an object of the specified class. It is not
+2:1015c
+3:976c
+     * This method deserializes the specified JSON into an object of the specified class. It is not
+====1
+1:864c
+     * {@link #fromJson(String, Type)}. If you have the Json in a {@link Reader} instead of
+2:1021c
+3:982c
+     * {@link #fromJson(String, TypeToken)}. If you have the JSON in a {@link Reader} instead of
+====1
+1:866a
+2:1024,1026c
+3:985,987c
+     * <p>An exception is thrown if the JSON string has multiple top-level JSON elements, or if there
+     * is trailing data. Use {@link #fromJson(JsonReader, Type)} if this behavior is not desired.
+     *
+====1
+1:873a
+2:1034,1036c
+3:995,997c
+     *
+     * @see #fromJson(Reader, Class)
+     * @see #fromJson(String, TypeToken)
+====1
+1:876c
+      Object object = fromJson(json, (Type) classOfT);
+2:1039c
+3:1000c
+      T object = fromJson(json, TypeToken.get(classOfT));
+====1
+1:881c
+     * This method deserializes the specified Json into an object of the specified type. This method
+2:1044c
+3:1005c
+     * This method deserializes the specified JSON into an object of the specified type. This method
+====1
+1:883c
+     * {@link #fromJson(String, Class)} instead. If you have the Json in a {@link Reader} instead of
+2:1046c
+3:1007c
+     * {@link #fromJson(String, Class)} instead. If you have the JSON in a {@link Reader} instead of
+====1
+1:885a
+2:1049,1082c
+3:1010,1043c
+     * <p>Since {@code Type} is not parameterized by T, this method is not type-safe and
+     * should be used carefully. If you are creating the {@code Type} from a {@link TypeToken},
+     * prefer using {@link #fromJson(String, TypeToken)} instead since its return type is based
+     * on the {@code TypeToken} and is therefore more type-safe.
+     *
+     * <p>An exception is thrown if the JSON string has multiple top-level JSON elements,
+     * or if there is trailing data. Use {@link #fromJson(JsonReader, Type)} if this behavior is
+     * not desired.
+     *
+     * @param <T> the type of the desired object
+     * @param json the string from which the object is to be deserialized
+     * @param typeOfT The specific genericized type of src
+     * @return an object of type T from the string. Returns {@code null} if {@code json} is {@code null}
+     * or if {@code json} is empty.
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+     *
+     * @see #fromJson(Reader, Type)
+     * @see #fromJson(String, Class)
+     * @see #fromJson(String, TypeToken)
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T fromJson(String json, Type typeOfT) throws JsonSyntaxException {
+      return (T) fromJson(json, TypeToken.get(typeOfT));
+    }
+  
+    /**
+     * This method deserializes the specified JSON into an object of the specified type. This method
+     * is useful if the specified object is a generic type. For non-generic objects, use
+     * {@link #fromJson(String, Class)} instead. If you have the JSON in a {@link Reader} instead of
+     * a String, use {@link #fromJson(Reader, TypeToken)} instead.
+     *
+     * <p>An exception is thrown if the JSON string has multiple top-level JSON elements, or if there
+     * is trailing data. Use {@link #fromJson(JsonReader, TypeToken)} if this behavior is not desired.
+     *
+====1
+1:888,889c
+     * @param typeOfT The specific genericized type of src. You can obtain this type by using the
+     * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for
+2:1085,1086c
+3:1046,1047c
+     * @param typeOfT The specific genericized type of src. You should create an anonymous subclass of
+     * {@code TypeToken} with the specific generic type arguments. For example, to get the type for
+====1
+1:892c
+     * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+2:1089c
+3:1050c
+     * new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}
+====1
+1:896,897c
+     * @throws JsonParseException if json is not a valid representation for an object of type typeOfT
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type
+2:1093,1097c
+3:1054,1058c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of the type typeOfT
+     *
+     * @see #fromJson(Reader, TypeToken)
+     * @see #fromJson(String, Class)
+     * @since 2.10
+====1
+1:899,900c
+    @SuppressWarnings("unchecked")
+    public <T> T fromJson(String json, Type typeOfT) throws JsonSyntaxException {
+2:1099c
+3:1060c
+    public <T> T fromJson(String json, TypeToken<T> typeOfT) throws JsonSyntaxException {
+====1
+1:905,906c
+      T target = (T) fromJson(reader, typeOfT);
+      return target;
+2:1104c
+3:1065c
+      return fromJson(reader, typeOfT);
+====1
+1:910c
+     * This method deserializes the Json read from the specified reader into an object of the
+2:1108c
+3:1069c
+     * This method deserializes the JSON read from the specified reader into an object of the
+====1
+1:914c
+     * this method works fine if the any of the fields of the specified object are generics, just the
+2:1112c
+3:1073c
+     * this method works fine if any of the fields of the specified object are generics, just the
+====1
+1:916c
+     * invoke {@link #fromJson(Reader, Type)}. If you have the Json in a String form instead of a
+2:1114c
+3:1075c
+     * invoke {@link #fromJson(Reader, TypeToken)}. If you have the JSON in a String form instead of a
+====1
+1:918a
+2:1117,1119c
+3:1078,1080c
+     * <p>An exception is thrown if the JSON data has multiple top-level JSON elements, or if there
+     * is trailing data. Use {@link #fromJson(JsonReader, Type)} if this behavior is not desired.
+     *
+====1
+1:920c
+     * @param json the reader producing the Json from which the object is to be deserialized.
+2:1121c
+3:1082c
+     * @param json the reader producing the JSON from which the object is to be deserialized.
+====1
+1:922c
+     * @return an object of type T from the string. Returns {@code null} if {@code json} is at EOF.
+2:1123c
+3:1084c
+     * @return an object of type T from the Reader. Returns {@code null} if {@code json} is at EOF.
+====1
+1:924c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type
+2:1125c
+3:1086c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+====1
+1:925a
+2:1127,1129c
+3:1088,1090c
+     *
+     * @see #fromJson(String, Class)
+     * @see #fromJson(Reader, TypeToken)
+====1
+1:928,930c
+      JsonReader jsonReader = newJsonReader(json);
+      Object object = fromJson(jsonReader, classOfT);
+      assertFullConsumption(object, jsonReader);
+2:1132c
+3:1093c
+      T object = fromJson(json, TypeToken.get(classOfT));
+====1
+1:935c
+     * This method deserializes the Json read from the specified reader into an object of the
+2:1137c
+3:1098c
+     * This method deserializes the JSON read from the specified reader into an object of the
+====1
+1:937c
+     * non-generic objects, use {@link #fromJson(Reader, Class)} instead. If you have the Json in a
+2:1139c
+3:1100c
+     * non-generic objects, use {@link #fromJson(Reader, Class)} instead. If you have the JSON in a
+====1
+1:939a
+2:1142,1149c
+3:1103,1110c
+     * <p>Since {@code Type} is not parameterized by T, this method is not type-safe and
+     * should be used carefully. If you are creating the {@code Type} from a {@link TypeToken},
+     * prefer using {@link #fromJson(Reader, TypeToken)} instead since its return type is based
+     * on the {@code TypeToken} and is therefore more type-safe.
+     *
+     * <p>An exception is thrown if the JSON data has multiple top-level JSON elements, or if there
+     * is trailing data. Use {@link #fromJson(JsonReader, Type)} if this behavior is not desired.
+     *
+====1
+1:941,948c
+     * @param json the reader producing Json from which the object is to be deserialized
+     * @param typeOfT The specific genericized type of src. You can obtain this type by using the
+     * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+     * </pre>
+     * @return an object of type T from the json. Returns {@code null} if {@code json} is at EOF.
+2:1151,1153c
+3:1112,1114c
+     * @param json the reader producing JSON from which the object is to be deserialized
+     * @param typeOfT The specific genericized type of src
+     * @return an object of type T from the Reader. Returns {@code null} if {@code json} is at EOF.
+====1
+1:950c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type
+2:1155c
+3:1116c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+====1
+1:951a
+2:1157,1160c
+3:1118,1121c
+     *
+     * @see #fromJson(String, Type)
+     * @see #fromJson(Reader, Class)
+     * @see #fromJson(Reader, TypeToken)
+====1
+1:954a
+2:1164,1192c
+3:1125,1153c
+      return (T) fromJson(json, TypeToken.get(typeOfT));
+    }
+  
+    /**
+     * This method deserializes the JSON read from the specified reader into an object of the
+     * specified type. This method is useful if the specified object is a generic type. For
+     * non-generic objects, use {@link #fromJson(Reader, Class)} instead. If you have the JSON in a
+     * String form instead of a {@link Reader}, use {@link #fromJson(String, TypeToken)} instead.
+     *
+     * <p>An exception is thrown if the JSON data has multiple top-level JSON elements, or if there
+     * is trailing data. Use {@link #fromJson(JsonReader, TypeToken)} if this behavior is not desired.
+     *
+     * @param <T> the type of the desired object
+     * @param json the reader producing JSON from which the object is to be deserialized
+     * @param typeOfT The specific genericized type of src. You should create an anonymous subclass of
+     * {@code TypeToken} with the specific generic type arguments. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}
+     * </pre>
+     * @return an object of type T from the Reader. Returns {@code null} if {@code json} is at EOF.
+     * @throws JsonIOException if there was a problem reading from the Reader
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type of typeOfT
+     *
+     * @see #fromJson(String, TypeToken)
+     * @see #fromJson(Reader, Class)
+     * @since 2.10
+     */
+    public <T> T fromJson(Reader json, TypeToken<T> typeOfT) throws JsonIOException, JsonSyntaxException {
+====1
+1:956c
+      T object = (T) fromJson(jsonReader, typeOfT);
+2:1194c
+3:1155c
+      T object = fromJson(jsonReader, typeOfT);
+====1
+1:964c
+          throw new JsonIOException("JSON document was not fully consumed.");
+2:1202c
+3:1163c
+          throw new JsonSyntaxException("JSON document was not fully consumed.");
+====1
+1:972a
+2:1211,1213c
+3:1172,1174c
+    // fromJson(JsonReader, Class) is unfortunately missing and cannot be added now without breaking
+    // source compatibility in certain cases, see https://github.com/google/gson/pull/1700#discussion_r973764414
+  
+====1
+1:974c
+     * Reads the next JSON value from {@code reader} and convert it to an object
+2:1215c
+3:1176c
+     * Reads the next JSON value from {@code reader} and converts it to an object
+====1
+1:976c
+     * Since Type is not parameterized by T, this method is type unsafe and should be used carefully
+2:1216a
+3:1177a
+====1
+1:978,979c
+     * @throws JsonIOException if there was a problem writing to the Reader
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type
+2:1218,1239c
+3:1179,1200c
+     * <p>Since {@code Type} is not parameterized by T, this method is not type-safe and
+     * should be used carefully. If you are creating the {@code Type} from a {@link TypeToken},
+     * prefer using {@link #fromJson(JsonReader, TypeToken)} instead since its return type is based
+     * on the {@code TypeToken} and is therefore more type-safe. If the provided type is a
+     * {@code Class} the {@code TypeToken} can be created with {@link TypeToken#get(Class)}.
+     *
+     * <p>Unlike the other {@code fromJson} methods, no exception is thrown if the JSON data has
+     * multiple top-level JSON elements, or if there is trailing data.
+     *
+     * <p>The JSON data is parsed in {@linkplain JsonReader#setLenient(boolean) lenient mode},
+     * regardless of the lenient mode setting of the provided reader. The lenient mode setting
+     * of the reader is restored once this method returns.
+     *
+     * @param <T> the type of the desired object
+     * @param reader the reader whose next JSON value should be deserialized
+     * @param typeOfT The specific genericized type of src
+     * @return an object of type T from the JsonReader. Returns {@code null} if {@code reader} is at EOF.
+     * @throws JsonIOException if there was a problem reading from the JsonReader
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+     *
+     * @see #fromJson(Reader, Type)
+     * @see #fromJson(JsonReader, TypeToken)
+====1
+1:982a
+2:1243,1276c
+3:1204,1237c
+      return (T) fromJson(reader, TypeToken.get(typeOfT));
+    }
+  
+    /**
+     * Reads the next JSON value from {@code reader} and converts it to an object
+     * of type {@code typeOfT}. Returns {@code null}, if the {@code reader} is at EOF.
+     * This method is useful if the specified object is a generic type. For non-generic objects,
+     * {@link #fromJson(JsonReader, Type)} can be called, or {@link TypeToken#get(Class)} can
+     * be used to create the type token.
+     *
+     * <p>Unlike the other {@code fromJson} methods, no exception is thrown if the JSON data has
+     * multiple top-level JSON elements, or if there is trailing data.
+     *
+     * <p>The JSON data is parsed in {@linkplain JsonReader#setLenient(boolean) lenient mode},
+     * regardless of the lenient mode setting of the provided reader. The lenient mode setting
+     * of the reader is restored once this method returns.
+     *
+     * @param <T> the type of the desired object
+     * @param reader the reader whose next JSON value should be deserialized
+     * @param typeOfT The specific genericized type of src. You should create an anonymous subclass of
+     * {@code TypeToken} with the specific generic type arguments. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}
+     * </pre>
+     * @return an object of type T from the JsonReader. Returns {@code null} if {@code reader} is at EOF.
+     * @throws JsonIOException if there was a problem reading from the JsonReader
+     * @throws JsonSyntaxException if json is not a valid representation for an object of the type typeOfT
+     *
+     * @see #fromJson(Reader, TypeToken)
+     * @see #fromJson(JsonReader, Type)
+     * @since 2.10
+     */
+    public <T> T fromJson(JsonReader reader, TypeToken<T> typeOfT) throws JsonIOException, JsonSyntaxException {
+====1
+1:989,990c
+        TypeToken<T> typeToken = (TypeToken<T>) TypeToken.get(typeOfT);
+        TypeAdapter<T> typeAdapter = getAdapter(typeToken);
+2:1283c
+3:1244c
+        TypeAdapter<T> typeAdapter = getAdapter(typeOfT);
+====1
+1:1017c
+     * This method deserializes the Json read from the specified parse tree into an object of the
+2:1310c
+3:1271c
+     * This method deserializes the JSON read from the specified parse tree into an object of the
+====1
+1:1021c
+     * this method works fine if the any of the fields of the specified object are generics, just the
+2:1314c
+3:1275c
+     * this method works fine if any of the fields of the specified object are generics, just the
+====1
+1:1023c
+     * invoke {@link #fromJson(JsonElement, Type)}.
+2:1316,1317c
+3:1277,1278c
+     * invoke {@link #fromJson(JsonElement, TypeToken)}.
+     *
+====1
+1:1028c
+     * @return an object of type T from the json. Returns {@code null} if {@code json} is {@code null}
+2:1322c
+3:1283c
+     * @return an object of type T from the JSON. Returns {@code null} if {@code json} is {@code null}
+====1
+1:1030c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+2:1324c
+3:1285c
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type classOfT
+====1
+1:1031a
+2:1326,1328c
+3:1287,1289c
+     *
+     * @see #fromJson(Reader, Class)
+     * @see #fromJson(JsonElement, TypeToken)
+====1
+1:1034c
+      Object object = fromJson(json, (Type) classOfT);
+2:1331c
+3:1292c
+      T object = fromJson(json, TypeToken.get(classOfT));
+====1
+1:1039c
+     * This method deserializes the Json read from the specified parse tree into an object of the
+2:1336c
+3:1297c
+     * This method deserializes the JSON read from the specified parse tree into an object of the
+====1
+1:1042a
+2:1340,1344c
+3:1301,1305c
+     * <p>Since {@code Type} is not parameterized by T, this method is not type-safe and
+     * should be used carefully. If you are creating the {@code Type} from a {@link TypeToken},
+     * prefer using {@link #fromJson(JsonElement, TypeToken)} instead since its return type is based
+     * on the {@code TypeToken} and is therefore more type-safe.
+     *
+====1
+1:1046,1052c
+     * @param typeOfT The specific genericized type of src. You can obtain this type by using the
+     * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+     * </pre>
+     * @return an object of type T from the json. Returns {@code null} if {@code json} is {@code null}
+2:1348,1349c
+3:1309,1310c
+     * @param typeOfT The specific genericized type of src
+     * @return an object of type T from the JSON. Returns {@code null} if {@code json} is {@code null}
+====1
+1:1055a
+2:1353,1356c
+3:1314,1317c
+     *
+     * @see #fromJson(Reader, Type)
+     * @see #fromJson(JsonElement, Class)
+     * @see #fromJson(JsonElement, TypeToken)
+====1
+1:1058a
+2:1360,1385c
+3:1321,1346c
+      return (T) fromJson(json, TypeToken.get(typeOfT));
+    }
+  
+    /**
+     * This method deserializes the JSON read from the specified parse tree into an object of the
+     * specified type. This method is useful if the specified object is a generic type. For
+     * non-generic objects, use {@link #fromJson(JsonElement, Class)} instead.
+     *
+     * @param <T> the type of the desired object
+     * @param json the root of the parse tree of {@link JsonElement}s from which the object is to
+     * be deserialized
+     * @param typeOfT The specific genericized type of src. You should create an anonymous subclass of
+     * {@code TypeToken} with the specific generic type arguments. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}
+     * </pre>
+     * @return an object of type T from the JSON. Returns {@code null} if {@code json} is {@code null}
+     * or if {@code json} is empty.
+     * @throws JsonSyntaxException if json is not a valid representation for an object of type typeOfT
+     *
+     * @see #fromJson(Reader, TypeToken)
+     * @see #fromJson(JsonElement, Class)
+     * @since 2.10
+     */
+    public <T> T fromJson(JsonElement json, TypeToken<T> typeOfT) throws JsonSyntaxException {
+====1
+1:1062c
+      return (T) fromJson(new JsonTreeReader(json), typeOfT);
+2:1389c
+3:1350c
+      return fromJson(new JsonTreeReader(json), typeOfT);
+====
+1:1065,1066c
+    static class FutureTypeAdapter<T> extends TypeAdapter<T> {
+      private TypeAdapter<T> delegate;
+2:1392,1402c
+  <<<<<<< HEAD
+    static class FutureTypeAdapter<T> extends TypeAdapter<T> {
+      private TypeAdapter<T> delegate = null;
+      private boolean isBroken = false;
+  ||||||| 47dea2ee
+    static class FutureTypeAdapter<T> extends TypeAdapter<T> {
+      private TypeAdapter<T> delegate;
+  =======
+    static class FutureTypeAdapter<T> extends SerializationDelegatingTypeAdapter<T> {
+      private TypeAdapter<T> delegate;
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:1353,1355c
+    static class FutureTypeAdapter<T> extends SerializationDelegatingTypeAdapter<T> {
+      private TypeAdapter<T> delegate = null;
+      private boolean isBroken = false;
+====
+1:1075c
+      @Override public T read(JsonReader in) throws IOException {
+2:1411,1420c
+  <<<<<<< HEAD
+      public void markBroken() {
+        isBroken = true;
+      }
+  
+      private TypeAdapter<T> getResolvedDelegate() {
+        TypeAdapter<T> delegate = this.delegate;
+        if (isBroken) {
+          throw new IllegalStateException("Broken adapter has been leaked by TypeAdapterFactory");
+        }
+3:1364,1372c
+      public void markBroken() {
+        isBroken = true;
+      }
+  
+      private TypeAdapter<T> delegate() {
+        TypeAdapter<T> delegate = this.delegate;
+        if (isBroken) {
+          throw new IllegalStateException("Broken adapter has been leaked by TypeAdapterFactory");
+        }
+====1
+1:1077c
+          throw new IllegalStateException();
+2:1422,1425c
+3:1374,1377c
+          // Can occur when adapter is leaked to other thread or when adapter is used for (de-)serialization
+          // directly within the TypeAdapterFactory which requested it
+          throw new IllegalStateException("Adapter for type with cyclic dependency has been used"
+              + " before dependency has been resolved");
+====
+1:1079c
+        return delegate.read(in);
+2:1427,1452c
+        return delegate;
+  ||||||| 47dea2ee
+  =======
+      private TypeAdapter<T> delegate() {
+        if (delegate == null) {
+          throw new IllegalStateException("Delegate has not been set yet");
+        }
+        return delegate;
+      }
+  
+      @Override public TypeAdapter<T> getSerializationDelegate() {
+        return delegate();
+  >>>>>>> TEMP_RIGHT_BRANCH
+      }
+  
+      @Override public T read(JsonReader in) throws IOException {
+  <<<<<<< HEAD
+        return getResolvedDelegate().read(in);
+  ||||||| 47dea2ee
+        if (delegate == null) {
+          throw new IllegalStateException();
+        }
+        return delegate.read(in);
+  =======
+        return delegate().read(in);
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:1379,1387c
+        return delegate;
+      }
+  
+      @Override public TypeAdapter<T> getSerializationDelegate() {
+        return delegate();
+      }
+  
+      @Override public T read(JsonReader in) throws IOException {
+        return delegate().read(in);
+====
+1:1083,1086c
+        if (delegate == null) {
+          throw new IllegalStateException();
+        }
+        delegate.write(out, value);
+2:1456,1465c
+  <<<<<<< HEAD
+        getResolvedDelegate().write(out, value);
+  ||||||| 47dea2ee
+        if (delegate == null) {
+          throw new IllegalStateException();
+        }
+        delegate.write(out, value);
+  =======
+        delegate().write(out, value);
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:1391c
+        delegate().write(out, value);

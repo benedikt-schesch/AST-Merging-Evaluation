@@ -1,0 +1,6 @@
+267a268
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, null, false);
+302a304
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, currValue, false);
+337a340
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, currValue, false);

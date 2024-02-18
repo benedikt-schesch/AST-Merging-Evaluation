@@ -1,0 +1,26 @@
+====3
+1:59c
+2:59c
+  
+3:58a
+====1
+1:304,305c
+          supportingFiles.add(new SupportingFile("configuration.mustache", toPackagePath(invokerPackage, srcBasePath), "Configuration.php"));
+          supportingFiles.add(new SupportingFile("ApiClient.mustache", toPackagePath(invokerPackage, srcBasePath), "ApiClient.php"));
+2:303a
+3:302a
+====1
+1:306a
+2:305c
+3:304c
+          supportingFiles.add(new SupportingFile("Configuration.mustache", toPackagePath(invokerPackage, srcBasePath), "Configuration.php"));
+====1
+1:307a
+2:307c
+3:306c
+          supportingFiles.add(new SupportingFile("HeaderSelector.mustache", toPackagePath(invokerPackage, srcBasePath), "HeaderSelector.php"));
+====1
+1:309c
+          supportingFiles.add(new SupportingFile("autoload.mustache", getPackagePath(), "autoload.php"));
+2:308a
+3:307a

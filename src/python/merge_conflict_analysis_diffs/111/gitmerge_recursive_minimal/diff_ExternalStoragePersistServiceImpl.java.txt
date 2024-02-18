@@ -1,0 +1,3017 @@
+====1
+1:41,42c
+  import com.alibaba.nacos.config.server.service.datasource.DataSourceService;
+  import com.alibaba.nacos.config.server.service.datasource.DynamicDataSource;
+2:41,74c
+3:41,74c
+  import com.alibaba.nacos.config.server.modules.entity.ConfigInfoAggrEntity;
+  import com.alibaba.nacos.config.server.modules.entity.ConfigInfoBetaEntity;
+  import com.alibaba.nacos.config.server.modules.entity.ConfigInfoEntity;
+  import com.alibaba.nacos.config.server.modules.entity.ConfigInfoTagEntity;
+  import com.alibaba.nacos.config.server.modules.entity.ConfigTagsRelationEntity;
+  import com.alibaba.nacos.config.server.modules.entity.HisConfigInfoEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QConfigInfoAggrEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QConfigInfoBetaEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QConfigInfoEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QConfigInfoTagEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QConfigTagsRelationEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QHisConfigInfoEntity;
+  import com.alibaba.nacos.config.server.modules.entity.QTenantInfoEntity;
+  import com.alibaba.nacos.config.server.modules.entity.TenantInfoEntity;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigAdvanceInfoMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigAllInfoMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigHistoryInfoMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfo4BetaMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfo4TagMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoAggrMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoBetaWrapperMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoChangedMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoEntityMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoTagWrapperMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.ConfigInfoWrapperMapStruct;
+  import com.alibaba.nacos.config.server.modules.mapstruct.TenantInfoMapStruct;
+  import com.alibaba.nacos.config.server.modules.repository.ConfigInfoAggrRepository;
+  import com.alibaba.nacos.config.server.modules.repository.ConfigInfoBetaRepository;
+  import com.alibaba.nacos.config.server.modules.repository.ConfigInfoRepository;
+  import com.alibaba.nacos.config.server.modules.repository.ConfigInfoTagRepository;
+  import com.alibaba.nacos.config.server.modules.repository.ConfigTagsRelationRepository;
+  import com.alibaba.nacos.config.server.modules.repository.HisConfigInfoRepository;
+  import com.alibaba.nacos.config.server.modules.repository.TenantInfoRepository;
+====1
+1:48c
+  import com.google.common.collect.Lists;
+2:80,81c
+3:80,81c
+  import com.querydsl.core.BooleanBuilder;
+  import lombok.extern.slf4j.Slf4j;
+====1
+1:50a
+2:84,85c
+3:84,85c
+  import org.springframework.beans.BeanUtils;
+  import org.springframework.beans.factory.annotation.Autowired;
+====1
+1:55c
+  import org.springframework.dao.IncorrectResultSizeDataAccessException;
+2:90,92c
+3:90,92c
+  import org.springframework.data.domain.PageRequest;
+  import org.springframework.data.domain.Sort;
+  import org.springframework.data.jpa.domain.Specification;
+====1
+1:57,61c
+  import org.springframework.jdbc.core.JdbcTemplate;
+  import org.springframework.jdbc.core.PreparedStatementCreator;
+  import org.springframework.jdbc.core.PreparedStatementSetter;
+  import org.springframework.jdbc.support.GeneratedKeyHolder;
+  import org.springframework.jdbc.support.KeyHolder;
+2:93a
+3:93a
+====1
+1:70c
+  import javax.annotation.PostConstruct;
+2:102,105c
+3:102,105c
+  import javax.persistence.criteria.CriteriaBuilder;
+  import javax.persistence.criteria.CriteriaQuery;
+  import javax.persistence.criteria.Predicate;
+  import javax.persistence.criteria.Root;
+====1
+1:72,75c
+  import java.sql.Connection;
+  import java.sql.PreparedStatement;
+  import java.sql.SQLException;
+  import java.sql.Statement;
+2:106a
+3:106a
+====1
+1:81a
+2:113c
+3:113c
+  import java.util.stream.Collectors;
+====1
+1:83,97c
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_ADVANCE_INFO_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_ALL_INFO_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4TAG_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_AGGR_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_BASE_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_BETA_WRAPPER_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_CHANGED_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_TAG_WRAPPER_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO_WRAPPER_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_KEY_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.HISTORY_DETAIL_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.HISTORY_LIST_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.TENANT_INFO_ROW_MAPPER;
+2:114a
+3:114a
+====1
+1:104a
+2:122c
+3:122c
+  @Slf4j
+====1
+1:110c
+      private DataSourceService dataSourceService;
+2:128,129c
+3:128,129c
+      @Autowired
+      private ConfigInfoRepository configInfoRepository;
+====1
+1:112c
+      private static final String SQL_FIND_ALL_CONFIG_INFO = "select id,data_id,group_id,tenant_id,app_name,content,type,md5,gmt_create,gmt_modified,src_user,src_ip,c_desc,c_use,effect,c_schema from config_info";
+2:131,132c
+3:131,132c
+      @Autowired
+      private ConfigInfoBetaRepository configInfoBetaRepository;
+====1
+1:114c
+      private static final String SQL_TENANT_INFO_COUNT_BY_TENANT_ID = "select count(1) from tenant_info where tenant_id = ?";
+2:134,135c
+3:134,135c
+      @Autowired
+      private ConfigInfoTagRepository configInfoTagRepository;
+====1
+1:116c
+      private static final String SQL_FIND_CONFIG_INFO_BY_IDS = "SELECT ID,data_id,group_id,tenant_id,app_name,content,md5 FROM config_info WHERE ";
+2:137,138c
+3:137,138c
+      @Autowired
+      private ConfigTagsRelationRepository configTagsRelationRepository;
+====1
+1:118c
+      private static final String SQL_DELETE_CONFIG_INFO_BY_IDS = "DELETE FROM config_info WHERE ";
+2:140,141c
+3:140,141c
+      @Autowired
+      private HisConfigInfoRepository hisConfigInfoRepository;
+====1
+1:120c
+      private static final String PATTERN_STR = "*";
+2:143,144c
+3:143,144c
+      @Autowired
+      private TenantInfoRepository tenantInfoRepository;
+====1
+1:122c
+      private static final int QUERY_LIMIT_SIZE = 50;
+2:146,147c
+3:146,147c
+      @Autowired
+      private ConfigInfoAggrRepository configInfoAggrRepository;
+====1
+1:124,126c
+      protected JdbcTemplate jt;
+      
+      protected TransactionTemplate tjt;
+2:149,150c
+3:149,150c
+      @Autowired
+      private TransactionTemplate tjt;
+====1
+1:133,171c
+      /**
+       * init datasource.
+       */
+      @PostConstruct
+      public void init() {
+          dataSourceService = DynamicDataSource.getInstance().getDataSource();
+          
+          jt = getJdbcTemplate();
+          tjt = getTransactionTemplate();
+      }
+      
+      public boolean checkMasterWritable() {
+          return dataSourceService.checkMasterWritable();
+      }
+      
+      public void setBasicDataSourceService(DataSourceService dataSourceService) {
+          this.dataSourceService = dataSourceService;
+      }
+      
+      public synchronized void reload() throws IOException {
+          this.dataSourceService.reload();
+      }
+      
+      /**
+       * For unit testing.
+       */
+      public JdbcTemplate getJdbcTemplate() {
+          return this.dataSourceService.getJdbcTemplate();
+      }
+      
+      public TransactionTemplate getTransactionTemplate() {
+          return this.dataSourceService.getTransactionTemplate();
+      }
+      
+      @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+      public String getCurrentDBUrl() {
+          return this.dataSourceService.getCurrentDbUrl();
+      }
+      
+2:156a
+3:156a
+====1
+1:174c
+          return new ExternalStoragePaginationHelperImpl<E>(jt);
+2:159c
+3:159c
+          return null;
+====1
+1:182,191c
+          boolean result = tjt.execute(status -> {
+              try {
+                  long configId = addConfigInfoAtomic(-1, srcIp, srcUser, configInfo, time, configAdvanceInfo);
+                  String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+                  addConfigTagsRelation(configId, configTags, configInfo.getDataId(), configInfo.getGroup(),
+                          configInfo.getTenant());
+                  insertConfigHistoryAtomic(0, configInfo, srcIp, srcUser, time, "I");
+              } catch (CannotGetJdbcConnectionException e) {
+                  LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+                  throw e;
+2:167,183c
+3:167,183c
+          ConfigInfoEntity configInfoEntity = ConfigInfoEntityMapStruct.INSTANCE.convertConfigInfoEntity(configInfo);
+          tjt.execute(new TransactionCallback<Boolean>() {
+              @Override
+              public Boolean doInTransaction(TransactionStatus status) {
+                  try {
+                      long configId = addConfigInfoAtomic(-1, srcIp, srcUser, configInfo, time, configAdvanceInfo);
+                      String configTags =
+                              configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+                      addConfigTagsRelation(configId, configTags, configInfo.getDataId(), configInfoEntity.getGroupId(),
+                              configInfoEntity.getTenantId());
+                      insertConfigHistoryAtomic(0, configInfo, srcIp, srcUser, time, "I");
+                      
+                  } catch (CannotGetJdbcConnectionException e) {
+                      log.error("[db-error] " + e.toString(), e);
+                      throw e;
+                  }
+                  return Boolean.TRUE;
+====1
+1:193c
+              return Boolean.TRUE;
+2:184a
+3:184a
+====1
+1:202c
+          String md5 = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+2:193c
+3:193c
+          String md5 = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+====1
+1:204,207c
+              jt.update("INSERT INTO config_info_beta(data_id,group_id,tenant_id,app_name,content,md5,beta_ips,src_ip,"
+                              + "src_user,gmt_create,gmt_modified) VALUES(?,?,?,?,?,?,?,?,?,?,?)", configInfo.getDataId(),
+                      configInfo.getGroup(), tenantTmp, appNameTmp, configInfo.getContent(), md5, betaIps, srcIp, srcUser,
+                      time, time);
+2:195,207c
+3:195,207c
+              ConfigInfoBetaEntity configInfoBeta = new ConfigInfoBetaEntity();
+              configInfoBeta.setDataId(configInfo.getDataId());
+              configInfoBeta.setGroupId(configInfo.getGroup());
+              configInfoBeta.setAppName(appNameTmp);
+              configInfoBeta.setContent(configInfo.getContent());
+              configInfoBeta.setBetaIps(betaIps);
+              configInfoBeta.setMd5(md5);
+              configInfoBeta.setGmtCreate(time);
+              configInfoBeta.setGmtModified(time);
+              configInfoBeta.setSrcUser(srcUser);
+              configInfoBeta.setSrcIp(srcIp);
+              configInfoBeta.setTenantId(tenantTmp);
+              configInfoBetaRepository.save(configInfoBeta);
+====1
+1:209c
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+2:209c
+3:209c
+              log.error("[db-error] " + e.toString(), e);
+====1
+1:220c
+          String md5 = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+2:219a
+3:219a
+====1
+1:222,226c
+              jt.update(
+                      "INSERT INTO config_info_tag(data_id,group_id,tenant_id,tag_id,app_name,content,md5,src_ip,src_user,"
+                              + "gmt_create,gmt_modified) VALUES(?,?,?,?,?,?,?,?,?,?,?)", configInfo.getDataId(),
+                      configInfo.getGroup(), tenantTmp, tagTmp, appNameTmp, configInfo.getContent(), md5, srcIp, srcUser,
+                      time, time);
+2:221,234c
+3:221,234c
+              String md5 = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+              ConfigInfoTagEntity configInfoTag = new ConfigInfoTagEntity();
+              configInfoTag.setDataId(configInfo.getDataId());
+              configInfoTag.setGroupId(configInfo.getGroup());
+              configInfoTag.setTenantId(tenantTmp);
+              configInfoTag.setTagId(tag);
+              configInfoTag.setAppName(appNameTmp);
+              configInfoTag.setContent(configInfo.getContent());
+              configInfoTag.setMd5(md5);
+              configInfoTag.setGmtCreate(time);
+              configInfoTag.setGmtModified(time);
+              configInfoTag.setSrcUser(srcUser);
+              configInfoTag.setSrcIp(srcIp);
+              configInfoTagRepository.save(configInfoTag);
+====1
+1:228c
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+2:236c
+3:236c
+              log.error("[db-error] " + e.toString(), e);
+====1
+1:236,254c
+          boolean result = tjt.execute(status -> {
+              try {
+                  ConfigInfo oldConfigInfo = findConfigInfo(configInfo.getDataId(), configInfo.getGroup(),
+                          configInfo.getTenant());
+                  String appNameTmp = oldConfigInfo.getAppName();
+                  /*
+                   If the appName passed by the user is not empty, use the persistent user's appName,
+                   otherwise use db; when emptying appName, you need to pass an empty string
+                   */
+                  if (configInfo.getAppName() == null) {
+                      configInfo.setAppName(appNameTmp);
+                  }
+                  updateConfigInfoAtomic(configInfo, srcIp, srcUser, time, configAdvanceInfo);
+                  String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+                  if (configTags != null) {
+                      // delete all tags and then recreate
+                      removeTagByIdAtomic(oldConfigInfo.getId());
+                      addConfigTagsRelation(oldConfigInfo.getId(), configTags, configInfo.getDataId(),
+                              configInfo.getGroup(), configInfo.getTenant());
+2:244,268c
+3:244,268c
+          tjt.execute(new TransactionCallback<Boolean>() {
+              @Override
+              public Boolean doInTransaction(TransactionStatus status) {
+                  try {
+                      ConfigInfo oldConfigInfo = findConfigInfo(configInfo.getDataId(), configInfo.getGroup(),
+                              configInfo.getTenant());
+                      String appNameTmp = oldConfigInfo.getAppName();
+                      // 用户传过来的appName不为空，则用持久化用户的appName，否则用db的;清空appName的时候需要传空串
+                      if (configInfo.getAppName() == null) {
+                          configInfo.setAppName(appNameTmp);
+                      }
+                      configInfo.setId(oldConfigInfo.getId());
+                      updateConfigInfoAtomic(configInfo, srcIp, srcUser, time, configAdvanceInfo);
+                      String configTags =
+                              configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+                      if (configTags != null) {
+                          // 删除所有tag，然后再重新创建
+                          removeTagByIdAtomic(oldConfigInfo.getId());
+                          addConfigTagsRelation(oldConfigInfo.getId(), configTags, configInfo.getDataId(),
+                                  configInfo.getGroup(), configInfo.getTenant());
+                      }
+                      insertConfigHistoryAtomic(oldConfigInfo.getId(), oldConfigInfo, srcIp, srcUser, time, "U");
+                  } catch (CannotGetJdbcConnectionException e) {
+                      log.error("[db-error] " + e.toString(), e);
+                      throw e;
+====1
+1:256,259c
+                  insertConfigHistoryAtomic(oldConfigInfo.getId(), oldConfigInfo, srcIp, srcUser, time, "U");
+              } catch (CannotGetJdbcConnectionException e) {
+                  LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+                  throw e;
+2:270c
+3:270c
+                  return Boolean.TRUE;
+====1
+1:261c
+              return Boolean.TRUE;
+2:271a
+3:271a
+====1
+1:268c
+          String appNameTmp = StringUtils.isBlank(configInfo.getAppName()) ? StringUtils.EMPTY : configInfo.getAppName();
+2:277a
+3:277a
+====1
+1:270,275c
+          String md5 = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+          try {
+              jt.update(
+                      "UPDATE config_info_beta SET content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=?,app_name=? WHERE "
+                              + "data_id=? AND group_id=? AND tenant_id=?", configInfo.getContent(), md5, srcIp, srcUser,
+                      time, appNameTmp, configInfo.getDataId(), configInfo.getGroup(), tenantTmp);
+2:279,300c
+3:279,300c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoBetaEntity qConfigInfoBeta = QConfigInfoBetaEntity.configInfoBetaEntity;
+          if (StringUtils.isNotBlank(configInfo.getDataId())) {
+              booleanBuilder.and(qConfigInfoBeta.dataId.eq(configInfo.getDataId()));
+          }
+          if (StringUtils.isNotBlank(configInfo.getGroup())) {
+              booleanBuilder.and(qConfigInfoBeta.groupId.eq(configInfo.getGroup()));
+          }
+          if (StringUtils.isNotBlank(tenantTmp)) {
+              booleanBuilder.and(qConfigInfoBeta.tenantId.eq(tenantTmp));
+          }
+          ConfigInfoBetaEntity configInfoBeta = configInfoBetaRepository.findOne(booleanBuilder).orElse(null);
+          try {
+              String appNameTmp =
+                      StringUtils.isBlank(configInfo.getAppName()) ? StringUtils.EMPTY : configInfo.getAppName();
+              String md5 = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+              configInfoBeta.setAppName(appNameTmp);
+              configInfoBeta.setContent(configInfo.getContent());
+              configInfoBeta.setMd5(md5);
+              configInfoBeta.setSrcIp(srcIp);
+              configInfoBeta.setSrcUser(srcUser);
+              configInfoBetaRepository.save(configInfoBeta);
+====1
+1:277c
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+2:302c
+3:302c
+              log.error("[db-error] " + e.toString(), e);
+====1
+1:288,293c
+          try {
+              String md5 = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+              jt.update(
+                      "UPDATE config_info_tag SET content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=?,app_name=? WHERE "
+                              + "data_id=? AND group_id=? AND tenant_id=? AND tag_id=?", configInfo.getContent(), md5,
+                      srcIp, srcUser, time, appNameTmp, configInfo.getDataId(), configInfo.getGroup(), tenantTmp, tagTmp);
+2:313,331c
+3:313,331c
+          QConfigInfoTagEntity qConfigInfoTag = QConfigInfoTagEntity.configInfoTagEntity;
+          ConfigInfoTagEntity configInfoTag = configInfoTagRepository.findOne(
+                  qConfigInfoTag.dataId.eq(configInfo.getDataId()).and(qConfigInfoTag.groupId.eq(configInfo.getGroup()))
+                          .and(qConfigInfoTag.tenantId.eq(tenantTmp)).and(qConfigInfoTag.tagId.eq(tagTmp)))
+                  .orElse(new ConfigInfoTagEntity());
+          try {
+              configInfoTag.setDataId(configInfo.getDataId());
+              configInfoTag.setGroupId(configInfo.getGroup());
+              configInfoTag.setTenantId(tenantTmp);
+              configInfoTag.setTagId(tag);
+              configInfoTag.setAppName(appNameTmp);
+              configInfoTag.setContent(configInfo.getContent());
+              String md5 = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+              configInfoTag.setMd5(md5);
+              configInfoTag.setGmtCreate(time);
+              configInfoTag.setGmtModified(time);
+              configInfoTag.setSrcUser(srcUser);
+              configInfoTag.setSrcIp(srcIp);
+              configInfoTagRepository.save(configInfoTag);
+====1
+1:295c
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+2:333c
+3:333c
+              log.error("[db-error] " + e.toString(), e);
+====1
+1:323,330c
+          try {
+              jt.update(
+                      "UPDATE config_info SET md5 = ? WHERE data_id=? AND group_id=? AND tenant_id=? AND gmt_modified=?",
+                      md5, dataId, group, tenantTmp, lastTime);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:361,378c
+3:361,378c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+          }
+          if (lastTime != null) {
+              booleanBuilder.and(qConfigInfo.gmtModified.eq(lastTime));
+          }
+          configInfoRepository.findOne(booleanBuilder).ifPresent(config -> {
+              config.setMd5(md5);
+              configInfoRepository.save(config);
+          });
+====1
+1:416,421c
+          tjt.execute(status -> {
+              try {
+                  ConfigInfo configInfo = findConfigInfo4Beta(dataId, group, tenant);
+                  if (configInfo != null) {
+                      jt.update("DELETE FROM config_info_beta WHERE data_id=? AND group_id=? AND tenant_id=?", dataId,
+                              group, tenantTmp);
+2:464,474c
+3:464,474c
+          tjt.execute(new TransactionCallback<Boolean>() {
+              @Override
+              public Boolean doInTransaction(TransactionStatus status) {
+                  try {
+                      ConfigInfo4Beta configInfo4Beta = findConfigInfo4Beta(dataId, group, tenant);
+                      if (configInfo4Beta != null) {
+                          configInfoBetaRepository.deleteById(configInfo4Beta.getId());
+                      }
+                  } catch (CannotGetJdbcConnectionException e) {
+                      log.error("[db-error] " + e.toString(), e);
+                      throw e;
+====1
+1:423,425c
+              } catch (CannotGetJdbcConnectionException e) {
+                  LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+                  throw e;
+2:476c
+3:476c
+                  return Boolean.TRUE;
+====1
+1:427c
+              return Boolean.TRUE;
+2:477a
+3:477a
+====1
+1:439,442c
+          String select = "SELECT content FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = ?  AND datum_id = ?";
+          String insert = "INSERT INTO config_info_aggr(data_id, group_id, tenant_id, datum_id, app_name, content, gmt_modified) VALUES(?,?,?,?,?,?,?) ";
+          String update = "UPDATE config_info_aggr SET content = ? , gmt_modified = ? WHERE data_id = ? AND group_id = ? AND tenant_id = ? AND datum_id = ?";
+          
+2:489,502c
+3:489,502c
+          QConfigInfoAggrEntity qConfigInfoAggr = QConfigInfoAggrEntity.configInfoAggrEntity;
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoAggr.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoAggr.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfoAggr.tenantId.eq(tenant));
+          }
+          if (StringUtils.isNotBlank(datumId)) {
+              booleanBuilder.and(qConfigInfoAggr.datumId.eq(datumId));
+          }
+====1
+1:445,446c
+                  String dbContent = jt
+                          .queryForObject(select, new Object[] {dataId, group, tenantTmp, datumId}, String.class);
+2:505c
+3:505c
+                  ConfigInfoAggrEntity result = configInfoAggrRepository.findOne(booleanBuilder).orElse(null);
+====1
+1:448c
+                  if (dbContent != null && dbContent.equals(content)) {
+2:507c
+3:507c
+                  if (result.getContent() != null && result.getContent().equals(content)) {
+====1
+1:451c
+                      return jt.update(update, content, now, dataId, group, tenantTmp, datumId) > 0;
+2:510,513c
+3:510,513c
+                      result.setContent(content);
+                      result.setGmtModified(now);
+                      configInfoAggrRepository.save(result);
+                      return true;
+====1
+1:454c
+                  return jt.update(insert, dataId, group, tenantTmp, datumId, appNameTmp, content, now) > 0;
+2:516,526c
+3:516,526c
+                  ConfigInfoAggrEntity configInfoAggrEntity = new ConfigInfoAggrEntity();
+                  configInfoAggrEntity.setDataId(dataId);
+                  configInfoAggrEntity.setGroupId(group);
+                  configInfoAggrEntity.setDatumId(datumId);
+                  configInfoAggrEntity.setContent(content);
+                  configInfoAggrEntity.setGmtModified(now);
+                  configInfoAggrEntity.setAppName(appNameTmp);
+                  configInfoAggrEntity.setTenantId(tenantTmp);
+                  configInfoAggrRepository.save(configInfoAggrEntity);
+                  return true;
+                  
+====1
+1:465,466c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sql = "DELETE FROM config_info_aggr WHERE data_id=? AND group_id=? AND tenant_id=? AND datum_id=?";
+2:536a
+3:536a
+====1
+1:468,482c
+          try {
+              this.jt.update(sql, new PreparedStatementSetter() {
+                  @Override
+                  public void setValues(PreparedStatement ps) throws SQLException {
+                      int index = 1;
+                      ps.setString(index++, dataId);
+                      ps.setString(index++, group);
+                      ps.setString(index++, tenantTmp);
+                      ps.setString(index, datumId);
+                  }
+              });
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:537a
+3:537a
+====1
+1:487,502c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sql = "DELETE FROM config_info_aggr WHERE data_id=? AND group_id=? AND tenant_id=?";
+          
+          try {
+              this.jt.update(sql, new PreparedStatementSetter() {
+                  @Override
+                  public void setValues(PreparedStatement ps) throws SQLException {
+                      int index = 1;
+                      ps.setString(index++, dataId);
+                      ps.setString(index++, group);
+                      ps.setString(index, tenantTmp);
+                  }
+              });
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:542,545c
+3:542,545c
+          QConfigInfoAggrEntity qConfigInfoAggr = QConfigInfoAggrEntity.configInfoAggrEntity;
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoAggr.dataId.eq(dataId));
+====1
+1:503a
+2:547,553c
+3:547,553c
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoAggr.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfoAggr.tenantId.eq(tenant));
+          }
+          configInfoAggrRepository.findOne(booleanBuilder).ifPresent(aggr -> configInfoAggrRepository.delete(aggr));
+====1
+1:509,523c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          final StringBuilder datumString = new StringBuilder();
+          for (String datum : datumList) {
+              datumString.append("'").append(datum).append("',");
+          }
+          datumString.deleteCharAt(datumString.length() - 1);
+          final String sql =
+                  "delete from config_info_aggr where data_id=? and group_id=? and tenant_id=? and datum_id in ("
+                          + datumString.toString() + ")";
+          try {
+              jt.update(sql, dataId, group, tenantTmp);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              return false;
+          }
+2:558a
+3:558a
+====1
+1:529,536c
+          String sql = "delete from his_config_info where gmt_modified < ? limit ?";
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              helper.updateLimit(sql, new Object[] {startTime, limitSize});
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:564,567c
+3:564,567c
+          QHisConfigInfoEntity qHisConfigInfo = QHisConfigInfoEntity.hisConfigInfoEntity;
+          Iterable<HisConfigInfoEntity> iterable = hisConfigInfoRepository
+                  .findAll(qHisConfigInfo.gmtModified.lt(startTime), PageRequest.of(0, limitSize));
+          hisConfigInfoRepository.deleteAll(iterable);
+====1
+1:541,542c
+          String sql = "SELECT COUNT(*) FROM his_config_info WHERE gmt_modified < ?";
+          Integer result = jt.queryForObject(sql, Integer.class, new Object[] {startTime});
+2:572,573c
+3:572,573c
+          QHisConfigInfoEntity qHisConfigInfo = QHisConfigInfoEntity.hisConfigInfoEntity;
+          Long result = hisConfigInfoRepository.count(qHisConfigInfo.gmtModified.lt(startTime));
+====1
+1:551c
+          String sql = "SELECT max(id) FROM config_info";
+2:581a
+3:581a
+====1
+1:553c
+              return jt.queryForObject(sql, Long.class);
+2:583,584c
+3:583,584c
+              //TODO 关系型特性查询
+              return configInfoRepository.findConfigMaxId();
+====1
+1:591,617c
+          try {
+              Boolean isReplaceOk = tjt.execute(new TransactionCallback<Boolean>() {
+                  @Override
+                  public Boolean doInTransaction(TransactionStatus status) {
+                      try {
+                          String appNameTmp = appName == null ? "" : appName;
+                          removeAggrConfigInfo(dataId, group, tenant);
+                          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+                          String sql = "INSERT INTO config_info_aggr(data_id, group_id, tenant_id, datum_id, app_name, content, gmt_modified) VALUES(?,?,?,?,?,?,?) ";
+                          for (Map.Entry<String, String> datumEntry : datumMap.entrySet()) {
+                              jt.update(sql, dataId, group, tenantTmp, datumEntry.getKey(), appNameTmp,
+                                      datumEntry.getValue(), new Timestamp(System.currentTimeMillis()));
+                          }
+                      } catch (Throwable e) {
+                          throw new TransactionSystemException("error in addAggrConfigInfo");
+                      }
+                      return Boolean.TRUE;
+                  }
+              });
+              if (isReplaceOk == null) {
+                  return false;
+              }
+              return isReplaceOk;
+          } catch (TransactionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              return false;
+          }
+2:622c
+3:622c
+          return true;
+====1
+1:624,636c
+          String sql = "SELECT DISTINCT data_id, group_id FROM config_info";
+          
+          try {
+              return jt.query(sql, new Object[] {}, CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) {
+              return Collections.emptyList();
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+          }
+2:629c
+3:629c
+          return null;
+====1
+1:641,651c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,app_name,content,beta_ips FROM config_info_beta WHERE data_id=? AND group_id=? AND tenant_id=?",
+                      new Object[] {dataId, group, tenantTmp}, CONFIG_INFO4BETA_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:634,647c
+3:634,647c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoBetaEntity qConfigInfoBeta = QConfigInfoBetaEntity.configInfoBetaEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoBeta.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoBeta.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfoBeta.tenantId.eq(tenant));
+          }
+          ConfigInfoBetaEntity configInfoBetaEntity = configInfoBetaRepository.findOne(booleanBuilder)
+                  .orElseThrow(() -> new RuntimeException("find configInfoBeta data null"));
+          return ConfigInfo4BetaMapStruct.INSTANCE.convertConfigInfo4Beta(configInfoBetaEntity);
+====1
+1:659,668c
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,tag_id,app_name,content FROM config_info_tag WHERE data_id=? AND group_id=? AND tenant_id=? AND tag_id=?",
+                      new Object[] {dataId, group, tenantTmp, tagTmp}, CONFIG_INFO4TAG_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:655,671c
+3:655,671c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoTagEntity qConfigInfoTag = QConfigInfoTagEntity.configInfoTagEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoTag.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoTag.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfoTag.tenantId.eq(tenant));
+          }
+          if (StringUtils.isNotBlank(tag)) {
+              booleanBuilder.and(qConfigInfoTag.tagId.eq(tag));
+          }
+          ConfigInfoTagEntity result = configInfoTagRepository.findOne(booleanBuilder)
+                  .orElseThrow(() -> new RuntimeException("find configInfoTag data null"));
+          return ConfigInfo4TagMapStruct.INSTANCE.convertConfigInfo4Tag(result);
+====1
+1:674,684c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE data_id=? AND group_id=? AND tenant_id=? AND app_name=?",
+                      new Object[] {dataId, group, tenantTmp, appName}, CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:677c
+3:677c
+          return null;
+====1
+1:690,733c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          final String appName = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("appName");
+          final String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+          List<String> paramList = new ArrayList<String>();
+          paramList.add(dataId);
+          paramList.add(group);
+          paramList.add(tenantTmp);
+          
+          StringBuilder sql = new StringBuilder(
+                  "select ID,data_id,group_id,tenant_id,app_name,content from config_info where data_id=? and group_id=? and tenant_id=? ");
+          if (StringUtils.isNotBlank(configTags)) {
+              sql = new StringBuilder(
+                      "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info  a left join "
+                              + "config_tags_relation b on a.id=b.id where a.data_id=? and a.group_id=? and a.tenant_id=? ");
+              sql.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      sql.append(", ");
+                  }
+                  sql.append("?");
+                  paramList.add(tagArr[i]);
+              }
+              sql.append(") ");
+              
+              if (StringUtils.isNotBlank(appName)) {
+                  sql.append(" and a.app_name=? ");
+                  paramList.add(appName);
+              }
+          } else {
+              if (StringUtils.isNotBlank(appName)) {
+                  sql.append(" and app_name=? ");
+                  paramList.add(appName);
+              }
+          }
+          
+          try {
+              return this.jt.queryForObject(sql.toString(), paramList.toArray(), CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:683c
+3:683c
+          return null;
+====1
+1:739,748c
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,content FROM config_info WHERE data_id=? AND group_id=? AND tenant_id=?",
+                      new Object[] {dataId, group, StringUtils.EMPTY}, CONFIG_INFO_BASE_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:689,695c
+3:689,695c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          return configInfoRepository.findOne(qConfigInfo.dataId.eq(dataId).and(qConfigInfo.groupId.eq(group))).map(s -> {
+              ConfigInfoBase configInfoBase = new ConfigInfoBase();
+              BeanUtils.copyProperties(s, configInfoBase);
+              configInfoBase.setGroup(s.getGroupId());
+              return configInfoBase;
+          }).orElse(null);
+====1
+1:753,762c
+          try {
+              return this.jt
+                      .queryForObject("SELECT ID,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE ID=?",
+                              new Object[] {id}, CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:700,701c
+3:700,701c
+          
+          return null;
+====1
+1:767,776c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,app_name,content,md5,type FROM config_info WHERE data_id=? AND group_id=? AND tenant_id=?",
+                      new Object[] {dataId, group, tenantTmp}, CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null.
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:706,712c
+3:706,712c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+====1
+1:777a
+2:714,718c
+3:714,718c
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+          }
+          ConfigInfoEntity result = configInfoRepository.findOne(booleanBuilder).orElse(null);
+          return ConfigInfoMapStruct.INSTANCE.convertConfigInfo(result);
+====1
+1:783,792c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where data_id=? and tenant_id=?",
+                      "select ID,data_id,group_id,tenant_id,app_name,content from config_info where data_id=? and tenant_id=?",
+                      new Object[] {dataId, tenantTmp}, pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:724,725c
+3:724,725c
+          
+          return null;
+====1
+1:798,807c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where data_id=? and tenant_id=? and app_name=?",
+                      "select ID,data_id,group_id,tenant_id,app_name,content from config_info where data_id=? and tenant_id=? and app_name=?",
+                      new Object[] {dataId, tenantTmp, appName}, pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:731,732c
+3:731,732c
+          
+          return null;
+====1
+1:813,864c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          final String appName = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("appName");
+          final String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+          StringBuilder sqlCount = new StringBuilder("select count(*) from config_info where data_id=? and tenant_id=? ");
+          StringBuilder sql = new StringBuilder(
+                  "select ID,data_id,group_id,tenant_id,app_name,content from config_info where data_id=? and tenant_id=? ");
+          List<String> paramList = new ArrayList<String>();
+          paramList.add(dataId);
+          paramList.add(tenantTmp);
+          if (StringUtils.isNotBlank(configTags)) {
+              sqlCount = new StringBuilder(
+                      "select count(*) from config_info  a left join config_tags_relation b on a.id=b.id where a.data_id=? and a.tenant_id=? ");
+              
+              sql = new StringBuilder(
+                      "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info  a left join "
+                              + "config_tags_relation b on a.id=b.id where a.data_id=? and a.tenant_id=? ");
+              
+              sqlCount.append(" and b.tag_name in (");
+              sql.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      sqlCount.append(", ");
+                      sql.append(", ");
+                  }
+                  sqlCount.append("?");
+                  sql.append("?");
+                  paramList.add(tagArr[i]);
+              }
+              sqlCount.append(") ");
+              sql.append(") ");
+              
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and a.app_name=? ");
+                  sql.append(" and a.app_name=? ");
+                  paramList.add(appName);
+              }
+          } else {
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and app_name=? ");
+                  sql.append(" and app_name=? ");
+                  paramList.add(appName);
+              }
+          }
+          try {
+              return helper.fetchPage(sqlCount.toString(), sql.toString(), paramList.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:738c
+3:738c
+          return null;
+====1
+1:870,871c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+2:743a
+3:743a
+====1
+1:874,922c
+          String sqlCount = "select count(*) from config_info";
+          String sql = "select ID,data_id,group_id,tenant_id,app_name,content,type from config_info";
+          StringBuilder where = new StringBuilder(" where ");
+          List<String> paramList = new ArrayList<String>();
+          paramList.add(tenantTmp);
+          if (StringUtils.isNotBlank(configTags)) {
+              sqlCount = "select count(*) from config_info  a left join config_tags_relation b on a.id=b.id";
+              sql = "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info  a left join "
+                      + "config_tags_relation b on a.id=b.id";
+              
+              where.append(" a.tenant_id=? ");
+              
+              if (StringUtils.isNotBlank(dataId)) {
+                  where.append(" and a.data_id=? ");
+                  paramList.add(dataId);
+              }
+              if (StringUtils.isNotBlank(group)) {
+                  where.append(" and a.group_id=? ");
+                  paramList.add(group);
+              }
+              if (StringUtils.isNotBlank(appName)) {
+                  where.append(" and a.app_name=? ");
+                  paramList.add(appName);
+              }
+              
+              where.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      where.append(", ");
+                  }
+                  where.append("?");
+                  paramList.add(tagArr[i]);
+              }
+              where.append(") ");
+          } else {
+              where.append(" tenant_id=? ");
+              if (StringUtils.isNotBlank(dataId)) {
+                  where.append(" and data_id=? ");
+                  paramList.add(dataId);
+              }
+              if (StringUtils.isNotBlank(group)) {
+                  where.append(" and group_id=? ");
+                  paramList.add(group);
+              }
+              if (StringUtils.isNotBlank(appName)) {
+                  where.append(" and app_name=? ");
+                  paramList.add(appName);
+              }
+2:746,765c
+3:746,765c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          buildConfigInfoCommonCondition(booleanBuilder, qConfigInfo, dataId, group, appName);
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+          }
+          org.springframework.data.domain.Page<ConfigInfoEntity> sPage = configInfoRepository
+                  .findAll(booleanBuilder, PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.desc("gmtCreate"))));
+          Page<ConfigInfo> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoMapStruct.INSTANCE.convertConfigInfoList2(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+      }
+      
+      private void buildConfigInfoCommonCondition(BooleanBuilder booleanBuilder, QConfigInfoEntity qConfigInfo,
+              final String dataId, final String group, final String appName) {
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+====1
+1:924,929c
+          try {
+              return helper.fetchPage(sqlCount + where, sql + where, paramList.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:767,771c
+3:767,771c
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(appName)) {
+              booleanBuilder.and(qConfigInfo.appName.eq(appName));
+====1
+1:935,943c
+          PaginationHelper<ConfigInfoBase> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where data_id=? and tenant_id=?",
+                      "select ID,data_id,group_id,content from config_info where data_id=? and tenant_id=?",
+                      new Object[] {dataId, StringUtils.EMPTY}, pageNo, pageSize, CONFIG_INFO_BASE_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:777c
+3:777c
+          return null;
+====1
+1:949,958c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where group_id=? and tenant_id=?",
+                      "select ID,data_id,group_id,tenant_id,app_name,content from config_info where group_id=? and tenant_id=?",
+                      new Object[] {group, tenantTmp}, pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:783c
+3:783c
+          return null;
+====1
+1:964,973c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where group_id=? and tenant_id=? and app_name =?",
+                      "select ID,data_id,group_id,tenant_id,app_name,content from config_info where group_id=? and tenant_id=? and app_name =?",
+                      new Object[] {group, tenantTmp, appName}, pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:789c
+3:789c
+          return null;
+====1
+1:979,1032c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          
+          final String appName = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("appName");
+          final String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+          StringBuilder sqlCount = new StringBuilder(
+                  "select count(*) from config_info where group_id=? and tenant_id=? ");
+          StringBuilder sql = new StringBuilder(
+                  "select ID,data_id,group_id,tenant_id,app_name,content from config_info where group_id=? and tenant_id=? ");
+          List<String> paramList = new ArrayList<String>();
+          paramList.add(group);
+          paramList.add(tenantTmp);
+          if (StringUtils.isNotBlank(configTags)) {
+              sqlCount = new StringBuilder(
+                      "select count(*) from config_info  a left join config_tags_relation b on a.id=b.id where a.group_id=? and a.tenant_id=? ");
+              sql = new StringBuilder(
+                      "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info  a left join "
+                              + "config_tags_relation b on a.id=b.id where a.group_id=? and a.tenant_id=? ");
+              
+              sqlCount.append(" and b.tag_name in (");
+              sql.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      sqlCount.append(", ");
+                      sql.append(", ");
+                  }
+                  sqlCount.append("?");
+                  sql.append("?");
+                  paramList.add(tagArr[i]);
+              }
+              sqlCount.append(") ");
+              sql.append(") ");
+              
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and a.app_name=? ");
+                  sql.append(" and a.app_name=? ");
+                  paramList.add(appName);
+              }
+          } else {
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and app_name=? ");
+                  sql.append(" and app_name=? ");
+                  paramList.add(appName);
+              }
+          }
+          
+          try {
+              return helper.fetchPage(sqlCount.toString(), sql.toString(), paramList.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:795c
+3:795c
+          return null;
+====1
+1:1038,1047c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where tenant_id like ? and app_name=?",
+                      "select ID,data_id,group_id,tenant_id,app_name,content from config_info where tenant_id like ? and app_name=?",
+                      new Object[] {generateLikeArgument(tenantTmp), appName}, pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:801c
+3:801c
+          return null;
+====1
+1:1053,1104c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          final String appName = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("appName");
+          final String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
+          StringBuilder sqlCount = new StringBuilder("select count(*) from config_info where tenant_id like ? ");
+          StringBuilder sql = new StringBuilder(
+                  "select ID,data_id,group_id,tenant_id,app_name,content from config_info where tenant_id like ? ");
+          List<String> paramList = new ArrayList<String>();
+          paramList.add(tenantTmp);
+          if (StringUtils.isNotBlank(configTags)) {
+              sqlCount = new StringBuilder(
+                      "select count(*) from config_info a left join config_tags_relation b on a.id=b.id where a.tenant_id=? ");
+              
+              sql = new StringBuilder(
+                      "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info  a left join "
+                              + "config_tags_relation b on a.id=b.id where a.tenant_id=? ");
+              
+              sqlCount.append(" and b.tag_name in (");
+              sql.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      sqlCount.append(", ");
+                      sql.append(", ");
+                  }
+                  sqlCount.append("?");
+                  sql.append("?");
+                  paramList.add(tagArr[i]);
+              }
+              sqlCount.append(") ");
+              sql.append(") ");
+              
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and a.app_name=? ");
+                  sql.append(" and a.app_name=? ");
+                  paramList.add(appName);
+              }
+          } else {
+              if (StringUtils.isNotBlank(appName)) {
+                  sqlCount.append(" and app_name=? ");
+                  sql.append(" and app_name=? ");
+                  paramList.add(appName);
+              }
+          }
+          
+          try {
+              return helper.fetchPage(sqlCount.toString(), sql.toString(), paramList.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:807c
+3:807c
+          return null;
+====1
+1:1110,1118c
+          PaginationHelper<ConfigInfoBase> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage("select count(*) from config_info where group_id=? and tenant_id=?",
+                      "select ID,data_id,group_id,content from config_info where group_id=? and tenant_id=?",
+                      new Object[] {group, StringUtils.EMPTY}, pageNo, pageSize, CONFIG_INFO_BASE_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:813c
+3:813c
+          return null;
+====1
+1:1123,1124c
+          String sql = " SELECT COUNT(ID) FROM config_info ";
+          Integer result = jt.queryForObject(sql, Integer.class);
+2:818c
+3:818c
+          Long result = configInfoRepository.count();
+====1
+1:1133,1134c
+          String sql = " SELECT COUNT(ID) FROM config_info where tenant_id like ?";
+          Integer result = jt.queryForObject(sql, new Object[] {tenant}, Integer.class);
+2:827,828c
+3:827,828c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          Long result = configInfoRepository.count(qConfigInfo.tenantId.like(tenant));
+====1
+1:1143,1144c
+          String sql = " SELECT COUNT(ID) FROM config_info_beta ";
+          Integer result = jt.queryForObject(sql, Integer.class);
+2:837c
+3:837c
+          Long result = configInfoBetaRepository.count();
+====1
+1:1153,1154c
+          String sql = " SELECT COUNT(ID) FROM config_info_tag ";
+          Integer result = jt.queryForObject(sql, Integer.class);
+2:846c
+3:846c
+          Long result = configInfoTagRepository.count();
+====1
+1:1162,1165c
+      public List<String> getTenantIdList(int page, int pageSize) {
+          String sql = "SELECT tenant_id FROM config_info WHERE tenant_id != '' GROUP BY tenant_id LIMIT ?, ?";
+          int from = (page - 1) * pageSize;
+          return jt.queryForList(sql, String.class, from, pageSize);
+2:854,864c
+3:854,864c
+      public List<String> getTenantIdList(int pageNo, int pageSize) {
+          Specification<ConfigInfoEntity> specification = new Specification<ConfigInfoEntity>() {
+              @Override
+              public Predicate toPredicate(Root<ConfigInfoEntity> root, CriteriaQuery<?> query,
+                      CriteriaBuilder criteriaBuilder) {
+                  return query.groupBy(root.get("tenantId")).getRestriction();
+              }
+          };
+          org.springframework.data.domain.Page<ConfigInfoEntity> page = configInfoRepository
+                  .findAll(specification, PageRequest.of(pageNo, pageSize));
+          return page.getContent().stream().map(config -> config.getGroupId()).collect(Collectors.toList());
+====1
+1:1169,1172c
+      public List<String> getGroupIdList(int page, int pageSize) {
+          String sql = "SELECT group_id FROM config_info WHERE tenant_id ='' GROUP BY group_id LIMIT ?, ?";
+          int from = (page - 1) * pageSize;
+          return jt.queryForList(sql, String.class, from, pageSize);
+2:868,878c
+3:868,878c
+      public List<String> getGroupIdList(int pageNo, int pageSize) {
+          Specification<ConfigInfoEntity> specification = new Specification<ConfigInfoEntity>() {
+              @Override
+              public Predicate toPredicate(Root<ConfigInfoEntity> root, CriteriaQuery<?> query,
+                      CriteriaBuilder criteriaBuilder) {
+                  return query.groupBy(root.get("groupId")).getRestriction();
+              }
+          };
+          org.springframework.data.domain.Page<ConfigInfoEntity> page = configInfoRepository
+                  .findAll(specification, PageRequest.of(pageNo, pageSize));
+          return page.getContent().stream().map(config -> config.getGroupId()).collect(Collectors.toList());
+====1
+1:1178,1179c
+          String sql = " SELECT COUNT(ID) FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = ?";
+          Integer result = jt.queryForObject(sql, Integer.class, new Object[] {dataId, group, tenantTmp});
+2:884,886c
+3:884,886c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          Long result = configInfoRepository.count(qConfigInfo.dataId.eq(dataId).and(qConfigInfo.groupId.eq(group))
+                  .and(qConfigInfo.tenantId.eq(tenantTmp)));
+====1
+1:1188,1213c
+          if (datumIds == null || datumIds.isEmpty()) {
+              return 0;
+          }
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          StringBuilder sql = new StringBuilder(
+                  " SELECT COUNT(*) FROM config_info_aggr WHERE data_id = ? and group_id = ? and tenant_id = ? and datum_id");
+          if (isIn) {
+              sql.append(" in (");
+          } else {
+              sql.append(" not in (");
+          }
+          for (int i = 0, size = datumIds.size(); i < size; i++) {
+              if (i > 0) {
+                  sql.append(", ");
+              }
+              sql.append("?");
+          }
+          sql.append(")");
+          
+          List<Object> objectList = Lists.<Object>newArrayList(dataId, group, tenantTmp);
+          objectList.addAll(datumIds);
+          Integer result = jt.queryForObject(sql.toString(), Integer.class, objectList.toArray());
+          if (result == null) {
+              throw new IllegalArgumentException("aggrConfigInfoCount error");
+          }
+          return result.intValue();
+2:895c
+3:895c
+          return 0;
+====1
+1:1228,1242c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sqlCountRows = "SELECT COUNT(*) FROM config_info";
+          String sqlFetchRows = " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5 "
+                  + " FROM (  SELECT id FROM config_info WHERE tenant_id like ? ORDER BY id LIMIT ?,? )"
+                  + " g, config_info t  WHERE g.id = t.id ";
+          
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(sqlCountRows, sqlFetchRows,
+                      new Object[] {generateLikeArgument(tenantTmp), (pageNo - 1) * pageSize, pageSize}, pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:910c
+3:910c
+          return null;
+====1
+1:1247,1282c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String select = " SELECT data_id,group_id,app_name  FROM ( "
+                  + " SELECT id FROM config_info WHERE tenant_id LIKE ? ORDER BY id LIMIT ?, ?  )"
+                  + " g, config_info t WHERE g.id = t.id  ";
+          
+          final int totalCount = configInfoCount(tenant);
+          int pageCount = totalCount / pageSize;
+          if (totalCount > pageSize * pageCount) {
+              pageCount++;
+          }
+          
+          if (pageNo > pageCount) {
+              return null;
+          }
+          
+          final Page<ConfigKey> page = new Page<ConfigKey>();
+          page.setPageNumber(pageNo);
+          page.setPagesAvailable(pageCount);
+          page.setTotalCount(totalCount);
+          
+          try {
+              List<ConfigKey> result = jt
+                      .query(select, new Object[] {generateLikeArgument(tenantTmp), (pageNo - 1) * pageSize, pageSize},
+                              // new Object[0],
+                              CONFIG_KEY_ROW_MAPPER);
+              
+              for (ConfigKey item : result) {
+                  page.getPageItems().add(item);
+              }
+              return page;
+          } catch (EmptyResultDataAccessException e) {
+              return page;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:915c
+3:915c
+          return null;
+====1
+1:1288,1300c
+          String sqlCountRows = "SELECT COUNT(*) FROM config_info";
+          String sqlFetchRows = " SELECT t.id,data_id,group_id,content,md5"
+                  + " FROM ( SELECT id FROM config_info ORDER BY id LIMIT ?,?  ) "
+                  + " g, config_info t  WHERE g.id = t.id ";
+          
+          PaginationHelper<ConfigInfoBase> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(sqlCountRows, sqlFetchRows, new Object[] {(pageNo - 1) * pageSize, pageSize},
+                      pageNo, pageSize, CONFIG_INFO_BASE_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:921c
+3:921c
+          return null;
+====1
+1:1305,1319c
+          String sqlCountRows = "select count(*) from config_info";
+          String sqlFetchRows = " SELECT t.id,type,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified "
+                  + " FROM ( SELECT id FROM config_info   ORDER BY id LIMIT ?,?  )"
+                  + " g, config_info t WHERE g.id = t.id ";
+          PaginationHelper<ConfigInfoWrapper> helper = createPaginationHelper();
+          
+          List<String> params = new ArrayList<String>();
+          
+          try {
+              return helper.fetchPageLimit(sqlCountRows, sqlFetchRows, params.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_WRAPPER_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:926c
+3:926c
+          return null;
+====1
+1:1324,1332c
+          String select = "SELECT id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,type from config_info where id > ? order by id asc limit ?,?";
+          PaginationHelper<ConfigInfoWrapper> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(select, new Object[] {lastMaxId, 0, pageSize}, 1, pageSize,
+                      CONFIG_INFO_WRAPPER_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:931,940c
+3:931,940c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          org.springframework.data.domain.Page<ConfigInfoEntity> sPage = configInfoRepository
+                  .findAll(qConfigInfo.id.gt(lastMaxId), PageRequest.of(0, pageSize, Sort.by(Sort.Order.asc("id"))));
+          
+          Page<ConfigInfoWrapper> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoWrapperMapStruct.INSTANCE.convertConfigInfoWrapperList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:1337,1349c
+          String sqlCountRows = "SELECT COUNT(*) FROM config_info_beta";
+          String sqlFetchRows = " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips "
+                  + " FROM ( SELECT id FROM config_info_beta  ORDER BY id LIMIT ?,?  )"
+                  + "  g, config_info_beta t WHERE g.id = t.id ";
+          PaginationHelper<ConfigInfoBetaWrapper> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(sqlCountRows, sqlFetchRows, new Object[] {(pageNo - 1) * pageSize, pageSize},
+                      pageNo, pageSize, CONFIG_INFO_BETA_WRAPPER_ROW_MAPPER);
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:945,952c
+3:945,952c
+          org.springframework.data.domain.Page<ConfigInfoBetaEntity> sPage = configInfoBetaRepository
+                  .findAll(null, PageRequest.of(pageNo, pageSize));
+          Page<ConfigInfoBetaWrapper> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoBetaWrapperMapStruct.INSTANCE.convertConfigInfoBetaWrapperList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:1354,1366c
+          String sqlCountRows = "SELECT COUNT(*) FROM config_info_tag";
+          String sqlFetchRows = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified "
+                  + " FROM (  SELECT id FROM config_info_tag  ORDER BY id LIMIT ?,? ) "
+                  + "g, config_info_tag t  WHERE g.id = t.id  ";
+          PaginationHelper<ConfigInfoTagWrapper> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(sqlCountRows, sqlFetchRows, new Object[] {(pageNo - 1) * pageSize, pageSize},
+                      pageNo, pageSize, CONFIG_INFO_TAG_WRAPPER_ROW_MAPPER);
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:957,964c
+3:957,964c
+          org.springframework.data.domain.Page<ConfigInfoTagEntity> sPage = configInfoTagRepository
+                  .findAll(null, PageRequest.of(pageNo, pageSize));
+          Page<ConfigInfoTagWrapper> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoTagWrapperMapStruct.INSTANCE.convertConfigInfoTagWrapperList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:1372,1414c
+          // assert dataids group not null
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          // if dataids empty return empty list
+          if (CollectionUtils.isEmpty(dataIds)) {
+              return Collections.emptyList();
+          }
+          
+          // Batch query limit
+          // The number of in is controlled within 100, the shorter the length of the SQL statement, the better
+          if (subQueryLimit > QUERY_LIMIT_SIZE) {
+              subQueryLimit = 50;
+          }
+          List<ConfigInfo> result = new ArrayList<ConfigInfo>(dataIds.size());
+          
+          String sqlStart = "select data_id, group_id, tenant_id, app_name, content from config_info where group_id = ? and tenant_id = ? and data_id in (";
+          String sqlEnd = ")";
+          StringBuilder subQuerySql = new StringBuilder();
+          
+          for (int i = 0; i < dataIds.size(); i += subQueryLimit) {
+              // dataids
+              List<String> params = new ArrayList<String>(
+                      dataIds.subList(i, i + subQueryLimit < dataIds.size() ? i + subQueryLimit : dataIds.size()));
+              
+              for (int j = 0; j < params.size(); j++) {
+                  subQuerySql.append("?");
+                  if (j != params.size() - 1) {
+                      subQuerySql.append(",");
+                  }
+              }
+              
+              // group
+              params.add(0, group);
+              params.add(1, tenantTmp);
+              
+              List<ConfigInfo> r = this.jt
+                      .query(sqlStart + subQuerySql.toString() + sqlEnd, params.toArray(), CONFIG_INFO_ROW_MAPPER);
+              
+              // assert not null
+              if (r != null && r.size() > 0) {
+                  result.addAll(r);
+              }
+          }
+          return result;
+2:970c
+3:970c
+          return null;
+====1
+1:1420,1463c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          if (StringUtils.isBlank(dataId) && StringUtils.isBlank(group)) {
+              if (StringUtils.isBlank(appName)) {
+                  return this.findAllConfigInfo(pageNo, pageSize, tenantTmp);
+              } else {
+                  return this.findConfigInfoByApp(pageNo, pageSize, tenantTmp, appName);
+              }
+          }
+          
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          
+          String sqlCountRows = "select count(*) from config_info where ";
+          String sqlFetchRows = "select ID,data_id,group_id,tenant_id,app_name,content from config_info where ";
+          String where = " 1=1 ";
+          List<String> params = new ArrayList<String>();
+          
+          if (!StringUtils.isBlank(dataId)) {
+              where += " and data_id like ? ";
+              params.add(generateLikeArgument(dataId));
+          }
+          if (!StringUtils.isBlank(group)) {
+              where += " and group_id like ? ";
+              params.add(generateLikeArgument(group));
+          }
+          
+          where += " and tenant_id like ? ";
+          params.add(generateLikeArgument(tenantTmp));
+          
+          if (!StringUtils.isBlank(appName)) {
+              where += " and app_name = ? ";
+              params.add(appName);
+          }
+          if (!StringUtils.isBlank(content)) {
+              where += " and content like ? ";
+              params.add(generateLikeArgument(content));
+          }
+          
+          try {
+              return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:976c
+3:976c
+          return null;
+====1
+1:1469,1562c
+          String sqlCountRows = "select count(*) from config_info where ";
+          String sqlFetchRows = "select ID,data_id,group_id,tenant_id,app_name,content from config_info where ";
+          StringBuilder where = new StringBuilder(" 1=1 ");
+          // Whitelist, please leave the synchronization condition empty, there is no configuration that meets the conditions
+          if (configKeys.length == 0 && blacklist == false) {
+              Page<ConfigInfo> page = new Page<ConfigInfo>();
+              page.setTotalCount(0);
+              return page;
+          }
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          List<String> params = new ArrayList<String>();
+          boolean isFirst = true;
+          for (ConfigKey configInfo : configKeys) {
+              String dataId = configInfo.getDataId();
+              String group = configInfo.getGroup();
+              String appName = configInfo.getAppName();
+              
+              if (StringUtils.isBlank(dataId) && StringUtils.isBlank(group) && StringUtils.isBlank(appName)) {
+                  break;
+              }
+              
+              if (blacklist) {
+                  if (isFirst) {
+                      isFirst = false;
+                      where.append(" and ");
+                  } else {
+                      where.append(" and ");
+                  }
+                  
+                  where.append("(");
+                  boolean isFirstSub = true;
+                  if (!StringUtils.isBlank(dataId)) {
+                      where.append(" data_id not like ? ");
+                      params.add(generateLikeArgument(dataId));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(group)) {
+                      if (!isFirstSub) {
+                          where.append(" or ");
+                      }
+                      where.append(" group_id not like ? ");
+                      params.add(generateLikeArgument(group));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(appName)) {
+                      if (!isFirstSub) {
+                          where.append(" or ");
+                      }
+                      where.append(" app_name != ? ");
+                      params.add(appName);
+                      isFirstSub = false;
+                  }
+                  where.append(") ");
+              } else {
+                  if (isFirst) {
+                      isFirst = false;
+                      where.append(" and ");
+                  } else {
+                      where.append(" or ");
+                  }
+                  where.append("(");
+                  boolean isFirstSub = true;
+                  if (!StringUtils.isBlank(dataId)) {
+                      where.append(" data_id like ? ");
+                      params.add(generateLikeArgument(dataId));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(group)) {
+                      if (!isFirstSub) {
+                          where.append(" and ");
+                      }
+                      where.append(" group_id like ? ");
+                      params.add(generateLikeArgument(group));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(appName)) {
+                      if (!isFirstSub) {
+                          where.append(" and ");
+                      }
+                      where.append(" app_name = ? ");
+                      params.add(appName);
+                      isFirstSub = false;
+                  }
+                  where.append(") ");
+              }
+          }
+          
+          try {
+              return helper.fetchPage(sqlCountRows + where.toString(), sqlFetchRows + where.toString(), params.toArray(),
+                      pageNo, pageSize, CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:982c
+3:982c
+          return null;
+====1
+1:1572,1636c
+          PaginationHelper<ConfigInfo> helper = createPaginationHelper();
+          String sqlCountRows = "select count(*) from config_info";
+          String sqlFetchRows = "select ID,data_id,group_id,tenant_id,app_name,content from config_info";
+          StringBuilder where = new StringBuilder(" where ");
+          List<String> params = new ArrayList<String>();
+          params.add(generateLikeArgument(tenantTmp));
+          if (StringUtils.isNotBlank(configTags)) {
+              sqlCountRows = "select count(*) from config_info  a left join config_tags_relation b on a.id=b.id ";
+              sqlFetchRows = "select a.ID,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content from config_info a left join config_tags_relation b on a.id=b.id ";
+              
+              where.append(" a.tenant_id like ? ");
+              if (!StringUtils.isBlank(dataId)) {
+                  where.append(" and a.data_id like ? ");
+                  params.add(generateLikeArgument(dataId));
+              }
+              if (!StringUtils.isBlank(group)) {
+                  where.append(" and a.group_id like ? ");
+                  params.add(generateLikeArgument(group));
+              }
+              if (!StringUtils.isBlank(appName)) {
+                  where.append(" and a.app_name = ? ");
+                  params.add(appName);
+              }
+              if (!StringUtils.isBlank(content)) {
+                  where.append(" and a.content like ? ");
+                  params.add(generateLikeArgument(content));
+              }
+              
+              where.append(" and b.tag_name in (");
+              String[] tagArr = configTags.split(",");
+              for (int i = 0; i < tagArr.length; i++) {
+                  if (i != 0) {
+                      where.append(", ");
+                  }
+                  where.append("?");
+                  params.add(tagArr[i]);
+              }
+              where.append(") ");
+          } else {
+              where.append(" tenant_id like ? ");
+              if (!StringUtils.isBlank(dataId)) {
+                  where.append(" and data_id like ? ");
+                  params.add(generateLikeArgument(dataId));
+              }
+              if (!StringUtils.isBlank(group)) {
+                  where.append(" and group_id like ? ");
+                  params.add(generateLikeArgument(group));
+              }
+              if (!StringUtils.isBlank(appName)) {
+                  where.append(" and app_name = ? ");
+                  params.add(appName);
+              }
+              if (!StringUtils.isBlank(content)) {
+                  where.append(" and content like ? ");
+                  params.add(generateLikeArgument(content));
+              }
+          }
+          
+          try {
+              return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:992,1008c
+3:992,1008c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          buildConfigInfoCommonCondition(booleanBuilder, qConfigInfo, dataId, group, appName);
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.like(tenant));
+          }
+          if (StringUtils.isNotBlank(content)) {
+              booleanBuilder.and(qConfigInfo.content.like(content));
+          }
+          org.springframework.data.domain.Page<ConfigInfoEntity> sPage = configInfoRepository
+                  .findAll(booleanBuilder, PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.desc("gmtCreate"))));
+          Page<ConfigInfo> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoMapStruct.INSTANCE.convertConfigInfoList2(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:1642,1672c
+          if (StringUtils.isBlank(dataId) && StringUtils.isBlank(group)) {
+              throw new IOException("invalid param");
+          }
+          
+          PaginationHelper<ConfigInfoBase> helper = createPaginationHelper();
+          
+          String sqlCountRows = "select count(*) from config_info where ";
+          String sqlFetchRows = "select ID,data_id,group_id,tenant_id,content from config_info where ";
+          String where = " 1=1 and tenant_id='' ";
+          List<String> params = new ArrayList<String>();
+          
+          if (!StringUtils.isBlank(dataId)) {
+              where += " and data_id like ? ";
+              params.add(generateLikeArgument(dataId));
+          }
+          if (!StringUtils.isBlank(group)) {
+              where += " and group_id like ? ";
+              params.add(generateLikeArgument(group));
+          }
+          if (!StringUtils.isBlank(content)) {
+              where += " and content like ? ";
+              params.add(generateLikeArgument(content));
+          }
+          
+          try {
+              return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo, pageSize,
+                      CONFIG_INFO_BASE_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1014c
+3:1014c
+          return null;
+====1
+1:1678,1691c
+          String sql = "SELECT id,data_id,group_id,tenant_id,datum_id,app_name,content FROM config_info_aggr WHERE data_id=? AND group_id=? AND tenant_id=? AND datum_id=?";
+          
+          try {
+              return this.jt
+                      .queryForObject(sql, new Object[] {dataId, group, tenantTmp, datumId}, CONFIG_INFO_AGGR_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) {
+              // EmptyResultDataAccessException, indicating that the data does not exist, returns null
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+2:1020,1026c
+3:1020,1026c
+          QConfigInfoAggrEntity qConfigInfoAggr = QConfigInfoAggrEntity.configInfoAggrEntity;
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoAggr.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoAggr.groupId.eq(group));
+====1
+1:1692a
+2:1028,1036c
+3:1028,1036c
+          if (StringUtils.isNotBlank(tenantTmp)) {
+              booleanBuilder.and(qConfigInfoAggr.tenantId.eq(tenantTmp));
+          }
+          if (StringUtils.isNotBlank(datumId)) {
+              booleanBuilder.and(qConfigInfoAggr.datumId.eq(datumId));
+          }
+          
+          ConfigInfoAggrEntity configInfoAggrEntity = configInfoAggrRepository.findOne(booleanBuilder).orElse(null);
+          return ConfigInfoAggrMapStruct.INSTANCE.convertConfigInfoAggr(configInfoAggrEntity);
+====1
+1:1697,1710c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sql = "SELECT data_id,group_id,tenant_id,datum_id,app_name,content FROM config_info_aggr WHERE data_id=? AND group_id=? AND tenant_id=? ORDER BY datum_id";
+          
+          try {
+              return this.jt.query(sql, new Object[] {dataId, group, tenantTmp}, CONFIG_INFO_AGGR_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (EmptyResultDataAccessException e) {
+              return Collections.emptyList();
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+          }
+2:1041c
+3:1041c
+          return null;
+====1
+1:1717,1730c
+          String sqlCountRows = "SELECT COUNT(*) FROM config_info_aggr WHERE data_id = ? and group_id = ? and tenant_id = ?";
+          String sqlFetchRows =
+                  "select data_id,group_id,tenant_id,datum_id,app_name,content from config_info_aggr where data_id=? and "
+                          + "group_id=? and tenant_id=? order by datum_id limit ?,?";
+          PaginationHelper<ConfigInfoAggr> helper = createPaginationHelper();
+          try {
+              return helper.fetchPageLimit(sqlCountRows, new Object[] {dataId, group, tenantTmp}, sqlFetchRows,
+                      new Object[] {dataId, group, tenantTmp, (pageNo - 1) * pageSize, pageSize}, pageNo, pageSize,
+                      CONFIG_INFO_AGGR_ROW_MAPPER);
+              
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1048,1058c
+3:1048,1058c
+          QConfigInfoAggrEntity qConfigInfoAggr = QConfigInfoAggrEntity.configInfoAggrEntity;
+          org.springframework.data.domain.Page<ConfigInfoAggrEntity> sPage = configInfoAggrRepository.findAll(
+                  qConfigInfoAggr.dataId.eq(dataId).and(qConfigInfoAggr.groupId.eq(group))
+                          .and(qConfigInfoAggr.tenantId.eq(tenantTmp)),
+                  PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.by("datumId"))));
+          Page<ConfigInfoAggr> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigInfoAggrMapStruct.INSTANCE.convertConfigInfoAggrList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+          return page;
+====1
+1:1737,1831c
+          String sqlCountRows = "select count(*) from config_info_aggr where ";
+          String sqlFetchRows = "select data_id,group_id,tenant_id,datum_id,app_name,content from config_info_aggr where ";
+          StringBuilder where = new StringBuilder(" 1=1 ");
+          // Whitelist, please leave the synchronization condition empty, there is no configuration that meets the conditions
+          if (configKeys.length == 0 && blacklist == false) {
+              Page<ConfigInfoAggr> page = new Page<ConfigInfoAggr>();
+              page.setTotalCount(0);
+              return page;
+          }
+          PaginationHelper<ConfigInfoAggr> helper = createPaginationHelper();
+          List<String> params = new ArrayList<String>();
+          boolean isFirst = true;
+          
+          for (ConfigKey configInfoAggr : configKeys) {
+              String dataId = configInfoAggr.getDataId();
+              String group = configInfoAggr.getGroup();
+              String appName = configInfoAggr.getAppName();
+              if (StringUtils.isBlank(dataId) && StringUtils.isBlank(group) && StringUtils.isBlank(appName)) {
+                  break;
+              }
+              if (blacklist) {
+                  if (isFirst) {
+                      isFirst = false;
+                      where.append(" and ");
+                  } else {
+                      where.append(" and ");
+                  }
+                  
+                  where.append("(");
+                  boolean isFirstSub = true;
+                  if (!StringUtils.isBlank(dataId)) {
+                      where.append(" data_id not like ? ");
+                      params.add(generateLikeArgument(dataId));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(group)) {
+                      if (!isFirstSub) {
+                          where.append(" or ");
+                      }
+                      where.append(" group_id not like ? ");
+                      params.add(generateLikeArgument(group));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(appName)) {
+                      if (!isFirstSub) {
+                          where.append(" or ");
+                      }
+                      where.append(" app_name != ? ");
+                      params.add(appName);
+                      isFirstSub = false;
+                  }
+                  where.append(") ");
+              } else {
+                  if (isFirst) {
+                      isFirst = false;
+                      where.append(" and ");
+                  } else {
+                      where.append(" or ");
+                  }
+                  where.append("(");
+                  boolean isFirstSub = true;
+                  if (!StringUtils.isBlank(dataId)) {
+                      where.append(" data_id like ? ");
+                      params.add(generateLikeArgument(dataId));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(group)) {
+                      if (!isFirstSub) {
+                          where.append(" and ");
+                      }
+                      where.append(" group_id like ? ");
+                      params.add(generateLikeArgument(group));
+                      isFirstSub = false;
+                  }
+                  if (!StringUtils.isBlank(appName)) {
+                      if (!isFirstSub) {
+                          where.append(" and ");
+                      }
+                      where.append(" app_name = ? ");
+                      params.add(appName);
+                      isFirstSub = false;
+                  }
+                  where.append(") ");
+              }
+          }
+          
+          try {
+              Page<ConfigInfoAggr> result = helper
+                      .fetchPage(sqlCountRows + where.toString(), sqlFetchRows + where.toString(), params.toArray(),
+                              pageNo, pageSize, CONFIG_INFO_AGGR_ROW_MAPPER);
+              return result;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1065c
+3:1065c
+          return null;
+====1
+1:1836,1848c
+          String sql = "SELECT DISTINCT data_id, group_id, tenant_id FROM config_info_aggr";
+          
+          try {
+              return jt.query(sql, new Object[] {}, CONFIG_INFO_CHANGED_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+          }
+2:1070,1071c
+3:1070,1071c
+          List<ConfigInfoAggrEntity> list = configInfoAggrRepository.findAllAggrGroup();
+          return ConfigInfoChangedMapStruct.INSTANCE.convertConfigInfoChangedList(list);
+====1
+1:1853,1864c
+          String sql = "SELECT datum_id FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND content = ? ";
+          
+          try {
+              return this.jt.queryForList(sql, new Object[] {dataId, groupId, content}, String.class);
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (IncorrectResultSizeDataAccessException e) {
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1076c
+3:1076c
+          return null;
+====1
+1:1869,1877c
+          try {
+              List<Map<String, Object>> list = jt.queryForList(
+                      "SELECT data_id, group_id, tenant_id, app_name, content, gmt_modified FROM config_info WHERE gmt_modified >=? AND gmt_modified <= ?",
+                      new Object[] {startTime, endTime});
+              return convertChangeConfig(list);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1081,1084c
+3:1081,1084c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          Iterable<ConfigInfoEntity> iterable = configInfoRepository
+                  .findAll(qConfigInfo.gmtModified.goe(startTime).and(qConfigInfo.gmtModified.loe(endTime)));
+          return ConfigInfoWrapperMapStruct.INSTANCE.convertConfigInfoWrapperList((List<ConfigInfoEntity>) iterable);
+====1
+1:1884,1924c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sqlCountRows = "select count(*) from config_info where ";
+          String sqlFetchRows = "select id,data_id,group_id,tenant_id,app_name,content,type,md5,gmt_modified from config_info where ";
+          String where = " 1=1 ";
+          List<Object> params = new ArrayList<Object>();
+          
+          if (!StringUtils.isBlank(dataId)) {
+              where += " and data_id like ? ";
+              params.add(generateLikeArgument(dataId));
+          }
+          if (!StringUtils.isBlank(group)) {
+              where += " and group_id like ? ";
+              params.add(generateLikeArgument(group));
+          }
+          
+          if (!StringUtils.isBlank(tenantTmp)) {
+              where += " and tenant_id = ? ";
+              params.add(tenantTmp);
+          }
+          
+          if (!StringUtils.isBlank(appName)) {
+              where += " and app_name = ? ";
+              params.add(appName);
+          }
+          if (startTime != null) {
+              where += " and gmt_modified >=? ";
+              params.add(startTime);
+          }
+          if (endTime != null) {
+              where += " and gmt_modified <=? ";
+              params.add(endTime);
+          }
+          
+          PaginationHelper<ConfigInfoWrapper> helper = createPaginationHelper();
+          try {
+              return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo, pageSize,
+                      lastMaxId, CONFIG_INFO_WRAPPER_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1091c
+3:1091c
+          return null;
+====1
+1:1929,1937c
+          try {
+              List<Map<String, Object>> list = jt.queryForList(
+                      "SELECT DISTINCT data_id, group_id, tenant_id FROM his_config_info WHERE op_type = 'D' AND gmt_modified >=? AND gmt_modified <= ?",
+                      new Object[] {startTime, endTime});
+              return convertDeletedConfig(list);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1096,1100c
+3:1096,1100c
+          QHisConfigInfoEntity qHisConfigInfo = QHisConfigInfoEntity.hisConfigInfoEntity;
+          Iterable<HisConfigInfoEntity> iterable = hisConfigInfoRepository.findAll(
+                  qHisConfigInfo.opType.eq("D").and(qHisConfigInfo.gmtModified.goe(startTime))
+                          .and(qHisConfigInfo.gmtModified.loe(endTime)));
+          return ConfigInfoMapStruct.INSTANCE.convertConfigInfoList((List<HisConfigInfoEntity>) iterable);
+====1
+1:1943,1947c
+          final String appNameTmp =
+                  StringUtils.isBlank(configInfo.getAppName()) ? StringUtils.EMPTY : configInfo.getAppName();
+          final String tenantTmp =
+                  StringUtils.isBlank(configInfo.getTenant()) ? StringUtils.EMPTY : configInfo.getTenant();
+          
+2:1105a
+3:1105a
+====1
+1:1953,1960c
+          
+          final String md5Tmp = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+          
+          KeyHolder keyHolder = new GeneratedKeyHolder();
+          
+          final String sql =
+                  "INSERT INTO config_info(data_id,group_id,tenant_id,app_name,content,md5,src_ip,src_user,gmt_create,"
+                          + "gmt_modified,c_desc,c_use,effect,type,c_schema) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+2:1111,1120c
+3:1111,1120c
+          final String md5Tmp = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+          ConfigInfoEntity configInfoEntity = ConfigInfoEntityMapStruct.INSTANCE.convertConfigInfoEntity(configInfo);
+          configInfoEntity.setCDesc(desc);
+          configInfoEntity.setCUse(use);
+          configInfoEntity.setEffect(effect);
+          configInfoEntity.setType(type);
+          configInfoEntity.setCSchema(schema);
+          configInfoEntity.setMd5(md5Tmp);
+          configInfoEntity.setGmtCreate(time);
+          configInfoEntity.setGmtModified(time);
+====1
+1:1963,1991c
+              jt.update(new PreparedStatementCreator() {
+                  @Override
+                  public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                      PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                      ps.setString(1, configInfo.getDataId());
+                      ps.setString(2, configInfo.getGroup());
+                      ps.setString(3, tenantTmp);
+                      ps.setString(4, appNameTmp);
+                      ps.setString(5, configInfo.getContent());
+                      ps.setString(6, md5Tmp);
+                      ps.setString(7, srcIp);
+                      ps.setString(8, srcUser);
+                      ps.setTimestamp(9, time);
+                      ps.setTimestamp(10, time);
+                      ps.setString(11, desc);
+                      ps.setString(12, use);
+                      ps.setString(13, effect);
+                      ps.setString(14, type);
+                      ps.setString(15, schema);
+                      return ps;
+                  }
+              }, keyHolder);
+              Number nu = keyHolder.getKey();
+              if (nu == null) {
+                  throw new IllegalArgumentException("insert config_info fail");
+              }
+              return nu.longValue();
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+2:1123,1124c
+3:1123,1124c
+              return configInfoRepository.save(configInfoEntity).getId();
+          } catch (Exception e) {
+====1
+1:2008,2015c
+          try {
+              jt.update(
+                      "INSERT INTO config_tags_relation(id,tag_name,tag_type,data_id,group_id,tenant_id) VALUES(?,?,?,?,?,?)",
+                      configId, tagName, null, dataId, group, tenant);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1141,1147c
+3:1141,1147c
+          ConfigTagsRelationEntity configTagsRelation = new ConfigTagsRelationEntity();
+          configTagsRelation.setId(configId);
+          configTagsRelation.setTagName(tagName);
+          configTagsRelation.setDataId(dataId);
+          configTagsRelation.setGroupId(group);
+          configTagsRelation.setTenantId(tenant);
+          configTagsRelationRepository.save(configTagsRelation);
+====1
+1:2020,2025c
+          try {
+              jt.update("DELETE FROM config_tags_relation WHERE id=?", id);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1152c
+3:1152c
+          configTagsRelationRepository.findById(id).ifPresent(s -> configTagsRelationRepository.delete(s));
+====1
+1:2030,2040c
+          String sql = "SELECT tag_name FROM config_tags_relation WHERE tenant_id = ? ";
+          try {
+              return jt.queryForList(sql, new Object[] {tenant}, String.class);
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (IncorrectResultSizeDataAccessException e) {
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1157c
+3:1157c
+          return null;
+====1
+1:2045,2055c
+          String sql = "SELECT tag_name FROM config_tags_relation WHERE data_id=? AND group_id=? AND tenant_id = ? ";
+          try {
+              return jt.queryForList(sql, new Object[] {dataId, group, tenant}, String.class);
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (IncorrectResultSizeDataAccessException e) {
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1162,1176c
+3:1162,1176c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigTagsRelationEntity qConfigTagsRelation = QConfigTagsRelationEntity.configTagsRelationEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigTagsRelation.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigTagsRelation.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigTagsRelation.tenantId.eq(tenant));
+          }
+          Iterable<ConfigTagsRelationEntity> iterable = configTagsRelationRepository.findAll(booleanBuilder);
+          List<String> result = new ArrayList<>();
+          iterable.forEach(s -> result.add(s.getTagName()));
+          return result;
+====1
+1:2061,2067c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              jt.update("DELETE FROM config_info WHERE data_id=? AND group_id=? AND tenant_id=?", dataId, group,
+                      tenantTmp);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:1182,1187c
+3:1182,1187c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+          booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+====1
+1:2068a
+2:1189,1190c
+3:1189,1190c
+          Iterable<ConfigInfoEntity> configInfos = configInfoRepository.findAll(booleanBuilder);
+          configInfos.forEach(s -> configInfoRepository.delete(s));
+====1
+1:2076,2077c
+          StringBuilder sql = new StringBuilder(SQL_DELETE_CONFIG_INFO_BY_IDS);
+          sql.append("id in (");
+2:1198,1200c
+3:1198,1200c
+          if (StringUtils.isBlank(ids)) {
+              return;
+          }
+====1
+1:2081,2084c
+              if (i != 0) {
+                  sql.append(", ");
+              }
+              sql.append("?");
+2:1203a
+3:1203a
+====1
+1:2087,2093c
+          sql.append(") ");
+          try {
+              jt.update(sql.toString(), paramList.toArray());
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1206,1219c
+3:1206,1219c
+          tjt.execute(new TransactionCallback<Boolean>() {
+              @Override
+              public Boolean doInTransaction(TransactionStatus transactionStatus) {
+                  try {
+                      for (Long id : paramList) {
+                          configInfoRepository.deleteById(id);
+                      }
+                  } catch (Exception e) {
+                      transactionStatus.setRollbackOnly();
+                      throw e;
+                  }
+                  return Boolean.TRUE;
+              }
+          });
+====1
+1:2099,2106c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String tagTmp = StringUtils.isBlank(tag) ? StringUtils.EMPTY : tag;
+          try {
+              jt.update("DELETE FROM config_info_tag WHERE data_id=? AND group_id=? AND tenant_id=? AND tag_id=?", dataId,
+                      group, tenantTmp, tagTmp);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:1225,1234c
+3:1225,1234c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoTagEntity qConfigInfoTag = QConfigInfoTagEntity.configInfoTagEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfoTag.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfoTag.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfoTag.tenantId.eq(tenant));
+====1
+1:2107a
+2:1236,1251c
+3:1236,1251c
+          if (StringUtils.isNotBlank(tag)) {
+              booleanBuilder.and(qConfigInfoTag.tagId.eq(tag));
+          }
+          tjt.execute(new TransactionCallback<Object>() {
+              @Override
+              public Boolean doInTransaction(TransactionStatus transactionStatus) {
+                  try {
+                      Iterable<ConfigInfoTagEntity> configInfoTags = configInfoTagRepository.findAll(booleanBuilder);
+                      configInfoTags.forEach(s -> configInfoTagRepository.delete(s));
+                  } catch (Exception e) {
+                      transactionStatus.setRollbackOnly();
+                      throw e;
+                  }
+                  return Boolean.TRUE;
+              }
+          });
+====1
+1:2113,2115c
+          String appNameTmp = StringUtils.isBlank(configInfo.getAppName()) ? StringUtils.EMPTY : configInfo.getAppName();
+          String tenantTmp = StringUtils.isBlank(configInfo.getTenant()) ? StringUtils.EMPTY : configInfo.getTenant();
+          final String md5Tmp = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
+2:1257,1258c
+3:1257,1258c
+          ConfigInfoEntity configInfoEntity = ConfigInfoEntityMapStruct.INSTANCE.convertConfigInfoEntity(configInfo);
+          final String md5Tmp = MD5Utils.md5Hex(configInfo.getContent(), com.alibaba.nacos.api.common.Constants.ENCODE);
+====1
+1:2122,2131c
+          try {
+              jt.update("UPDATE config_info SET content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=?,"
+                              + "app_name=?,c_desc=?,c_use=?,effect=?,type=?,c_schema=? "
+                              + "WHERE data_id=? AND group_id=? AND tenant_id=?", configInfo.getContent(), md5Tmp, srcIp, srcUser,
+                      time, appNameTmp, desc, use, effect, type, schema, configInfo.getDataId(), configInfo.getGroup(),
+                      tenantTmp);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1265,1272c
+3:1265,1272c
+          configInfoEntity.setMd5(md5Tmp);
+          configInfoEntity.setCDesc(desc);
+          configInfoEntity.setCUse(use);
+          configInfoEntity.setEffect(effect);
+          configInfoEntity.setType(type);
+          configInfoEntity.setCSchema(schema);
+          configInfoEntity.setGmtModified(time);
+          configInfoRepository.save(configInfoEntity);
+====1
+1:2139,2140c
+          StringBuilder sql = new StringBuilder(SQL_FIND_CONFIG_INFO_BY_IDS);
+          sql.append("id in (");
+2:1279a
+3:1279a
+====1
+1:2144,2147c
+              if (i != 0) {
+                  sql.append(", ");
+              }
+              sql.append("?");
+2:1282a
+3:1282a
+====1
+1:2150,2158c
+          sql.append(") ");
+          try {
+              return this.jt.query(sql.toString(), paramList.toArray(), CONFIG_INFO_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1285,1288c
+3:1285,1288c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          List<ConfigInfoEntity> list = (List<ConfigInfoEntity>) configInfoRepository
+                  .findAll(qConfigInfo.id.in(paramList));
+          return ConfigInfoMapStruct.INSTANCE.convertConfigInfoList2(list);
+====1
+1:2163,2176c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              List<String> configTagList = this.selectTagByConfig(dataId, group, tenant);
+              ConfigAdvanceInfo configAdvance = this.jt.queryForObject(
+                      "SELECT gmt_create,gmt_modified,src_user,src_ip,c_desc,c_use,effect,type,c_schema FROM config_info WHERE data_id=? AND group_id=? AND tenant_id=?",
+                      new Object[] {dataId, group, tenantTmp}, CONFIG_ADVANCE_INFO_ROW_MAPPER);
+              if (configTagList != null && !configTagList.isEmpty()) {
+                  StringBuilder configTagsTmp = new StringBuilder();
+                  for (String configTag : configTagList) {
+                      if (configTagsTmp.length() == 0) {
+                          configTagsTmp.append(configTag);
+                      } else {
+                          configTagsTmp.append(",").append(configTag);
+                      }
+2:1293,1314c
+3:1293,1314c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          }
+          ConfigInfoEntity configInfo = configInfoRepository.findOne(booleanBuilder)
+                  .orElseThrow(() -> new RuntimeException("find configInfo data null"));
+          ConfigAdvanceInfo configAdvance = ConfigAdvanceInfoMapStruct.INSTANCE.convertConfigAdvanceInfo(configInfo);
+          List<String> configTagList = this.selectTagByConfig(dataId, group, tenant);
+          if (configTagList != null && !configTagList.isEmpty()) {
+              StringBuilder configTagsTmp = new StringBuilder();
+              for (String configTag : configTagList) {
+                  if (configTagsTmp.length() == 0) {
+                      configTagsTmp.append(configTag);
+                  } else {
+                      configTagsTmp.append(",").append(configTag);
+====1
+1:2178c
+                  configAdvance.setConfigTags(configTagsTmp.toString());
+2:1315a
+3:1315a
+====1
+1:2180,2185c
+              return configAdvance;
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:1317c
+3:1317c
+              configAdvance.setConfigTags(configTagsTmp.toString());
+====1
+1:2186a
+2:1319c
+3:1319c
+          return configAdvance;
+====1
+1:2191,2206c
+          final String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          try {
+              List<String> configTagList = this.selectTagByConfig(dataId, group, tenant);
+              ConfigAllInfo configAdvance = this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,app_name,content,md5,"
+                              + "gmt_create,gmt_modified,src_user,src_ip,c_desc,c_use,effect,type,c_schema FROM config_info "
+                              + "WHERE data_id=? AND group_id=? AND tenant_id=?", new Object[] {dataId, group, tenantTmp},
+                      CONFIG_ALL_INFO_ROW_MAPPER);
+              if (configTagList != null && !configTagList.isEmpty()) {
+                  StringBuilder configTagsTmp = new StringBuilder();
+                  for (String configTag : configTagList) {
+                      if (configTagsTmp.length() == 0) {
+                          configTagsTmp.append(configTag);
+                      } else {
+                          configTagsTmp.append(",").append(configTag);
+                      }
+2:1324,1346c
+3:1324,1346c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          if (StringUtils.isNotBlank(dataId)) {
+              booleanBuilder.and(qConfigInfo.dataId.eq(dataId));
+          }
+          if (StringUtils.isNotBlank(group)) {
+              booleanBuilder.and(qConfigInfo.groupId.eq(group));
+          }
+          if (StringUtils.isNotBlank(tenant)) {
+              booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+          }
+          ConfigInfoEntity configInfo = configInfoRepository.findOne(booleanBuilder)
+                  .orElseThrow(() -> new RuntimeException("find configInfo data null"));
+          ConfigAllInfo configAdvance = ConfigAllInfoMapStruct.INSTANCE.convertConfigAllInfo(configInfo);
+          configAdvance.setGroup(configInfo.getGroupId());
+          List<String> configTagList = selectTagByConfig(dataId, group, tenant);
+          if (configTagList != null && !configTagList.isEmpty()) {
+              StringBuilder configTagsTmp = new StringBuilder();
+              for (String configTag : configTagList) {
+                  if (configTagsTmp.length() == 0) {
+                      configTagsTmp.append(configTag);
+                  } else {
+                      configTagsTmp.append(",").append(configTag);
+====1
+1:2208c
+                  configAdvance.setConfigTags(configTagsTmp.toString());
+2:1347a
+3:1347a
+====1
+1:2210,2215c
+              return configAdvance;
+          } catch (EmptyResultDataAccessException e) { // Indicates that the data does not exist, returns null
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+2:1349c
+3:1349c
+              configAdvance.setConfigTags(configTagsTmp.toString());
+====1
+1:2216a
+2:1351c
+3:1351c
+          return configAdvance;
+====1
+1:2225,2233c
+          try {
+              jt.update(
+                      "INSERT INTO his_config_info (id,data_id,group_id,tenant_id,app_name,content,md5,src_ip,src_user,gmt_modified,op_type) "
+                              + "VALUES(?,?,?,?,?,?,?,?,?,?,?)", id, configInfo.getDataId(), configInfo.getGroup(),
+                      tenantTmp, appNameTmp, configInfo.getContent(), md5Tmp, srcIp, srcUser, time, ops);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1360,1373c
+3:1360,1373c
+          HisConfigInfoEntity hisConfigInfo = new HisConfigInfoEntity();
+          hisConfigInfo.setId(id);
+          hisConfigInfo.setDataId(configInfo.getDataId());
+          hisConfigInfo.setGroupId(configInfo.getGroup());
+          hisConfigInfo.setAppName(appNameTmp);
+          hisConfigInfo.setContent(configInfo.getContent());
+          hisConfigInfo.setMd5(md5Tmp);
+          hisConfigInfo.setGmtModified(time);
+          hisConfigInfo.setSrcUser(srcUser);
+          hisConfigInfo.setSrcIp(srcIp);
+          hisConfigInfo.setOpType(ops);
+          hisConfigInfo.setTenantId(tenantTmp);
+          hisConfigInfo.setGmtCreate(time);
+          hisConfigInfoRepository.save(hisConfigInfo);
+====1
+1:2239,2255c
+          PaginationHelper<ConfigHistoryInfo> helper = createPaginationHelper();
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          String sqlCountRows = "select count(*) from his_config_info where data_id = ? and group_id = ? and tenant_id = ?";
+          String sqlFetchRows =
+                  "select nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified from his_config_info "
+                          + "where data_id = ? and group_id = ? and tenant_id = ? order by nid desc";
+          
+          Page<ConfigHistoryInfo> page = null;
+          try {
+              page = helper
+                      .fetchPage(sqlCountRows, sqlFetchRows, new Object[] {dataId, group, tenantTmp}, pageNo, pageSize,
+                              HISTORY_LIST_ROW_MAPPER);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG
+                      .error("[list-config-history] error, dataId:{}, group:{}", new Object[] {dataId, group}, e);
+              throw e;
+          }
+2:1379,1389c
+3:1379,1389c
+          QHisConfigInfoEntity qHisConfigInfo = QHisConfigInfoEntity.hisConfigInfoEntity;
+          org.springframework.data.domain.Page<HisConfigInfoEntity> sPage = hisConfigInfoRepository.findAll(
+                  qHisConfigInfo.dataId.eq(dataId).and(qHisConfigInfo.groupId.eq(group))
+                          .and(qHisConfigInfo.tenantId.eq(tenant)),
+                  PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.desc("nid"))));
+          
+          Page<ConfigHistoryInfo> page = new Page<>();
+          page.setPageNumber(sPage.getNumber());
+          page.setPagesAvailable(sPage.getTotalPages());
+          page.setPageItems(ConfigHistoryInfoMapStruct.INSTANCE.convertConfigHistoryInfoList(sPage.getContent()));
+          page.setTotalCount((int) sPage.getTotalElements());
+====1
+1:2262,2270c
+          final String appNameTmp = appName == null ? "" : appName;
+          try {
+              jt.update(
+                      "INSERT INTO app_configdata_relation_subs(data_id,group_id,app_name,gmt_modified) VALUES(?,?,?,?)",
+                      dataId, group, appNameTmp, date);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1395a
+3:1395a
+====1
+1:2276,2284c
+          final String appNameTmp = appName == null ? "" : appName;
+          try {
+              jt.update(
+                      "UPDATE app_configdata_relation_subs SET gmt_modified=? WHERE data_id=? AND group_id=? AND app_name=?",
+                      time, dataId, group, appNameTmp);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1401c
+3:1401c
+          
+====
+1:2289c
+          String sqlFetchRows = "SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,gmt_create,gmt_modified FROM his_config_info WHERE nid = ?";
+2:1406,1434c
+  <<<<<<< HEAD
+          HisConfigInfoEntity hisConfigInfoEntity = hisConfigInfoRepository.findById(nid)
+                  .orElseThrow(() -> new RuntimeException("findById hisConfigInfo data null nid=" + nid));
+          return ConfigHistoryInfoMapStruct.INSTANCE.convertConfigHistoryInfo(hisConfigInfoEntity);
+  ||||||| a41d209d5
+          String sqlFetchRows = "SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,gmt_create,gmt_modified FROM his_config_info WHERE nid = ?";
+          try {
+              ConfigHistoryInfo historyInfo = jt
+                      .queryForObject(sqlFetchRows, new Object[] {nid}, HISTORY_DETAIL_ROW_MAPPER);
+              return historyInfo;
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[list-config-history] error, nid:{}", new Object[] {nid}, e);
+              throw e;
+          }
+  =======
+          String sqlFetchRows = "SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,gmt_create,gmt_modified FROM his_config_info WHERE nid = ?";
+          try {
+              ConfigHistoryInfo historyInfo = jt
+                      .queryForObject(sqlFetchRows, new Object[] {nid}, HISTORY_DETAIL_ROW_MAPPER);
+              return historyInfo;
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[detail-config-history] error, nid:{}", new Object[] {nid}, e);
+              throw e;
+          }
+      }
+      
+      @Override
+      public ConfigHistoryInfo detailPreviousConfigHistory(Long id) {
+          String sqlFetchRows = "SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,gmt_create,gmt_modified FROM his_config_info WHERE nid = (select max(nid) from his_config_info where id = ?) ";
+3:1406,1413c
+          HisConfigInfoEntity hisConfigInfoEntity = hisConfigInfoRepository.findById(nid)
+                  .orElseThrow(() -> new RuntimeException("findById hisConfigInfo data null nid=" + nid));
+          return ConfigHistoryInfoMapStruct.INSTANCE.convertConfigHistoryInfo(hisConfigInfoEntity);
+      }
+      
+      @Override
+      public ConfigHistoryInfo detailPreviousConfigHistory(Long id) {
+          String sqlFetchRows = "SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,gmt_create,gmt_modified FROM his_config_info WHERE nid = (select max(nid) from his_config_info where id = ?) ";
+====1
+1:2292c
+                      .queryForObject(sqlFetchRows, new Object[] {nid}, HISTORY_DETAIL_ROW_MAPPER);
+2:1437c
+3:1416c
+                      .queryForObject(sqlFetchRows, new Object[] {id}, HISTORY_DETAIL_ROW_MAPPER);
+====1
+1:2295c
+              LogUtil.FATAL_LOG.error("[list-config-history] error, nid:{}", new Object[] {nid}, e);
+2:1440c
+3:1419c
+              LogUtil.FATAL_LOG.error("[detail-previous-config-history] error, id:{}", new Object[] {id}, e);
+====2
+1:2297a
+3:1421a
+2:1443c
+  >>>>>>> TEMP_RIGHT_BRANCH
+====1
+1:2303,2310c
+          try {
+              jt.update(
+                      "INSERT INTO tenant_info(kp,tenant_id,tenant_name,tenant_desc,create_source,gmt_create,gmt_modified) VALUES(?,?,?,?,?,?,?)",
+                      kp, tenantId, tenantName, tenantDesc, createResoure, time, time);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1449,1457c
+3:1427,1435c
+          TenantInfoEntity tenantInfo = new TenantInfoEntity();
+          tenantInfo.setKp(kp);
+          tenantInfo.setTenantId(tenantId);
+          tenantInfo.setTenantName(tenantName);
+          tenantInfo.setTenantDesc(tenantDesc);
+          tenantInfo.setCreateSource(createResoure);
+          tenantInfo.setGmtCreate(time);
+          tenantInfo.setGmtModified(time);
+          tenantInfoRepository.save(tenantInfo);
+====1
+1:2315,2322c
+          try {
+              jt.update(
+                      "UPDATE tenant_info SET tenant_name = ?, tenant_desc = ?, gmt_modified= ? WHERE kp=? AND tenant_id=?",
+                      tenantName, tenantDesc, System.currentTimeMillis(), kp, tenantId);
+          } catch (DataAccessException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1462,1467c
+3:1440,1445c
+          QTenantInfoEntity qTenantInfo = QTenantInfoEntity.tenantInfoEntity;
+          tenantInfoRepository.findOne(qTenantInfo.kp.eq(kp).and(qTenantInfo.tenantId.eq(tenantId))).ifPresent(s -> {
+              s.setTenantName(tenantName);
+              s.setTenantDesc(tenantDesc);
+              tenantInfoRepository.save(s);
+          });
+====1
+1:2327,2338c
+          String sql = "SELECT tenant_id,tenant_name,tenant_desc FROM tenant_info WHERE kp=?";
+          try {
+              return this.jt.query(sql, new Object[] {kp}, TENANT_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (EmptyResultDataAccessException e) {
+              return Collections.emptyList();
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+          }
+2:1472,1473c
+3:1450,1451c
+          List<TenantInfoEntity> list = tenantInfoRepository.findByKp(kp);
+          return TenantInfoMapStruct.INSTANCE.convertTenantInfoList(list);
+====1
+1:2343,2354c
+          String sql = "SELECT tenant_id,tenant_name,tenant_desc FROM tenant_info WHERE kp=? AND tenant_id=?";
+          try {
+              return jt.queryForObject(sql, new Object[] {kp, tenantId}, TENANT_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (Exception e) {
+              LogUtil.FATAL_LOG.error("[db-other-error]" + e.getMessage(), e);
+              throw new RuntimeException(e);
+          }
+2:1478,1479c
+3:1456,1457c
+          TenantInfoEntity tenantInfoEntity = tenantInfoRepository.findByKpAndTenantId(kp, tenantId);
+          return TenantInfoMapStruct.INSTANCE.convertTenantInfo(tenantInfoEntity);
+====1
+1:2359,2364c
+          try {
+              jt.update("DELETE FROM tenant_info WHERE kp=? AND tenant_id=?", kp, tenantId);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1484,1485c
+3:1462,1463c
+          tenantInfoRepository.findOne(QTenantInfoEntity.tenantInfoEntity.tenantId.eq(tenantId)
+                  .and(QTenantInfoEntity.tenantInfoEntity.kp.eq(kp))).ifPresent(s -> tenantInfoRepository.delete(s));
+====1
+1:2418,2431c
+          String sqlCountRows = " SELECT COUNT(*) FROM config_info ";
+          String sqlFetchRows = " SELECT t.id,data_id,group_id,tenant_id,app_name,md5,type,gmt_modified FROM "
+                  + "( SELECT id FROM config_info ORDER BY id LIMIT ?,?  ) g, config_info t WHERE g.id = t.id";
+          PaginationHelper<ConfigInfoWrapper> helper = createPaginationHelper();
+          try {
+              Page<ConfigInfoWrapper> page = helper
+                      .fetchPageLimit(sqlCountRows, sqlFetchRows, new Object[] {(pageNo - 1) * pageSize, pageSize},
+                              pageNo, pageSize, CONFIG_INFO_WRAPPER_ROW_MAPPER);
+              
+              return page.getPageItems();
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1539c
+3:1517c
+          return null;
+====1
+1:2448,2458c
+          try {
+              return this.jt.queryForObject(
+                      "SELECT ID,data_id,group_id,tenant_id,app_name,content,type,gmt_modified,md5 FROM config_info "
+                              + "WHERE data_id=? AND group_id=? AND tenant_id=?", new Object[] {dataId, group, tenantTmp},
+                      CONFIG_INFO_WRAPPER_ROW_MAPPER);
+          } catch (EmptyResultDataAccessException e) {
+              return null;
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1556,1560c
+3:1534,1538c
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          ConfigInfoEntity result = configInfoRepository.findOne(
+                  qConfigInfo.dataId.eq(dataId).and(qConfigInfo.groupId.eq(group))
+                          .and(qConfigInfo.tenantId.eq(tenantTmp))).orElse(null);
+          return ConfigInfoWrapperMapStruct.INSTANCE.convertConfigInfoWrapper(result);
+====1
+1:2463,2469c
+          String sql = String.format("select 1 from %s limit 1", tableName);
+          try {
+              jt.queryForObject(sql, Integer.class);
+              return true;
+          } catch (Throwable e) {
+              return false;
+          }
+2:1565c
+3:1543c
+          return true;
+====1
+1:2518,2530c
+          String tenantTmp = StringUtils.isBlank(tenant) ? StringUtils.EMPTY : tenant;
+          StringBuilder where = new StringBuilder(" where ");
+          List<Object> paramList = new ArrayList<>();
+          if (!CollectionUtils.isEmpty(ids)) {
+              where.append(" id in (");
+              for (int i = 0; i < ids.size(); i++) {
+                  if (i != 0) {
+                      where.append(", ");
+                  }
+                  where.append("?");
+                  paramList.add(ids.get(i));
+              }
+              where.append(") ");
+2:1614,1617c
+3:1592,1595c
+          BooleanBuilder booleanBuilder = new BooleanBuilder();
+          QConfigInfoEntity qConfigInfo = QConfigInfoEntity.configInfoEntity;
+          if (!org.springframework.util.CollectionUtils.isEmpty(ids)) {
+              booleanBuilder.and(qConfigInfo.id.in(ids));
+====1
+1:2532,2536c
+              where.append(" tenant_id=? ");
+              paramList.add(tenantTmp);
+              if (!StringUtils.isBlank(dataId)) {
+                  where.append(" and data_id like ? ");
+                  paramList.add(generateLikeArgument(dataId));
+2:1619,1623c
+3:1597,1601c
+              if (StringUtils.isNotBlank(tenant)) {
+                  booleanBuilder.and(qConfigInfo.tenantId.eq(tenant));
+              }
+              if (StringUtils.isNotBlank(dataId)) {
+                  booleanBuilder.and(qConfigInfo.dataId.like(dataId));
+====1
+1:2539,2540c
+                  where.append(" and group_id=? ");
+                  paramList.add(group);
+2:1626c
+3:1604c
+                  booleanBuilder.and(qConfigInfo.groupId.eq(group));
+====1
+1:2543,2544c
+                  where.append(" and app_name=? ");
+                  paramList.add(appName);
+2:1629c
+3:1607c
+                  booleanBuilder.and(qConfigInfo.appName.eq(appName));
+====1
+1:2547,2552c
+          try {
+              return this.jt.query(SQL_FIND_ALL_CONFIG_INFO + where, paramList.toArray(), CONFIG_ALL_INFO_ROW_MAPPER);
+          } catch (CannotGetJdbcConnectionException e) {
+              LogUtil.FATAL_LOG.error("[db-error] " + e.toString(), e);
+              throw e;
+          }
+2:1632,1640c
+3:1610,1618c
+          Iterable<ConfigInfoEntity> configInfos = configInfoRepository.findAll(booleanBuilder);
+          List<ConfigAllInfo> resultList = new ArrayList<>();
+          configInfos.forEach(s -> {
+              ConfigAllInfo configAllInfo = new ConfigAllInfo();
+              BeanUtils.copyProperties(s, configAllInfo);
+              configAllInfo.setGroup(s.getGroupId());
+              resultList.add(configAllInfo);
+          });
+          return resultList;
+====1
+1:2643,2647c
+          Integer result = this.jt
+                  .queryForObject(SQL_TENANT_INFO_COUNT_BY_TENANT_ID, new String[] {tenantId}, Integer.class);
+          if (result == null) {
+              return 0;
+          }
+2:1731,1732c
+3:1709,1710c
+          QTenantInfoEntity qTenantInfo = QTenantInfoEntity.tenantInfoEntity;
+          Long result = tenantInfoRepository.count(qTenantInfo.tenantId.eq(tenantId));

@@ -1,0 +1,27 @@
+====3
+1:9c
+2:9c
+      <version>0.4.3-SNAPSHOT</version>
+3:9c
+      <version>0.4.2</version>
+====1
+1:14a
+2:15,16c
+3:15,16c
+          <spring-version>4.0.0.RELEASE</spring-version>
+  
+====1
+1:51a
+2:54,55c
+3:54,55c
+          <module>webmagic-panel</module>
+          <module>webmagic-worker</module>
+====1
+1:82a
+2:87,91c
+3:87,91c
+                  <groupId>com.alibaba</groupId>
+                  <artifactId>fastjson</artifactId>
+                  <version>1.1.37</version>
+              </dependency>
+              <dependency>

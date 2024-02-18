@@ -1,0 +1,29 @@
+====3
+1:21a
+2:21a
+3:22c
+  import com.graphhopper.storage.DataAccess;
+====1
+1:43c
+   * @author Peter Karich,
+2:43c
+3:44c
+   * @author Peter Karich
+====3
+1:166c
+2:166c
+          if ("car".equals(str))
+3:167c
+          if (str.isEmpty() || "car".equals(str))
+====3
+1:172c
+2:172c
+          throw new RuntimeException("Not found " + str);
+3:173c
+          throw new RuntimeException("VehicleEncoder not found " + str);
+====1
+1:315c
+      public static final int VERSION_FILE = 6;
+2:315c
+3:316c
+      public static final int VERSION_FILE = 7;
