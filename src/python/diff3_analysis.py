@@ -20,8 +20,8 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
     Args:
         merge_tool (str): The merge tool to be used.
         results_index (int): The index of the repository in the results DataFrame.
-        repo_output_dir (path): The path of where we want to store the results from the analysis    
-    
+        repo_output_dir (path): The path of where we want to store the results from the analysis
+
     Returns:
         None
     """
