@@ -28,7 +28,7 @@ clean:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
-	rm -rf results-small
+	rm -rf results/small
 	rm -rf .valid_merges_counters
 
 # This target deletes files in the cache, which is commited to version control.
@@ -85,12 +85,12 @@ small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
-	rm -rf results-small
+	rm -rf results/small
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 small-test-diff:
-	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
+	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo
 
 gradle-assemble:
