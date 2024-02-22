@@ -16,7 +16,8 @@ set -e
 set -o nounset
 
 REPOS_CSV="$1"
-OUT_DIR="results/$2"
+RUN_NAME="$2"
+OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
@@ -126,7 +127,6 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
-echo "No timing: $no_timing"
 if [ "$no_timing" = false ]; then
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
@@ -135,21 +135,14 @@ if [ "$no_timing" = false ]; then
         --n_sampled_timing 3 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
-
-    python3 src/python/latex_output.py \
-        --merges_path "$OUT_DIR/merges/" \
-        --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --timed_merges_path "$OUT_DIR/merges_timed/" \
-        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
-else
-    python3 src/python/latex_output.py \
-        --merges_path "$OUT_DIR/merges/" \
-        --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
 fi
+
+python3 src/python/latex_output.py \
+    --run_name "$RUN_NAME" \
+    --merges_path "$OUT_DIR/merges/" \
+    --tested_merges_path "$OUT_DIR/merges_tested/" \
+    $( [ "$no_timing" = false ] && echo "--timed_merges_path $OUT_DIR/merges_timed/" ) \
+    --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+    --n_merges "$N_MERGES" \
+    --output_dir "$OUT_DIR"

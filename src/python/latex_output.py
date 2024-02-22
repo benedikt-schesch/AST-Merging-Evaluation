@@ -122,6 +122,7 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     """Main function"""
     parser = argparse.ArgumentParser()
+    parser.add_argument("--run_name", type=str, default="reaper")
     parser.add_argument(
         "--full_repos_csv", type=Path, default="input_data/repos_with_hashes.csv"
     )
@@ -481,9 +482,14 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     full_repos_df = pd.read_csv(args.full_repos_csv)
     repos_head_passes_df = pd.read_csv(args.repos_head_passes_csv)
 
+    # Change from _a to A capitalizaion
+    run_name_camel_case = args.run_name.split("_")[0] + "".join(
+        x.title() for x in args.run_name.split("_")[1:]
+    )
+
     output = "% Dataset and sample numbers\n"
-    output = latex_def("reposInitial", len(full_repos_df))
-    output += latex_def("reposValid", len(repos_head_passes_df))
+    output = latex_def(run_name_camel_case + "ReposInitial", len(full_repos_df))
+    output += latex_def(run_name_camel_case + "ReposValid", len(repos_head_passes_df))
 
     count = 0
     for i in tqdm(os.listdir(args.merges_path)):
@@ -494,8 +500,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 index_col="idx",
             )
             count += len(df)
-    output += latex_def("mergesInitial", count)
-    output += latex_def("mergesPer", args.n_merges)
+    output += latex_def(run_name_camel_case + "MergesInitial", count)
+    output += latex_def(run_name_camel_case + "MergesPer", args.n_merges)
 
     repos = 0
     count = 0
@@ -517,40 +523,52 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         if len(merges) == args.n_merges:
             full += 1
 
-    output += latex_def("reposSampled", repos)
-    output += latex_def("mergesSampled", count)
-    output += latex_def("reposYieldedFull", full)
-    output += latex_def("reposTotal", len(result_df["repository"].unique()))
-    output += latex_def("mergesTotal", len(result_df))
+    output += latex_def(run_name_camel_case + "ReposSampled", repos)
+    output += latex_def(run_name_camel_case + "MergesSampled", count)
+    output += latex_def(run_name_camel_case + "ReposYieldedFull", full)
+    output += latex_def(
+        run_name_camel_case + "ReposTotal", len(result_df["repository"].unique())
+    )
+    output += latex_def(run_name_camel_case + "MergesTotal", len(result_df))
 
     output += "\n% Results\n"
 
     spork_correct = len(result_df[result_df["spork"].isin(MERGE_CORRECT_NAMES)])
     ort_correct = len(result_df[result_df["gitmerge_ort"].isin(MERGE_CORRECT_NAMES)])
-    output += latex_def("sporkOverOrtCorrect", spork_correct - ort_correct)
+    output += latex_def(
+        run_name_camel_case + "SporkOverOrtCorrect", spork_correct - ort_correct
+    )
 
     spork_incorrect = len(result_df[result_df["spork"].isin(MERGE_INCORRECT_NAMES)])
     ort_incorrect = len(
         result_df[result_df["gitmerge_ort"].isin(MERGE_INCORRECT_NAMES)]
     )
-    output += latex_def("sporkOverOrtIncorrect", spork_incorrect - ort_incorrect)
+    output += latex_def(
+        run_name_camel_case + "SporkOverOrtIncorrect", spork_incorrect - ort_incorrect
+    )
 
-    output += latex_def("mainBranchMerges", len(main))
+    output += latex_def(run_name_camel_case + "MainBranchMerges", len(main))
     output += latex_def(
-        "mainBranchMergesPercent", round(len(main) * 100 / len(result_df))
+        run_name_camel_case + "MainBranchMergesPercent",
+        round(len(main) * 100 / len(result_df)),
     )
-    output += latex_def("featureBranchMerges", len(feature))
+    output += latex_def(run_name_camel_case + "FeatureBranchMerges", len(feature))
     output += latex_def(
-        "featureBranchMergesPercent", round(len(feature) * 100 / len(result_df))
+        run_name_camel_case + "FeatureBranchMergesPercent",
+        round(len(feature) * 100 / len(result_df)),
     )
     output += latex_def(
-        "reposJava",
+        run_name_camel_case + "ReposJava",
         len(full_repos_df),
     )
 
     output += "\n% Timeout\n"
-    output += latex_def("parentTestTimeout", str(TIMEOUT_TESTING_PARENT // 60))
-    output += latex_def("mergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60))
+    output += latex_def(
+        run_name_camel_case + "ParentTestTimeout", str(TIMEOUT_TESTING_PARENT // 60)
+    )
+    output += latex_def(
+        run_name_camel_case + "MergeTestTimeout", str(TIMEOUT_TESTING_MERGE // 60)
+    )
 
     with open(args.output_dir / "defs.tex", "w", encoding="utf-8") as file:
         file.write(output)
