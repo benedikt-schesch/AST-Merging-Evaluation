@@ -12,4 +12,4 @@
 set -e
 set -o nounset
 
-./run.sh input_data/repos.csv results 100 cache "$@" --no_timing
+./run.sh input_data/repos.csv reaper 100 cache "$@" --no_timing

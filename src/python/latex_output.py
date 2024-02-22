@@ -486,10 +486,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output += latex_def("reposValid", len(repos_head_passes_df))
 
     count = 0
-    for i in tqdm(os.listdir(args.tested_merges_path)):
+    for i in tqdm(os.listdir(args.merges_path)):
         if i.endswith(".csv"):
             df = pd.read_csv(
-                args.tested_merges_path / i,
+                args.merges_path / i,
                 header=0,
                 index_col="idx",
             )
@@ -502,7 +502,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     full = 0
     df = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
     for _, repository_data in tqdm(df.iterrows(), total=len(df)):
-        merge_list_file = args.merges_path / (repository_data["repository"] + ".csv")
+        merge_list_file = args.tested_merges_path / (
+            repository_data["repository"] + ".csv"
+        )
         if not os.path.isfile(merge_list_file):
             continue
         try:
@@ -540,6 +542,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output += latex_def("featureBranchMerges", len(feature))
     output += latex_def(
         "featureBranchMergesPercent", round(len(feature) * 100 / len(result_df))
+    )
+    output += latex_def(
+        "reposJava",
+        len(full_repos_df),
     )
 
     output += "\n% Timeout\n"
