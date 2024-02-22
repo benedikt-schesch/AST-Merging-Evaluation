@@ -61,19 +61,9 @@ decompress-cache:
 
 # Copy tables and plots to the paper.
 copy-paper:
-	rm -rf ../AST-Merging-Evaluation-Paper/results ../AST-Merging-Evaluation-Paper/results_greatest_hits
-	mkdir -p ../AST-Merging-Evaluation-Paper/results/tables
-	mkdir -p ../AST-Merging-Evaluation-Paper/results/plots
-	mkdir -p ../AST-Merging-Evaluation-Paper/results_greatest_hits/tables
-	mkdir -p ../AST-Merging-Evaluation-Paper/results_greatest_hits/plots
-	cp -r results/tables ../AST-Merging-Evaluation-Paper/results/tables
-	cp -r results/plots ../AST-Merging-Evaluation-Paper/results/plots
-	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
-	cp -r results_greatest_hits/tables ../AST-Merging-Evaluation-Paper/results_greatest_hits/tables
-	cp -r results_greatest_hits/plots ../AST-Merging-Evaluation-Paper/results_greatest_hits/plots
-	cp -r results_greatest_hits/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
-	find ../AST-Merging-Evaluation-Paper/results_greatest_hits -name '*.pdf' -delete
-	find ../AST-Merging-Evaluation-Paper/results -name '*.pdf' -delete
+	rm -rf ../AST-Merging-Evaluation-Paper/results
+	rsync -av --exclude='*.csv' results ../AST-Merging-Evaluation-Paper/
+	find  ../AST-Merging-Evaluation-Paper/ -type d -empty -delete
 
 # Update cache
 update-cache-results:
