@@ -492,14 +492,17 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output += latex_def(run_name_camel_case + "ReposValid", len(repos_head_passes_df))
 
     count = 0
-    for i in tqdm(os.listdir(args.merges_path)):
-        if i.endswith(".csv"):
+    # Read all files and files in subfolder of args.merges_path that end in .csv
+    for csv_file in Path(args.merges_path).rglob("*.csv"):
+        try:
             df = pd.read_csv(
-                args.merges_path / i,
+                csv_file,
                 header=0,
                 index_col="idx",
             )
             count += len(df)
+        except pd.errors.EmptyDataError:
+            continue
     output += latex_def(run_name_camel_case + "MergesInitial", count)
     output += latex_def(run_name_camel_case + "MergesPer", args.n_merges)
 

@@ -141,7 +141,7 @@ python3 src/python/latex_output.py \
     --run_name "$RUN_NAME" \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
-    $( [ "$no_timing" = false ] && echo "--timed_merges_path $OUT_DIR/merges_timed/" ) \
+    $( [ "$no_timing" = "false" ] && echo "--timed_merges_path $OUT_DIR/merges_timed/" ) \
     --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
