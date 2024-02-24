@@ -127,6 +127,9 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
+# Define an array for additional arguments
+extra_args=()
+
 if [ "$no_timing" = false ]; then
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
@@ -135,6 +138,7 @@ if [ "$no_timing" = false ]; then
         --n_sampled_timing 3 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
+        extra_args+=(--timed_merges_path "$OUT_DIR/merges_timed/")
 fi
 
 python3 src/python/latex_output.py \
@@ -142,7 +146,7 @@ python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-    $( [ "$no_timing" = "false" ] && echo "--timed_merges_path \"$OUT_DIR/merges_timed/\"" ) \
+    "${extra_args[@]}" \
     --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \

@@ -447,8 +447,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
                     repo_slug = repository_data["repository"]
                     merges = pd.read_csv(
-                        Path(str(args.timed_merges_path).replace('"', ""))
-                        / f"{repo_slug}.csv",
+                        Path(args.timed_merges_path) / f"{repo_slug}.csv",
                         header=0,
                     )
                     timed_df.append(merges)
@@ -504,6 +503,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
     count_merges_java_diff = 0
     count_repos_merges_java_diff = 0
+    count_merges_diff_and_parents_pass = 0
+    count_repos_merges_diff_and_parents_pass = 0
     for csv_file in Path(args.analyzed_merges_path).rglob("*.csv"):
         try:
             df = pd.read_csv(
@@ -514,14 +515,25 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             if len(df) == 0:
                 continue
             count_merges_java_diff += df["diff contains java file"].dropna().sum()
+            count_merges_diff_and_parents_pass = df["test merge"].dropna().sum()
             if df["diff contains java file"].dropna().sum() > 0:
                 count_repos_merges_java_diff += 1
+            if df["test merge"].dropna().sum() > 0:
+                count_repos_merges_diff_and_parents_pass += 1
         except pd.errors.EmptyDataError:
             continue
 
     output += latex_def(run_name_camel_case + "MergesJavaDiff", count_merges_java_diff)
     output += latex_def(
         run_name_camel_case + "ReposJavaDiff", count_repos_merges_java_diff
+    )
+    output += latex_def(
+        run_name_camel_case + "MergesJavaDiffAndParentsPass",
+        count_merges_diff_and_parents_pass,
+    )
+    output += latex_def(
+        run_name_camel_case + "ReposJavaDiffAndParentsPass",
+        count_repos_merges_diff_and_parents_pass,
     )
 
     repos = 0
