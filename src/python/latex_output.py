@@ -122,19 +122,14 @@ main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     """Main function"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run_name", type=str, default="reaper")
-    parser.add_argument(
-        "--full_repos_csv", type=Path, default="input_data/repos_with_hashes.csv"
-    )
-    parser.add_argument(
-        "--repos_head_passes_csv", type=Path, default="results/repos_head_passes.csv"
-    )
-    parser.add_argument(
-        "--tested_merges_path", type=Path, default="results/merges_tested"
-    )
-    parser.add_argument("--merges_path", type=Path, default="results/merges")
+    parser.add_argument("--run_name", type=str)
+    parser.add_argument("--full_repos_csv", type=Path)
+    parser.add_argument("--repos_head_passes_csv", type=Path)
+    parser.add_argument("--tested_merges_path", type=Path)
+    parser.add_argument("--merges_path", type=Path)
+    parser.add_argument("--analyzed_merges_path", type=Path)
     parser.add_argument("--n_merges", type=int, default=20)
-    parser.add_argument("--output_dir", type=Path, default="results")
+    parser.add_argument("--output_dir", type=Path)
     parser.add_argument("--timed_merges_path", type=Path)
     args = parser.parse_args()
     output_dir = args.output_dir
@@ -452,7 +447,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
                     repo_slug = repository_data["repository"]
                     merges = pd.read_csv(
-                        args.timed_merges_path / f"{repo_slug}.csv",
+                        Path(str(args.timed_merges_path).replace('"', ""))
+                        / f"{repo_slug}.csv",
                         header=0,
                     )
                     timed_df.append(merges)
@@ -491,7 +487,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output = latex_def(run_name_camel_case + "ReposInitial", len(full_repos_df))
     output += latex_def(run_name_camel_case + "ReposValid", len(repos_head_passes_df))
 
-    count = 0
+    count_merges_initial = 0
     # Read all files and files in subfolder of args.merges_path that end in .csv
     for csv_file in Path(args.merges_path).rglob("*.csv"):
         try:
@@ -500,11 +496,33 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 header=0,
                 index_col="idx",
             )
-            count += len(df)
+            count_merges_initial += len(df)
         except pd.errors.EmptyDataError:
             continue
-    output += latex_def(run_name_camel_case + "MergesInitial", count)
+    output += latex_def(run_name_camel_case + "MergesInitial", count_merges_initial)
     output += latex_def(run_name_camel_case + "MergesPer", args.n_merges)
+
+    count_merges_java_diff = 0
+    count_repos_merges_java_diff = 0
+    for csv_file in Path(args.analyzed_merges_path).rglob("*.csv"):
+        try:
+            df = pd.read_csv(
+                csv_file,
+                header=0,
+                index_col="idx",
+            )
+            if len(df) == 0:
+                continue
+            count_merges_java_diff += df["diff contains java file"].dropna().sum()
+            if df["diff contains java file"].dropna().sum() > 0:
+                count_repos_merges_java_diff += 1
+        except pd.errors.EmptyDataError:
+            continue
+
+    output += latex_def(run_name_camel_case + "MergesJavaDiff", count_merges_java_diff)
+    output += latex_def(
+        run_name_camel_case + "ReposJavaDiff", count_repos_merges_java_diff
+    )
 
     repos = 0
     count = 0
