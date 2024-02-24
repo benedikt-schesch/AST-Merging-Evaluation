@@ -515,7 +515,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             if len(df) == 0:
                 continue
             count_merges_java_diff += df["diff contains java file"].dropna().sum()
-            count_merges_diff_and_parents_pass = df["test merge"].dropna().sum()
+            count_merges_diff_and_parents_pass += df["test merge"].dropna().sum()
             if df["diff contains java file"].dropna().sum() > 0:
                 count_repos_merges_java_diff += 1
             if df["test merge"].dropna().sum() > 0:
