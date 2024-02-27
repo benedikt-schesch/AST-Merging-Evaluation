@@ -279,7 +279,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
-        plt.ylabel("\\mbox{Merge_Score}")
+        plt.ylabel("\\mbox{Merge\\_Score}")
         plt.xlim(0, 20)
         plt.ylim(0.75, 0.95)
         plt.legend()
