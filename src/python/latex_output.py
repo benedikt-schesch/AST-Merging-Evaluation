@@ -236,7 +236,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         with open(plots_output_path / "heatmap.pgf", "rt", encoding="utf-8") as f:
             file_content = f.read()
         file_content = file_content.replace(
-            "heatmap-img0.png", f"plots/{plot_category}/heatmap-img0.png"
+            "heatmap-img0.png", f"{plots_output_path}/heatmap-img0.png"
         )
         with open(plots_output_path / "heatmap.pgf", "wt", encoding="utf-8") as f:
             f.write(file_content)

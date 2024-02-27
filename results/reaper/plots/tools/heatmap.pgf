@@ -865,7 +865,7 @@
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsys@transformshift{6.940000in}{1.420000in}%
-\pgftext[left,bottom]{\includegraphics[interpolate=true,width=0.220000in,height=4.430000in]{plots/tools/heatmap-img0.png}}%
+\pgftext[left,bottom]{\includegraphics[interpolate=true,width=0.220000in,height=4.430000in]{results/reaper/plots/tools/heatmap-img0.png}}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%

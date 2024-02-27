@@ -4771,7 +4771,7 @@
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsys@transformshift{7.020000in}{1.780000in}%
-\pgftext[left,bottom]{\includegraphics[interpolate=true,width=0.200000in,height=4.070000in]{plots/all/heatmap-img0.png}}%
+\pgftext[left,bottom]{\includegraphics[interpolate=true,width=0.200000in,height=4.070000in]{results/greatest_hits/plots/all/heatmap-img0.png}}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
