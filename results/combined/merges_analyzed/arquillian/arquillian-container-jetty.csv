@@ -1,0 +1,11 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
+4,refs/heads/master,e77c3894f6cda55d2f06f049d8c670648ba66ba6,937f858d451b716cdf7e519b7aaf5b71b6c8fb0b,a242b8b84ec0eec64a3c9982a73345bc10a93179,,False,False,,,,,,False
+7,refs/heads/master,dba6e8615c1ebebe01a8dd313f54212d47460300,9cec5973a79d33635e8972d490707144f5fd2972,994f792e68bed7b18141285dd2a302583aff932c,,False,False,,,,,,False
+9,refs/heads/master,7875ca277d1494589f141f78a03d3ac2c17c8109,687ea06814df3b53bdc3fbc9dbc0b116a2cdda47,124fa41c6654c1c86500d2699c61a2e21b3ab517,,False,False,,,,,,False
+10,refs/heads/master,687ea06814df3b53bdc3fbc9dbc0b116a2cdda47,9387f299b0896386ef222748cf9122318e12f7cc,7002d063c6aff31024f266d7423a899076719d61,,False,False,,,,,,False
+12,refs/heads/master,7002d063c6aff31024f266d7423a899076719d61,ad6e1e648ced3c02bea8e85fe4cabdec09dbdcf2,6d30e26f405cca5289f02f2b19a63febfc450041,two initial commits,False,False,,,,,,False
+14,refs/remotes/origin/dependabot/maven/org.jboss-jboss-parent-40,9b55ba755ae45f43fc05414dfe8c7221a63cf4d9,45078a37e7ff9561b2f9317c8ec9550b3ca1e8f2,a22906cf164439a482fb61a2e87c9e47ec7ca3ee,,False,False,,,,,,False
+15,refs/remotes/origin/pull/150,509b582a58c1646636079b975a92d29fb232d28d,b926f9badbc6763ae86e59c1a1bc146630c6b876,bdb124bf206709d2191ae122bd29b9b2ae0d3c20,,False,False,,,,,,False
+16,refs/remotes/origin/pull/59,80650f91c27d63d9fd9efcc077e1399d9bee3ae7,4bbdc703e9f48c3b33386de108b5c69509cc56d5,10ccbd0ea92bd500afe9ab3ff1d8d52ef1a55c31,,False,False,,,,,,False
+17,refs/remotes/origin/pull/76,a84c32deb710e4c0ad33541e7840bc40ce2f2400,f4e37f84905ae0bfc7c6adf1f8fcde7a9699f93b,22eeea1b5a7f2b7614029eb94b0b38904ea2568c,,False,False,,,,,,False
+18,refs/remotes/origin/pull/87,39bdbff77e89dc772b812683a19a55b7db9ecb6a,38a562379eb854cc31391e754cf0e793fdf8e35a,e9c27acf0fa7891a0fa7b833da552ee7724ad8b1,,False,True,de037d51ccfab8fd713240f1e405e9e0a45b3138f5d859d1519f61536bec14a2,Tests_failed,147af071ad6577bb1dd648880354c0ac645fd3ddfbedd1d03c602bf83635e014,Tests_failed,False,False

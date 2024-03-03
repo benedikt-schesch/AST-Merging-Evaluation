@@ -1,0 +1,4 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+2,refs/remotes/origin/pull/2,bcfc25283a54c7e82a7024bb31753426b65d894e,7d360632cb0b3a9027fc08deef3760af8af2a05a,58ada7143491a3f57f4d586a9c289ef116bc067f,two initial commits,False,False,False
+3,refs/remotes/origin/pull/2,ced94bfa312bc6587b0436abcad26454e749ecfb,83956704b4c4193a0e786ff8b839e21955611100,824510e28a34a46b185ca7547ab7e93d7aa7cb33,,False,False,False
+4,refs/remotes/origin/pull/2,80ac9dc5764a4d87337c408bc69efb56717f9adc,87d08de350f38d90f7820af299da8a4141d6cf26,3aff24aaedfc0f1f17596e8b6cfbb19852545b5b,two initial commits,False,False,False

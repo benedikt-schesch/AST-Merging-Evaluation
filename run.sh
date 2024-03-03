@@ -93,7 +93,7 @@ python3 src/python/test_repo_heads.py \
     --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
-exit 0
+
 java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \
@@ -135,10 +135,10 @@ if [ "$no_timing" = false ]; then
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
         --merges "$OUT_DIR/merges_tested/" \
         --output_dir "$OUT_DIR/merges_timed/" \
-        --n_sampled_timing 3 \
+        --n_sampled_timing 1 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
-        extra_args+=(--timed_merges_path "$OUT_DIR/merges_timed/")
+    extra_args+=(--timed_merges_path "$OUT_DIR/merges_timed/")
 fi
 
 python3 src/python/latex_output.py \

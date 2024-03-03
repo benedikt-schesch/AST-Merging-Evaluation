@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./run_full.sh [-i <machine_id> -n <num_machines>] [-d]
+# usage: ./run_combined.sh [-i <machine_id> -n <num_machines>] [-d]
 # Runs the stack all the repositories
 # The output appears in result/ .
 # <machine_id> optional argument to specify the id of the current machine.
@@ -12,4 +12,4 @@
 set -e
 set -o nounset
 
-./run.sh input_data/repos_combined.csv reaper 100 cache "$@" --no_timing
+./run.sh input_data/repos_combined.csv combined 100 cache "$@"
