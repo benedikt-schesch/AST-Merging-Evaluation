@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./run.sh <repo_list> <run_name> <n_merges> [-i <machine_id> -n <num_machines>] [-t] [-ot]
+# usage: ./run.sh <repo_list> <run_name> <n_merges> [-i <machine_id> -n <num_machines>] [-t] [-ot] [-nt] [-op]
 # <repo_list> list of repositories in csv formart with a column
 #     "repository" that has the format "owner/reponame" for each repository.
 # <run_name> name of the dataset.
@@ -9,6 +9,8 @@
 # <num_machine> optional argument to specify the total number of machines used.
 # -t optional argument to include trivial merges.
 # -ot optional argument to only use trivial merges.
+# -nt optional argument to not measure the time of the merges.
+# -op optional argument to only do plotting and table generation.
 # The output appears in results/<run_name>.
 
 
@@ -23,6 +25,7 @@ CACHE_DIR="${4}"
 
 comparator_flags=""
 no_timing=false
+only_plotting=false
 while [ $# -gt 0 ]; do
   case $1 in
     -i | --machine_id)
@@ -41,6 +44,10 @@ while [ $# -gt 0 ]; do
     ;;
     -nt | --no_timing)
     no_timing=true
+    ;;
+    -op | --only_plotting)
+    only_plotting=true
+    ;;
   esac
   shift
 done
@@ -67,6 +74,22 @@ echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
 
+# Add a _with_hashes to the $REPOS_CSV
+REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
+
+if [ "$only_plotting" = true ]; then
+    python3 src/python/latex_output.py \
+        --run_name "$RUN_NAME" \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
+    exit 0
+fi
+
 ./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
@@ -78,9 +101,6 @@ fi
 
 # Delete .workdir
 rm -rf .workdir
-
-# Add a _with_hashes to the $REPOS_CSV
-REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"

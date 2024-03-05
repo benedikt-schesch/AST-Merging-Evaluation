@@ -260,7 +260,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             )
 
         # Cost plot
-        MAX_COST = 120
+        MAX_COST = 20
         _, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
@@ -280,8 +280,8 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             )
         plt.xlabel("Incorrect merges cost factor $k$")
         plt.ylabel("\\mbox{Merge\\_Score}")
-        plt.xlim(0, 20)
-        plt.ylim(0.75, 0.95)
+        plt.xlim(0, MAX_COST)
+        plt.ylim(-0.1, 0.6)
         plt.legend()
         plt.tight_layout()
         plt.savefig(plots_output_path / "cost_without_manual.pgf")
@@ -295,7 +295,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             color="red",
         )
         plt.xlim(0, MAX_COST)
-        plt.ylim(-0.1, 1.0)
+        plt.ylim(-0.1, 0.6)
         plt.legend()
         plt.tight_layout()
         plt.savefig(plots_output_path / "cost_with_manual.pgf")
