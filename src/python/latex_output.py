@@ -48,6 +48,9 @@ matplotlib.rcParams.update(
 )
 
 MERGE_TOOL_RENAME = {
+    "gitmerge_ort_adjacent": "Adjacent+gitmerge_ort",
+    "gitmerge_ort_imports": "Imports+gitmerge_ort",
+    "gitmerge_ort_imports_ignorespace": "Imports+gitmerge_ort_ignorespace",
     "intellimerge": "IntelliMerge",
 }
 
@@ -88,6 +91,9 @@ PLOTS = {
     "tools": [
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
+        "gitmerge_ort_adjacent",
+        "gitmerge_ort_imports",
+        "gitmerge_ort_imports_ignorespace",
         "git_hires_merge",
         "spork",
         "intellimerge",
