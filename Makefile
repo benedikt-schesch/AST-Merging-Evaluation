@@ -84,6 +84,11 @@ update-figures:
 	sh run_greatest_hits.sh -op
 	sh run_reaper.sh -op
 
+run-all:
+	./run_combined.sh
+	./run_greatest_hits.sh
+	./run_reaper.sh
+
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo
