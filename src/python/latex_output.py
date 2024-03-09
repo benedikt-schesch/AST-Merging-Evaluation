@@ -508,26 +508,20 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for _, repository_data in tqdm(
         repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
     ):
+        merge_list_file = args.merges_path / (repository_data["repository"] + ".csv")
+        if not os.path.isfile(merge_list_file):
+            continue
         try:
-            merge_list_file = args.merges_path / (
-                repository_data["repository"] + ".csv"
-            )
-            df = pd.read_csv(
-                merge_list_file,
-                header=0,
-                index_col="idx",
-            )
-            # Ensure notes column is treated as string
-            df["notes"] = df["notes"].astype(str)
-            count_merges_initial += len(df)
-            # Use na=False to handle NaN values properly
-            non_trivial_mask = df["notes"].str.contains(
-                "a parent is the base", na=False
-            )
-            count_non_trivial_merges += non_trivial_mask.sum()
-            count_non_trivial_repos += non_trivial_mask.any()
+            df = pd.read_csv(merge_list_file, index_col=0)
         except pd.errors.EmptyDataError:
             continue
+        # Ensure notes column is treated as string
+        df["notes"] = df["notes"].astype(str)
+        count_merges_initial += len(df)
+        # Use na=False to handle NaN values properly
+        non_trivial_mask = df["notes"].str.contains("a parent is the base", na=False)
+        count_non_trivial_merges += non_trivial_mask.sum()
+        count_non_trivial_repos += non_trivial_mask.any()
 
     # Assuming output and latex_def functions are defined elsewhere in your code
     output += latex_def(run_name_camel_case + "MergesInitial", count_merges_initial)
@@ -546,25 +540,23 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     for _, repository_data in tqdm(
         repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
     ):
+        merge_list_file = args.analyzed_merges_path / (
+            repository_data["repository"] + ".csv"
+        )
+        if not os.path.isfile(merge_list_file):
+            continue
         try:
-            merge_list_file = args.analyzed_merges_path / (
-                repository_data["repository"] + ".csv"
-            )
-            df = pd.read_csv(
-                merge_list_file,
-                header=0,
-                index_col="idx",
-            )
-            if len(df) == 0:
-                continue
-            count_merges_java_diff += df["diff contains java file"].dropna().sum()
-            count_merges_diff_and_parents_pass += df["test merge"].dropna().sum()
-            if df["diff contains java file"].dropna().sum() > 0:
-                count_repos_merges_java_diff += 1
-            if df["test merge"].dropna().sum() > 0:
-                count_repos_merges_diff_and_parents_pass += 1
+            df = pd.read_csv(merge_list_file, index_col=0)
         except pd.errors.EmptyDataError:
             continue
+        if len(df) == 0:
+            continue
+        count_merges_java_diff += df["diff contains java file"].dropna().sum()
+        count_merges_diff_and_parents_pass += df["test merge"].dropna().sum()
+        if df["diff contains java file"].dropna().sum() > 0:
+            count_repos_merges_java_diff += 1
+        if df["test merge"].dropna().sum() > 0:
+            count_repos_merges_diff_and_parents_pass += 1
 
     output += latex_def(run_name_camel_case + "MergesJavaDiff", count_merges_java_diff)
     output += latex_def(
