@@ -505,10 +505,15 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_non_trivial_merges = 0
     count_non_trivial_repos = 0
 
-    for csv_file in Path(args.merges_path).rglob("*.csv"):
+    for _, repository_data in tqdm(
+        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
+    ):
         try:
+            merge_list_file = args.merges_path / (
+                repository_data["repository"] + ".csv"
+            )
             df = pd.read_csv(
-                csv_file,
+                merge_list_file,
                 header=0,
                 index_col="idx",
             )
@@ -538,10 +543,15 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_repos_merges_java_diff = 0
     count_merges_diff_and_parents_pass = 0
     count_repos_merges_diff_and_parents_pass = 0
-    for csv_file in Path(args.analyzed_merges_path).rglob("*.csv"):
+    for _, repository_data in tqdm(
+        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
+    ):
         try:
+            merge_list_file = args.analyzed_merges_path / (
+                repository_data["repository"] + ".csv"
+            )
             df = pd.read_csv(
-                csv_file,
+                merge_list_file,
                 header=0,
                 index_col="idx",
             )
@@ -572,8 +582,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = 0
     count = 0
     full = 0
-    df = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
-    for _, repository_data in tqdm(df.iterrows(), total=len(df)):
+    for _, repository_data in tqdm(
+        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
+    ):
         merge_list_file = args.tested_merges_path / (
             repository_data["repository"] + ".csv"
         )
