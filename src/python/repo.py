@@ -99,12 +99,12 @@ MERGE_TOOL = Enum(
     [
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
-        "gitmerge_resolve",
         "gitmerge_recursive_histogram",
         "gitmerge_recursive_ignorespace",
         "gitmerge_recursive_minimal",
         "gitmerge_recursive_myers",
         "gitmerge_recursive_patience",
+        "gitmerge_resolve",
         "gitmerge_ort_adjacent",
         "gitmerge_ort_imports",
         "gitmerge_ort_imports_ignorespace",

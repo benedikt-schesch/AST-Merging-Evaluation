@@ -48,10 +48,11 @@ matplotlib.rcParams.update(
 )
 
 MERGE_TOOL_RENAME = {
-    "gitmerge_ort_adjacent": "Adjacent+gitmerge-ort",
-    "gitmerge_ort_imports": "Imports+gitmerge-ort",
-    "gitmerge_ort_imports_ignorespace": "Imports+gitmerge-ort-ignorespace",
+    "gitmerge_ort_adjacent": "Adjacent+ort",
+    "gitmerge_ort_imports": "Imports+ort",
+    "gitmerge_ort_imports_ignorespace": "Imports+ort-ignorespace",
     "intellimerge": "IntelliMerge",
+    "git_hires_merge": "Hires-Merge",
 }
 
 
@@ -285,7 +286,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
-        plt.ylabel("\\mbox{Merge\\_Score}")
+        plt.ylabel("\\mbox{Effort Reduction}")
         plt.xlim(0, MAX_COST)
         plt.ylim(-0.02, 0.6)
         plt.legend()
