@@ -79,7 +79,7 @@ small-test:
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
-update-plots:
+update-figures:
 	sh run_combined.sh -op
 	sh run_greatest_hits.sh -op
 	sh run_reaper.sh -op

@@ -87,7 +87,14 @@ def latex_def(name, value) -> str:
 PLOTS = {
     "all": [merge_tool.name for merge_tool in MERGE_TOOL],
     "git": [
-        merge_tool.name for merge_tool in MERGE_TOOL if "gitmerge" in merge_tool.name
+        "gitmerge_ort",
+        "gitmerge_ort_ignorespace",
+        "gitmerge_recursive_histogram",
+        "gitmerge_recursive_ignorespace",
+        "gitmerge_recursive_minimal",
+        "gitmerge_recursive_myers",
+        "gitmerge_recursive_patience",
+        "gitmerge_resolve",
     ],
     "tools": [
         "gitmerge_ort",
@@ -267,7 +274,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             )
 
         # Cost plot
-        MAX_COST = 17
+        MAX_COST = 14
         _, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
@@ -376,11 +383,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             \\multicolumn{4}{c}{Incorrect Merges} \\\\
             &
             \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Feature Branch} &
+            \\multicolumn{2}{c|}{Other Branches} &
             \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Feature Branch} &
+            \\multicolumn{2}{c|}{Other Branches} &
             \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c}{Feature Branch} \\\\
+            \\multicolumn{2}{c}{Other Branches} \\\\
             \\hline
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
 
@@ -493,8 +500,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     output = latex_def(run_name_camel_case + "ReposInitial", len(full_repos_df))
     output += latex_def(run_name_camel_case + "ReposValid", len(repos_head_passes_df))
 
+    # Assuming args.merges_path and other variables are defined elsewhere in your code
     count_merges_initial = 0
-    # Read all files and files in subfolder of args.merges_path that end in .csv
+    count_non_trivial_merges = 0
+    count_non_trivial_repos = 0
+
     for csv_file in Path(args.merges_path).rglob("*.csv"):
         try:
             df = pd.read_csv(
@@ -502,11 +512,27 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 header=0,
                 index_col="idx",
             )
+            # Ensure notes column is treated as string
+            df["notes"] = df["notes"].astype(str)
             count_merges_initial += len(df)
+            # Use na=False to handle NaN values properly
+            non_trivial_mask = df["notes"].str.contains(
+                "a parent is the base", na=False
+            )
+            count_non_trivial_merges += non_trivial_mask.sum()
+            count_non_trivial_repos += non_trivial_mask.any()
         except pd.errors.EmptyDataError:
             continue
+
+    # Assuming output and latex_def functions are defined elsewhere in your code
     output += latex_def(run_name_camel_case + "MergesInitial", count_merges_initial)
     output += latex_def(run_name_camel_case + "MergesPer", args.n_merges)
+    output += latex_def(
+        run_name_camel_case + "MergesNonTrivial", count_non_trivial_merges
+    )
+    output += latex_def(
+        run_name_camel_case + "ReposNonTrivial", count_non_trivial_repos
+    )
 
     count_merges_java_diff = 0
     count_repos_merges_java_diff = 0
@@ -592,9 +618,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         run_name_camel_case + "MainBranchMergesPercent",
         round(len(main) * 100 / len(result_df)),
     )
-    output += latex_def(run_name_camel_case + "FeatureBranchMerges", len(feature))
+    output += latex_def(run_name_camel_case + "OtherBranceshMerges", len(feature))
     output += latex_def(
-        run_name_camel_case + "FeatureBranchMergesPercent",
+        run_name_camel_case + "OtherBranchesMergesPercent",
         round(len(feature) * 100 / len(result_df)),
     )
     output += latex_def(
