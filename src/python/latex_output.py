@@ -596,6 +596,11 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             continue
         if len(merges) > 0:
             repos += 1
+        # Makre sure each element has "parents pass" set to True
+        for _, merge in merges.iterrows():
+            assert merge["parents pass"]
+            assert merge["test merge"]
+            assert merge["diff contains java file"]
         count += len(merges)
         if len(merges) == args.n_merges:
             full += 1
