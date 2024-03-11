@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Given an index and tool, creates the merge for that index and tool.
-# The output appears in ... .
+"""Given an index and tool, creates the merge for that index and tool."""
 
 import argparse
 import os
-import pandas as pd
 import shutil
 import subprocess
 
-from git import Repo
 from pathlib import Path
+
+import pandas as pd
+from git import Repo
 
 
 CLONE_ROOT = "/scratch/mernst/ast-merging-clones/"
 if not Path(CLONE_ROOT).is_dir():
-    os.makdirs(CLONE_ROOT)
+    os.makedirs(CLONE_ROOT)
 
 parser = argparse.ArgumentParser("get-merge-output")
 parser.add_argument(

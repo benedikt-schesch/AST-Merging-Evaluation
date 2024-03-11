@@ -10,6 +10,7 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 
 
+# pylint: disable=too-many-locals
 def merge_replay(
     repo_slug: str, merge_data: pd.Series, test_merge: bool
 ) -> pd.DataFrame:
@@ -50,7 +51,10 @@ def merge_replay(
         )
         assert (
             merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
-        ), f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected {merge_fingerprint} but found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+        ), (
+            f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
+            + " {merge_fingerprint} but found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+        )
         root_dir = Path("replay_logs")
         log_path = root_dir / Path(
             "merges/"

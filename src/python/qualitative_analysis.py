@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Output a subset of the results that match a hard-coded condition."""
+
 import pandas as pd
 
 df = pd.read_csv("../../results/combined/result.csv", index_col="idx")
@@ -14,6 +16,7 @@ df = pd.read_csv("../../results/combined/result.csv", index_col="idx")
 
 
 def is_success(val):
+    """Returns true if the given result is a success result."""
     return val == "Tests_passed"
 
 
