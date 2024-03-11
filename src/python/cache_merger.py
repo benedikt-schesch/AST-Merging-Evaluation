@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ Merge multiple caches into one. Usage:
     python3 cache_merger.py <cache1> <cache2> ... <cacheN> --output_cache <output_cache>
