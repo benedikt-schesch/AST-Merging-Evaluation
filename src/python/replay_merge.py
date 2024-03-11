@@ -23,12 +23,15 @@ def merge_replay(
     print("merge_replay: Started ", repo_slug, merge_data["left"], merge_data["right"])
     result_df = pd.DataFrame()
     for merge_tool in tqdm(MERGE_TOOL):
+        workdir = (
+            repo_slug
+            + f"/merge-tester-{merge_tool.name}-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
         repo = Repository(
             repo_slug,
             cache_directory=Path("no_cache/"),
-            workdir_id=repo_slug
-            + f"/merge-tester-{merge_tool.name}-"
-            + f'{merge_data["left"]}-{merge_data["right"]}',
+            workdir_id=workdir,
             delete_workdir=False,
         )
         (
@@ -47,7 +50,7 @@ def merge_replay(
         )
         assert (
             merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
-        ), f"expected {merge_fingerprint}, found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+        ), f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected {merge_fingerprint} but found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
         root_dir = Path("replay_logs")
         log_path = root_dir / Path(
             "merges/"
