@@ -29,13 +29,13 @@ jobs:
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools" >> $GITHUB_PATH
     - run: java -version
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.8
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.8'
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         python-version: 3.8
         auto-update-conda: true
