@@ -45,7 +45,9 @@ def merge_replay(
             timeout=TIMEOUT_TESTING_MERGE,
             use_cache=False,
         )
-        assert merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
+        assert (
+            merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
+        ), f"expected {merge_fingerprint}, found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
         root_dir = Path("replay_logs")
         log_path = root_dir / Path(
             "merges/"
