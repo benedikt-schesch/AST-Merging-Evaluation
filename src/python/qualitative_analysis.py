@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Output a subset of the results that match a hard-coded condition."""
+"""Output a subset of the results that match a hard-coded condition, to a hard-coded file."""
 
 import pandas as pd
 
@@ -20,10 +20,26 @@ def is_success(val):
     return val == "Tests_passed"
 
 
-# Retain rows where gitmerge_ort_imports_ignorespace and gitmerge_ort_ignorespace differ.
-df = df[
-    is_success(df.gitmerge_ort_imports_ignorespace)
-    != is_success(df.gitmerge_ort_ignorespace)
-]
+def merge_failed(val):
+    """Returns true if the given result indicates that the merge succeeded."""
+    return val == "Merge_failed"
 
-df = df.to_csv("../../results/combined/imports-differs-from-ort.csv", index_label="idx")
+
+def merge_succeeded(val):
+    """Returns true if the given result indicates that the merge succeeded."""
+    return val != "Merge_failed"
+
+
+# Retain rows where gitmerge_ort_imports_ignorespace and gitmerge_ort_ignorespace differ.
+# df = df[
+#     merge_failed(df.gitmerge_ort_imports_ignorespace)
+#     != merge_failed(df.gitmerge_ort_ignorespace)
+# ]
+# df.to_csv("../../results/combined/imports-differs-from-ort.csv", index_label="idx")
+
+# Select some rows.
+df = df[merge_failed(df.gitmerge_ort) != merge_failed(df.spork)]
+# Select some columns (is it OK to omit "idx"??)
+df = df[["gitmerge_ort", "spork"]]
+
+df.to_csv("../../results/combined/spork-differs-from-ort.csv", index_label="idx")
