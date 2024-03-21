@@ -1,5 +1,5 @@
-from diff3_analysis import diff3_analysis
 import os
+from diff3_analysis import diff3_analysis
 
 # Mixed conflict and pass examples from results_greatest_hits/result.csv
 # Randomly chosen sample of mixed results from dataset
