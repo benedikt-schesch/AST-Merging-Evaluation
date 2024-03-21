@@ -1,3 +1,6 @@
+"""Recreates merges on all algorithms with a sample of commits.
+"""
+
 import os
 from diff3_analysis import diff3_analysis
 
@@ -62,6 +65,13 @@ merge_tools = [
 
 
 def run_analysis():
+    """
+    Analyzes merge conflicts on a sample of repos with all merge algorithms.
+
+    Returns:
+        None
+    """
+
     # Ensure the base output directory exists
     base_output_dir = "./merge_conflict_analysis_diffs"
 
