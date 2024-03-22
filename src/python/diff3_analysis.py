@@ -1,6 +1,8 @@
 """Runs a merge and uses diff3 to compare it to the base and final branch of a given repo.
 """
 
+import sys
+import argparse
 import subprocess
 import re
 import os
@@ -142,3 +144,37 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
 
         # Optionally, print or log the path of the diff file
         print(f"Diff results saved to {diff_filename}")
+
+
+def main(merge_tool: str, results_index: int, repo_output_dir: str):
+    """
+    Entry point for the script when run from the command line.
+    """
+    # Convert results_index to int here if using argparse
+    diff3_analysis(merge_tool, results_index, repo_output_dir)
+
+
+if __name__ == "__main__":
+    # Use argparse to parse command line arguments
+    parser = argparse.ArgumentParser(
+        description="Analyze merge conflicts using the diff3 tool."
+    )
+    parser.add_argument("merge_tool", type=str, help="The merge tool to be used.")
+    parser.add_argument(
+        "results_index",
+        type=int,
+        help="The index of the repository in the results DataFrame.",
+    )
+    parser.add_argument(
+        "repo_output_dir",
+        type=str,
+        help="The path of where we want to store the results from the analysis.",
+    )
+
+    args = parser.parse_args()
+
+    # Ensure the output directory exists
+    os.makedirs(args.repo_output_dir, exist_ok=True)
+
+    # Call main function with parsed arguments
+    main(args.merge_tool, args.results_index, args.repo_output_dir)
