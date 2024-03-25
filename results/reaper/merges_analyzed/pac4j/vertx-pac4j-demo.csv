@@ -1,0 +1,12 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
+10,refs/heads/master,ad10d337a9f293cec5af1b0803b561ef0e10da53,f759571a34487ec96800db1bfc588fe2f1be41cb,aa76579b8f2352e5028a35f491ae5d9966d5a47c,,False,False,,,,,,False
+12,refs/heads/master,a8bec5fa1edb232cc446b8f970203c8b4773b52e,08b7a43d031d1fdee8cba7a0c7e40cd9b611ec72,6c3ca57b718e0541ac00b2ca132200e90d60a828,,False,False,,,,,,False
+13,refs/heads/master,08b7a43d031d1fdee8cba7a0c7e40cd9b611ec72,c8b18c62b67dd62b02eae08a8be3afb6c4fbbb76,8a04b20e2aa4be4e5e04c384b9ada9f03c5c34b5,,False,False,,,,,,False
+14,refs/heads/master,c8b18c62b67dd62b02eae08a8be3afb6c4fbbb76,89b3ad10d008f4362e6848e6683ceb7c3037987a,9cf64ba630af51534311a21329f0c33248c9d3f3,,False,False,,,,,,False
+15,refs/heads/master,89b3ad10d008f4362e6848e6683ceb7c3037987a,8cd7a4687bff1a1de16b901b994b324a8f5c3ce3,251fed7f84f4cc5d2edc0fd59288d4343be142bc,,False,False,,,,,,False
+16,refs/heads/master,8cd7a4687bff1a1de16b901b994b324a8f5c3ce3,2b6ac6b5879c4538129029dcd4f829f299174708,afffa27fa4e9ba7a8499e4ccd2f0fac1f5c8341d,,False,False,,,,,,False
+18,refs/heads/master,dc22e76d074dfdfc4e626c78caa61c9a07eb630b,4c3df1ef194ae724777a9c889d101ba4fd2828f7,a682b39c22b077284622fe3a7f5bad14c09f753b,,False,False,,,,,,False
+22,refs/heads/master,fffa6166f92aa6472cab3466fef4178e91f16c7b,2b25a33c872a5c788940ef46b1310f12005aa6e4,ac2c597394516d55ef08d10b46a133a5ee4974a7,,False,False,,,,,,False
+24,refs/heads/master,f37975be060b108ef43d4ed18478a558261d35b8,88c2585da83207bca5b15e14b6825161e9b4e8ec,ee4f3a791c538372f92031bc3f55d0ab2b55ca8a,,False,False,,,,,,False
+26,refs/heads/master,fe80d46cf68f4665ccd064539ebdf84004a1873f,e0e45d32fc77b6cfda6b41de55ec0c24f509f9a0,24e8c91626bed31ba11e8b1208a5e8f61c5ceaee,,False,False,,,,,,False
+28,refs/remotes/origin/local-cas-server-config,6827266c685f05a8440a3da5bf191e614cbdbfd4,002c7f99d4c6d7ff2032f4c7ee99fd89640c9ec5,ee87e247c88cf1d8a261d5360a2b9b4b920d3128,,False,True,0773e197bb4322cfc8f21ccee8e9c3a0de5b553c418f9e3bb0fdadfdadfc5f18,Tests_failed,a9bb182e48be31e44a395b4a4598c0aa83a0bc696bde47803e9cea04f1687703,Tests_failed,False,False

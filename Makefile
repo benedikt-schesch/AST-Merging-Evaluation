@@ -28,7 +28,7 @@ clean:
 	rm -rf .workdir
 	rm -rf repos
 	rm -rf scratch
-	rm -rf results-small
+	rm -rf results/small
 	rm -rf .valid_merges_counters
 
 # This target deletes files in the cache, which is commited to version control.
@@ -61,12 +61,9 @@ decompress-cache:
 
 # Copy tables and plots to the paper.
 copy-paper:
-	rm -rf ../AST-Merging-Evaluation-Paper/tables ../AST-Merging-Evaluation-Paper/plots
-	cp -r results/tables ../AST-Merging-Evaluation-Paper/tables
-	cp -r results/plots ../AST-Merging-Evaluation-Paper/plots
-	cp -r results/defs.tex ../AST-Merging-Evaluation-Paper/defs.tex
-	find ../AST-Merging-Evaluation-Paper/tables -name '*.pdf' -delete
-	find ../AST-Merging-Evaluation-Paper/plots -name '*.pdf' -delete
+	rm -rf ../AST-Merging-Evaluation-Paper/results
+	rsync -av --exclude='*.csv' results ../AST-Merging-Evaluation-Paper/
+	find  ../AST-Merging-Evaluation-Paper/ -type d -empty -delete
 
 # Update cache
 update-cache-results:
@@ -78,12 +75,22 @@ small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
-	rm -rf results-small
+	rm -rf results/small
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
+update-figures:
+	sh run_combined.sh -op
+	sh run_greatest_hits.sh -op
+	sh run_reaper.sh -op
+
+run-all:
+	./run_combined.sh
+	./run_greatest_hits.sh
+	./run_reaper.sh
+
 small-test-diff:
-	python3 test/check_equal_csv.py --actual_folder results-small/ --goal_folder test/small-goal-files/
+	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo
 
 gradle-assemble:
