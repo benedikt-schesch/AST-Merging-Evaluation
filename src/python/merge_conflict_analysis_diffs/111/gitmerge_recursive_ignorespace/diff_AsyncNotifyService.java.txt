@@ -1,0 +1,83 @@
+====1
+1:35,36c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.alibaba.nacos.core.utils.InetUtils;
+2:35,36c
+3:35,36c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====1
+1:107c
+      
+2:107c
+3:107c
+          
+====1
+1:130c
+                                  task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_UNHEALTH,
+2:130c
+3:130c
+                                  task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_UNHEALTH,
+====2
+1:135a
+3:135a
+2:136,143c
+  <<<<<<< HEAD
+                          header.addParam(NotifyService.NOTIFY_HEADER_LAST_MODIFIED,
+                                  String.valueOf(task.getLastModified()));
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+  ||||||| a41d209d5
+                          header.addParam(NotifyService.NOTIFY_HEADER_LAST_MODIFIED, String.valueOf(task.getLastModified()));
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+  =======
+====
+1:137c
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+2:145,146c
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIP());
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:137c
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIP());
+====1
+1:157c
+      
+2:166c
+3:157c
+          
+====1
+1:171c
+                          task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_OK, delayed,
+2:180c
+3:171c
+                          task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_OK, delayed,
+====1
+1:177c
+                          task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_ERROR, delayed,
+2:186c
+3:177c
+                          task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_ERROR, delayed,
+====1
+1:199c
+                              InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_EXCEPTION, delayed, task.target);
+2:208c
+3:199c
+                              InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_EXCEPTION, delayed, task.target);
+====1
+1:262c
+                  this.url = MessageFormat.format(URL_PATTERN, target, ApplicationUtils.getContextPath(), dataId, group);
+2:271c
+3:262c
+                  this.url = MessageFormat.format(URL_PATTERN, target, EnvUtil.getContextPath(), dataId, group);
+====1
+1:265c
+                          .format(URL_PATTERN_TENANT, target, ApplicationUtils.getContextPath(), dataId, group, tenant);
+2:274c
+3:265c
+                          .format(URL_PATTERN_TENANT, target, EnvUtil.getContextPath(), dataId, group, tenant);
+====1
+1:312c
+  }
+\ No newline at end of file
+2:321c
+3:312c
+  }

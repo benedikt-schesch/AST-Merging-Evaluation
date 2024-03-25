@@ -1,0 +1,66 @@
+====3
+1:1c
+2:1c
+  /* Copyright (c) 2008-2022, Nathan Sweet
+3:1c
+  /* Copyright (c) 2008-2023, Nathan Sweet
+====1
+1:94a
+2:95c
+3:95c
+  import com.esotericsoftware.kryo.util.MinimalGenerics;
+====3
+1:561c
+2:562c
+  			if (Proxy.isProxyClass(type)) {
+3:562c
+  			if (isProxy(type)) {
+====3
+1:1265a
+2:1266a
+3:1267,1276c
+  	/** Returns true if the specified type is a proxy. When true, Kryo uses {@link InvocationHandler} instead of the specified type
+  	 * to find the class {@link Registration}.
+  	 * <p>
+  	 * This can be overridden to support alternative proxy checks. The default implementation delegates to
+  	 * {@link Proxy#isProxyClass(Class)}. */
+  	public boolean isProxy (Class type) {
+  		if (type == null) throw new IllegalArgumentException("type cannot be null.");
+  		return Proxy.isProxyClass(type);
+  	}
+  
+====1
+1:1294c
+  		generics = optimizedGenerics ? new DefaultGenerics(this) : NoGenerics.INSTANCE;
+2:1295,1324c
+3:1305,1334c
+  		setGenericsStrategy(optimizedGenerics ? GenericsStrategy.DEFAULT : GenericsStrategy.NONE);
+  	}
+  
+  	/** Sets a {@link GenericsStrategy}.
+  	 * 
+  	 * TODO JavaDoc
+  	 * 
+  	 * @param strategy the strategy for processing generics information */
+  	public void setGenericsStrategy (GenericsStrategy strategy) {
+  		this.generics = strategy.createInstance(this);
+  	}
+  
+  	public enum GenericsStrategy {
+  		DEFAULT {
+  			public Generics createInstance (Kryo kryo) {
+  				return new DefaultGenerics(kryo);
+  			}
+  		},
+  		MINIMAL {
+  			public Generics createInstance (Kryo kryo) {
+  				return new MinimalGenerics(kryo);
+  			}
+  		},
+  		NONE {
+  			public Generics createInstance (Kryo kryo) {
+  				return NoGenerics.INSTANCE;
+  			}
+  		};
+  
+  		public abstract Generics createInstance (Kryo kryo);

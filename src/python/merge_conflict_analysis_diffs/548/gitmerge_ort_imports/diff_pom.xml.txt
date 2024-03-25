@@ -1,0 +1,43 @@
+====1
+1:7c
+      <version>4.1.18-SNAPSHOT</version>
+2:7c
+3:7c
+      <version>4.2.0-SNAPSHOT</version>
+====1
+1:28a
+2:29,30c
+3:29,30c
+          <module>metrics-jakarta-servlet</module>
+          <module>metrics-jakarta-servlets</module>
+====1
+1:33a
+2:36c
+3:36c
+          <module>metrics-jersey3</module>
+====1
+1:34a
+2:38,39c
+3:38,39c
+          <module>metrics-jetty10</module>
+          <module>metrics-jetty11</module>
+====
+1:49,50c
+          <jackson.version>2.9.10.8</jackson.version>
+          <jetty9.version>9.4.36.v20210114</jetty9.version>
+2:54,57c
+          <jackson.version>2.12.1</jackson.version>
+          <jetty9.version>9.4.36.v20210114</jetty9.version>
+          <jetty10.version>10.0.0</jetty10.version>
+          <jetty11.version>11.0.0</jetty11.version>
+3:54,57c
+          <jackson.version>2.12.1</jackson.version>
+          <jetty9.version>9.4.37.v20210219</jetty9.version>
+          <jetty10.version>10.0.0</jetty10.version>
+          <jetty11.version>11.0.0</jetty11.version>
+====3
+1:53c
+2:60c
+          <mockito.version>3.7.7</mockito.version>
+3:60c
+          <mockito.version>3.8.0</mockito.version>

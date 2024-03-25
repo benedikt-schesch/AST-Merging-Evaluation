@@ -21,18 +21,6 @@ CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
 
 
-def slug_repo_name(repo_slug: str) -> str:
-    """Given a GitHub repository slug ("owner/reponame"), returns the reponame.
-    Args:
-        repo_slug (str): The slug of the repository, which is "owner/reponame".
-    Returns:
-        str: The reponame.
-    """
-    if len(repo_slug.split("/")) < 2:
-        print(repo_slug.split("/"))
-    return repo_slug.split("/")[1]
-
-
 def set_in_cache(
     cache_key: Union[Tuple, str],
     cache_value: Union[str, dict, None],

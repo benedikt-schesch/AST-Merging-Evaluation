@@ -1,0 +1,35 @@
+27,30d26
+< <<<<<<< HEAD:src/main/java/tools/jackson/core/io/schubfach/FloatToDecimal.java
+< import static java.lang.Float.floatToRawIntBits;
+< import static java.lang.Integer.numberOfLeadingZeros;
+< 
+37,47c33
+< ||||||| d63cef092:src/main/java/com/fasterxml/jackson/core/io/schubfach/FloatToDecimal.java
+< import static java.lang.Float.*;
+< import static java.lang.Integer.*;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.*;
+< =======
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog10pow2;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog10threeQuartersPow2;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog2pow10;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.g1;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.multiplyHigh;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.pow10;
+---
+> 
+50d35
+< >>>>>>> TEMP_RIGHT_BRANCH:src/main/java/com/fasterxml/jackson/core/io/schubfach/FloatToDecimal.java
+118,123c103,108
+<     private static final int NON_SPECIAL    = 0;
+<     private static final int PLUS_ZERO      = 1;
+<     private static final int MINUS_ZERO     = 2;
+<     private static final int PLUS_INF       = 3;
+<     private static final int MINUS_INF      = 4;
+<     private static final int NAN            = 5;
+---
+>     private static final int NON_SPECIAL = 0;
+>     private static final int PLUS_ZERO = 1;
+>     private static final int MINUS_ZERO = 2;
+>     private static final int PLUS_INF = 3;
+>     private static final int MINUS_INF = 4;
+>     private static final int NAN = 5;

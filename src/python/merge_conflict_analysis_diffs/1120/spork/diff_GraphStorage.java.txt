@@ -1,0 +1,125 @@
+====3
+1:21,22c
+2:21,22c
+  import com.graphhopper.coll.MyBitSet;
+  import com.graphhopper.coll.MyBitSetImpl;
+3:21,22c
+  import com.graphhopper.coll.GHBitSet;
+  import com.graphhopper.coll.GHBitSetImpl;
+====1
+1:26a
+2:27c
+3:27c
+  import com.graphhopper.search.NameIndex;
+====1
+1:55c
+      protected final int E_NODEA, E_NODEB, E_LINKA, E_LINKB, E_DIST, E_FLAGS, E_GEO;
+2:56c
+3:56c
+      protected final int E_NODEA, E_NODEB, E_LINKA, E_LINKB, E_DIST, E_FLAGS, E_NAME, E_GEO;
+====3
+1:75c
+2:76c
+      private MyBitSet removedNodes;
+3:76c
+      private GHBitSet removedNodes;
+====1
+1:83a
+2:85c
+3:85c
+      private NameIndex nameIndex;
+====1
+1:92a
+2:95c
+3:95c
+          this.nameIndex = new NameIndex(dir);
+====1
+1:99a
+2:103c
+3:103c
+          E_NAME = nextEdgeEntryIndex();
+====1
+1:145a
+2:150c
+3:150c
+          nameIndex.segmentSize(bytes);
+====1
+1:160c
+          geometry.create((long) initBytes);
+2:165,166c
+3:165,166c
+          geometry.create(1000);
+          nameIndex.create(1000);
+====1
+1:481a
+2:488,499c
+3:488,499c
+          @Override
+          public String name() {
+              int nameIndexRef = edges.getInt(edgePointer + E_NAME);
+              return nameIndex.get(nameIndexRef);
+          }
+  
+          @Override
+          public void name(String name) {
+              int nameIndexRef = nameIndex.put(name);
+              edges.setInt(edgePointer + E_NAME, nameIndexRef);
+          }
+  
+====1
+1:644a
+2:663,674c
+3:663,674c
+          @Override
+          public String name() {
+              int nameIndexRef = edges.getInt(edgePointer + E_NAME);
+              return nameIndex.get(nameIndexRef);
+          }
+  
+          @Override
+          public void name(String name) {
+              int nameIndexRef = nameIndex.put(name);
+              edges.setInt(edgePointer + E_NAME, nameIndexRef);
+          }
+  
+====3
+1:720c
+2:750c
+              clonedG.removedNodes = removedNodes.copyTo(new MyBitSetImpl());
+3:750c
+              clonedG.removedNodes = removedNodes.copyTo(new GHBitSetImpl());
+====3
+1:724c
+2:754c
+      private MyBitSet removedNodes() {
+3:754c
+      private GHBitSet removedNodes() {
+====3
+1:726c
+2:756c
+              removedNodes = new MyBitSetImpl((int) (nodes.capacity() / 4));
+3:756c
+              removedNodes = new GHBitSetImpl((int) (nodes.capacity() / 4));
+====3
+1:799c
+2:829c
+          MyBitSet toRemoveSet = new MyBitSetImpl(removeNodeCount);
+3:829c
+          GHBitSet toRemoveSet = new GHBitSetImpl(removeNodeCount);
+====3
+1:843c
+2:873c
+          MyBitSet toMoveSet = new MyBitSetImpl(removeNodeCount * 3);
+3:873c
+          GHBitSet toMoveSet = new GHBitSetImpl(removeNodeCount * 3);
+====1
+1:938a
+2:969,970c
+3:969,970c
+              if (!nameIndex.loadExisting())
+                  throw new IllegalStateException("cannot load name index. corrupt file or directory? " + dir);
+====1
+1:983a
+2:1016c
+3:1016c
+          nameIndex.flush();

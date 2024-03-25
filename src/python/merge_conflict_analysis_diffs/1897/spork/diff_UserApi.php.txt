@@ -1,0 +1,1443 @@
+====1
+1:31,34c
+  use \Swagger\Client\ApiClient;
+  use \Swagger\Client\ApiException;
+  use \Swagger\Client\Configuration;
+  use \Swagger\Client\ObjectSerializer;
+2:31,39c
+3:31,39c
+  use GuzzleHttp\Client;
+  use GuzzleHttp\ClientInterface;
+  use GuzzleHttp\Exception\RequestException;
+  use GuzzleHttp\Psr7\MultipartStream;
+  use GuzzleHttp\Psr7\Request;
+  use Swagger\Client\ApiException;
+  use Swagger\Client\Configuration;
+  use Swagger\Client\HeaderSelector;
+  use Swagger\Client\ObjectSerializer;
+====1
+1:47,49c
+       * API Client
+       *
+       * @var \Swagger\Client\ApiClient instance of the ApiClient
+2:52c
+3:52c
+       * @var ClientInterface
+====1
+1:51c
+      protected $apiClient;
+2:54c
+3:54c
+      protected $client;
+====1
+1:54,56c
+       * Constructor
+       *
+       * @param \Swagger\Client\ApiClient|null $apiClient The api client to use
+2:57c
+3:57c
+       * @var Configuration
+====1
+1:58,65c
+      public function __construct(\Swagger\Client\ApiClient $apiClient = null)
+      {
+          if ($apiClient === null) {
+              $apiClient = new ApiClient();
+          }
+  
+          $this->apiClient = $apiClient;
+      }
+2:59c
+3:59c
+      protected $config;
+====1
+1:68,70c
+       * Get API client
+       *
+       * @return \Swagger\Client\ApiClient get the API client
+2:62,64c
+3:62,64c
+       * @param ClientInterface $client
+       * @param Configuration $config
+       * @param HeaderSelector $selector
+====1
+1:72,74c
+      public function getApiClient()
+      {
+          return $this->apiClient;
+2:66,73c
+3:66,73c
+      public function __construct(
+          ClientInterface $client = null,
+          Configuration $config = null,
+          HeaderSelector $selector = null
+      ) {
+          $this->client = $client ?: new Client();
+          $this->config = $config ?: new Configuration();
+          $this->headerSelector = $selector ?: new HeaderSelector();
+====1
+1:78,82c
+       * Set the API client
+       *
+       * @param \Swagger\Client\ApiClient $apiClient set the API client
+       *
+       * @return UserApi
+2:77c
+3:77c
+       * @return Configuration
+====1
+1:84c
+      public function setApiClient(\Swagger\Client\ApiClient $apiClient)
+2:79c
+3:79c
+      public function getConfig()
+====1
+1:86,87c
+          $this->apiClient = $apiClient;
+          return $this;
+2:81c
+3:81c
+          return $this->config;
+====1
+1:96a
+2:91c
+3:91c
+       * @throws \InvalidArgumentException
+====1
+1:101,102c
+          list($response) = $this->createUserWithHttpInfo($body);
+          return $response;
+2:96c
+3:96c
+          $this->createUserWithHttpInfo($body);
+====1
+1:111a
+2:106c
+3:106c
+       * @throws \InvalidArgumentException
+====1
+1:120,122c
+          // parse inputs
+          $resourcePath = "/user";
+          $httpBody = '';
+2:115,117c
+3:115,117c
+  
+          $resourcePath = '/user';
+          $formParams = [];
+====1
+1:125,130c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:120,124c
+3:120,124c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+  
+====1
+1:140a
+2:135c
+3:135c
+  
+====1
+1:142c
+              $httpBody = $formParams; // for HTTP post (form)
+2:137,149c
+3:137,149c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:144,153c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'POST',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user'
+2:151,154c
+3:151,154c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+====1
+1:154a
+2:156,208c
+3:156,208c
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+              );
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'POST',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:156c
+              return [null, $statusCode, $httpHeader];
+2:209a
+3:209a
+====1
+1:160c
+  
+2:212a
+3:212a
+====1
+1:164c
+  
+2:215a
+3:215a
+====1
+1:171a
+2:223c
+3:223c
+       * @throws \InvalidArgumentException
+====1
+1:176,177c
+          list($response) = $this->createUsersWithArrayInputWithHttpInfo($body);
+          return $response;
+2:228c
+3:228c
+          $this->createUsersWithArrayInputWithHttpInfo($body);
+====1
+1:186a
+2:238c
+3:238c
+       * @throws \InvalidArgumentException
+====1
+1:195,197c
+          // parse inputs
+          $resourcePath = "/user/createWithArray";
+          $httpBody = '';
+2:247,249c
+3:247,249c
+  
+          $resourcePath = '/user/createWithArray';
+          $formParams = [];
+====1
+1:200,205c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:252,256c
+3:252,256c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+  
+====1
+1:215a
+2:267c
+3:267c
+  
+====1
+1:217c
+              $httpBody = $formParams; // for HTTP post (form)
+2:269,281c
+3:269,281c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:219,228c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'POST',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user/createWithArray'
+2:283,291c
+3:283,291c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+              );
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+====1
+1:229a
+2:293,340c
+3:293,340c
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'POST',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:231c
+              return [null, $statusCode, $httpHeader];
+2:341a
+3:341a
+====1
+1:235c
+  
+2:344a
+3:344a
+====1
+1:239c
+  
+2:347a
+3:347a
+====1
+1:246a
+2:355c
+3:355c
+       * @throws \InvalidArgumentException
+====1
+1:251,252c
+          list($response) = $this->createUsersWithListInputWithHttpInfo($body);
+          return $response;
+2:360c
+3:360c
+          $this->createUsersWithListInputWithHttpInfo($body);
+====1
+1:261a
+2:370c
+3:370c
+       * @throws \InvalidArgumentException
+====1
+1:270,272c
+          // parse inputs
+          $resourcePath = "/user/createWithList";
+          $httpBody = '';
+2:379,381c
+3:379,381c
+  
+          $resourcePath = '/user/createWithList';
+          $formParams = [];
+====1
+1:275,280c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:384,388c
+3:384,388c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+  
+====1
+1:290a
+2:399c
+3:399c
+  
+====1
+1:292c
+              $httpBody = $formParams; // for HTTP post (form)
+2:401,413c
+3:401,413c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:294,303c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'POST',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user/createWithList'
+2:415,423c
+3:415,423c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+              );
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+====1
+1:304a
+2:425,472c
+3:425,472c
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'POST',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:306c
+              return [null, $statusCode, $httpHeader];
+2:473a
+3:473a
+====1
+1:310c
+  
+2:476a
+3:476a
+====1
+1:314c
+  
+2:479a
+3:479a
+====1
+1:321a
+2:487c
+3:487c
+       * @throws \InvalidArgumentException
+====1
+1:326,327c
+          list($response) = $this->deleteUserWithHttpInfo($username);
+          return $response;
+2:492c
+3:492c
+          $this->deleteUserWithHttpInfo($username);
+====1
+1:336a
+2:502c
+3:502c
+       * @throws \InvalidArgumentException
+====1
+1:345,347c
+          // parse inputs
+          $resourcePath = "/user/{username}";
+          $httpBody = '';
+2:511,513c
+3:511,513c
+  
+          $resourcePath = '/user/{username}';
+          $formParams = [];
+====1
+1:350,355c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:516,519c
+3:516,519c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+====1
+1:359,363c
+              $resourcePath = str_replace(
+                  "{" . "username" . "}",
+                  $this->apiClient->getSerializer()->toPathValue($username),
+                  $resourcePath
+              );
+2:523c
+3:523c
+              $resourcePath = str_replace('{' . 'username' . '}', ObjectSerializer::toPathValue($username), $resourcePath);
+====
+1:365c
+          
+2:525,526c
+  
+          
+3:525,526c
+  
+  
+====1
+1:368a
+2:530c
+3:530c
+  
+====1
+1:370c
+              $httpBody = $formParams; // for HTTP post (form)
+2:532,544c
+3:532,544c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:372,381c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'DELETE',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user/{username}'
+2:546,554c
+3:546,554c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+              );
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+====1
+1:382a
+2:556,603c
+3:556,603c
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'DELETE',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:384c
+              return [null, $statusCode, $httpHeader];
+2:604a
+3:604a
+====1
+1:388c
+  
+2:607a
+3:607a
+====1
+1:392c
+  
+2:610a
+3:610a
+====1
+1:399a
+2:618c
+3:618c
+       * @throws \InvalidArgumentException
+====1
+1:414a
+2:634c
+3:634c
+       * @throws \InvalidArgumentException
+====1
+1:423,425c
+          // parse inputs
+          $resourcePath = "/user/{username}";
+          $httpBody = '';
+2:643,645c
+3:643,645c
+  
+          $resourcePath = '/user/{username}';
+          $formParams = [];
+====1
+1:428,433c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:648,651c
+3:648,651c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '\Swagger\Client\Model\User';
+  
+====1
+1:437,441c
+              $resourcePath = str_replace(
+                  "{" . "username" . "}",
+                  $this->apiClient->getSerializer()->toPathValue($username),
+                  $resourcePath
+              );
+2:655c
+3:655c
+              $resourcePath = str_replace('{' . 'username' . '}', ObjectSerializer::toPathValue($username), $resourcePath);
+====
+1:443c
+          
+2:657,658c
+  
+          
+3:657,658c
+  
+  
+====1
+1:446a
+2:662c
+3:662c
+  
+====1
+1:448c
+              $httpBody = $formParams; // for HTTP post (form)
+2:664,676c
+3:664,676c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:450,459c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'GET',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  '\Swagger\Client\Model\User',
+                  '/user/{username}'
+2:678,681c
+3:678,681c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+====1
+1:460a
+2:683,749c
+3:683,749c
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+              );
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'GET',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              $responseBody = $response->getBody();
+              if ($returnType === '\SplFileObject') {
+                  $content = $responseBody; //stream goes to serializer
+              } else {
+                  $content = $responseBody->getContents();
+                  if ($returnType !== 'string') {
+                      $content = json_decode($content);
+                  }
+              }
+  
+              return [
+                  ObjectSerializer::deserialize($content, $returnType, []),
+                  $response->getStatusCode(),
+                  $response->getHeaders()
+              ];
+====1
+1:462c
+              return [$this->apiClient->getSerializer()->deserialize($response, '\Swagger\Client\Model\User', $httpHeader), $statusCode, $httpHeader];
+2:750a
+3:750a
+====1
+1:466c
+                      $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Swagger\Client\Model\User', $e->getResponseHeaders());
+2:754c
+3:754c
+                      $data = ObjectSerializer::deserialize($e->getResponseBody(), '\Swagger\Client\Model\User', $e->getResponseHeaders());
+====1
+1:470c
+  
+2:757a
+3:757a
+====1
+1:474c
+  
+2:760a
+3:760a
+====1
+1:482a
+2:769c
+3:769c
+       * @throws \InvalidArgumentException
+====1
+1:498a
+2:786c
+3:786c
+       * @throws \InvalidArgumentException
+====1
+1:511,513c
+          // parse inputs
+          $resourcePath = "/user/login";
+          $httpBody = '';
+2:799,801c
+3:799,801c
+  
+          $resourcePath = '/user/login';
+          $formParams = [];
+====1
+1:516,521c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:804,806c
+3:804,806c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = 'string';
+====1
+1:525c
+              $queryParams['username'] = $this->apiClient->getSerializer()->toQueryValue($username);
+2:810c
+3:810c
+              $queryParams['username'] = ObjectSerializer::toQueryValue($username);
+====1
+1:529c
+              $queryParams['password'] = $this->apiClient->getSerializer()->toQueryValue($password);
+2:814c
+3:814c
+              $queryParams['password'] = ObjectSerializer::toQueryValue($password);
+====
+1:531c
+          
+2:816,818c
+  
+  
+          
+3:816,818c
+  
+  
+  
+====1
+1:534a
+2:822c
+3:822c
+  
+====1
+1:536c
+              $httpBody = $formParams; // for HTTP post (form)
+2:824,836c
+3:824,836c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:538,547c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'GET',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  'string',
+                  '/user/login'
+2:838,846c
+3:838,846c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+              );
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+====1
+1:548a
+2:848,909c
+3:848,909c
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'GET',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              $responseBody = $response->getBody();
+              if ($returnType === '\SplFileObject') {
+                  $content = $responseBody; //stream goes to serializer
+              } else {
+                  $content = $responseBody->getContents();
+                  if ($returnType !== 'string') {
+                      $content = json_decode($content);
+                  }
+              }
+  
+              return [
+                  ObjectSerializer::deserialize($content, $returnType, []),
+                  $response->getStatusCode(),
+                  $response->getHeaders()
+              ];
+====1
+1:550c
+              return [$this->apiClient->getSerializer()->deserialize($response, 'string', $httpHeader), $statusCode, $httpHeader];
+2:910a
+3:910a
+====1
+1:554c
+                      $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), 'string', $e->getResponseHeaders());
+2:914c
+3:914c
+                      $data = ObjectSerializer::deserialize($e->getResponseBody(), 'string', $e->getResponseHeaders());
+====1
+1:558c
+  
+2:917a
+3:917a
+====1
+1:562c
+  
+2:920a
+3:920a
+====1
+1:568a
+2:927c
+3:927c
+       * @throws \InvalidArgumentException
+====1
+1:573,574c
+          list($response) = $this->logoutUserWithHttpInfo();
+          return $response;
+2:932c
+3:932c
+          $this->logoutUserWithHttpInfo();
+====1
+1:582a
+2:941c
+3:941c
+       * @throws \InvalidArgumentException
+====1
+1:587,589c
+          // parse inputs
+          $resourcePath = "/user/logout";
+          $httpBody = '';
+2:946,948c
+3:946,948c
+  
+          $resourcePath = '/user/logout';
+          $formParams = [];
+====
+1:592,599c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+  
+          
+2:951,957c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+  
+  
+          
+3:951,957c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+  
+  
+  
+====1
+1:602a
+2:961c
+3:961c
+  
+====1
+1:604c
+              $httpBody = $formParams; // for HTTP post (form)
+2:963,975c
+3:963,975c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:606,615c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'GET',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user/logout'
+2:977,980c
+3:977,980c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+====1
+1:616a
+2:982,1034c
+3:982,1034c
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+              );
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'GET',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:618c
+              return [null, $statusCode, $httpHeader];
+2:1035a
+3:1035a
+====1
+1:622c
+  
+2:1038a
+3:1038a
+====1
+1:626c
+  
+2:1041a
+3:1041a
+====1
+1:634a
+2:1050c
+3:1050c
+       * @throws \InvalidArgumentException
+====1
+1:639,640c
+          list($response) = $this->updateUserWithHttpInfo($username, $body);
+          return $response;
+2:1055c
+3:1055c
+          $this->updateUserWithHttpInfo($username, $body);
+====1
+1:650a
+2:1066c
+3:1066c
+       * @throws \InvalidArgumentException
+====1
+1:663,665c
+          // parse inputs
+          $resourcePath = "/user/{username}";
+          $httpBody = '';
+2:1079,1081c
+3:1079,1081c
+  
+          $resourcePath = '/user/{username}';
+          $formParams = [];
+====1
+1:668,673c
+          $formParams = [];
+          $_header_accept = $this->apiClient->selectHeaderAccept(['application/xml', 'application/json']);
+          if (!is_null($_header_accept)) {
+              $headerParams['Accept'] = $_header_accept;
+          }
+          $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType([]);
+2:1084,1087c
+3:1084,1087c
+          $httpBody = '';
+          $multipart = false;
+          $returnType = '';
+  
+====1
+1:677,681c
+              $resourcePath = str_replace(
+                  "{" . "username" . "}",
+                  $this->apiClient->getSerializer()->toPathValue($username),
+                  $resourcePath
+              );
+2:1091c
+3:1091c
+              $resourcePath = str_replace('{' . 'username' . '}', ObjectSerializer::toPathValue($username), $resourcePath);
+====1
+1:682a
+2:1093c
+3:1093c
+  
+====1
+1:691a
+2:1103c
+3:1103c
+  
+====1
+1:693c
+              $httpBody = $formParams; // for HTTP post (form)
+2:1105,1117c
+3:1105,1117c
+              if ($multipart) {
+                  $multipartContents = [];
+                  foreach ($formParams as $formParamName => $formParamValue) {
+                      $multipartContents[] = [
+                          'name' => $formParamName,
+                          'contents' => $formParamValue
+                      ];
+                  }
+                  $httpBody = new MultipartStream($multipartContents); // for HTTP post (form)
+  
+              } else {
+                  $httpBody = \GuzzleHttp\Psr7\build_query($formParams); // for HTTP post (form)
+              }
+====1
+1:695,704c
+          // make the API Call
+          try {
+              list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                  $resourcePath,
+                  'PUT',
+                  $queryParams,
+                  $httpBody,
+                  $headerParams,
+                  null,
+                  '/user/{username}'
+2:1119,1127c
+3:1119,1127c
+  
+          if ($httpBody instanceof MultipartStream) {
+              $headers= $this->headerSelector->selectHeadersForMultipart(
+                  ['application/xml', 'application/json']
+              );
+          } else {
+              $headers = $this->headerSelector->selectHeaders(
+                  ['application/xml', 'application/json'],
+                  []
+====1
+1:705a
+2:1129,1176c
+3:1129,1176c
+          }
+  
+  
+          $query = \GuzzleHttp\Psr7\build_query($queryParams);
+          $url = $this->config->getHost() . $resourcePath . ($query ? '?' . $query : '');
+  
+          $defaultHeaders = [];
+          if ($this->config->getUserAgent()) {
+              $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+          }
+  
+          $headers = array_merge(
+              $defaultHeaders,
+              $headerParams,
+              $headers
+          );
+  
+          $request = new Request(
+              'PUT',
+              $url,
+              $headers,
+              $httpBody
+          );
+  
+          try {
+  
+              try {
+                  $response = $this->client->send($request);
+              } catch (RequestException $e) {
+                  throw new ApiException(
+                      "[{$e->getCode()}] {$e->getMessage()}",
+                      $e->getCode(),
+                      $e->getResponse() ? $e->getResponse()->getHeaders() : null
+                  );
+              }
+  
+              $statusCode = $response->getStatusCode();
+  
+              if ($statusCode < 200 || $statusCode > 299) {
+                  throw new ApiException(
+                      "[$statusCode] Error connecting to the API ($url)",
+                      $statusCode,
+                      $response->getHeaders(),
+                      $response->getBody()
+                  );
+              }
+  
+              return [null, $statusCode, $response->getHeaders()];
+====1
+1:707c
+              return [null, $statusCode, $httpHeader];
+2:1177a
+3:1177a
+====1
+1:711c
+  
+2:1180a
+3:1180a

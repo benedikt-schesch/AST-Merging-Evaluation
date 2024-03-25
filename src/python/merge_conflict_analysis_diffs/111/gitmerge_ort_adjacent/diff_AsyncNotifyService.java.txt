@@ -1,0 +1,74 @@
+====3
+1:35,36c
+2:35,36c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.alibaba.nacos.core.utils.InetUtils;
+3:35,36c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====1
+1:107c
+      
+2:107c
+3:107c
+          
+====3
+1:130c
+2:130c
+                                  task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_UNHEALTH,
+3:130c
+                                  task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_UNHEALTH,
+====
+1:136,137c
+                          header.addParam(NotifyService.NOTIFY_HEADER_LAST_MODIFIED, String.valueOf(task.getLastModified()));
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+2:136,138c
+                          header.addParam(NotifyService.NOTIFY_HEADER_LAST_MODIFIED,
+                                  String.valueOf(task.getLastModified()));
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+3:136,137c
+                          header.addParam(NotifyService.NOTIFY_HEADER_LAST_MODIFIED, String.valueOf(task.getLastModified()));
+                          header.addParam(NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIP());
+====1
+1:157c
+      
+2:158c
+3:157c
+          
+====3
+1:171c
+2:172c
+                          task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_OK, delayed,
+3:171c
+                          task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_OK, delayed,
+====3
+1:177c
+2:178c
+                          task.getLastModified(), InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_ERROR, delayed,
+3:177c
+                          task.getLastModified(), InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_ERROR, delayed,
+====3
+1:199c
+2:200c
+                              InetUtils.getSelfIp(), ConfigTraceService.NOTIFY_EVENT_EXCEPTION, delayed, task.target);
+3:199c
+                              InetUtils.getSelfIP(), ConfigTraceService.NOTIFY_EVENT_EXCEPTION, delayed, task.target);
+====3
+1:262c
+2:263c
+                  this.url = MessageFormat.format(URL_PATTERN, target, ApplicationUtils.getContextPath(), dataId, group);
+3:262c
+                  this.url = MessageFormat.format(URL_PATTERN, target, EnvUtil.getContextPath(), dataId, group);
+====3
+1:265c
+2:266c
+                          .format(URL_PATTERN_TENANT, target, ApplicationUtils.getContextPath(), dataId, group, tenant);
+3:265c
+                          .format(URL_PATTERN_TENANT, target, EnvUtil.getContextPath(), dataId, group, tenant);
+====1
+1:312c
+  }
+\ No newline at end of file
+2:313c
+3:312c
+  }

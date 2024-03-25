@@ -4,8 +4,20 @@ import json
 from pathlib import Path
 from tqdm import tqdm
 import pandas as pd
-from cache_utils import slug_repo_name, write_cache
+from cache_utils import write_cache
 from renaming_files import check_conflicts
+
+
+def slug_repo_name(repo_slug: str) -> str:
+    """Given a GitHub repository slug ("owner/reponame"), returns the reponame.
+    Args:
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
+    Returns:
+        str: The reponame.
+    """
+    if len(repo_slug.split("/")) < 2:
+        print(repo_slug.split("/"))
+    return repo_slug.split("/")[1]
 
 
 def old_path(repo_slug: str, cache_directory: Path):

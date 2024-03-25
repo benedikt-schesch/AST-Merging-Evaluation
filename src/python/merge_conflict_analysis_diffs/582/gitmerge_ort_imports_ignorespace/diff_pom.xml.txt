@@ -1,0 +1,212 @@
+====1
+1:5c
+      <groupId>io.dropwizard.metrics</groupId>
+2:5c
+3:5c
+      <groupId>io.dropwizard.metrics5</groupId>
+====1
+1:7c
+      <version>4.1.17-SNAPSHOT</version>
+2:7c
+3:7c
+      <version>5.0.0-rc5-SNAPSHOT</version>
+====1
+1:9c
+      <name>Metrics Parent</name>
+2:9c
+3:9c
+      <name>Metrics5 Parent</name>
+====1
+1:22a
+2:23c
+3:23c
+          <module>metrics-healthchecks</module>
+====1
+1:25c
+          <module>metrics-healthchecks</module>
+2:26c
+3:26c
+          <module>metrics-influxdb</module>
+====3
+1:28a
+2:29a
+3:30,31c
+          <module>metrics-jakarta-servlet</module>
+          <module>metrics-jakarta-servlets</module>
+====1
+1:30c
+          <module>metrics-jcstress</module>
+2:30a
+3:32a
+====1
+1:38c
+          <module>metrics-jmx</module>
+2:37a
+3:39a
+====1
+1:44a
+2:44,47c
+3:46,49c
+          <module>metrics-jcstress</module>
+          <module>metrics-jmx</module>
+          <module>metrics-legacy-adapter</module>
+          <module>metrics-legacy-adapter-healthchecks</module>
+====
+1:52,53c
+          <jackson.version>2.9.10.7</jackson.version>
+          <jetty9.version>9.4.35.v20201120</jetty9.version>
+2:55c
+          <jetty9.version>9.4.34.v20201102</jetty9.version>
+3:57,58c
+          <jackson.version>2.12.1</jackson.version>
+          <jetty9.version>9.4.35.v20201120</jetty9.version>
+====
+1:58c
+          <mockito.version>3.6.28</mockito.version>
+2:60c
+          <mockito.version>3.6.0</mockito.version>
+3:63c
+          <mockito.version>3.7.0</mockito.version>
+====3
+1:118c
+2:120c
+              <id>sonatype-nexus-snapshots</id>
+3:123c
+              <id>ossrh</id>
+====3
+1:123c
+2:125c
+              <id>sonatype-nexus-staging</id>
+3:128c
+              <id>ossrh</id>
+====3
+1:190a
+2:192a
+3:196,198c
+              <properties>
+                  <gpg.keyname>EDA86E9FB607B5FC9223FB767D4868B53E31E7AD</gpg.keyname>
+              </properties>
+====3
+1:194a
+2:196a
+3:203,234c
+                          <artifactId>maven-source-plugin</artifactId>
+                          <version>3.2.1</version>
+                          <executions>
+                              <execution>
+                                  <id>attach-sources</id>
+                                  <goals>
+                                      <goal>jar</goal>
+                                  </goals>
+                              </execution>
+                          </executions>
+                      </plugin>
+                      <plugin>
+                          <groupId>org.apache.maven.plugins</groupId>
+                          <artifactId>maven-javadoc-plugin</artifactId>
+                          <version>3.2.0</version>
+                          <configuration>
+                              <source>8</source>
+                              <doclint>none</doclint>
+                              <quiet>true</quiet>
+                              <notimestamp>true</notimestamp>
+                          </configuration>
+                          <executions>
+                              <execution>
+                                  <id>attach-javadocs</id>
+                                  <goals>
+                                      <goal>jar</goal>
+                                  </goals>
+                              </execution>
+                          </executions>
+                      </plugin>
+                      <plugin>
+                          <groupId>org.apache.maven.plugins</groupId>
+====3
+1:199c
+2:201c
+                                  <argument>--no-tty</argument>
+3:239,240c
+                                  <arg>--pinentry-mode</arg>
+                                  <arg>loopback</arg>
+====3
+1:211a
+2:213a
+3:253,271c
+                      <plugin>
+                          <groupId>org.sonatype.plugins</groupId>
+                          <artifactId>nexus-staging-maven-plugin</artifactId>
+                          <version>1.6.8</version>
+                          <configuration>
+                              <serverId>ossrh</serverId>
+                              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                          </configuration>
+                          <executions>
+                              <execution>
+                                  <id>nexus-deploy</id>
+                                  <phase>deploy</phase>
+                                  <goals>
+                                      <goal>deploy</goal>
+                                  </goals>
+                              </execution>
+                          </executions>
+                      </plugin>
+====3
+1:215c
+2:217c
+  
+3:274a
+====1
+1:219,227c
+          <pluginManagement>
+              <plugins>
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-deploy-plugin</artifactId>
+                      <version>2.8.2</version>
+                  </plugin>
+              </plugins>
+          </pluginManagement>
+2:220a
+3:277a
+====3
+1:283,295c
+2:276,288c
+                  <artifactId>maven-source-plugin</artifactId>
+                  <version>3.2.1</version>
+                  <executions>
+                      <execution>
+                          <id>attach-sources</id>
+                          <goals>
+                              <goal>jar</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+              </plugin>
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+3:332a
+====3
+1:319,337c
+2:312,330c
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <version>3.2.0</version>
+                  <configuration>
+                      <source>8</source>
+                      <doclint>none</doclint>
+                      <quiet>true</quiet>
+                      <notimestamp>true</notimestamp>
+                  </configuration>
+                  <executions>
+                      <execution>
+                          <id>attach-javadocs</id>
+                          <goals>
+                              <goal>jar</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+              </plugin>
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+3:355a

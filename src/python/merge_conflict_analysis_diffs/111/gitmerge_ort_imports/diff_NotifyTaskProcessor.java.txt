@@ -1,0 +1,58 @@
+====
+1:20,21c
+  import com.alibaba.nacos.config.server.constant.Constants;
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+2:20c
+  import com.alibaba.nacos.common.task.AbstractDelayTask;
+3:20,21c
+  import com.alibaba.nacos.common.task.NacosTask;
+  import com.alibaba.nacos.config.server.constant.Constants;
+====1
+1:22a
+2:22c
+3:23c
+  import com.alibaba.nacos.config.server.constant.Constants;
+====3
+1:27,28c
+2:27,28c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.alibaba.nacos.core.utils.InetUtils;
+3:28,29c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+  import com.alibaba.nacos.sys.utils.InetUtils;
+====3
+1:49c
+2:49c
+      public boolean process(AbstractDelayTask task) {
+3:50c
+      public boolean process(NacosTask task) {
+====3
+1:76c
+2:76c
+                              NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIp());
+3:77c
+                              NotifyService.NOTIFY_HEADER_OP_HANDLE_IP, InetUtils.getSelfIP());
+====3
+1:78c
+2:78c
+                      .format(URL_PATTERN, serverIp, ApplicationUtils.getContextPath(), dataId, group);
+3:79c
+                      .format(URL_PATTERN, serverIp, EnvUtil.getContextPath(), dataId, group);
+====3
+1:82c
+2:82c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+3:83c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),
+====3
+1:92c
+2:92c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+3:93c
+                  ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),
+====3
+1:100c
+2:100c
+              ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIp(),
+3:101c
+              ConfigTraceService.logNotifyEvent(dataId, group, tenant, null, lastModified, InetUtils.getSelfIP(),

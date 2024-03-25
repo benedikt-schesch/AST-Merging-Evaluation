@@ -1,0 +1,43 @@
+====1
+1:62c
+   * @author Peter Karich,
+2:62c
+3:62c
+   * @author Peter Karich
+====3
+1:244c
+2:244c
+          helper.cleanup();
+3:243a
+====3
+1:250,251c
+2:250,251c
+          logger.info("nodes " + n + ", there were " + preparation.subNetworks()
+                  + " sub-networks. removed them => " + (prev - n)
+3:249,251c
+          logger.info("edges: " + graphStorage.getAllEdges().maxId()
+                  + "nodes " + n + ", there were " + preparation.subNetworks()
+                  + " subnetworks. removed them => " + (prev - n)
+====3
+1:278c
+2:278c
+          logger.info("creating graph with expected nodes:" + nf(helper.expectedNodes()));
+3:278c
+          logger.info("creating graph. Found nodes (pillar+tower):" + nf(helper.expectedNodes()) + ", " + Helper.getMemInfo());
+====3
+1:296,297c
+2:296,297c
+                                          + " (" + skippedLocations + "), edges:" + nf(helper.edgeCount())
+                                          + " " + Helper.getMemInfo());
+3:296c
+                                          + " (" + skippedLocations + ") " + Helper.getMemInfo());
+====3
+1:318c
+2:318c
+  
+3:316a
+====3
+1:327a
+2:327a
+3:326c
+          helper.finishedReading();

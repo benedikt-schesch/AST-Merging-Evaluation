@@ -1,0 +1,163 @@
+====1
+1:21c
+  import com.alibaba.nacos.config.server.service.repository.embedded.EmbeddedStoragePersistServiceImpl;
+2:20a
+3:20a
+====1
+1:23a
+2:23c
+3:23c
+  import com.alibaba.nacos.config.server.service.repository.embedded.EmbeddedStoragePersistServiceImpl;
+====3
+1:30a
+2:30a
+3:31c
+  import java.util.Collections;
+====2
+1:43c
+3:44c
+      
+2:43c
+  
+====2
+1:46c
+3:47c
+      
+2:46c
+  
+====2
+1:49c
+3:50c
+      
+2:49c
+  
+====2
+1:51c
+3:52c
+          
+2:51c
+  
+====2
+1:53c
+3:54c
+          
+2:53c
+  
+====2
+1:56c
+3:57c
+          
+2:56c
+  
+====2
+1:58c
+3:59c
+          
+2:58c
+  
+====2
+1:68c
+3:69c
+          
+2:68c
+  
+====2
+1:70c
+3:71c
+      
+2:70c
+  
+====2
+1:72c
+3:73c
+          
+2:72c
+  
+====2
+1:74c
+3:75c
+          
+2:74c
+  
+====
+1:77,80c
+          
+          String where = " username='" + username + "' ";
+          
+          if (StringUtils.isBlank(username)) {
+2:77,80c
+  
+          String where = " username='" + username + "' ";
+  
+          if (StringUtils.isBlank(username)) {
+3:78,83c
+      
+          String where = " username= ? ";
+          List<String> params = new ArrayList<>();
+          if (StringUtils.isNotBlank(username)) {
+              params = Collections.singletonList(username);
+          } else {
+====
+1:83,84c
+          
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+2:83,84c
+  
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, new ArrayList<String>().toArray(), pageNo,
+3:86,87c
+          
+          return helper.fetchPage(sqlCountRows + where, sqlFetchRows + where, params.toArray(), pageNo,
+====2
+1:86c
+3:89c
+          
+2:86c
+  
+====2
+1:88c
+3:91c
+      
+2:88c
+  
+====2
+1:96c
+3:99c
+          
+2:96c
+  
+====2
+1:98c
+3:101c
+          
+2:98c
+  
+====2
+1:106c
+3:109c
+      
+2:106c
+  
+====2
+1:121c
+3:124c
+      
+2:121c
+  
+====2
+1:137c
+3:140c
+      
+2:137c
+  
+====2
+1:141c
+3:144c
+          List<String> users = databaseOperate.queryMany(sql, new String[] {"%" + role + "%"}, String.class);
+2:141c
+          List<String> users = databaseOperate.queryMany(sql, new String[]{"%" + role + "%"}, String.class);
+====2
+1:144c
+3:147c
+      
+2:144c
+  

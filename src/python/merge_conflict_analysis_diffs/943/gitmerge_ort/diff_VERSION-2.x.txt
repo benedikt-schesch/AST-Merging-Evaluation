@@ -1,0 +1,11 @@
+9a10
+> #2341: Block one more gadget type (CVE-2019-12814)
+28d28
+< <<<<<<< HEAD:release-notes/VERSION-2.x
+341,346d340
+< ||||||| 4c935660a:release-notes/VERSION
+< #2334: Block class for CVE-2019-12384
+< =======
+< #2334: Block class for CVE-2019-12384
+< #2341: Block class for CVE-2019-12814
+< >>>>>>> TEMP_RIGHT_BRANCH:release-notes/VERSION

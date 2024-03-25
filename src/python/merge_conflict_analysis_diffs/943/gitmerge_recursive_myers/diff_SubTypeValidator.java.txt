@@ -1,0 +1,61 @@
+====1
+1:6a
+2:7c
+3:7c
+  import com.fasterxml.jackson.databind.BeanDescription;
+====1
+1:69,71c
+          // [databind#1899]: more 3rd party
+          s.add("org.hibernate.jmx.StatisticsService");
+          s.add("org.apache.ibatis.datasource.jndi.JndiDataSourceFactory");
+2:69a
+3:69a
+====1
+1:85,86c
+          // [databind#2326]
+          s.add("com.mysql.cj.jdbc.admin.MiniAdmin");        
+2:83,84c
+3:83,84c
+          // [databind#2326] (2.9.9)
+          s.add("com.mysql.cj.jdbc.admin.MiniAdmin");
+====
+1:88c
+          // [databind#2334]
+2:86,92c
+  <<<<<<< HEAD
+          // [databind#2334] (2.9.9.1)
+  ||||||| 4c935660a
+          // [databind#2334]
+  =======
+          // [databind#2334]: logback-core
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:86c
+          // [databind#2334]: logback-core (2.9.9.1)
+====
+1:90a
+2:95,98c
+          // [databind#2341]: jdom/jdom2
+          s.add("org.jdom.transform.XSLTransformer");
+          s.add("org.jdom2.transform.XSLTransformer");
+  
+3:89,92c
+          // [databind#2341]: jdom/jdom2 (2.9.9.1)
+          s.add("org.jdom.transform.XSLTransformer");
+          s.add("org.jdom2.transform.XSLTransformer");
+  
+====1
+1:105,106c
+      public void validateSubType(DeserializationContext ctxt, JavaType type)
+              throws JsonMappingException
+2:113,114c
+3:107,108c
+      public void validateSubType(DeserializationContext ctxt, JavaType type,
+              BeanDescription beanDesc) throws JsonMappingException
+====1
+1:148,149c
+          throw JsonMappingException.from(ctxt,
+                  String.format("Illegal type (%s) to deserialize: prevented for security reasons", full));
+2:156,157c
+3:150,151c
+          ctxt.reportBadTypeDefinition(beanDesc,
+                  "Illegal type (%s) to deserialize: prevented for security reasons", full);

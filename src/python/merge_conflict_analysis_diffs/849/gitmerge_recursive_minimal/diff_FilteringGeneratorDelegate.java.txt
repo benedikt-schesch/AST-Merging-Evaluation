@@ -1,0 +1,33 @@
+268c268
+< <<<<<<< HEAD:src/main/java/tools/jackson/core/filter/FilteringGeneratorDelegate.java
+---
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, null, false);
+270,275d269
+< ||||||| 287ec3223:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+<             return;
+< =======
+<             _filterContext = _filterContext.createChildObjectContext(null, false);
+<             return;
+< >>>>>>> TEMP_RIGHT_BRANCH:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+310c304
+< <<<<<<< HEAD:src/main/java/tools/jackson/core/filter/FilteringGeneratorDelegate.java
+---
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, currValue, false);
+312,317d305
+< ||||||| 287ec3223:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+<             return;
+< =======
+<             _filterContext = _filterContext.createChildObjectContext(null, false);
+<             return;
+< >>>>>>> TEMP_RIGHT_BRANCH:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+352c340
+< <<<<<<< HEAD:src/main/java/tools/jackson/core/filter/FilteringGeneratorDelegate.java
+---
+>             _filterContext = _filterContext.createChildObjectContext(_itemFilter, currValue, false);
+354,359d341
+< ||||||| 287ec3223:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+<             return;
+< =======
+<             _filterContext = _filterContext.createChildObjectContext(null, false);
+<             return;
+< >>>>>>> TEMP_RIGHT_BRANCH:src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java

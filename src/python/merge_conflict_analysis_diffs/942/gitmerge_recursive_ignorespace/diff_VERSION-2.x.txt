@@ -1,0 +1,16 @@
+6a7,11
+> 2.9.9.2 (not yet released)
+> 
+> #2387: Block yet another deserialization gadget (EHCache, CVE-2019-xxxxx?)
+> #2389: Block yet another deserialization gadget (Logback, CVE-2019-xxxxx?)
+> 
+345,353d349
+< ||||||| 862fca923:release-notes/VERSION
+< #2334: Block class for CVE-2019-12384
+< #2341: Block class for CVE-2019-12814
+< =======
+< #2334: Block class for CVE-2019-12384
+< #2341: Block class for CVE-2019-12814
+< #2387: Block yet another deserialization gadget (EHCache, CVE-2019-xxxxx?)
+< #2389: Block yet another deserialization gadget (Logback, CVE-2019-xxxxx?)
+< >>>>>>> TEMP_RIGHT_BRANCH:release-notes/VERSION

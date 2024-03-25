@@ -1,0 +1,154 @@
+====1
+1:17a
+2:18c
+3:18c
+  import cn.hutool.core.collection.CollectionUtil;
+====1
+1:19a
+2:21c
+3:21c
+  import me.zhengjie.modules.security.service.UserCacheClean;
+====1
+1:42a
+2:45c
+3:45c
+  
+====1
+1:61a
+2:65c
+3:65c
+      private final UserCacheClean userCacheClean;
+====1
+1:71c
+          return roleMapper.toDto(roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder)));
+2:75c
+3:75c
+          return roleMapper.toDto(roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder)));
+====1
+1:76c
+          Page<Role> page = roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
+2:80c
+3:80c
+          Page<Role> page = roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+====1
+1:85c
+          ValidationUtil.isNull(role.getId(),"Role","id",id);
+2:89c
+3:89c
+          ValidationUtil.isNull(role.getId(), "Role", "id", id);
+====1
+1:92,93c
+          if(roleRepository.findByName(resources.getName()) != null){
+              throw new EntityExistException(Role.class,"username",resources.getName());
+2:96,97c
+3:96,97c
+          if (roleRepository.findByName(resources.getName()) != null) {
+              throw new EntityExistException(Role.class, "username", resources.getName());
+====1
+1:102c
+          ValidationUtil.isNull(role.getId(),"Role","id",resources.getId());
+2:106c
+3:106c
+          ValidationUtil.isNull(role.getId(), "Role", "id", resources.getId());
+====1
+1:106,107c
+          if(role1 != null && !role1.getId().equals(role.getId())){
+              throw new EntityExistException(Role.class,"username",resources.getName());
+2:110,111c
+3:110,111c
+          if (role1 != null && !role1.getId().equals(role.getId())) {
+              throw new EntityExistException(Role.class, "username", resources.getName());
+====1
+1:123c
+          Set<Long> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+2:126a
+3:126a
+====1
+1:126,128c
+          // 清理缓存
+          redisUtils.delByKeys("menu::user:",userIds);
+          redisUtils.del("role::id:" + resources.getId());
+2:129c
+3:129c
+          cleanCache(resources, users);
+====1
+1:131a
+2:133c
+3:133c
+  
+====1
+1:168c
+          if(user.getIsAdmin()){
+2:170c
+3:170c
+          if (user.getIsAdmin()) {
+====1
+1:185c
+              Map<String,Object> map = new LinkedHashMap<>();
+2:187c
+3:187c
+              Map<String, Object> map = new LinkedHashMap<>();
+====1
+1:195,206c
+      /**
+       * 清理缓存
+       * @param id /
+       */
+      public void delCaches(Long id){
+          List<User> users = userRepository.findByRoleId(id);
+          Set<Long> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+          redisUtils.delByKeys("data::user:",userIds);
+          redisUtils.delByKeys("menu::user:",userIds);
+          redisUtils.delByKeys("role::auth:",userIds);
+      }
+  
+2:196a
+3:196a
+====1
+1:209c
+          if(userRepository.countByRoles(ids) > 0){
+2:199c
+3:199c
+          if (userRepository.countByRoles(ids) > 0) {
+====1
+1:217a
+2:208,245c
+3:208,245c
+  
+      /**
+       * 清理缓存
+       *
+       * @param id /
+       */
+      public void delCaches(Long id) {
+          List<User> users = userRepository.findByRoleId(id);
+          if (CollectionUtil.isNotEmpty(users)) {
+              users.stream().forEach(item -> {
+                  userCacheClean.cleanUserCache(item.getUsername());
+              });
+              Set<Long> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+              redisUtils.delByKeys(CacheKey.DATE_USER, userIds);
+              redisUtils.delByKeys(CacheKey.MENU_USER, userIds);
+              redisUtils.delByKeys(CacheKey.ROLE_AUTH, userIds);
+          }
+  
+      }
+  
+      /**
+       * 清理缓存
+       *
+       * @param resources
+       * @param users
+       */
+      private void cleanCache(Role resources, List<User> users) {
+          // 清理缓存
+          if (CollectionUtil.isNotEmpty(users)) {
+              users.stream().forEach(item -> {
+                  userCacheClean.cleanUserCache(item.getUsername());
+              });
+              Set<Long> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+              redisUtils.delByKeys(CacheKey.MENU_USER, userIds);
+              redisUtils.del(CacheKey.ROLE_ID + resources.getId());
+          }
+      }
+  

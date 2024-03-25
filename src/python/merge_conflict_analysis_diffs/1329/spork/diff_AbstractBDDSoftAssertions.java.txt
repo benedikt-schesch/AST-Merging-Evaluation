@@ -1,0 +1,400 @@
+====1
+1:15c
+  import static org.assertj.core.api.Assertions.catchThrowable;
+2:15c
+3:15c
+  import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+====1
+1:22a
+2:23,28c
+3:23,28c
+  import java.time.LocalDate;
+  import java.time.LocalDateTime;
+  import java.time.LocalTime;
+  import java.time.OffsetDateTime;
+  import java.time.OffsetTime;
+  import java.time.ZonedDateTime;
+====1
+1:26a
+2:33,37c
+3:33,37c
+  import java.util.Optional;
+  import java.util.OptionalDouble;
+  import java.util.OptionalInt;
+  import java.util.OptionalLong;
+  import java.util.concurrent.CompletableFuture;
+====1
+1:33c
+    
+2:44c
+3:44c
+  
+====1
+1:41c
+  	return proxy(BigDecimalAssert.class, BigDecimal.class, actual);
+2:52c
+3:52c
+      return proxy(BigDecimalAssert.class, BigDecimal.class, actual);
+====1
+1:51c
+  	return proxy(BooleanAssert.class, Boolean.class, actual);
+2:62c
+3:62c
+      return proxy(BooleanAssert.class, Boolean.class, actual);
+====1
+1:61c
+  	return proxy(BooleanAssert.class, Boolean.class, actual);
+2:72c
+3:72c
+      return proxy(BooleanAssert.class, Boolean.class, actual);
+====1
+1:71c
+  	return proxy(BooleanArrayAssert.class, boolean[].class, actual);
+2:82c
+3:82c
+      return proxy(BooleanArrayAssert.class, boolean[].class, actual);
+====1
+1:81c
+  	return proxy(ByteAssert.class, Byte.class, actual);
+2:92c
+3:92c
+      return proxy(ByteAssert.class, Byte.class, actual);
+====1
+1:91c
+  	return proxy(ByteAssert.class, Byte.class, actual);
+2:102c
+3:102c
+      return proxy(ByteAssert.class, Byte.class, actual);
+====1
+1:101c
+  	return proxy(ByteArrayAssert.class, byte[].class, actual);
+2:112c
+3:112c
+      return proxy(ByteArrayAssert.class, byte[].class, actual);
+====1
+1:111c
+  	return proxy(CharacterAssert.class, Character.class, actual);
+2:122c
+3:122c
+      return proxy(CharacterAssert.class, Character.class, actual);
+====1
+1:121c
+  	return proxy(CharArrayAssert.class, char[].class, actual);
+2:132c
+3:132c
+      return proxy(CharArrayAssert.class, char[].class, actual);
+====1
+1:131c
+  	return proxy(CharacterAssert.class, Character.class, actual);
+2:142c
+3:142c
+      return proxy(CharacterAssert.class, Character.class, actual);
+====1
+1:143c
+  	return proxy(SoftAssertionClassAssert.class, Class.class, actual);
+2:154c
+3:154c
+      return proxy(SoftAssertionClassAssert.class, Class.class, actual);
+====3
+1:155c
+2:166c
+      return proxy(AbstractComparableAssert.class, Comparable.class, actual);
+3:166c
+      return proxy(GenericComparableAssert.class, Comparable.class, actual);
+====1
+1:166c
+  	return proxy(IterableAssert.class, Iterable.class, actual);
+2:177c
+3:177c
+      return proxy(IterableAssert.class, Iterable.class, actual);
+====1
+1:179c
+  	return proxy(IterableAssert.class, Iterator.class, actual);
+2:190c
+3:190c
+      return proxy(IterableAssert.class, Iterator.class, actual);
+====1
+1:189c
+  	return proxy(DoubleAssert.class, Double.class, actual);
+2:200c
+3:200c
+      return proxy(DoubleAssert.class, Double.class, actual);
+====1
+1:199c
+  	return proxy(DoubleAssert.class, Double.class, actual);
+2:210c
+3:210c
+      return proxy(DoubleAssert.class, Double.class, actual);
+====1
+1:209c
+  	return proxy(DoubleArrayAssert.class, double[].class, actual);
+2:220c
+3:220c
+      return proxy(DoubleArrayAssert.class, double[].class, actual);
+====1
+1:219c
+  	return proxy(FileAssert.class, File.class, actual);
+2:230c
+3:230c
+      return proxy(FileAssert.class, File.class, actual);
+====1
+1:239c
+  	return proxy(InputStreamAssert.class, InputStream.class, actual);
+2:250c
+3:250c
+      return proxy(InputStreamAssert.class, InputStream.class, actual);
+====1
+1:249c
+  	return proxy(FloatAssert.class, Float.class, actual);
+2:260c
+3:260c
+      return proxy(FloatAssert.class, Float.class, actual);
+====1
+1:259c
+  	return proxy(FloatAssert.class, Float.class, actual);
+2:270c
+3:270c
+      return proxy(FloatAssert.class, Float.class, actual);
+====1
+1:269c
+  	return proxy(FloatArrayAssert.class, float[].class, actual);
+2:280c
+3:280c
+      return proxy(FloatArrayAssert.class, float[].class, actual);
+====1
+1:279c
+  	return proxy(IntegerAssert.class, Integer.class, actual);
+2:290c
+3:290c
+      return proxy(IntegerAssert.class, Integer.class, actual);
+====1
+1:289c
+  	return proxy(IntArrayAssert.class, int[].class, actual);
+2:300c
+3:300c
+      return proxy(IntArrayAssert.class, int[].class, actual);
+====1
+1:299c
+  	return proxy(IntegerAssert.class, Integer.class, actual);
+2:310c
+3:310c
+      return proxy(IntegerAssert.class, Integer.class, actual);
+====1
+1:310c
+  	return proxy(ListAssert.class, List.class, actual);
+2:321c
+3:321c
+      return proxy(ListAssert.class, List.class, actual);
+====1
+1:320c
+  	return proxy(LongAssert.class, Long.class, actual);
+2:331c
+3:331c
+      return proxy(LongAssert.class, Long.class, actual);
+====1
+1:330c
+  	return proxy(LongAssert.class, Long.class, actual);
+2:341c
+3:341c
+      return proxy(LongAssert.class, Long.class, actual);
+====1
+1:340c
+  	return proxy(LongArrayAssert.class, long[].class, actual);
+2:351c
+3:351c
+      return proxy(LongArrayAssert.class, long[].class, actual);
+====1
+1:351c
+  	return proxy(ObjectAssert.class, Object.class, actual);
+2:362c
+3:362c
+      return proxy(ObjectAssert.class, Object.class, actual);
+====1
+1:362c
+  	return proxy(ObjectArrayAssert.class, Object[].class, actual);
+2:373c
+3:373c
+      return proxy(ObjectArrayAssert.class, Object[].class, actual);
+====1
+1:375c
+  	return proxy(SoftAssertionMapAssert.class, Map.class, actual);
+2:386c
+3:386c
+      return proxy(SoftAssertionMapAssert.class, Map.class, actual);
+====1
+1:385c
+  	return proxy(ShortAssert.class, Short.class, actual);
+2:396c
+3:396c
+      return proxy(ShortAssert.class, Short.class, actual);
+====1
+1:395c
+  	return proxy(ShortAssert.class, Short.class, actual);
+2:406c
+3:406c
+      return proxy(ShortAssert.class, Short.class, actual);
+====1
+1:405c
+  	return proxy(ShortArrayAssert.class, short[].class, actual);
+2:416c
+3:416c
+      return proxy(ShortArrayAssert.class, short[].class, actual);
+====1
+1:415c
+  	return proxy(CharSequenceAssert.class, CharSequence.class, actual);
+2:426c
+3:426c
+      return proxy(CharSequenceAssert.class, CharSequence.class, actual);
+====1
+1:425c
+  	return proxy(StringAssert.class, String.class, actual);
+2:436c
+3:436c
+      return proxy(StringAssert.class, String.class, actual);
+====1
+1:435c
+  	return proxy(DateAssert.class, Date.class, actual);
+2:446c
+3:446c
+      return proxy(DateAssert.class, Date.class, actual);
+====1
+1:445c
+  	return proxy(ThrowableAssert.class, Throwable.class, actual);
+2:456c
+3:456c
+      return proxy(ThrowableAssert.class, Throwable.class, actual);
+====1
+1:456c
+     *    softly.thenThrownBy(() -> { throw new Exception("boom!") }).isInstanceOf(Exception.class)
+2:467c
+3:467c
+     *    softly.thenThrownBy(() -> { throw new Exception("boom!"); }).isInstanceOf(Exception.class)
+====1
+1:478c
+    
+2:489,585c
+3:489,585c
+  
+    /**
+     * Create assertion for {@link java.util.Optional}.
+     *
+     * @param actual the actual value.
+     * @param <T> the type of the value contained in the {@link java.util.Optional}.
+     *
+     * @return the created assertion object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> OptionalAssert<T> then(Optional<T> actual) {
+      return proxy(OptionalAssert.class, Optional.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalDouble}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalDoubleAssert then(OptionalDouble actual) {
+      return proxy(OptionalDoubleAssert.class, OptionalDouble.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalInt}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalIntAssert then(OptionalInt actual) {
+      return proxy(OptionalIntAssert.class, OptionalInt.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.OptionalLong}.
+     *
+     * @param actual the actual value.
+     *
+     * @return the created assertion object.
+     */
+    public OptionalLongAssert then(OptionalLong actual) {
+      return proxy(OptionalLongAssert.class, OptionalLong.class, actual);
+    }
+  
+    /**
+    * Creates a new instance of <code>{@link LocalDateAssert}</code>.
+    *
+    * @param actual the actual value.
+    * @return the created assertion object.
+    */
+    public LocalDateAssert then(LocalDate actual) {
+      return proxy(LocalDateAssert.class, LocalDate.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link LocalDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public LocalDateTimeAssert then(LocalDateTime actual) {
+      return proxy(LocalDateTimeAssert.class, LocalDateTime.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link ZonedDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public ZonedDateTimeAssert then(ZonedDateTime actual) {
+      return proxy(ZonedDateTimeAssert.class, ZonedDateTime.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link LocalTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public LocalTimeAssert then(LocalTime actual) {
+      return proxy(LocalTimeAssert.class, LocalTime.class, actual);
+    }
+  
+    /**
+     * Creates a new instance of <code>{@link OffsetTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public OffsetTimeAssert then(OffsetTime actual) {
+      return proxy(OffsetTimeAssert.class, OffsetTime.class, actual);
+    }
+  
+====1
+1:497a
+2:605,627c
+3:605,627c
+  
+    /**
+     * Creates a new instance of <code>{@link OffsetDateTimeAssert}</code>.
+     *
+     * @param actual the actual value.
+     * @return the created assertion object.
+     */
+    public OffsetDateTimeAssert then(OffsetDateTime actual) {
+      return proxy(OffsetDateTimeAssert.class, OffsetDateTime.class, actual);
+    }
+  
+    /**
+     * Create assertion for {@link java.util.concurrent.CompletableFuture}.
+     *
+     * @param future the actual value.
+     * @param <T> the type of the value contained in the {@link java.util.concurrent.CompletableFuture}.
+     *
+     * @return the created assertion object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> CompletableFutureAssert<T> then(CompletableFuture<T> actual) {
+      return proxy(CompletableFutureAssert.class, CompletableFuture.class, actual);
+    }

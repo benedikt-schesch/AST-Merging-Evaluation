@@ -1,0 +1,36 @@
+====3
+1:22a
+2:22a
+3:23c
+      private final Aviation aviation;
+====1
+1:87a
+2:88c
+3:89c
+      private final PrincessBride princessBride;
+====3
+1:108a
+2:109a
+3:111c
+          this.aviation = new Aviation(this);
+====1
+1:173a
+2:175c
+3:177c
+          this.princessBride = new PrincessBride(this);
+====3
+1:313a
+2:315a
+3:318,321c
+      public Aviation aviation() {
+          return aviation;
+      }
+  
+====1
+1:565a
+2:568,571c
+3:574,577c
+      public PrincessBride princessBride() {
+          return princessBride;
+      }
+  

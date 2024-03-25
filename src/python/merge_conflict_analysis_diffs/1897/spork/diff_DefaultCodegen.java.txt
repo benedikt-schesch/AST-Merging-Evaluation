@@ -1,0 +1,48 @@
+====3
+1:104a
+2:104a
+3:105c
+      protected boolean removeOperationIdPrefix;
+====3
+1:162a
+2:162a
+3:164,168c
+  
+          if (additionalProperties.containsKey(CodegenConstants.REMOVE_OPERATION_ID_PREFIX)) {
+              this.setSortParamsByRequiredFlag(Boolean.valueOf(additionalProperties
+                      .get(CodegenConstants.REMOVE_OPERATION_ID_PREFIX).toString()));
+          }
+====3
+1:852c
+2:852c
+          //name formatting options
+3:858c
+          // name formatting options
+====3
+1:1984a
+2:1984a
+3:1991,1997c
+          // remove prefix in operationId
+          if (removeOperationIdPrefix) {
+              int offset = operationId.indexOf('_');
+              if (offset > -1) {
+                  operationId = operationId.substring(offset+1);
+              }
+          }
+====1
+1:1991c
+          op.tags = operation.getTags();
+2:1990a
+3:2003a
+====3
+1:3197a
+2:3196a
+3:3210,3217c
+      public boolean isRemoveOperationIdPrefix() {
+          return removeOperationIdPrefix;
+      }
+  
+      public void setRemoveOperationIdPrefix(boolean removeOperationIdPrefix) {
+          this.removeOperationIdPrefix = removeOperationIdPrefix;
+      }
+  

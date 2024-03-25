@@ -1,0 +1,901 @@
+====1
+1:18a
+2:19c
+3:19c
+  import com.google.gson.Gson.FutureTypeAdapter;
+====1
+1:19a
+2:21c
+3:21c
+  import com.google.gson.reflect.TypeToken;
+====1
+1:29a
+2:32c
+3:32c
+  import java.util.Collections;
+====
+1:30a
+2:34,41c
+  <<<<<<< HEAD
+  import java.util.concurrent.CountDownLatch;
+  import java.util.concurrent.atomic.AtomicReference;
+  ||||||| 47dea2ee
+  =======
+  import java.util.concurrent.atomic.AtomicInteger;
+  import java.util.concurrent.atomic.AtomicReference;
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:34,36c
+  import java.util.concurrent.CountDownLatch;
+  import java.util.concurrent.atomic.AtomicInteger;
+  import java.util.concurrent.atomic.AtomicReference;
+====1
+1:59c
+          CUSTOM_OBJECT_TO_NUMBER_STRATEGY, CUSTOM_NUMBER_TO_NUMBER_STRATEGY);
+2:70,71c
+3:65,66c
+          CUSTOM_OBJECT_TO_NUMBER_STRATEGY, CUSTOM_NUMBER_TO_NUMBER_STRATEGY,
+          Collections.<ReflectionAccessFilter>emptyList());
+====1
+1:73c
+          CUSTOM_OBJECT_TO_NUMBER_STRATEGY, CUSTOM_NUMBER_TO_NUMBER_STRATEGY);
+2:85,86c
+3:80,81c
+          CUSTOM_OBJECT_TO_NUMBER_STRATEGY, CUSTOM_NUMBER_TO_NUMBER_STRATEGY,
+          Collections.<ReflectionAccessFilter>emptyList());
+====
+1:88a
+2:102,164c
+    public void testGetAdapter_Null() {
+      Gson gson = new Gson();
+      try {
+        gson.getAdapter((TypeToken<?>) null);
+        fail();
+      } catch (NullPointerException e) {
+        assertEquals("type must not be null", e.getMessage());
+      }
+    }
+  
+    public void testGetAdapter_Concurrency() {
+      class DummyAdapter<T> extends TypeAdapter<T> {
+        @Override public void write(JsonWriter out, T value) throws IOException {
+          throw new AssertionError("not needed for test");
+        }
+  
+        @Override public T read(JsonReader in) throws IOException {
+          throw new AssertionError("not needed for test");
+        }
+      }
+  
+      final AtomicInteger adapterInstancesCreated = new AtomicInteger(0);
+      final AtomicReference<TypeAdapter<?>> threadAdapter = new AtomicReference<>();
+      final Class<?> requestedType = Number.class;
+  
+      Gson gson = new GsonBuilder()
+          .registerTypeAdapterFactory(new TypeAdapterFactory() {
+            private volatile boolean isFirstCall = true;
+  
+            @Override public <T> TypeAdapter<T> create(final Gson gson, TypeToken<T> type) {
+              if (isFirstCall) {
+                isFirstCall = false;
+  
+                // Create a separate thread which requests an adapter for the same type
+                // This will cause this factory to return a different adapter instance than
+                // the one it is currently creating
+                Thread thread = new Thread() {
+                  @Override public void run() {
+                    threadAdapter.set(gson.getAdapter(requestedType));
+                  }
+                };
+                thread.start();
+                try {
+                  thread.join();
+                } catch (InterruptedException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+  
+              // Create a new dummy adapter instance
+              adapterInstancesCreated.incrementAndGet();
+              return new DummyAdapter<>();
+            }
+          })
+          .create();
+  
+      TypeAdapter<?> adapter = gson.getAdapter(requestedType);
+      assertTrue(adapter instanceof DummyAdapter);
+      assertEquals(2, adapterInstancesCreated.get());
+      // Should be the same adapter instance the concurrent thread received
+      assertSame(threadAdapter.get(), adapter);
+    }
+  
+3:97,149c
+    public void testGetAdapter_Null() {
+      Gson gson = new Gson();
+      try {
+        gson.getAdapter((TypeToken<?>) null);
+        fail();
+      } catch (NullPointerException e) {
+        assertEquals("type must not be null", e.getMessage());
+      }
+    }
+  
+    public void testGetAdapter_Concurrency() {
+      final AtomicInteger adapterInstancesCreated = new AtomicInteger(0);
+      final AtomicReference<TypeAdapter<?>> threadAdapter = new AtomicReference<>();
+      final Class<?> requestedType = Number.class;
+  
+      Gson gson = new GsonBuilder()
+          .registerTypeAdapterFactory(new TypeAdapterFactory() {
+            private volatile boolean isFirstCall = true;
+  
+            @Override public <T> TypeAdapter<T> create(final Gson gson, TypeToken<T> type) {
+              if (isFirstCall) {
+                isFirstCall = false;
+  
+                // Create a separate thread which requests an adapter for the same type
+                // This will cause this factory to return a different adapter instance than
+                // the one it is currently creating
+                Thread thread = new Thread() {
+                  @Override public void run() {
+                    threadAdapter.set(gson.getAdapter(requestedType));
+                  }
+                };
+                thread.start();
+                try {
+                  thread.join();
+                } catch (InterruptedException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+  
+              // Create a new dummy adapter instance
+              adapterInstancesCreated.incrementAndGet();
+              return new DummyAdapter<>();
+            }
+          })
+          .create();
+  
+      TypeAdapter<?> adapter = gson.getAdapter(requestedType);
+      assertTrue(adapter instanceof DummyAdapter);
+      assertEquals(2, adapterInstancesCreated.get());
+      // Should be the same adapter instance the concurrent thread received
+      assertSame(threadAdapter.get(), adapter);
+    }
+  
+====
+1:154a
+2:231,597c
+  <<<<<<< HEAD
+  
+    /**
+     * Verifies that {@link Gson#getAdapter(TypeToken)} does not put broken adapters
+     * into {@code typeTokenCache} when caller of nested {@code getAdapter} discards
+     * exception, e.g.:
+     *
+     * Field dependencies:
+     * ClassA
+     *   -> ClassB1
+     *     -> ClassC -> ClassB1
+     *     -> ClassX
+     *   | ClassB2
+     *
+     * Let's assume the factory for ClassX throws an exception.
+     * 1. Factory for ClassA finds field of type ClassB1
+     * 2. Factory for ClassB1 finds field of type ClassC
+     * 3. Factory for ClassC find fields of type ClassB1 => stores future adapter
+     * 4. Factory for ClassB1 finds field of type ClassX => ClassX factory throws exception
+     * 5. Factory for ClassA ignores exception from getAdapter(ClassB1) and tries as alternative getting
+     *    adapter for ClassB2
+     *
+     * Then Gson must not cache adapter for ClassC because it refers to broken adapter
+     * for ClassB1 (since ClassX threw exception).
+     */
+    public void testGetAdapterDiscardedException() throws Exception {
+      final TypeAdapter<?> alternativeAdapter = new DummyAdapter<>();
+      final AtomicReference<TypeAdapter<?>> leakedAdapter = new AtomicReference<>();
+  
+      Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(new TypeAdapterFactory() {
+          @Override
+          public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            if (type.getRawType() == CustomClassA.class) {
+              // Factory will throw for CustomClassB1; discard exception
+              try {
+                gson.getAdapter(CustomClassB1.class);
+                fail("Expected exception");
+              } catch (Exception e) {
+                assertEquals("test exception", e.getMessage());
+              }
+  
+              @SuppressWarnings("unchecked")
+              TypeAdapter<T> adapter = (TypeAdapter<T>) alternativeAdapter;
+              return adapter;
+            }
+            else if (type.getRawType() == CustomClassB1.class) {
+              gson.getAdapter(CustomClassC.class);
+              // Will throw exception
+              gson.getAdapter(CustomClassX.class);
+  
+              throw new AssertionError("Factory should have thrown exception for CustomClassX");
+            }
+            else if (type.getRawType() == CustomClassC.class) {
+              // Will return future adapter due to cyclic dependency B1 -> C -> B1
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassB1.class);
+              assertTrue(adapter instanceof FutureTypeAdapter);
+              // Pretend this factory somehow leaks this FutureTypeAdapter
+              leakedAdapter.set(adapter);
+              return new DummyAdapter<T>();
+            }
+            else if (type.getRawType() == CustomClassX.class) {
+              // Always throw exception
+              throw new RuntimeException("test exception");
+            }
+  
+            throw new AssertionError("Requested adapter for unexpected type: " + type);
+          }
+        })
+        .create();
+  
+      assertSame(alternativeAdapter, gson.getAdapter(CustomClassA.class));
+      // Gson must not have cached broken adapters for CustomClassB1 and CustomClassC
+      try {
+        gson.getAdapter(CustomClassB1.class);
+        fail("Expected exception");
+      } catch (Exception e) {
+        assertEquals("test exception", e.getMessage());
+      }
+      try {
+        gson.getAdapter(CustomClassC.class);
+        fail("Expected exception");
+      } catch (Exception e) {
+        assertEquals("test exception", e.getMessage());
+      }
+  
+      // Leaked adapter should have been marked as "broken"
+      try {
+        leakedAdapter.get().fromJson("{}");
+        fail("Expected exception");
+      } catch (IllegalStateException e) {
+        assertEquals("Broken adapter has been leaked by TypeAdapterFactory", e.getMessage());
+      }
+    }
+  
+    /**
+     * Verifies that two threads calling {@link Gson#getAdapter(TypeToken)} do not see the
+     * same unresolved {@link FutureTypeAdapter} instance, since that would not be thread-safe.
+     *
+     * This test constructs the cyclic dependency CustomClassA -> CustomClassB1 -> CustomClassA
+     * and lets one thread wait after the adapter for CustomClassB1 has been obtained (which still
+     * contains the nested unresolved FutureTypeAdapter for CustomClassA).
+     */
+    public void testGetAdapterFutureAdapterConcurrency() throws Exception {
+      /**
+       * Adapter which wraps another adapter. Can be imagined as a simplified version of the
+       * ReflectiveTypeAdapterFactory$Adapter.
+       */
+      class WrappingAdapter<T> extends TypeAdapter<T> {
+        final TypeAdapter<?> wrapped;
+        int callCount = 0;
+  
+        WrappingAdapter(TypeAdapter<?> wrapped) {
+          this.wrapped = wrapped;
+        }
+  
+        @Override public void write(JsonWriter out, T value) throws IOException {
+          // Due to how this test is set up there is infinite recursion, therefore
+          // need to track how deeply nested this call is
+          if (callCount == 0) {
+            callCount++;
+            out.beginArray();
+            wrapped.write(out, null);
+            out.endArray();
+          } else {
+            out.value("wrapped-nested");
+          }
+        }
+  
+        @Override public T read(JsonReader in) throws IOException {
+          throw new AssertionError("not needed for this test");
+        }
+      }
+  
+      final CountDownLatch isThreadWaiting = new CountDownLatch(1);
+      final CountDownLatch canThreadProceed = new CountDownLatch(1);
+  
+      final Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(new TypeAdapterFactory() {
+          // volatile instead of AtomicBoolean is safe here because CountDownLatch prevents
+          // "true" concurrency
+          volatile boolean isFirstCaller = true;
+  
+          @Override
+          public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            Class<?> raw = type.getRawType();
+  
+            if (raw == CustomClassA.class) {
+              // Retrieves a WrappingAdapter containing a nested FutureAdapter for CustomClassA
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassB1.class);
+  
+              // Let thread wait so the FutureAdapter for CustomClassA nested in the adapter
+              // for CustomClassB1 has not been resolved yet
+              if (isFirstCaller) {
+                isFirstCaller = false;
+                isThreadWaiting.countDown();
+  
+                try {
+                  canThreadProceed.await();
+                } catch (InterruptedException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+  
+              return new WrappingAdapter<>(adapter);
+            }
+            else if (raw == CustomClassB1.class) {
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassA.class);
+              assertTrue(adapter instanceof FutureTypeAdapter);
+              return new WrappingAdapter<>(adapter);
+            }
+            else {
+              throw new AssertionError("Adapter for unexpected type requested: " + raw);
+            }
+          }
+        })
+        .create();
+  
+      final AtomicReference<TypeAdapter<?>> otherThreadAdapter = new AtomicReference<>();
+      Thread thread = new Thread() {
+        @Override
+        public void run() {
+          otherThreadAdapter.set(gson.getAdapter(CustomClassA.class));
+        }
+      };
+      thread.start();
+  
+      // Wait until other thread has obtained FutureAdapter
+      isThreadWaiting.await();
+      TypeAdapter<?> adapter = gson.getAdapter(CustomClassA.class);
+      // Should not fail due to referring to unresolved FutureTypeAdapter
+      assertEquals("[[\"wrapped-nested\"]]", adapter.toJson(null));
+  
+      // Let other thread proceed and have it resolve its FutureTypeAdapter
+      canThreadProceed.countDown();
+      thread.join();
+      assertEquals("[[\"wrapped-nested\"]]", otherThreadAdapter.get().toJson(null));
+    }
+  
+    private static class DummyAdapter<T> extends TypeAdapter<T> {
+      @Override public void write(JsonWriter out, T value) throws IOException {
+        throw new AssertionError("not needed for this test");
+      }
+  
+      @Override public T read(JsonReader in) throws IOException {
+        throw new AssertionError("not needed for this test");
+      }
+    }
+  
+    private static class CustomClassA {
+    }
+    private static class CustomClassB1 {
+    }
+    private static class CustomClassC {
+    }
+    private static class CustomClassX {
+    }
+  ||||||| 47dea2ee
+  =======
+  
+    /**
+     * Modifying a GsonBuilder obtained from {@link Gson#newBuilder()} of a
+     * {@code new Gson()} should not affect the Gson instance it came from.
+     */
+    public void testDefaultGsonNewBuilderModification() {
+      Gson gson = new Gson();
+      GsonBuilder gsonBuilder = gson.newBuilder();
+  
+      // Modifications of `gsonBuilder` should not affect `gson` object
+      gsonBuilder.registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+        @Override public CustomClass1 read(JsonReader in) throws IOException {
+          throw new UnsupportedOperationException();
+        }
+  
+        @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+          out.value("custom-adapter");
+        }
+      });
+      gsonBuilder.registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+        @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+          return new JsonPrimitive("custom-hierarchy-adapter");
+        }
+      });
+      gsonBuilder.registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+        @Override public CustomClass3 createInstance(Type type) {
+          return new CustomClass3("custom-instance");
+        }
+      });
+  
+      assertDefaultGson(gson);
+      // New GsonBuilder created from `gson` should not have been affected by changes either
+      assertDefaultGson(gson.newBuilder().create());
+  
+      // But new Gson instance from `gsonBuilder` should use custom adapters
+      assertCustomGson(gsonBuilder.create());
+    }
+  
+    private static void assertDefaultGson(Gson gson) {
+      // Should use default reflective adapter
+      String json1 = gson.toJson(new CustomClass1());
+      assertEquals("{}", json1);
+  
+      // Should use default reflective adapter
+      String json2 = gson.toJson(new CustomClass2());
+      assertEquals("{}", json2);
+  
+      // Should use default instance creator
+      CustomClass3 customClass3 = gson.fromJson("{}", CustomClass3.class);
+      assertEquals(CustomClass3.NO_ARG_CONSTRUCTOR_VALUE, customClass3.s);
+    }
+  
+    /**
+     * Modifying a GsonBuilder obtained from {@link Gson#newBuilder()} of a custom
+     * Gson instance (created using a GsonBuilder) should not affect the Gson instance
+     * it came from.
+     */
+    public void testNewBuilderModification() {
+      Gson gson = new GsonBuilder()
+        .registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+          @Override public CustomClass1 read(JsonReader in) throws IOException {
+            throw new UnsupportedOperationException();
+          }
+  
+          @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+            out.value("custom-adapter");
+          }
+        })
+        .registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+          @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive("custom-hierarchy-adapter");
+          }
+        })
+        .registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+          @Override public CustomClass3 createInstance(Type type) {
+            return new CustomClass3("custom-instance");
+          }
+        })
+        .create();
+  
+      assertCustomGson(gson);
+  
+      // Modify `gson.newBuilder()`
+      GsonBuilder gsonBuilder = gson.newBuilder();
+      gsonBuilder.registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+        @Override public CustomClass1 read(JsonReader in) throws IOException {
+          throw new UnsupportedOperationException();
+        }
+  
+        @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+          out.value("overwritten custom-adapter");
+        }
+      });
+      gsonBuilder.registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+        @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+          return new JsonPrimitive("overwritten custom-hierarchy-adapter");
+        }
+      });
+      gsonBuilder.registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+        @Override public CustomClass3 createInstance(Type type) {
+          return new CustomClass3("overwritten custom-instance");
+        }
+      });
+  
+      // `gson` object should not have been affected by changes to new GsonBuilder
+      assertCustomGson(gson);
+      // New GsonBuilder based on `gson` should not have been affected either
+      assertCustomGson(gson.newBuilder().create());
+  
+      // But new Gson instance from `gsonBuilder` should be affected by changes
+      Gson otherGson = gsonBuilder.create();
+      String json1 = otherGson.toJson(new CustomClass1());
+      assertEquals("\"overwritten custom-adapter\"", json1);
+  
+      String json2 = otherGson.toJson(new CustomClass2());
+      assertEquals("\"overwritten custom-hierarchy-adapter\"", json2);
+  
+      CustomClass3 customClass3 = otherGson.fromJson("{}", CustomClass3.class);
+      assertEquals("overwritten custom-instance", customClass3.s);
+    }
+  
+    private static void assertCustomGson(Gson gson) {
+      String json1 = gson.toJson(new CustomClass1());
+      assertEquals("\"custom-adapter\"", json1);
+  
+      String json2 = gson.toJson(new CustomClass2());
+      assertEquals("\"custom-hierarchy-adapter\"", json2);
+  
+      CustomClass3 customClass3 = gson.fromJson("{}", CustomClass3.class);
+      assertEquals("custom-instance", customClass3.s);
+    }
+  
+    static class CustomClass1 { }
+    static class CustomClass2 { }
+    static class CustomClass3 {
+      static final String NO_ARG_CONSTRUCTOR_VALUE = "default instance";
+  
+      final String s;
+  
+      public CustomClass3(String s) {
+        this.s = s;
+      }
+  
+      public CustomClass3() {
+        this(NO_ARG_CONSTRUCTOR_VALUE);
+      }
+    }
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:216,581c
+  
+    /**
+     * Modifying a GsonBuilder obtained from {@link Gson#newBuilder()} of a
+     * {@code new Gson()} should not affect the Gson instance it came from.
+     */
+    public void testDefaultGsonNewBuilderModification() {
+      Gson gson = new Gson();
+      GsonBuilder gsonBuilder = gson.newBuilder();
+  
+      // Modifications of `gsonBuilder` should not affect `gson` object
+      gsonBuilder.registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+        @Override public CustomClass1 read(JsonReader in) throws IOException {
+          throw new UnsupportedOperationException();
+        }
+  
+        @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+          out.value("custom-adapter");
+        }
+      });
+      gsonBuilder.registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+        @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+          return new JsonPrimitive("custom-hierarchy-adapter");
+        }
+      });
+      gsonBuilder.registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+        @Override public CustomClass3 createInstance(Type type) {
+          return new CustomClass3("custom-instance");
+        }
+      });
+  
+      assertDefaultGson(gson);
+      // New GsonBuilder created from `gson` should not have been affected by changes either
+      assertDefaultGson(gson.newBuilder().create());
+  
+      // But new Gson instance from `gsonBuilder` should use custom adapters
+      assertCustomGson(gsonBuilder.create());
+    }
+  
+    private static void assertDefaultGson(Gson gson) {
+      // Should use default reflective adapter
+      String json1 = gson.toJson(new CustomClass1());
+      assertEquals("{}", json1);
+  
+      // Should use default reflective adapter
+      String json2 = gson.toJson(new CustomClass2());
+      assertEquals("{}", json2);
+  
+      // Should use default instance creator
+      CustomClass3 customClass3 = gson.fromJson("{}", CustomClass3.class);
+      assertEquals(CustomClass3.NO_ARG_CONSTRUCTOR_VALUE, customClass3.s);
+    }
+  
+    /**
+     * Modifying a GsonBuilder obtained from {@link Gson#newBuilder()} of a custom
+     * Gson instance (created using a GsonBuilder) should not affect the Gson instance
+     * it came from.
+     */
+    public void testNewBuilderModification() {
+      Gson gson = new GsonBuilder()
+        .registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+          @Override public CustomClass1 read(JsonReader in) throws IOException {
+            throw new UnsupportedOperationException();
+          }
+  
+          @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+            out.value("custom-adapter");
+          }
+        })
+        .registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+          @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive("custom-hierarchy-adapter");
+          }
+        })
+        .registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+          @Override public CustomClass3 createInstance(Type type) {
+            return new CustomClass3("custom-instance");
+          }
+        })
+        .create();
+  
+      assertCustomGson(gson);
+  
+      // Modify `gson.newBuilder()`
+      GsonBuilder gsonBuilder = gson.newBuilder();
+      gsonBuilder.registerTypeAdapter(CustomClass1.class, new TypeAdapter<CustomClass1>() {
+        @Override public CustomClass1 read(JsonReader in) throws IOException {
+          throw new UnsupportedOperationException();
+        }
+  
+        @Override public void write(JsonWriter out, CustomClass1 value) throws IOException {
+          out.value("overwritten custom-adapter");
+        }
+      });
+      gsonBuilder.registerTypeHierarchyAdapter(CustomClass2.class, new JsonSerializer<CustomClass2>() {
+        @Override public JsonElement serialize(CustomClass2 src, Type typeOfSrc, JsonSerializationContext context) {
+          return new JsonPrimitive("overwritten custom-hierarchy-adapter");
+        }
+      });
+      gsonBuilder.registerTypeAdapter(CustomClass3.class, new InstanceCreator<CustomClass3>() {
+        @Override public CustomClass3 createInstance(Type type) {
+          return new CustomClass3("overwritten custom-instance");
+        }
+      });
+  
+      // `gson` object should not have been affected by changes to new GsonBuilder
+      assertCustomGson(gson);
+      // New GsonBuilder based on `gson` should not have been affected either
+      assertCustomGson(gson.newBuilder().create());
+  
+      // But new Gson instance from `gsonBuilder` should be affected by changes
+      Gson otherGson = gsonBuilder.create();
+      String json1 = otherGson.toJson(new CustomClass1());
+      assertEquals("\"overwritten custom-adapter\"", json1);
+  
+      String json2 = otherGson.toJson(new CustomClass2());
+      assertEquals("\"overwritten custom-hierarchy-adapter\"", json2);
+  
+      CustomClass3 customClass3 = otherGson.fromJson("{}", CustomClass3.class);
+      assertEquals("overwritten custom-instance", customClass3.s);
+    }
+  
+    private static void assertCustomGson(Gson gson) {
+      String json1 = gson.toJson(new CustomClass1());
+      assertEquals("\"custom-adapter\"", json1);
+  
+      String json2 = gson.toJson(new CustomClass2());
+      assertEquals("\"custom-hierarchy-adapter\"", json2);
+  
+      CustomClass3 customClass3 = gson.fromJson("{}", CustomClass3.class);
+      assertEquals("custom-instance", customClass3.s);
+    }
+  
+    static class CustomClass1 { }
+    static class CustomClass2 { }
+    static class CustomClass3 {
+      static final String NO_ARG_CONSTRUCTOR_VALUE = "default instance";
+  
+      final String s;
+  
+      public CustomClass3(String s) {
+        this.s = s;
+      }
+  
+      public CustomClass3() {
+        this(NO_ARG_CONSTRUCTOR_VALUE);
+      }
+    }
+  
+    /**
+     * Verifies that {@link Gson#getAdapter(TypeToken)} does not put broken adapters
+     * into {@code typeTokenCache} when caller of nested {@code getAdapter} discards
+     * exception, e.g.:
+     *
+     * Field dependencies:
+     * ClassA
+     *   -> ClassB1
+     *     -> ClassC -> ClassB1
+     *     -> ClassX
+     *   | ClassB2
+     *
+     * Let's assume the factory for ClassX throws an exception.
+     * 1. Factory for ClassA finds field of type ClassB1
+     * 2. Factory for ClassB1 finds field of type ClassC
+     * 3. Factory for ClassC find fields of type ClassB1 => stores future adapter
+     * 4. Factory for ClassB1 finds field of type ClassX => ClassX factory throws exception
+     * 5. Factory for ClassA ignores exception from getAdapter(ClassB1) and tries as alternative getting
+     *    adapter for ClassB2
+     *
+     * Then Gson must not cache adapter for ClassC because it refers to broken adapter
+     * for ClassB1 (since ClassX threw exception).
+     */
+    public void testGetAdapterDiscardedException() throws Exception {
+      final TypeAdapter<?> alternativeAdapter = new DummyAdapter<>();
+      final AtomicReference<TypeAdapter<?>> leakedAdapter = new AtomicReference<>();
+  
+      Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(new TypeAdapterFactory() {
+          @Override
+          public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            if (type.getRawType() == CustomClassA.class) {
+              // Factory will throw for CustomClassB1; discard exception
+              try {
+                gson.getAdapter(CustomClassB1.class);
+                fail("Expected exception");
+              } catch (Exception e) {
+                assertEquals("test exception", e.getMessage());
+              }
+  
+              @SuppressWarnings("unchecked")
+              TypeAdapter<T> adapter = (TypeAdapter<T>) alternativeAdapter;
+              return adapter;
+            }
+            else if (type.getRawType() == CustomClassB1.class) {
+              gson.getAdapter(CustomClassC.class);
+              // Will throw exception
+              gson.getAdapter(CustomClassX.class);
+  
+              throw new AssertionError("Factory should have thrown exception for CustomClassX");
+            }
+            else if (type.getRawType() == CustomClassC.class) {
+              // Will return future adapter due to cyclic dependency B1 -> C -> B1
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassB1.class);
+              assertTrue(adapter instanceof FutureTypeAdapter);
+              // Pretend this factory somehow leaks this FutureTypeAdapter
+              leakedAdapter.set(adapter);
+              return new DummyAdapter<T>();
+            }
+            else if (type.getRawType() == CustomClassX.class) {
+              // Always throw exception
+              throw new RuntimeException("test exception");
+            }
+  
+            throw new AssertionError("Requested adapter for unexpected type: " + type);
+          }
+        })
+        .create();
+  
+      assertSame(alternativeAdapter, gson.getAdapter(CustomClassA.class));
+      // Gson must not have cached broken adapters for CustomClassB1 and CustomClassC
+      try {
+        gson.getAdapter(CustomClassB1.class);
+        fail("Expected exception");
+      } catch (Exception e) {
+        assertEquals("test exception", e.getMessage());
+      }
+      try {
+        gson.getAdapter(CustomClassC.class);
+        fail("Expected exception");
+      } catch (Exception e) {
+        assertEquals("test exception", e.getMessage());
+      }
+  
+      // Leaked adapter should have been marked as "broken"
+      try {
+        leakedAdapter.get().fromJson("{}");
+        fail("Expected exception");
+      } catch (IllegalStateException e) {
+        assertEquals("Broken adapter has been leaked by TypeAdapterFactory", e.getMessage());
+      }
+    }
+  
+    /**
+     * Verifies that two threads calling {@link Gson#getAdapter(TypeToken)} do not see the
+     * same unresolved {@link FutureTypeAdapter} instance, since that would not be thread-safe.
+     *
+     * This test constructs the cyclic dependency CustomClassA -> CustomClassB1 -> CustomClassA
+     * and lets one thread wait after the adapter for CustomClassB1 has been obtained (which still
+     * contains the nested unresolved FutureTypeAdapter for CustomClassA).
+     */
+    public void testGetAdapterFutureAdapterConcurrency() throws Exception {
+      /**
+       * Adapter which wraps another adapter. Can be imagined as a simplified version of the
+       * ReflectiveTypeAdapterFactory$Adapter.
+       */
+      class WrappingAdapter<T> extends TypeAdapter<T> {
+        final TypeAdapter<?> wrapped;
+        int callCount = 0;
+  
+        WrappingAdapter(TypeAdapter<?> wrapped) {
+          this.wrapped = wrapped;
+        }
+  
+        @Override public void write(JsonWriter out, T value) throws IOException {
+          // Due to how this test is set up there is infinite recursion, therefore
+          // need to track how deeply nested this call is
+          try {
+            if (callCount++ == 0) {
+              out.beginArray();
+              wrapped.write(out, null);
+              out.endArray();
+            } else {
+              out.value("wrapped-nested");
+            }
+          } finally {
+            callCount--;
+          }
+        }
+  
+        @Override public T read(JsonReader in) throws IOException {
+          throw new AssertionError("not needed for this test");
+        }
+      }
+  
+      final CountDownLatch isThreadWaiting = new CountDownLatch(1);
+      final CountDownLatch canThreadProceed = new CountDownLatch(1);
+  
+      final Gson gson = new GsonBuilder()
+        .registerTypeAdapterFactory(new TypeAdapterFactory() {
+          // volatile instead of AtomicBoolean is safe here because CountDownLatch prevents
+          // "true" concurrency
+          volatile boolean isFirstCaller = true;
+  
+          @Override
+          public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            Class<?> raw = type.getRawType();
+  
+            if (raw == CustomClassA.class) {
+              // Retrieves a WrappingAdapter containing a nested FutureAdapter for CustomClassA
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassB1.class);
+  
+              // Let thread wait so the FutureAdapter for CustomClassA nested in the adapter
+              // for CustomClassB1 has not been resolved yet
+              if (isFirstCaller) {
+                isFirstCaller = false;
+                isThreadWaiting.countDown();
+  
+                try {
+                  canThreadProceed.await();
+                } catch (InterruptedException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+  
+              return new WrappingAdapter<>(adapter);
+            }
+            else if (raw == CustomClassB1.class) {
+              TypeAdapter<?> adapter = gson.getAdapter(CustomClassA.class);
+              assertTrue(adapter instanceof FutureTypeAdapter);
+              return new WrappingAdapter<>(adapter);
+            }
+            else {
+              throw new AssertionError("Adapter for unexpected type requested: " + raw);
+            }
+          }
+        })
+        .create();
+  
+      final AtomicReference<TypeAdapter<?>> otherThreadAdapter = new AtomicReference<>();
+      Thread thread = new Thread() {
+        @Override
+        public void run() {
+          otherThreadAdapter.set(gson.getAdapter(CustomClassA.class));
+        }
+      };
+      thread.start();
+  
+      // Wait until other thread has obtained FutureAdapter
+      isThreadWaiting.await();
+      TypeAdapter<?> adapter = gson.getAdapter(CustomClassA.class);
+      // Should not fail due to referring to unresolved FutureTypeAdapter
+      assertEquals("[[\"wrapped-nested\"]]", adapter.toJson(null));
+  
+      // Let other thread proceed and have it resolve its FutureTypeAdapter
+      canThreadProceed.countDown();
+      thread.join();
+      assertEquals("[[\"wrapped-nested\"]]", otherThreadAdapter.get().toJson(null));
+    }
+  
+    private static class DummyAdapter<T> extends TypeAdapter<T> {
+      @Override public void write(JsonWriter out, T value) throws IOException {
+        throw new AssertionError("not needed for this test");
+      }
+  
+      @Override public T read(JsonReader in) throws IOException {
+        throw new AssertionError("not needed for this test");
+      }
+    }
+  
+    private static class CustomClassA {
+    }
+    private static class CustomClassB1 {
+    }
+    private static class CustomClassC {
+    }
+    private static class CustomClassX {
+    }

@@ -31,7 +31,7 @@ if os.getenv("TERM", "dumb") == "dumb":
 
 
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
-    """Tests the parents of a merge and in case of success, it tests the merge.
+    """Tests a merge with each merge tool.
     Args:
         args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
                     the repository info, and the cache path.

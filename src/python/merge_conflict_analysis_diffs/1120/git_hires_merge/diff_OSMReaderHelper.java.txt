@@ -1,0 +1,50 @@
+====3
+1:46c
+2:46c
+      private long edgeCount;
+3:45a
+====3
+1:75c
+2:75c
+      }
+3:74c
+      }    
+====3
+1:78c
+2:78c
+          return edgeCount;
+3:77c
+          return g.getAllEdges().maxId();
+====
+1:86c
+      public abstract int addEdge(TLongList nodes, int flags);
+2:86c
+      public abstract int addEdge(TLongList nodes, int flags, String name);
+3:85c
+      public abstract void addEdge(TLongList nodes, int flags, String name);
+====1
+1:88c
+      int addEdge(int fromIndex, int toIndex, PointList pointList, int flags) {
+2:88c
+3:87c
+      int addEdge(int fromIndex, int toIndex, PointList pointList, int flags, String name) {
+====1
+1:116a
+2:117c
+3:116c
+          iter.name(name);
+====3
+1:131c
+2:132c
+      void cleanup() {
+3:131c
+      void finishedReading() {
+====
+1:141,142c
+              int successfullAdded = addEdge(wayNodes, flags);
+              edgeCount += successfullAdded;
+2:142,143c
+              int successfullAdded = addEdge(wayNodes, flags, (String) outProperties.get("wayName"));
+              edgeCount += successfullAdded;
+3:141c
+              addEdge(wayNodes, flags, (String) outProperties.get("wayName"));

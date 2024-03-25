@@ -1,0 +1,24 @@
+356,364d355
+< <<<<<<< HEAD:core/src/main/java/com/alibaba/nacos/core/utils/DiskUtils.java
+<         try (final FileOutputStream fos = new FileOutputStream(
+<                 outputFile); final CheckedOutputStream cos = new CheckedOutputStream(fos,
+<                         checksum); final ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(cos))) {
+< ||||||| a41d209d5:core/src/main/java/com/alibaba/nacos/core/utils/DiskUtils.java
+<         try (final FileOutputStream fos = new FileOutputStream(
+<                 outputFile); final CheckedOutputStream cos = new CheckedOutputStream(fos, checksum);
+<                 final ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(cos))) {
+< =======
+368d358
+< >>>>>>> TEMP_RIGHT_BRANCH:sys/src/main/java/com/alibaba/nacos/sys/utils/DiskUtils.java
+407,415d396
+< <<<<<<< HEAD:core/src/main/java/com/alibaba/nacos/core/utils/DiskUtils.java
+<         try (final FileInputStream fis = new FileInputStream(
+<                 sourceFile); final CheckedInputStream cis = new CheckedInputStream(fis,
+<                         checksum); final ZipInputStream zis = new ZipInputStream(new BufferedInputStream(cis))) {
+< ||||||| a41d209d5:core/src/main/java/com/alibaba/nacos/core/utils/DiskUtils.java
+<         try (final FileInputStream fis = new FileInputStream(
+<                 sourceFile); final CheckedInputStream cis = new CheckedInputStream(fis, checksum);
+<                 final ZipInputStream zis = new ZipInputStream(new BufferedInputStream(cis))) {
+< =======
+419d399
+< >>>>>>> TEMP_RIGHT_BRANCH:sys/src/main/java/com/alibaba/nacos/sys/utils/DiskUtils.java

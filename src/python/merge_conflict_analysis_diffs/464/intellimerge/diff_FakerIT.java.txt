@@ -1,0 +1,12 @@
+====
+1:165a
+2:166,171c
+  <<<<<<< HEAD
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.bojackHorseman());
+  ||||||| 1850b033
+  =======
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.basketball());
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:166,167c
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.bojackHorseman());
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.basketball());

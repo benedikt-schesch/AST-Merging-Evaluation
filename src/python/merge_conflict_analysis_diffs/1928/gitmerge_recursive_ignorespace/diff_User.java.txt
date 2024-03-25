@@ -1,0 +1,23 @@
+====
+1:6,9c
+  
+  
+  
+  
+2:6,18c
+  import com.fasterxml.jackson.annotation.JsonCreator;
+  <<<<<<< HEAD
+  import io.swagger.annotations.ApiModel;
+  ||||||| d21613c6ab
+  
+  
+  
+  =======
+  
+  
+  
+  >>>>>>> TEMP_RIGHT_BRANCH
+  
+3:6,7c
+  import com.fasterxml.jackson.annotation.JsonCreator;
+  import io.swagger.annotations.ApiModel;

@@ -1,0 +1,72 @@
+====1
+1:287c
+              HashSet<Class<?>> c= new HashSet<Class<?>>();
+2:287c
+3:287c
+              Set<Class<?>> c= new HashSet<Class<?>>();
+====3
+1:318c
+2:318c
+          assertNoCategorizedDescendentsOfUncategorizeableParents(getDescription());
+3:317a
+====
+1:341,368c
+      private static void assertNoCategorizedDescendentsOfUncategorizeableParents(Description description) throws InitializationError {
+          if (!canHaveCategorizedChildren(description)) {
+              assertNoDescendantsHaveCategoryAnnotations(description);
+          }
+          for (Description each : description.getChildren()) {
+              assertNoCategorizedDescendentsOfUncategorizeableParents(each);
+          }
+      }
+  
+      private static void assertNoDescendantsHaveCategoryAnnotations(Description description) throws InitializationError {
+          for (Description each : description.getChildren()) {
+              if (each.getAnnotation(Category.class) != null) {
+                  throw new InitializationError("Category annotations on Parameterized classes are not supported on individual methods.");
+              }
+              assertNoDescendantsHaveCategoryAnnotations(each);
+          }
+      }
+  
+      // If children have names like [0], our current magical category code can't determine their parentage.
+      private static boolean canHaveCategorizedChildren(Description description) {
+          for (Description each : description.getChildren()) {
+              if (each.getTestClass() == null) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  
+2:341,369c
+      private static void assertNoCategorizedDescendentsOfUncategorizeableParents(Description description) throws InitializationError {
+          if (canHaveCategorizedChildren(description)) {
+              for (Description each : description.getChildren()) {
+                  assertNoCategorizedDescendentsOfUncategorizeableParents(each);
+              }
+          } else {
+              assertNoDescendantsHaveCategoryAnnotations(description);
+          }
+      }
+  
+      private static void assertNoDescendantsHaveCategoryAnnotations(Description description) throws InitializationError {
+          for (Description each : description.getChildren()) {
+              if (each.getAnnotation(Category.class) != null) {
+                  throw new InitializationError("Category annotations on Parameterized classes are not supported on individual methods.");
+              }
+              assertNoDescendantsHaveCategoryAnnotations(each);
+          }
+      }
+  
+      // If children have names like [0], our current magical category code can't determine their parentage.
+      private static boolean canHaveCategorizedChildren(Description description) {
+          for (Description each : description.getChildren()) {
+              if (each.getTestClass() == null) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  
+3:339a

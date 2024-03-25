@@ -1,0 +1,88 @@
+====3
+1:21a
+2:21a
+3:22,23c
+  import com.graphhopper.coll.LongIntMap;
+  import com.graphhopper.coll.GHLongIntBTree;
+====3
+1:55,57c
+2:55,57c
+      private BigLongIntMap osmIdToIndexMap;
+      // very slow: private SparseLongLongArray osmIdToIndexMap;
+      // not applicable as ways introduces the nodes in 'wrong' order: private OSMIDSegmentedMap
+3:57c
+      private LongIntMap osmIdToIndexMap;
+====3
+1:69c
+2:69c
+          // TODO check out if we better should use http://en.wikipedia.org/wiki/Segment_tree
+3:69,75c
+  
+          // Using the correct Map<Long, Integer> is hard. We need a very memory 
+          // efficient and fast solution for very big data sets!
+          // very slow: new SparseLongLongArray
+          // only append and update possible: new OSMIDMap
+          // not applicable as ways introduces the nodes in 'wrong' order: new OSMIDSegmentedMap
+          // memory overhead due to hash:
+====3
+1:70a
+2:70a
+3:77c
+  //        osmIdToIndexMap = new MyLongIntBTree(200);
+====
+1:107c
+      public int addEdge(TLongList osmIds, int flags) {
+2:107c
+      public int addEdge(TLongList osmIds, int flags, String name) {
+3:114c
+      public void addEdge(TLongList osmIds, int flags, String name) {
+====1
+1:132c
+                          successfullyAdded += addEdge(firstNode, tmpNode, pointList, flags);
+2:132c
+3:139c
+                          successfullyAdded += addEdge(firstNode, tmpNode, pointList, flags, name);
+====1
+1:159c
+                      successfullyAdded += addEdge(firstNode, tmpNode, pointList, flags);
+2:159c
+3:166c
+                      successfullyAdded += addEdge(firstNode, tmpNode, pointList, flags, name);
+====3
+1:166c
+2:166c
+          return successfullyAdded;
+3:172a
+====3
+1:193a
+2:193a
+3:200,207c
+      private void printInfo(String str) {
+          LoggerFactory.getLogger(getClass()).info("finished " + str + " processing."
+                  + " nodes: " + g.nodes() + ", osmIdMap.size:" + osmIdToIndexMap.size()
+                  + ", osmIdMap:" + osmIdToIndexMap.memoryUsage() + "MB"
+                  + ", osmIdMap.toString:" + osmIdToIndexMap + " "
+                  + Helper.getMemInfo());
+      }
+  
+====3
+1:196,197c
+2:196,197c
+          LoggerFactory.getLogger(getClass()).info("finished node processing. osmIdMap:"
+                  + (int) (osmIdToIndexMap.capacity() * (12f + 1) / Helper.MB) + "MB, " + Helper.getMemInfo());
+3:210c
+          printInfo("node");
+====3
+1:201c
+2:201c
+      void cleanup() {
+3:214,216c
+      void finishedReading() {
+          osmIdToIndexMap.optimize();
+          printInfo("way");
+====3
+1:247c
+2:247c
+                              + nf(osmIdToIndexMap.size()) + " (" + nf(osmIdToIndexMap.capacity()) + ") "
+3:262c
+                              + nf(osmIdToIndexMap.size()) + " (" + osmIdToIndexMap.memoryUsage() + "MB) "

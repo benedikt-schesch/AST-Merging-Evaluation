@@ -1,0 +1,190 @@
+====
+1:19,39c
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.DEFAULT_LOG;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.FATAL_LOG;
+  
+  import java.io.IOException;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.concurrent.TimeUnit;
+  import java.util.regex.Matcher;
+  import java.util.regex.Pattern;
+  
+  import javax.sql.DataSource;
+  
+  import org.slf4j.Logger;
+  import org.slf4j.LoggerFactory;
+  import org.springframework.dao.DataAccessException;
+  import org.springframework.jdbc.CannotGetJdbcConnectionException;
+  import org.springframework.jdbc.core.JdbcTemplate;
+  import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+  import org.springframework.transaction.support.TransactionTemplate;
+  
+2:19,44c
+  <<<<<<< HEAD
+  import com.alibaba.nacos.common.utils.ConvertUtils;
+  import com.alibaba.nacos.common.utils.StringUtils;
+  import com.alibaba.nacos.config.server.monitor.MetricsMonitor;
+  import com.alibaba.nacos.config.server.utils.PropertyUtil;
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.zaxxer.hikari.HikariDataSource;
+  import org.slf4j.Logger;
+  import org.slf4j.LoggerFactory;
+  ||||||| a41d209d5
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.DEFAULT_LOG;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.FATAL_LOG;
+  
+  import java.io.IOException;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.concurrent.TimeUnit;
+  import java.util.regex.Matcher;
+  import java.util.regex.Pattern;
+  
+  import javax.sql.DataSource;
+  
+  import org.slf4j.Logger;
+  import org.slf4j.LoggerFactory;
+  =======
+3:18a
+====1
+1:40a
+2:46c
+3:20c
+  import com.alibaba.nacos.common.utils.IPUtil;
+====1
+1:45c
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+2:51c
+3:25c
+  import com.alibaba.nacos.sys.env.EnvUtil;
+====
+1:46a
+2:53,89c
+  >>>>>>> TEMP_RIGHT_BRANCH
+  import org.springframework.dao.DataAccessException;
+  import org.springframework.jdbc.CannotGetJdbcConnectionException;
+  import org.springframework.jdbc.core.JdbcTemplate;
+  import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+  import org.springframework.transaction.support.TransactionTemplate;
+  
+  <<<<<<< HEAD
+  import javax.sql.DataSource;
+  import java.io.IOException;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.regex.Matcher;
+  import java.util.regex.Pattern;
+  
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.DEFAULT_LOG;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.FATAL_LOG;
+  ||||||| a41d209d5
+  import com.alibaba.nacos.common.utils.ConvertUtils;
+  import com.alibaba.nacos.common.utils.StringUtils;
+  import com.alibaba.nacos.config.server.monitor.MetricsMonitor;
+  import com.alibaba.nacos.config.server.utils.ConfigExecutor;
+  import com.alibaba.nacos.config.server.utils.PropertyUtil;
+  import com.alibaba.nacos.core.utils.ApplicationUtils;
+  import com.zaxxer.hikari.HikariDataSource;
+  =======
+  import javax.sql.DataSource;
+  import java.io.IOException;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.concurrent.TimeUnit;
+  
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.DEFAULT_LOG;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.FATAL_LOG;
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:27,41c
+  import org.springframework.dao.DataAccessException;
+  import org.springframework.jdbc.CannotGetJdbcConnectionException;
+  import org.springframework.jdbc.core.JdbcTemplate;
+  import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+  import org.springframework.transaction.support.TransactionTemplate;
+  
+  import javax.sql.DataSource;
+  import java.io.IOException;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.concurrent.TimeUnit;
+  
+  import static com.alibaba.nacos.config.server.service.repository.RowMapperManager.CONFIG_INFO4BETA_ROW_MAPPER;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.DEFAULT_LOG;
+  import static com.alibaba.nacos.config.server.utils.LogUtil.FATAL_LOG;
+====1
+1:55,58c
+      private static final Logger LOGGER = LoggerFactory.getLogger(ExternalDataSourceServiceImpl.class);
+      
+      private static final String JDBC_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+      
+2:97a
+3:49a
+====1
+1:86,87c
+      private static Pattern ipPattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+      
+2:124a
+3:76a
+====1
+1:120,122c
+              
+              ConfigExecutor.scheduleConfigTask(new SelectMasterTask(), 10, 10, TimeUnit.SECONDS);
+              ConfigExecutor.scheduleConfigTask(new CheckDbHealthTask(), 10, 10, TimeUnit.SECONDS);
+2:157,159c
+3:109,111c
+      
+              //            ConfigExecutor.scheduleConfigTask(new SelectMasterTask(), 10, 10, TimeUnit.SECONDS);
+              //            ConfigExecutor.scheduleConfigTask(new CheckDbHealthTask(), 10, 10, TimeUnit.SECONDS);
+====1
+1:130c
+                      .build(ApplicationUtils.getEnvironment(), (dataSource) -> {
+2:167c
+3:119c
+                      .build(EnvUtil.getEnvironment(), (dataSource) -> {
+====1
+1:193c
+                      return "DOWN:" + getIpFromUrl(dataSourceList.get(i).getJdbcUrl());
+2:230c
+3:182c
+                      return "DOWN:" + IPUtil.getIPFromString(dataSourceList.get(i).getJdbcUrl());
+====1
+1:196c
+                      return "WARN:" + getIpFromUrl(dataSourceList.get(i).getJdbcUrl());
+2:233c
+3:185c
+                      return "WARN:" + IPUtil.getIPFromString(dataSourceList.get(i).getJdbcUrl());
+====1
+1:204,217c
+      private String getIpFromUrl(String url) {
+          
+          Matcher m = ipPattern.matcher(url);
+          if (m.find()) {
+              return m.group();
+          }
+          
+          return "";
+      }
+      
+      static String defaultIfNull(String value, String defaultValue) {
+          return null == value ? defaultValue : value;
+      }
+      
+2:240a
+3:192a
+====1
+1:272c
+                                  getIpFromUrl(dataSourceList.get(i).getJdbcUrl()));
+2:295c
+3:247c
+                                  IPUtil.getIPFromString(dataSourceList.get(i).getJdbcUrl()));
+====1
+1:275c
+                                  getIpFromUrl(dataSourceList.get(i).getJdbcUrl()));
+2:298c
+3:250c
+                                  IPUtil.getIPFromString(dataSourceList.get(i).getJdbcUrl()));

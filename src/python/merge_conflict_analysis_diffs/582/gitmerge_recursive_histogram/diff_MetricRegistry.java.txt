@@ -1,0 +1,20 @@
+283d282
+< <<<<<<< HEAD:metrics-core/src/main/java/io/dropwizard/metrics5/MetricRegistry.java
+286,294d284
+< ||||||| 63d5c8f68:metrics-core/src/main/java/com/codahale/metrics/MetricRegistry.java
+<     @SuppressWarnings("rawtypes")
+<     public Gauge gauge(String name, final MetricSupplier<Gauge> supplier) {
+<         return getOrAdd(name, new MetricBuilder<Gauge>() {
+< =======
+<     @SuppressWarnings("rawtypes")
+<     public <T extends Gauge> T gauge(String name, final MetricSupplier<T> supplier) {
+<         return getOrAdd(name, new MetricBuilder<T>() {
+< >>>>>>> TEMP_RIGHT_BRANCH:metrics-core/src/main/java/com/codahale/metrics/MetricRegistry.java
+296d285
+< <<<<<<< HEAD:metrics-core/src/main/java/io/dropwizard/metrics5/MetricRegistry.java
+298,302d286
+< ||||||| 63d5c8f68:metrics-core/src/main/java/com/codahale/metrics/MetricRegistry.java
+<             public Gauge newMetric() {
+< =======
+<             public T newMetric() {
+< >>>>>>> TEMP_RIGHT_BRANCH:metrics-core/src/main/java/com/codahale/metrics/MetricRegistry.java

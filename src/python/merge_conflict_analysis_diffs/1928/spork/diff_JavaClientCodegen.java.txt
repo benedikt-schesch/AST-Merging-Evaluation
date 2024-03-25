@@ -1,0 +1,15 @@
+====1
+1:136a
+2:137,139c
+3:137,139c
+              if ("retrofit2".equals(getLibrary())) {
+                  supportingFiles.add(new SupportingFile("JSON.mustache", invokerFolder, "JSON.java"));
+              }
+====3
+1:144a
+2:147a
+3:148,151c
+  
+          if (additionalProperties.containsKey("jackson") ) {
+              supportingFiles.add(new SupportingFile("RFC3339DateFormat.mustache", invokerFolder, "RFC3339DateFormat.java"));
+          }

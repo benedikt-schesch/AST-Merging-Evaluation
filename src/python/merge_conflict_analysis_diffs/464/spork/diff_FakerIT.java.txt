@@ -1,0 +1,7 @@
+====
+1:165a
+2:166c
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.bojackHorseman());
+3:166,167c
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.bojackHorseman());
+          testAllMethodsThatReturnStringsActuallyReturnStrings(faker.basketball());

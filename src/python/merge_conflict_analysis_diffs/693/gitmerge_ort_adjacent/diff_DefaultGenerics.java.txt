@@ -1,0 +1,94 @@
+====3
+1:1c
+2:1c
+  /* Copyright (c) 2008-2022, Nathan Sweet
+3:1c
+  /* Copyright (c) 2008-2023, Nathan Sweet
+====1
+1:29,34c
+  public final class DefaultGenerics implements Generics {
+  	private final Kryo kryo;
+  
+  	private int genericTypesSize;
+  	private GenericType[] genericTypes = new GenericType[16];
+  	private int[] depths = new int[16];
+2:29c
+3:29c
+  public final class DefaultGenerics extends BaseGenerics {
+====1
+1:40,91c
+  		this.kryo = kryo;
+  	}
+  
+  	@Override
+  	public void pushGenericType (GenericType fieldType) {
+  		// Ensure genericTypes and depths capacity.
+  		int size = genericTypesSize;
+  		if (size + 1 == genericTypes.length) {
+  			GenericType[] genericTypesNew = new GenericType[genericTypes.length << 1];
+  			System.arraycopy(genericTypes, 0, genericTypesNew, 0, size);
+  			genericTypes = genericTypesNew;
+  			int[] depthsNew = new int[depths.length << 1];
+  			System.arraycopy(depths, 0, depthsNew, 0, size);
+  			depths = depthsNew;
+  		}
+  
+  		genericTypesSize = size + 1;
+  		genericTypes[size] = fieldType;
+  		depths[size] = kryo.getDepth();
+  	}
+  
+  	@Override
+  	public void popGenericType () {
+  		int size = genericTypesSize;
+  		if (size == 0) return;
+  		size--;
+  		if (depths[size] < kryo.getDepth()) return;
+  		genericTypes[size] = null;
+  		genericTypesSize = size;
+  	}
+  
+  	@Override
+  	public GenericType[] nextGenericTypes () {
+  		int index = genericTypesSize;
+  		if (index > 0) {
+  			index--;
+  			GenericType genericType = genericTypes[index];
+  			if (genericType.arguments == null) return null;
+  			// The depth must match to prevent the types being wrong if a serializer doesn't call nextGenericTypes.
+  			if (depths[index] == kryo.getDepth() - 1) {
+  				pushGenericType(genericType.arguments[genericType.arguments.length - 1]);
+  				return genericType.arguments;
+  			}
+  		}
+  		return null;
+  	}
+  
+  	@Override
+  	public Class nextGenericClass () {
+  		GenericType[] arguments = nextGenericTypes();
+  		if (arguments == null) return null;
+  		return arguments[0].resolve(this);
+2:35c
+3:35c
+  		super(kryo);
+====
+1:96,97c
+  		// Do not store type variables if hierarchy is empty or we do not have arguments for all root parameters.
+  		if (hierarchy.total == 0 || hierarchy.rootTotal > args.length) return 0;
+2:40,41c
+  		// Do not store type variables if hierarchy is empty, or we do not have arguments for all root parameters.
+  		if (hierarchy.total == 0 || hierarchy.rootTotal > args.length) return 0;
+3:40,42c
+  		// Do not store type variables if hierarchy is empty, or we do not have arguments for all root parameters, or we have more
+  		// arguments than the hierarchy has parameters.
+  		if (hierarchy.total == 0 || hierarchy.rootTotal > args.length || args.length > hierarchy.counts.length) return 0;
+====1
+1:148,152c
+  	@Override
+  	public int getGenericTypesSize () {
+  		return genericTypesSize;
+  	}
+  
+2:91a
+3:92a

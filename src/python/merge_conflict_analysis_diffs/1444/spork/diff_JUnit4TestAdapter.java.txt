@@ -1,0 +1,37 @@
+====1
+1:11a
+2:12,13c
+3:12,13c
+  import org.junit.runner.manipulation.GeneralOrdering;
+  import org.junit.runner.manipulation.InvalidOrderingException;
+====1
+1:13c
+  import org.junit.runner.manipulation.Sortable;
+2:15c
+3:15c
+  import org.junit.runner.manipulation.Orderable;
+====
+1:16c
+  public class JUnit4TestAdapter implements Test, Filterable, Sortable, Describable {
+2:18c
+  public class JUnit4TestAdapter implements Test, Filterable, Orderable, Describable {
+3:18,28c
+  /**
+   * The JUnit4TestAdapter enables running JUnit-4-style tests using a JUnit-3-style test runner.
+   *
+   * <p> To use it, add the following to a test class:
+   * <pre>
+        public static Test suite() {
+          return new JUnit4TestAdapter(<em>YourJUnit4TestClass</em>.class);
+        }
+  </pre>
+   */
+  public class JUnit4TestAdapter implements Test, Filterable, Orderable, Describable {
+====1
+1:85a
+2:88,91c
+3:98,101c
+  
+      public void order(GeneralOrdering ordering) throws InvalidOrderingException {
+          ordering.apply(fRunner);
+      }

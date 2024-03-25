@@ -1,0 +1,31 @@
+====3
+1:24a
+2:24a
+3:25c
+  import spark.staticfiles.DirectoryTraversal;
+====1
+1:72c
+              if (resource.exists() && resource.getFile().isDirectory()) {
+2:72c
+3:73c
+              if (resource.exists() && path.endsWith("/")) {
+====1
+1:76c
+                      //  No welcome file configured, serve nothing since it's a directory
+2:76c
+3:77c
+                      // No welcome file configured, serve nothing since it's a directory
+====3
+1:81c
+2:81c
+              return (resource != null && resource.exists()) ? resource : null;
+3:82,90c
+              if (resource != null && resource.exists()) {
+                  DirectoryTraversal.protectAgainstInClassPath(resource.getPath());
+                  return resource;
+              } else {
+                  return null;
+              }
+  
+          } catch (DirectoryTraversal.DirectoryTraversalDetection directoryTraversalDetection) {
+              throw directoryTraversalDetection;

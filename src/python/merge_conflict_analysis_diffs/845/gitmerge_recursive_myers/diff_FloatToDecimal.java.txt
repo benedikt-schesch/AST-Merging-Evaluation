@@ -1,0 +1,21 @@
+27,30d26
+< <<<<<<< HEAD:src/main/java/tools/jackson/core/io/schubfach/FloatToDecimal.java
+< import static java.lang.Float.floatToRawIntBits;
+< import static java.lang.Integer.numberOfLeadingZeros;
+< 
+37,47c33
+< ||||||| d63cef092:src/main/java/com/fasterxml/jackson/core/io/schubfach/FloatToDecimal.java
+< import static java.lang.Float.*;
+< import static java.lang.Integer.*;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.*;
+< =======
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog10pow2;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog10threeQuartersPow2;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.flog2pow10;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.g1;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.multiplyHigh;
+< import static com.fasterxml.jackson.core.io.schubfach.MathUtils.pow10;
+---
+> 
+50d35
+< >>>>>>> TEMP_RIGHT_BRANCH:src/main/java/com/fasterxml/jackson/core/io/schubfach/FloatToDecimal.java

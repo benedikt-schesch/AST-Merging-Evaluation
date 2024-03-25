@@ -57,6 +57,34 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     return repo
 
 
+def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
+    """Clones a repository, or runs `git fetch` if the repository is already cloned.
+    Args:
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
+    """
+    repo_dir = Path(path) / Path(repo_slug)
+    if repo_dir.exists():
+        repo = git.repo.Repo(repo_dir)
+    else:
+        repo_dir.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        print(repo_slug, " : Cloning repo")
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
+        github_url = "https://:@github.com/" + repo_slug + ".git"
+        print(repo_slug, " : Finished cloning")
+        try:
+            repo = git.repo.Repo.clone_from(github_url, repo_dir)
+            print(repo_slug, " : Finished cloning")
+            repo.remote().fetch()
+            repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
+            repo.submodule_update()
+        except Exception as e:
+            print(repo_slug, "Exception during cloning:\n", e)
+            raise
+    return repo
+
+
 TEST_STATE = Enum(
     "TEST_STATE",
     [
@@ -142,7 +170,7 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     return TEST_STATE.Tests_failed, explanation
 
 
-class Repository:
+class Repository:  # pylint: disable=too-many-instance-attributes
     """A class that represents a repository."""
 
     def __init__(
@@ -150,6 +178,7 @@ class Repository:
         repo_slug: str,
         cache_directory: Path = Path(""),
         workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
+        delete_workdir: bool = DELETE_WORKDIRS,
     ) -> None:
         """Initializes the repository.
         Args:
@@ -167,11 +196,13 @@ class Repository:
         self.repo = Repo(self.repo_path)
         self.test_cache_directory = cache_directory / "test_cache"
         self.sha_cache_directory = cache_directory / "sha_cache_entry"
+        self.delete_workdir = delete_workdir
 
-    def checkout(self, commit: str) -> Tuple[bool, str]:
+    def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
         """Checks out the given commit.
         Args:
             commit (str): The commit to checkout.
+            use_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             bool: True if the checkout succeeded, False otherwise.
             str: explanation. The explanation of the result.
@@ -189,14 +220,18 @@ class Repository:
                 + " : \n"
                 + str(e)
             )
-            cache_entry = {"sha": None, "explanation": explanation}
-            set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
+            if use_cache:
+                cache_entry = {"sha": None, "explanation": explanation}
+                set_in_cache(
+                    commit, cache_entry, self.repo_slug, self.sha_cache_directory
+                )
             return False, explanation
-        cache_entry = {
-            "sha": self.compute_tree_fingerprint(),
-            "explanation": explanation,
-        }
-        set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
+        if use_cache:
+            cache_entry = {
+                "sha": self.compute_tree_fingerprint(),
+                "explanation": explanation,
+            }
+            set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
         return True, explanation
 
     def _merge_and_test(  # pylint: disable=too-many-arguments
@@ -306,39 +341,43 @@ class Repository:
         )
 
     def create_branch(
-        self, branch_name: str, commit: str
+        self, branch_name: str, commit: str, use_cache: bool = True
     ) -> Tuple[Union[None, str], str]:
         """Creates a branch from a certain commit.
         Args:
             branch_name (str): Name of the branch to create.
             commit (str): Commit used to create the branch.
+            use_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             Union[None,str] : None if a checkout failure occured,
                     str is the fingerprint of that commit.
             str: explanation of the result.
         """
-        cache_entry = self.get_sha_cache_entry(commit)
-        if cache_entry is not None and cache_entry["sha"] is None:
-            return None, cache_entry["explanation"]
-        success, explanation = self.checkout(commit)
+        if use_cache:
+            cache_entry = self.get_sha_cache_entry(commit)
+            if cache_entry is not None and cache_entry["sha"] is None:
+                return None, cache_entry["explanation"]
+        success, explanation = self.checkout(commit, use_cache=use_cache)
         if not success:
-            set_in_cache(
-                commit,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_directory,
-            )
+            if use_cache:
+                set_in_cache(
+                    commit,
+                    {"sha": None, "explanation": explanation},
+                    self.repo_slug,
+                    self.sha_cache_directory,
+                )
             return None, explanation
         tree_fingerprint = self.compute_tree_fingerprint()
         self.repo.git.checkout("-b", branch_name, force=True)
         return tree_fingerprint, explanation
 
-    def merge(  # pylint: disable=too-many-locals
+    def merge(  # pylint: disable=too-many-locals,too-many-arguments
         self,
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
         timeout: int,
+        use_cache: bool = True,
     ) -> Tuple[
         MERGE_STATE, Union[str, None], Union[str, None], Union[str, None], str, float
     ]:
@@ -349,6 +388,7 @@ class Repository:
             right_commit (str): The right commit to merge.
             explanation (str): The explanation of the result.
             timeout (int): The timeout limit, in seconds.
+            use_cache (bool, optional) = True: Whether to check the cache.
         Returns:
             MERGE_STATE: The result of the merge.
             str: The tree fingerprint of the result.
@@ -361,21 +401,22 @@ class Repository:
 
         # Checkout left
         left_fingerprint, left_explanation = self.create_branch(
-            LEFT_BRANCH_NAME, left_commit
+            LEFT_BRANCH_NAME, left_commit, use_cache=use_cache
         )
 
         # Checkout right
         right_fingerprint, right_explanation = self.create_branch(
-            RIGHT_BRANCH_NAME, right_commit
+            RIGHT_BRANCH_NAME, right_commit, use_cache=use_cache
         )
         explanation = left_explanation + "\n" + right_explanation
         if right_fingerprint is None or left_fingerprint is None:
-            set_in_cache(
-                cache_entry_name,
-                {"sha": None, "explanation": explanation},
-                self.repo_slug,
-                self.sha_cache_directory,
-            )
+            if use_cache:
+                set_in_cache(
+                    cache_entry_name,
+                    {"sha": None, "explanation": explanation},
+                    self.repo_slug,
+                    self.sha_cache_directory,
+                )
             return (
                 MERGE_STATE.Git_checkout_failed,
                 None,
@@ -422,12 +463,13 @@ class Repository:
             "left_fingerprint": left_fingerprint,
             "right_fingerprint": right_fingerprint,
         }
-        set_in_cache(
-            cache_entry_name,
-            cache_entry,
-            self.repo_slug,
-            self.sha_cache_directory,
-        )
+        if use_cache:
+            set_in_cache(
+                cache_entry_name,
+                cache_entry,
+                self.repo_slug,
+                self.sha_cache_directory,
+            )
         return (
             merge_status,
             sha,
@@ -554,7 +596,13 @@ class Repository:
             return self._checkout_and_test(commit, timeout, n_tests)
         return result, test_coverage, sha_cache_entry["sha"]
 
-    def test(self, timeout: int, n_tests: int) -> Tuple[TEST_STATE, float]:
+    def test(
+        self,
+        timeout: int,
+        n_tests: int,
+        use_cache: bool = True,
+        test_log_file: Union[None, Path] = None,
+    ) -> Tuple[TEST_STATE, float]:
         """Tests the repository. The test results of multiple runs is combined into one result.
         If one of the runs passes then the entire test is marked as passed.
         If one of the runs timeouts then the entire test is marked as timeout.
@@ -562,6 +610,8 @@ class Repository:
         Args:
             timeout (int): The timeout limit, in seconds.
             n_tests (int): The number of times to run the test suite.
+            use_cache (bool, optional) = True: Whether to check the cache.
+            test_log_file (Union[None,Path], optional) = None: The path to the test log file.
         Returns:
             TEST_STATE: The result of the test.
             float: The test coverage.
@@ -569,23 +619,25 @@ class Repository:
         sha = self.compute_tree_fingerprint()
         cache_data = {}
 
-        result, test_coverage = self.get_test_cache_entry(sha, start_test=True)
-        if result is not None:
-            return result, test_coverage
+        if use_cache:
+            result, test_coverage = self.get_test_cache_entry(sha, start_test=True)
+            if result is not None:
+                return result, test_coverage
 
         cache_data["test_results"] = []
         cache_data["test_log_file"] = []
         cache_data["test_coverage"] = []
         for i in range(n_tests):
             test_state, test_output = repo_test(self.repo_path, timeout)
-            test_log_file = Path(
-                os.path.join(
-                    self.test_cache_directory,
-                    "logs",
-                    self.repo_slug,
-                    sha + "_" + str(i) + ".log",
+            if test_log_file is None:
+                test_log_file = Path(
+                    os.path.join(
+                        self.test_cache_directory,
+                        "logs",
+                        self.repo_slug,
+                        sha + "_" + str(i) + ".log",
+                    )
                 )
-            )
             test_log_file.parent.mkdir(parents=True, exist_ok=True)
             if test_log_file.exists():
                 test_log_file.unlink()
@@ -597,8 +649,8 @@ class Repository:
             cache_data["test_coverage"].append(self.compute_test_coverage())
             if test_state in (TEST_STATE.Tests_passed, TEST_STATE.Tests_timedout):
                 break
-
-        set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_directory)
+        if use_cache:
+            set_in_cache(sha, cache_data, self.repo_slug, self.test_cache_directory)
         return TEST_STATE[cache_data["test_result"]], cache_data["test_coverage"][-1]
 
     def compute_test_coverage(self) -> float:
@@ -638,5 +690,5 @@ class Repository:
 
     def __del__(self) -> None:
         """Deletes the repository."""
-        if DELETE_WORKDIRS:
+        if self.delete_workdir:
             shutil.rmtree(self.workdir, ignore_errors=True)

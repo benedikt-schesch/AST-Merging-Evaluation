@@ -1,0 +1,1548 @@
+====1
+1:27a
+2:28c
+3:28c
+  import com.alibaba.nacos.naming.cluster.ServerListManager;
+====1
+1:35,42c
+  import com.alibaba.nacos.naming.raft.Datum;
+  import com.alibaba.nacos.naming.raft.RaftCore;
+  import com.alibaba.nacos.naming.raft.RaftPeer;
+  import com.alibaba.nacos.naming.raft.RaftProxy;
+  import com.ning.http.client.AsyncCompletionHandler;
+  import com.ning.http.client.Response;
+  import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+  import org.apache.catalina.util.ParameterMap;
+2:35a
+3:35a
+====1
+1:65,69c
+  import java.util.concurrent.CountDownLatch;
+  import java.util.concurrent.TimeUnit;
+  import java.util.concurrent.locks.Condition;
+  import java.util.concurrent.locks.Lock;
+  import java.util.concurrent.locks.ReentrantLock;
+2:57a
+3:57a
+====1
+1:84c
+      protected DomainsManager domainsManager;
+2:72,87c
+3:72,87c
+      protected ServiceManager serviceManager;
+  
+      @Autowired
+      private SwitchManager switchManager;
+  
+      @Autowired
+      private ServerListManager serverListManager;
+  
+      @Autowired
+      private SwitchDomain switchDomain;
+  
+      @Autowired
+      private PushService pushService;
+  
+      @Autowired
+      private DistroMapper distroMapper;
+====1
+1:112c
+              result.put("cacheMillis", Switch.getPushCacheMillis(client.getDom()));
+2:115c
+3:115c
+              result.put("cacheMillis", switchDomain.getPushCacheMillis(client.getDom()));
+====1
+1:126c
+          Domain dom = domainsManager.getDomain(namespaceId, name);
+2:129c
+3:129c
+          Domain dom = serviceManager.getService(namespaceId, name);
+====1
+1:138c
+          result.put("count", domainsManager.getDomCount());
+2:141c
+3:141c
+          result.put("count", serviceManager.getDomCount());
+====1
+1:151c
+              = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:154c
+3:154c
+              = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:182c
+          VirtualClusterDomain dom = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, domName);
+2:185c
+3:185c
+          VirtualClusterDomain dom = (VirtualClusterDomain) serviceManager.getService(namespaceId, domName);
+====1
+1:212c
+              VirtualClusterDomain dom = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, domName);
+2:215c
+3:215c
+              VirtualClusterDomain dom = (VirtualClusterDomain) serviceManager.getService(namespaceId, domName);
+====1
+1:273c
+          if (domainsManager.getDomain(namespaceId, dom) != null) {
+2:276c
+3:276c
+          if (serviceManager.getService(namespaceId, dom) != null) {
+====1
+1:292,294c
+          String dom = WebUtils.optional(request, "serviceName", StringUtils.EMPTY);
+          if (StringUtils.isBlank(dom)) {
+              dom = WebUtils.required(request, "dom");
+2:295,297c
+3:295,297c
+          String serviceName = WebUtils.optional(request, "serviceName", StringUtils.EMPTY);
+          if (StringUtils.isBlank(serviceName)) {
+              serviceName = WebUtils.required(request, "dom");
+====1
+1:296,297c
+          String app;
+          app = WebUtils.optional(request, "app", StringUtils.EMPTY);
+2:299c
+3:299c
+  
+====1
+1:305c
+              Loggers.DEBUG_LOG.debug("[CLIENT-BEAT] full arguments: beat: {}, serviceName: {}", clientBeat, dom);
+2:307c
+3:307c
+              Loggers.DEBUG_LOG.debug("[CLIENT-BEAT] full arguments: beat: {}, serviceName: {}", clientBeat, serviceName);
+====1
+1:308,314c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+          Map<String, String[]> stringMap = new HashMap<>(16);
+          stringMap.put(Constants.REQUEST_PARAM_SERVICE_NAME, Arrays.asList(dom).toArray(new String[1]));
+          stringMap.put("enableClientBeat", Arrays.asList("true").toArray(new String[1]));
+          stringMap.put("cktype", Arrays.asList("TCP").toArray(new String[1]));
+          stringMap.put("appName", Arrays.asList(app).toArray(new String[1]));
+          stringMap.put("clusterName", Arrays.asList(clusterName).toArray(new String[1]));
+2:310,311c
+3:310,311c
+          IpAddress ipAddress = serviceManager.getInstance(namespaceId, serviceName, clientBeat.getCluster(), clientBeat.getIp(),
+              clientBeat.getPort());
+====1
+1:316,319c
+          //if domain does not exist, register it.
+          if (virtualClusterDomain == null) {
+              regDom(OverrideParameterRequestWrapper.buildRequest(request, stringMap));
+              Loggers.SRV_LOG.warn("dom not found, register it, dom: {}", dom);
+2:313,322c
+3:313,322c
+          if (ipAddress == null) {
+              ipAddress = new IpAddress();
+              ipAddress.setPort(clientBeat.getPort());
+              ipAddress.setIp(clientBeat.getIp());
+              ipAddress.setWeight(clientBeat.getWeight());
+              ipAddress.setMetadata(clientBeat.getMetadata());
+              ipAddress.setClusterName(clusterName);
+              ipAddress.setServiceName(serviceName);
+              ipAddress.setInstanceId(ipAddress.generateInstanceId());
+              serviceManager.registerInstance(namespaceId, serviceName, clusterName, ipAddress);
+====1
+1:322,325c
+          virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+  
+          String ip = clientBeat.getIp();
+          int port = clientBeat.getPort();
+2:325c
+3:325c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) serviceManager.getService(namespaceId, serviceName);
+====1
+1:327,354c
+          IpAddress ipAddress = new IpAddress();
+          ipAddress.setPort(port);
+          ipAddress.setIp(ip);
+          ipAddress.setWeight(clientBeat.getWeight());
+          ipAddress.setMetadata(clientBeat.getMetadata());
+          ipAddress.setClusterName(clusterName);
+          ipAddress.setServiceName(dom);
+          ipAddress.setInstanceId(ipAddress.generateInstanceId());
+  
+          if (!virtualClusterDomain.getClusterMap().containsKey(ipAddress.getClusterName())) {
+              doAddCluster4Dom(OverrideParameterRequestWrapper.buildRequest(request, stringMap));
+          }
+  
+          JSONObject result = new JSONObject();
+  
+          result.put("clientBeatInterval", Switch.getClientBeatInterval());
+  
+          if (!virtualClusterDomain.allIPs().contains(ipAddress)) {
+  
+              if (!virtualClusterDomain.getEnableClientBeat()) {
+                  return result;
+              }
+  
+              stringMap.put("ipList", Arrays.asList(JSON.toJSONString(Arrays.asList(ipAddress))).toArray(new String[1]));
+              stringMap.put("json", Arrays.asList("true").toArray(new String[1]));
+              stringMap.put("dom", Arrays.asList(dom).toArray(new String[1]));
+              addIP4Dom(OverrideParameterRequestWrapper.buildRequest(request, stringMap));
+              Loggers.SRV_LOG.warn("ip not found, register it, dom: {}, ip: {}", dom, ipAddress);
+2:327,328c
+3:327,328c
+          if (virtualClusterDomain == null) {
+              throw new NacosException(NacosException.SERVER_ERROR, "service not found: " + serviceName + "@" + namespaceId);
+====1
+1:357,359c
+          if (!DistroMapper.responsible(dom)) {
+              String server = DistroMapper.mapSrv(dom);
+              Loggers.EVT_LOG.info("I'm not responsible for {}, proxy it to {}", dom, server);
+2:331,333c
+3:331,333c
+          if (!distroMapper.responsible(serviceName)) {
+              String server = distroMapper.mapSrv(serviceName);
+              Loggers.EVT_LOG.info("I'm not responsible for {}, proxy it to {}", serviceName, server);
+====1
+1:381a
+2:356,359c
+3:356,359c
+          JSONObject result = new JSONObject();
+  
+          result.put("clientBeatInterval", switchDomain.getClientBeatInterval());
+  
+====1
+1:385c
+  
+2:362a
+3:362a
+====1
+1:400c
+              String.valueOf(Switch.getDefaultHealthCheckMode().equals(HealthCheckMode.server.name()))));
+2:377c
+3:377c
+              String.valueOf(switchDomain.getDefaultHealthCheckMode().equals(HealthCheckMode.server.name()))));
+====1
+1:406c
+              String.valueOf(Switch.getDefaultHealthCheckMode().equals(HealthCheckMode.client.name()))));
+2:383c
+3:383c
+              String.valueOf(switchDomain.getDefaultHealthCheckMode().equals(HealthCheckMode.client.name()))));
+====1
+1:503c
+          domainsManager.easyAddOrReplaceDom(domObj);
+2:480c
+3:480c
+          serviceManager.addOrReplaceService(domObj);
+====1
+1:534c
+          String dom = WebUtils.required(request, Constants.REQUEST_PARAM_SERVICE_NAME);
+2:511c
+3:511c
+          String serviceName = WebUtils.required(request, Constants.REQUEST_PARAM_SERVICE_NAME);
+====1
+1:536c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:513c
+3:513c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) serviceManager.getService(namespaceId, serviceName);
+====1
+1:541,547c
+          ParameterMap<String, String[]> parameterMap = new ParameterMap<>();
+          parameterMap.put("dom", Arrays.asList(dom).toArray(new String[1]));
+          parameterMap.put("ipList", Arrays.asList(JSON.toJSONString(Arrays.asList(ipAddress))).toArray(new String[1]));
+          parameterMap.put("json", Arrays.asList("true").toArray(new String[1]));
+          parameterMap.put("token", Arrays.asList(virtualClusterDomain.getToken()).toArray(new String[1]));
+  
+          return remvIP4Dom(OverrideParameterRequestWrapper.buildRequest(request, parameterMap));
+2:518c
+3:518c
+          serviceManager.removeInstance(namespaceId, serviceName, ipAddress);
+====1
+1:548a
+2:520c
+3:520c
+          return "ok";
+====1
+1:551c
+      @SuppressFBWarnings("JLM_JSR166_LOCK_MONITORENTER")
+2:522a
+3:522a
+====1
+1:555,556c
+          String dom = WebUtils.required(request, "serviceName");
+          String tenant = WebUtils.optional(request, "tid", StringUtils.EMPTY);
+2:526,527c
+3:526,527c
+          String serviceName = WebUtils.required(request, "serviceName");
+          String clusterName = WebUtils.required(request, "clusterName");
+====1
+1:558c
+          String env = WebUtils.optional(request, "env", StringUtils.EMPTY);
+2:528a
+3:528a
+====1
+1:560,562c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID, UtilsAndCommons.getDefaultNamespaceId());
+  
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:530,531c
+3:530,531c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+====1
+1:566c
+          ipAddress.setServiceName(dom);
+2:535c
+3:535c
+          ipAddress.setServiceName(serviceName);
+====1
+1:573,616c
+          if (virtualClusterDomain == null) {
+  
+              Lock lock = domainsManager.addLockIfAbsent(UtilsAndCommons.assembleFullServiceName(namespaceId, dom));
+              Condition condition = domainsManager.addCondtion(UtilsAndCommons.assembleFullServiceName(namespaceId, dom));
+              UtilsAndCommons.RAFT_PUBLISH_EXECUTOR.execute(new Runnable() {
+                  @Override
+                  public void run() {
+                      try {
+                          regDom(request);
+                      } catch (Exception e) {
+                          Loggers.SRV_LOG.error("[REG-SERIVCE] register service failed, service:" + dom, e);
+                      }
+                  }
+              });
+              try {
+                  lock.lock();
+                  condition.await(5000, TimeUnit.MILLISECONDS);
+              } finally {
+                  lock.unlock();
+              }
+  
+              virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+          }
+  
+          if (virtualClusterDomain != null) {
+  
+              if (!virtualClusterDomain.getClusterMap().containsKey(ipAddress.getClusterName())) {
+                  doAddCluster4Dom(request);
+              }
+  
+              if (Loggers.SRV_LOG.isDebugEnabled()) {
+                  Loggers.SRV_LOG.debug("reg-service add ip: {}|{}", dom, ipAddress.toJSON());
+              }
+  
+              Map<String, String[]> stringMap = new HashMap<>(16);
+              stringMap.put("dom", Arrays.asList(dom).toArray(new String[1]));
+              stringMap.put("ipList", Arrays.asList(JSON.toJSONString(Arrays.asList(ipAddress))).toArray(new String[1]));
+              stringMap.put("json", Arrays.asList("true").toArray(new String[1]));
+              stringMap.put("token", Arrays.asList(virtualClusterDomain.getToken()).toArray(new String[1]));
+  
+              addIP4Dom(OverrideParameterRequestWrapper.buildRequest(request, stringMap));
+          } else {
+              throw new IllegalArgumentException("dom not found: " + dom);
+          }
+2:542c
+3:542c
+          serviceManager.registerInstance(namespaceId, serviceName, clusterName, ipAddress);
+====1
+1:621c
+  
+2:546a
+3:546a
+====1
+1:628c
+          VirtualClusterDomain dom = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, name);
+2:553c
+3:553c
+          VirtualClusterDomain dom = (VirtualClusterDomain) serviceManager.getService(namespaceId, name);
+====1
+1:633,637c
+          RaftPeer leader = RaftCore.getLeader();
+          if (leader == null) {
+              throw new IllegalStateException("not leader at present, cannot update");
+          }
+  
+2:557a
+3:557a
+====1
+1:678c
+              if (cktype.equals(AbstractHealthCheckProcessor.HTTP_PROCESSOR.getType())) {
+2:598c
+3:598c
+              if (cktype.equals(HealthCheckType.HTTP.name().toLowerCase())) {
+====1
+1:683c
+              } else if (cktype.equals(AbstractHealthCheckProcessor.TCP_PROCESSOR.getType())) {
+2:603c
+3:603c
+              } else if (cktype.equals(HealthCheckType.TCP.name().toLowerCase())) {
+====1
+1:687c
+              } else if (cktype.equals(AbstractHealthCheckProcessor.MYSQL_PROCESSOR.getType())) {
+2:607c
+3:607c
+              } else if (cktype.equals(HealthCheckType.MYSQL.name().toLowerCase())) {
+====1
+1:779c
+          domainsManager.easyAddOrReplaceDom(dom);
+2:699c
+3:699c
+          serviceManager.addOrReplaceService(dom);
+====1
+1:787c
+          result.put("msg", "Hello! I am Nacos-Naming and healthy! total services: raft " + domainsManager.getDomCount()
+2:707c
+3:707c
+          result.put("msg", "Hello! I am Nacos-Naming and healthy! total services: raft " + serviceManager.getDomCount()
+====1
+1:792c
+  
+2:711a
+3:711a
+====1
+1:800c
+          if (domainsManager.getDomain(namespaceId, dom) == null) {
+2:719c
+3:719c
+          if (serviceManager.getService(namespaceId, dom) == null) {
+====1
+1:804c
+          domainsManager.easyRemoveDom(namespaceId, dom);
+2:723c
+3:723c
+          serviceManager.easyRemoveDom(namespaceId, dom);
+====1
+1:814c
+          Map<String, Set<String>> domMap = domainsManager.getAllDomNames();
+2:733c
+3:733c
+          Map<String, Set<String>> domMap = serviceManager.getAllDomNames();
+====1
+1:818c
+                  Domain domObj = domainsManager.getDomain(namespaceId, dom);
+2:737c
+3:737c
+                  Domain domObj = serviceManager.getService(namespaceId, dom);
+====1
+1:841,979c
+      @RequestMapping("/onAddIP4Dom")
+      public String onAddIP4Dom(HttpServletRequest request) throws Exception {
+          if (Switch.getDisableAddIP()) {
+              throw new AccessControlException("Adding IP for dom is forbidden now.");
+          }
+  
+          String clientIP = WebUtils.required(request, "clientIP");
+  
+          long term = Long.parseLong(WebUtils.required(request, "term"));
+  
+          if (!RaftCore.isLeader(clientIP)) {
+              Loggers.RAFT.warn("peer {} tried to publish data but wasn't leader, leader: {}",
+                  JSON.toJSONString(clientIP), JSON.toJSONString(RaftCore.getLeader()));
+              throw new IllegalStateException("peer(" + clientIP + ") tried to publish " +
+                  "data but wasn't leader");
+          }
+  
+          if (term < RaftCore.getPeerSet().local().term.get()) {
+              Loggers.RAFT.warn("out of date publish, pub-term: {}, cur-term: {}",
+                  JSON.toJSONString(clientIP), JSON.toJSONString(RaftCore.getPeerSet().local()));
+              throw new IllegalStateException("out of date publish, pub-term:"
+                  + term + ", cur-term: " + RaftCore.getPeerSet().local().term.get());
+          }
+  
+          RaftCore.getPeerSet().local().resetLeaderDue();
+  
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+          final String dom = WebUtils.required(request, "dom");
+          if (domainsManager.getDomain(namespaceId, dom) == null) {
+              throw new IllegalStateException("dom doesn't exist: " + dom);
+          }
+  
+          boolean updateOnly = Boolean.parseBoolean(WebUtils.optional(request, "updateOnly", Boolean.FALSE.toString()));
+  
+          String ipListString = WebUtils.required(request, "ipList");
+          List<IpAddress> newIPs = new ArrayList<>();
+  
+          List<String> ipList;
+          if (Boolean.parseBoolean(WebUtils.optional(request, SwitchEntry.PARAM_JSON, Boolean.FALSE.toString()))) {
+              newIPs = JSON.parseObject(ipListString, new TypeReference<List<IpAddress>>() {
+              });
+          } else {
+              ipList = Arrays.asList(ipListString.split(","));
+              for (String ip : ipList) {
+                  IpAddress ipAddr = IpAddress.fromJSON(ip);
+                  newIPs.add(ipAddr);
+              }
+          }
+  
+          if (CollectionUtils.isEmpty(newIPs)) {
+              throw new IllegalArgumentException("Empty ip list");
+          }
+  
+          if (updateOnly) {
+              //make sure every IP is in the dom, otherwise refuse update
+              List<IpAddress> oldIPs = domainsManager.getDomain(namespaceId, dom).allIPs();
+              Collection diff = CollectionUtils.subtract(newIPs, oldIPs);
+              if (diff.size() != 0) {
+                  throw new IllegalArgumentException("these IPs are not present: " + Arrays.toString(diff.toArray())
+                      + ", if you want to add them, remove updateOnly flag");
+              }
+          }
+          domainsManager.easyAddIP4Dom(namespaceId, dom, newIPs, term);
+  
+          return "ok";
+      }
+  
+      private void syncOnUpdateIP4Dom(String namespaceId, String dom, Map<String, String> proxyParams, String action) throws InterruptedException {
+  
+          String key = UtilsAndCommons.getIPListStoreKey(domainsManager.getDomain(namespaceId, dom));
+  
+          final CountDownLatch countDownLatch = new CountDownLatch(RaftCore.getPeerSet().majorityCount());
+          updateIpPublish(proxyParams, countDownLatch, action);
+          if (!countDownLatch.await(UtilsAndCommons.MAX_PUBLISH_WAIT_TIME_MILLIS, TimeUnit.MILLISECONDS)) {
+              Loggers.RAFT.info("data publish failed, key=" + key, ",notify timeout.");
+              throw new IllegalArgumentException("data publish failed, key=" + key);
+          }
+      }
+  
+      private void syncOnAddIP4Dom(String namespaceId, String dom, Map<String, String> proxyParams) throws InterruptedException {
+          syncOnUpdateIP4Dom(namespaceId, dom, proxyParams, UtilsAndCommons.UPDATE_INSTANCE_ACTION_ADD);
+      }
+  
+      private void asyncOnAddIP4Dom(Map<String, String> proxyParams) {
+          updateIpPublish(proxyParams, null, UtilsAndCommons.UPDATE_INSTANCE_ACTION_ADD);
+      }
+  
+      private void syncOnRemvIP4Dom(String namespaceId, String dom, Map<String, String> proxyParams) throws InterruptedException {
+          syncOnUpdateIP4Dom(namespaceId, dom, proxyParams, UtilsAndCommons.UPDATE_INSTANCE_ACTION_REMOVE);
+      }
+  
+      private void asyncOnRemvIP4Dom(Map<String, String> proxyParams) {
+          updateIpPublish(proxyParams, null, UtilsAndCommons.UPDATE_INSTANCE_ACTION_REMOVE);
+      }
+  
+      private void updateIpPublish(Map<String, String> proxyParams, CountDownLatch countDownLatch, String action) {
+  
+          for (final String peer : RaftCore.getPeerSet().allServersWithoutMySelf()) {
+  
+              UtilsAndCommons.RAFT_PUBLISH_EXECUTOR.execute(new Runnable() {
+                  @Override
+                  public void run() {
+  
+                      String server = peer;
+  
+                      if (!server.contains(UtilsAndCommons.CLUSTER_CONF_IP_SPLITER)) {
+                          server = server + UtilsAndCommons.CLUSTER_CONF_IP_SPLITER + RunningConfig.getServerPort();
+                      }
+  
+                      String api = action.equals("remove") ? "onRemvIP4Dom" : "onAddIP4Dom";
+  
+                      String url = "http://" + server
+                          + RunningConfig.getContextPath() + UtilsAndCommons.NACOS_NAMING_CONTEXT + "/api/" + api;
+  
+                      try {
+                          HttpClient.asyncHttpPost(url, null, proxyParams, new AsyncCompletionHandler() {
+                              @Override
+                              public Integer onCompleted(Response response) throws Exception {
+                                  if (response.getStatusCode() != HttpURLConnection.HTTP_OK) {
+                                      Loggers.SRV_LOG.warn("failed to add ip params: " + proxyParams
+                                          + ",code: " + response.getStatusCode() + ", caused " + response.getResponseBody()
+                                          + ", server: " + peer);
+                                      return 1;
+                                  }
+                                  if (countDownLatch != null) {
+                                      countDownLatch.countDown();
+                                  }
+                                  return 0;
+                              }
+                          });
+                      } catch (Exception e) {
+                          Loggers.SRV_LOG.error(action + "-IP", "failed when publish to peer." + url, e);
+                      }
+                  }
+              });
+          }
+      }
+  
+2:759a
+3:759a
+====1
+1:984c
+          if (Switch.getDisableAddIP()) {
+2:764c
+3:764c
+          if (switchDomain.isDisableAddIP()) {
+====1
+1:988,989c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+2:767a
+3:767a
+====1
+1:999a
+2:778,784c
+3:778,784c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+  
+          String serviceName = WebUtils.required(request, Constants.REQUEST_PARAM_SERVICE_NAME);
+  
+          String clusterName = WebUtils.required(request, "clusterName");
+  
+====1
+1:1005c
+              ipList = Arrays.asList(ipListString);
+2:789a
+3:789a
+====1
+1:1016,1110c
+          if (!RaftCore.isLeader()) {
+              Loggers.RAFT.info("I'm not leader, will proxy to leader.");
+              if (RaftCore.getLeader() == null) {
+                  throw new IllegalArgumentException("no leader now.");
+              }
+  
+              RaftPeer leader = RaftCore.getLeader();
+  
+              String server = leader.ip;
+              if (!server.contains(UtilsAndCommons.CLUSTER_CONF_IP_SPLITER)) {
+                  server = server + UtilsAndCommons.CLUSTER_CONF_IP_SPLITER + RunningConfig.getServerPort();
+              }
+  
+              String url = "http://" + server
+                  + RunningConfig.getContextPath() + UtilsAndCommons.NACOS_NAMING_CONTEXT + "/api/addIP4Dom";
+              HttpClient.HttpResult result1 = HttpClient.httpPost(url, null, proxyParams);
+  
+              if (result1.code != HttpURLConnection.HTTP_OK) {
+                  Loggers.SRV_LOG.warn("failed to add ip for dom, caused {}", result1.content);
+                  throw new IllegalArgumentException("failed to add ip for dom, caused " + result1.content);
+              }
+  
+              return "ok";
+          }
+  
+          final String dom = WebUtils.required(request, "dom");
+  
+          VirtualClusterDomain domain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+  
+          if (domain == null) {
+              throw new IllegalStateException("dom doesn't exist: " + dom);
+          }
+  
+          boolean updateOnly = Boolean.parseBoolean(WebUtils.optional(request, "updateOnly", "false"));
+  
+          if (CollectionUtils.isEmpty(newIPs)) {
+              throw new IllegalArgumentException("Empty ip list");
+          }
+  
+          if (updateOnly) {
+              //make sure every IP is in the dom, otherwise refuse update
+              List<IpAddress> oldIPs = domain.allIPs();
+              Collection diff = CollectionUtils.subtract(newIPs, oldIPs);
+              if (diff.size() != 0) {
+                  throw new IllegalArgumentException("these IPs are not present: " + Arrays.toString(diff.toArray())
+                      + ", if you want to add them, remove updateOnly flag");
+              }
+          }
+  
+          String key = UtilsAndCommons.getIPListStoreKey(domain);
+  
+          Datum datum = RaftCore.getDatum(key);
+          if (datum == null) {
+              try {
+                  domainsManager.getDom2LockMap().get(UtilsAndCommons.assembleFullServiceName(namespaceId, dom)).lock();
+                  datum = RaftCore.getDatum(key);
+                  if (datum == null) {
+                      datum = new Datum();
+                      datum.key = key;
+                      RaftCore.addDatum(datum);
+                  }
+              } finally {
+                  domainsManager.getDom2LockMap().get(UtilsAndCommons.assembleFullServiceName(namespaceId, dom)).unlock();
+              }
+          }
+  
+          long timestamp = RaftCore.getDatum(key).timestamp.get();
+  
+          if (RaftCore.isLeader()) {
+              try {
+                  RaftCore.OPERATE_LOCK.lock();
+  
+                  OverrideParameterRequestWrapper requestWrapper = OverrideParameterRequestWrapper.buildRequest(request);
+                  requestWrapper.addParameter("clientIP", NetUtils.localServer());
+                  requestWrapper.addParameter("notify", "true");
+                  requestWrapper.addParameter("term", String.valueOf(RaftCore.getPeerSet().local().term));
+                  requestWrapper.addParameter("timestamp", String.valueOf(timestamp));
+  
+                  onAddIP4Dom(requestWrapper);
+  
+                  proxyParams.put("clientIP", NetUtils.localServer());
+                  proxyParams.put("notify", "true");
+                  proxyParams.put("term", String.valueOf(RaftCore.getPeerSet().local().term));
+                  proxyParams.put("timestamp", String.valueOf(timestamp));
+  
+                  if (domain.getEnableHealthCheck() && !domain.getEnableClientBeat()) {
+                      syncOnAddIP4Dom(namespaceId, dom, proxyParams);
+                  } else {
+                      asyncOnAddIP4Dom(proxyParams);
+                  }
+              } finally {
+                  RaftCore.OPERATE_LOCK.unlock();
+              }
+  
+          }
+2:800c
+3:800c
+          serviceManager.addInstance(namespaceId, serviceName, clusterName, newIPs.toArray(new IpAddress[newIPs.size()]));
+====1
+1:1119c
+          VirtualClusterDomain domObj = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:809c
+3:809c
+          VirtualClusterDomain domObj = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:1127c
+          long cacheMillis = Switch.getCacheMillis(dom);
+2:817c
+3:817c
+          long cacheMillis = switchDomain.getDefaultCacheMillis();
+====1
+1:1131,1132c
+              if (udpPort > 0 && PushService.canEnablePush(agent)) {
+                  PushService.addClient(namespaceId, dom,
+2:821,822c
+3:821,822c
+              if (udpPort > 0 && pushService.canEnablePush(agent)) {
+                  pushService.addClient(namespaceId, dom,
+====1
+1:1139c
+                  cacheMillis = Switch.getPushCacheMillis(dom);
+2:829c
+3:829c
+                  cacheMillis = switchDomain.getPushCacheMillis(dom);
+====1
+1:1143c
+              cacheMillis = Switch.getCacheMillis(dom);
+2:833c
+3:833c
+              cacheMillis = switchDomain.getDefaultCacheMillis();
+====1
+1:1233,1274c
+      @RequestMapping("/onRemvIP4Dom")
+      public void onRemvIP4Dom(HttpServletRequest request) throws Exception {
+          if (Switch.getDisableAddIP()) {
+              throw new AccessControlException("Deleting IP for dom is forbidden now.");
+          }
+  
+          String clientIP = WebUtils.required(request, "clientIP");
+          long term = Long.parseLong(WebUtils.required(request, "term"));
+  
+          if (!RaftCore.isLeader(clientIP)) {
+              Loggers.RAFT.warn("peer(" + JSON.toJSONString(clientIP) + ") tried to publish " +
+                  "data but wasn't leader, leader: " + JSON.toJSONString(RaftCore.getLeader()));
+              throw new IllegalStateException("peer(" + clientIP + ") tried to publish " +
+                  "data but wasn't leader");
+          }
+  
+          if (term < RaftCore.getPeerSet().local().term.get()) {
+              Loggers.RAFT.warn("out of date publish, pub-term: "
+                  + JSON.toJSONString(clientIP) + ", cur-term: " + JSON.toJSONString(RaftCore.getPeerSet().local()));
+              throw new IllegalStateException("out of date publish, pub-term:"
+                  + term + ", cur-term: " + RaftCore.getPeerSet().local().term);
+          }
+  
+          RaftCore.getPeerSet().local().resetLeaderDue();
+  
+          final String dom = WebUtils.required(request, "dom");
+          final String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+  
+          if (domainsManager.getDomain(namespaceId, dom) == null) {
+              throw new IllegalStateException("dom doesn't exist: " + dom);
+          }
+  
+          List<IpAddress> removedIPs = getIpAddresses(request);
+  
+          if (CollectionUtils.isEmpty(removedIPs)) {
+              throw new IllegalArgumentException("Empty ip list");
+          }
+  
+          domainsManager.easyRemvIP4Dom(namespaceId, dom, removedIPs, term);
+      }
+  
+2:922a
+3:922a
+====1
+1:1279,1280c
+          if (DistroMapper.getLocalhostIP().equals(UtilsAndCommons.LOCAL_HOST_IP)) {
+              throw new Exception("invalid localhost ip: " + DistroMapper.getLocalhostIP());
+2:927,928c
+3:927,928c
+          if (NetUtils.localServer().equals(UtilsAndCommons.LOCAL_HOST_IP)) {
+              throw new Exception("invalid localhost ip: " + NetUtils.localServer());
+====1
+1:1308,1314c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+          String dom = WebUtils.required(request, "dom");
+          String ipListString = WebUtils.required(request, "ipList");
+  
+          if (Loggers.DEBUG_LOG.isDebugEnabled()) {
+              Loggers.DEBUG_LOG.debug("[REMOVE-IP] full arguments: serviceName: {}, iplist: {}", dom, ipListString);
+2:956,957c
+3:956,957c
+          if (switchDomain.isDisableAddIP()) {
+              throw new AccessControlException("Adding IP for dom is forbidden now.");
+====1
+1:1323c
+              Loggers.DEBUG_LOG.debug("[REMOVE-IP] full arguments, params: {}", proxyParams);
+2:966c
+3:966c
+              Loggers.DEBUG_LOG.debug("[REMOVE-IP] full arguments: {}", proxyParams);
+====1
+1:1326c
+          List<String> ipList = new ArrayList<>();
+2:969,976c
+3:969,976c
+          String namespaceId = WebUtils.optional(request, Constants.REQUEST_PARAM_NAMESPACE_ID,
+              UtilsAndCommons.getDefaultNamespaceId());
+  
+          String serviceName = WebUtils.required(request, Constants.REQUEST_PARAM_SERVICE_NAME);
+  
+          String ipListString = WebUtils.required(request, "ipList");
+          final List<String> ipList;
+          List<IpAddress> removedIPs = new ArrayList<>();
+====1
+1:1328c
+          List<IpAddress> ipObjList = new ArrayList<>(ipList.size());
+2:977a
+3:977a
+====1
+1:1330,1331c
+              ipList = Arrays.asList(ipListString);
+              ipObjList = JSON.parseObject(ipListString, new TypeReference<List<IpAddress>>() {
+2:979c
+3:979c
+              removedIPs = JSON.parseObject(ipListString, new TypeReference<List<IpAddress>>() {
+====1
+1:1336,1359c
+                  ipObjList.add(IpAddress.fromJSON(ip));
+              }
+          }
+  
+          if (!RaftCore.isLeader()) {
+              Loggers.RAFT.info("I'm not leader, will proxy to leader.");
+              if (RaftCore.getLeader() == null) {
+                  throw new IllegalArgumentException("no leader now.");
+              }
+  
+              RaftPeer leader = RaftCore.getLeader();
+  
+              String server = leader.ip;
+              if (!server.contains(UtilsAndCommons.CLUSTER_CONF_IP_SPLITER)) {
+                  server = server + UtilsAndCommons.CLUSTER_CONF_IP_SPLITER + RunningConfig.getServerPort();
+              }
+  
+              String url = "http://" + server
+                  + RunningConfig.getContextPath() + UtilsAndCommons.NACOS_NAMING_CONTEXT + "/api/remvIP4Dom";
+              HttpClient.HttpResult result1 = HttpClient.httpPost(url, null, proxyParams);
+  
+              if (result1.code != HttpURLConnection.HTTP_OK) {
+                  Loggers.SRV_LOG.warn("failed to remove ip for dom, caused: {}", result1.content);
+                  throw new IllegalArgumentException("failed to remove ip for dom, caused " + result1.content);
+2:984,985c
+3:984,985c
+                  IpAddress ipAddr = IpAddress.fromJSON(ip);
+                  removedIPs.add(ipAddr);
+====1
+1:1361,1379c
+  
+              return "ok";
+          }
+  
+          VirtualClusterDomain domain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+  
+          if (domain == null) {
+              throw new IllegalStateException("dom doesn't exist: " + dom);
+          }
+  
+          if (CollectionUtils.isEmpty(ipObjList)) {
+              throw new IllegalArgumentException("Empty ip list");
+          }
+  
+          String key = UtilsAndCommons.getIPListStoreKey(domainsManager.getDomain(namespaceId, dom));
+  
+          long timestamp = 1;
+          if (RaftCore.getDatum(key) != null) {
+              timestamp = RaftCore.getDatum(key).timestamp.get();
+2:986a
+3:986a
+====1
+1:1382,1412c
+          if (RaftCore.isLeader()) {
+  
+              try {
+  
+                  RaftCore.OPERATE_LOCK.lock();
+  
+                  OverrideParameterRequestWrapper requestWrapper = OverrideParameterRequestWrapper.buildRequest(request);
+                  requestWrapper.addParameter("clientIP", NetUtils.localServer());
+                  requestWrapper.addParameter("notify", "true");
+                  requestWrapper.addParameter("term", String.valueOf(RaftCore.getPeerSet().local().term));
+                  requestWrapper.addParameter("timestamp", String.valueOf(timestamp));
+  
+                  onRemvIP4Dom(requestWrapper);
+  
+                  proxyParams.put("clientIP", NetUtils.localServer());
+                  proxyParams.put("notify", "true");
+                  proxyParams.put("term", String.valueOf(RaftCore.getPeerSet().local().term));
+                  proxyParams.put("timestamp", String.valueOf(timestamp));
+  
+                  if (domain.getEnableHealthCheck() && !domain.getEnableClientBeat()) {
+                      syncOnRemvIP4Dom(namespaceId, dom, proxyParams);
+                  } else {
+                      asyncOnRemvIP4Dom(proxyParams);
+                  }
+              } finally {
+                  RaftCore.OPERATE_LOCK.unlock();
+              }
+  
+              Loggers.EVT_LOG.info("dom: {} {POS} {IP-REMV} new: {} operatorIP: {}",
+                  dom, ipListString, WebUtils.optional(request, "clientIP", "unknown"));
+          }
+2:989c
+3:989c
+          serviceManager.removeInstance(namespaceId, serviceName, removedIPs.toArray(new IpAddress[removedIPs.size()]));
+====1
+1:1426,1428c
+          int failedPushCount = PushService.getFailedPushCount();
+          result.put("succeed", PushService.getTotalPush() - failedPushCount);
+          result.put("total", PushService.getTotalPush());
+2:1003,1005c
+3:1003,1005c
+          int failedPushCount = pushService.getFailedPushCount();
+          result.put("succeed", pushService.getTotalPush() - failedPushCount);
+          result.put("total", pushService.getTotalPush());
+====1
+1:1430,1431c
+          if (PushService.getTotalPush() > 0) {
+              result.put("ratio", ((float) PushService.getTotalPush() - failedPushCount) / PushService.getTotalPush());
+2:1007,1008c
+3:1007,1008c
+          if (pushService.getTotalPush() > 0) {
+              result.put("ratio", ((float) pushService.getTotalPush() - failedPushCount) / pushService.getTotalPush());
+====1
+1:1457,1459c
+  
+      ReentrantLock lock = new ReentrantLock();
+  
+2:1033a
+3:1033a
+====1
+1:1463a
+2:1038,1039c
+3:1038,1039c
+          String entry = WebUtils.required(request, "entry");
+          String value = WebUtils.required(request, "value");
+====1
+1:1465,1846c
+          if (!RaftCore.isLeader() && !debug) {
+              Map<String, String> tmpParams = new HashMap<>(16);
+              for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+                  tmpParams.put(entry.getKey(), entry.getValue()[0]);
+              }
+  
+              RaftProxy.proxyGET(UtilsAndCommons.NACOS_NAMING_CONTEXT + "/api/updateSwitch", tmpParams);
+              return "ok";
+          }
+  
+          try {
+              lock.lock();
+              String entry = WebUtils.required(request, "entry");
+  
+              Datum datum = RaftCore.getDatum(UtilsAndCommons.DOMAINS_DATA_ID_PRE + UtilsAndCommons.SWITCH_DOMAIN_NAME);
+              SwitchDomain switchDomain = null;
+  
+              if (datum != null) {
+                  switchDomain = JSON.parseObject(datum.value, SwitchDomain.class);
+              } else {
+                  Loggers.SRV_LOG.warn("datum: {}{} is null", UtilsAndCommons.DOMAINS_DATA_ID_PRE, UtilsAndCommons.SWITCH_DOMAIN_NAME);
+              }
+  
+              if (SwitchEntry.BATCH.equals(entry)) {
+                  //batch update
+                  SwitchDomain dom = JSON.parseObject(WebUtils.required(request, "json"), SwitchDomain.class);
+                  dom.setEnableStandalone(Switch.isEnableStandalone());
+                  if (dom.httpHealthParams.getMin() < SwitchDomain.HttpHealthParams.MIN_MIN
+                      || dom.tcpHealthParams.getMin() < SwitchDomain.HttpHealthParams.MIN_MIN) {
+  
+                      throw new IllegalArgumentException("min check time for http or tcp is too small(<500)");
+                  }
+  
+                  if (dom.httpHealthParams.getMax() < SwitchDomain.HttpHealthParams.MIN_MAX
+                      || dom.tcpHealthParams.getMax() < SwitchDomain.HttpHealthParams.MIN_MAX) {
+  
+                      throw new IllegalArgumentException("max check time for http or tcp is too small(<3000)");
+                  }
+  
+                  if (dom.httpHealthParams.getFactor() < 0
+                      || dom.httpHealthParams.getFactor() > 1
+                      || dom.tcpHealthParams.getFactor() < 0
+                      || dom.tcpHealthParams.getFactor() > 1) {
+  
+                      throw new IllegalArgumentException("malformed factor");
+                  }
+  
+                  Switch.setDom(dom);
+                  if (!debug) {
+                      Switch.save();
+                  }
+  
+                  return "ok";
+              }
+  
+              if (switchDomain != null) {
+                  Switch.setDom(switchDomain);
+              }
+  
+              if (entry.equals(SwitchEntry.DISTRO_THRESHOLD)) {
+                  Float threshold = Float.parseFloat(WebUtils.required(request, "distroThreshold"));
+  
+                  if (threshold <= 0) {
+                      throw new IllegalArgumentException("distroThreshold can not be zero or negative: " + threshold);
+                  }
+  
+                  Switch.setDistroThreshold(threshold);
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+  
+              if (entry.equals(SwitchEntry.ENABLE_ALL_DOM_NAME_CACHE)) {
+                  Boolean enable = Boolean.parseBoolean(WebUtils.required(request, "enableAllDomNameCache"));
+                  Switch.setAllDomNameCache(enable);
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+  
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.INCREMENTAL_LIST)) {
+                  String action = WebUtils.required(request, "action");
+                  List<String> doms = Arrays.asList(WebUtils.required(request, "incrementalList").split(","));
+  
+                  if (action.equals(SwitchEntry.ACTION_UPDATE)) {
+                      Switch.getIncrementalList().addAll(doms);
+                  } else if (action.equals(SwitchEntry.ACTION_DELETE)) {
+                      Switch.getIncrementalList().removeAll(doms);
+                  } else {
+                      throw new IllegalArgumentException("action is not allowed: " + action);
+                  }
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+  
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.HEALTH_CHECK_WHITLE_LIST)) {
+                  String action = WebUtils.required(request, "action");
+                  List<String> whiteList = Arrays.asList(WebUtils.required(request, "healthCheckWhiteList").split(","));
+  
+                  if (action.equals(SwitchEntry.ACTION_UPDATE)) {
+                      Switch.getHealthCheckWhiteList().addAll(whiteList);
+                      if (!debug) {
+                          Switch.save();
+                      }
+  
+                      return "ok";
+                  }
+  
+                  if (action.equals(SwitchEntry.ACTION_DELETE)) {
+                      Switch.getHealthCheckWhiteList().removeAll(whiteList);
+                      if (!debug) {
+                          Switch.save();
+                      }
+                      return "ok";
+                  }
+              }
+  
+              if (entry.equals(SwitchEntry.CLIENT_BEAT_INTERVAL)) {
+                  long clientBeatInterval = Long.parseLong(WebUtils.required(request, "clientBeatInterval"));
+                  Switch.setClientBeatInterval(clientBeatInterval);
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.PUSH_VERSION)) {
+                  String type = WebUtils.required(request, "type");
+                  String version = WebUtils.required(request, "version");
+  
+                  if (!version.matches(UtilsAndCommons.VERSION_STRING_SYNTAX)) {
+                      throw new IllegalArgumentException("illegal version, must match: " + UtilsAndCommons.VERSION_STRING_SYNTAX);
+                  }
+  
+                  if (StringUtils.equals(SwitchEntry.CLIENT_JAVA, type)) {
+                      Switch.setPushJavaVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_PYTHON, type)) {
+                      Switch.setPushPythonVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_C, type)) {
+                      Switch.setPushCVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_GO, type)) {
+                      Switch.setPushGoVersion(version);
+                  } else {
+                      throw new IllegalArgumentException("unsupported client type: " + type);
+                  }
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.TRAFFIC_SCHEDULING_VERSION)) {
+                  String type = WebUtils.required(request, "type");
+                  String version = WebUtils.required(request, "version");
+  
+                  if (!version.matches(UtilsAndCommons.VERSION_STRING_SYNTAX)) {
+                      throw new IllegalArgumentException("illegal version, must match: " + UtilsAndCommons.VERSION_STRING_SYNTAX);
+                  }
+  
+                  if (StringUtils.equals(SwitchEntry.CLIENT_JAVA, type)) {
+                      Switch.setTrafficSchedulingJavaVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_PYTHON, type)) {
+                      Switch.setTrafficSchedulingPythonVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_C, type)) {
+                      Switch.setTrafficSchedulingCVersion(version);
+                  } else if (StringUtils.equals(SwitchEntry.CLIENT_TENGINE, type)) {
+                      Switch.setTrafficSchedulingTengineVersion(version);
+                  } else {
+                      throw new IllegalArgumentException("unsupported client type: " + type);
+                  }
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.PUSH_CACHE_MILLIS)) {
+                  String dom = WebUtils.optional(request, "dom", StringUtils.EMPTY);
+                  Long cacheMillis = Long.parseLong(WebUtils.required(request, "millis"));
+  
+                  if (cacheMillis < SwitchEntry.MIN_PUSH_CACHE_TIME_MIILIS) {
+                      throw new IllegalArgumentException("min cache time for http or tcp is too small(<10000)");
+                  }
+  
+                  Switch.setPushCacheMillis(dom, cacheMillis);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              // extremely careful while modifying this, cause it will affect all clients without pushing enabled
+              if (entry.equals(SwitchEntry.DEFAULT_CACHE_MILLIS)) {
+                  String dom = WebUtils.optional(request, "dom", StringUtils.EMPTY);
+                  Long cacheMillis = Long.parseLong(WebUtils.required(request, "millis"));
+  
+                  if (cacheMillis < SwitchEntry.MIN_CACHE_TIME_MIILIS) {
+                      throw new IllegalArgumentException("min default cache time  is too small(<1000)");
+                  }
+  
+                  Switch.setCacheMillis(dom, cacheMillis);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.MASTERS)) {
+                  List<String> masters = Arrays.asList(WebUtils.required(request, "names").split(","));
+  
+                  Switch.setMasters(masters);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.DISTRO)) {
+                  boolean enabled = Boolean.parseBoolean(WebUtils.required(request, "enabled"));
+  
+                  Switch.setDistroEnabled(enabled);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.CHECK)) {
+                  boolean enabled = Boolean.parseBoolean(WebUtils.required(request, "enabled"));
+  
+                  Switch.setHeathCheckEnabled(enabled);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.DEFAULT_HEALTH_CHECK_MODE)) {
+                  String defaultHealthCheckMode = WebUtils.required(request, "mode");
+  
+                  Switch.setDefaultHealthCheckMode(defaultHealthCheckMode);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.DOM_STATUS_SYNC_PERIOD)) {
+                  Long millis = Long.parseLong(WebUtils.required(request, "millis"));
+  
+                  if (millis < SwitchEntry.MIN_DOM_SYNC_TIME_MIILIS) {
+                      throw new IllegalArgumentException("domStatusSynchronizationPeriodMillis is too small(<5000)");
+                  }
+  
+                  Switch.setDomStatusSynchronizationPeriodMillis(millis);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.SERVER_STATUS_SYNC_PERIOD)) {
+                  Long millis = Long.parseLong(WebUtils.required(request, "millis"));
+  
+                  if (millis < SwitchEntry.MIN_SERVER_SYNC_TIME_MIILIS) {
+                      throw new IllegalArgumentException("serverStatusSynchronizationPeriodMillis is too small(<15000)");
+                  }
+  
+                  Switch.setServerStatusSynchronizationPeriodMillis(millis);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.HEALTH_CHECK_TIMES)) {
+                  Integer times = Integer.parseInt(WebUtils.required(request, "times"));
+  
+                  Switch.setCheckTimes(times);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.DISABLE_ADD_IP)) {
+                  boolean disableAddIP = Boolean.parseBoolean(WebUtils.required(request, "disableAddIP"));
+  
+                  Switch.setDisableAddIP(disableAddIP);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.ENABLE_CACHE)) {
+                  boolean enableCache = Boolean.parseBoolean(WebUtils.required(request, "enableCache"));
+  
+                  Switch.setEnableCache(enableCache);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.SEND_BEAT_ONLY)) {
+                  boolean sendBeatOnly = Boolean.parseBoolean(WebUtils.required(request, "sendBeatOnly"));
+  
+                  Switch.setSendBeatOnly(sendBeatOnly);
+                  if (!debug) {
+                      Switch.save();
+                  }
+                  return "ok";
+              }
+  
+              if (entry.equals(SwitchEntry.LIMITED_URL_MAP)) {
+                  Map<String, Integer> limitedUrlMap = new HashMap<>(16);
+                  String limitedUrls = WebUtils.required(request, "limitedUrls");
+  
+                  if (!StringUtils.isEmpty(limitedUrls)) {
+                      String[] entries = limitedUrls.split(",");
+                      for (int i = 0; i < entries.length; i++) {
+                          String[] parts = entries[i].split(":");
+                          if (parts.length < 2) {
+                              throw new IllegalArgumentException("invalid input for limited urls");
+                          }
+  
+                          String limitedUrl = parts[0];
+                          if (StringUtils.isEmpty(limitedUrl)) {
+                              throw new IllegalArgumentException("url can not be empty, url: " + limitedUrl);
+                          }
+  
+                          int statusCode = Integer.parseInt(parts[1]);
+                          if (statusCode <= 0) {
+                              throw new IllegalArgumentException("illegal normal status code: " + statusCode);
+                          }
+  
+                          limitedUrlMap.put(limitedUrl, statusCode);
+  
+                      }
+  
+                      Switch.setLimitedUrlMap(limitedUrlMap);
+                      if (!debug) {
+                          Switch.save();
+                      }
+                      return "ok";
+                  }
+              }
+  
+              if (entry.equals(SwitchEntry.ENABLE_STANDALONE)) {
+                  String enable = WebUtils.required(request, "enableStandalone");
+  
+                  if (!StringUtils.isNotEmpty(enable)) {
+                      Switch.setEnableStandalone(Boolean.parseBoolean(enable));
+                  }
+  
+                  if (!debug) {
+                      Switch.save();
+                  }
+  
+                  return "ok";
+              }
+  
+  
+              throw new IllegalArgumentException("update entry not found: " + entry);
+          } finally {
+              lock.unlock();
+          }
+  
+2:1041c
+3:1041c
+          switchManager.update(entry, value, debug);
+====1
+1:1847a
+2:1043c
+3:1043c
+          return "ok";
+====1
+1:1858c
+          return JSON.parseObject(Switch.getDom().toJSON());
+2:1054c
+3:1054c
+          return JSON.parseObject(switchDomain.toJSON());
+====2
+1:1902a
+3:1098a
+2:1099,1105c
+          Map<String, Set<String>> domMap = domainsManager.getAllDomNames();
+          JSONObject result = new JSONObject();
+          // For old DNS-F client:
+          String dnsfVersion = "1.0.1";
+          String agent = request.getHeader("Client-Version");
+          ClientInfo clientInfo = new ClientInfo(agent);
+          if (clientInfo.type == ClientInfo.ClientType.DNS && clientInfo.version.compareTo(VersionUtil.parseVersion(dnsfVersion)) <= 0) {
+====2
+1:1904c
+3:1100c
+          Map<String, Set<String>> doms = new HashMap<>(16);
+2:1107,1108c
+              List<String> doms = new ArrayList<String>();
+              Set<String> domSet = null;
+====
+1:1906c
+          Map<String, Set<String>> domMap = domainsManager.getAllDomNames();
+2:1110,1135c
+  <<<<<<< HEAD
+          Map<String, Set<String>> domMap = serviceManager.getAllDomNames();
+  ||||||| c863cbcde
+          Map<String, Set<String>> domMap = domainsManager.getAllDomNames();
+  =======
+              if (domMap.containsKey(Constants.REQUEST_PARAM_DEFAULT_NAMESPACE_ID)) {
+                  domSet = domMap.get(Constants.REQUEST_PARAM_DEFAULT_NAMESPACE_ID);
+              }
+  >>>>>>> TEMP_RIGHT_BRANCH
+  
+              if (CollectionUtils.isEmpty(domSet)) {
+                  result.put("doms", new HashSet<>());
+                  result.put("count", 0);
+                  return result;
+              }
+  
+              for (String dom : domSet) {
+                  if (DistroMapper.responsible(dom) || !responsibleOnly) {
+                      doms.add(dom);
+                  }
+              }
+  
+              result.put("doms", doms);
+              result.put("count", doms.size());
+              return result;
+          }
+3:1102c
+          Map<String, Set<String>> domMap = serviceManager.getAllDomNames();
+====2
+1:1907a
+3:1103a
+2:1137,1138c
+          Map<String, Set<String>> doms = new HashMap<>(16);
+          int count = 0;
+====1
+1:1911c
+                  if (DistroMapper.responsible(dom) || !responsibleOnly) {
+2:1142c
+3:1107c
+                  if (distroMapper.responsible(dom) || !responsibleOnly) {
+====2
+1:1914a
+3:1110a
+2:1146c
+              count += doms.get(namespaceId).size();
+====2
+1:1917,1918c
+3:1113,1114c
+          JSONObject result = new JSONObject();
+  
+2:1148a
+====2
+1:1920c
+3:1116c
+          result.put("count", doms.size());
+2:1150c
+          result.put("count", count);
+====1
+1:1933,1934c
+          List<Domain> doms
+              = domainsManager.searchDomains(namespaceId, ".*" + expr + ".*");
+2:1163,1164c
+3:1129,1130c
+          List<VirtualClusterDomain> doms
+              = serviceManager.searchDomains(namespaceId, ".*" + expr + ".*");
+====1
+1:1980c
+          VirtualClusterDomain domObj = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:1210c
+3:1176c
+          VirtualClusterDomain domObj = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:2063c
+          domainsManager.easyAddOrReplaceDom(domObj);
+2:1293c
+3:1259c
+          serviceManager.addOrReplaceService(domObj);
+====1
+1:2082c
+              result.put("status", DistroMapper.getDistroConfig());
+2:1312c
+3:1278c
+              result.put("status", distroMapper.getDistroConfig());
+====1
+1:2087c
+              DistroMapper.clean();
+2:1317c
+3:1283c
+              distroMapper.clean();
+====1
+1:2099,2100c
+          int domCount = domainsManager.getDomCount();
+          int ipCount = domainsManager.getInstanceCount();
+2:1329,1330c
+3:1295,1296c
+          int domCount = serviceManager.getDomCount();
+          int ipCount = serviceManager.getInstanceCount();
+====1
+1:2102,2103c
+          int responsibleDomCount = domainsManager.getResponsibleDomCount();
+          int responsibleIPCount = domainsManager.getResponsibleIPCount();
+2:1332,1333c
+3:1298,1299c
+          int responsibleDomCount = serviceManager.getResponsibleDomCount();
+          int responsibleIPCount = serviceManager.getResponsibleIPCount();
+====1
+1:2112c
+          result.put("notifyTask", RaftCore.notifier.getTaskSize());
+2:1341a
+3:1307a
+====1
+1:2198c
+          DistroMapper.onReceiveServerStatus(serverStatus);
+2:1427c
+3:1393c
+          distroMapper.onReceiveServerStatus(serverStatus);
+====1
+1:2209c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:1438c
+3:1404c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:2229c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:1458c
+3:1424c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:2237c
+          result.put("responsibleServer", DistroMapper.mapSrv(dom));
+2:1466c
+3:1432c
+          result.put("responsibleServer", distroMapper.mapSrv(dom));
+====1
+1:2246c
+          result.put("healthyList", DistroMapper.getHealthyList());
+2:1475c
+3:1441c
+          result.put("healthyList", distroMapper.getHealthyList());
+====1
+1:2256c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) domainsManager.getDomain(namespaceId, dom);
+2:1485c
+3:1451c
+          VirtualClusterDomain virtualClusterDomain = (VirtualClusterDomain) serviceManager.getService(namespaceId, dom);
+====1
+1:2264c
+          result.put("responsible", DistroMapper.responsible(dom));
+2:1493c
+3:1459c
+          result.put("responsible", distroMapper.responsible(dom));
+====1
+1:2275c
+          if (!NamingProxy.getServers().contains(serverIP)) {
+2:1504c
+3:1470c
+          if (!serverListManager.contains(serverIP)) {
+====1
+1:2280c
+              DomainsManager.DomainChecksum checksums = JSON.parseObject(domsStatusString, DomainsManager.DomainChecksum.class);
+2:1509c
+3:1475c
+              ServiceManager.DomainChecksum checksums = JSON.parseObject(domsStatusString, ServiceManager.DomainChecksum.class);
+====1
+1:2292c
+                  Domain domain = domainsManager.getDomain(checksums.namespaceId, dom);
+2:1521c
+3:1487c
+                  Domain domain = serviceManager.getService(checksums.namespaceId, dom);
+====1
+1:2305c
+                      domainsManager.addUpdatedDom2Queue(checksums.namespaceId, dom, serverIP, checksum);
+2:1534c
+3:1500c
+                      serviceManager.addUpdatedDom2Queue(checksums.namespaceId, dom, serverIP, checksum);
+====1
+1:2354c
+          pac.put("checkServer", DistroMapper.mapSrvName(vDom.getName()));
+2:1583c
+3:1549c
+          pac.put("checkServer", distroMapper.mapSrvName(vDom.getName()));
+====1
+1:2432,2433c
+      public void setDomainsManager(DomainsManager domainsManager) {
+          this.domainsManager = domainsManager;
+2:1661,1662c
+3:1627,1628c
+      public void setServiceManager(ServiceManager serviceManager) {
+          this.serviceManager = serviceManager;

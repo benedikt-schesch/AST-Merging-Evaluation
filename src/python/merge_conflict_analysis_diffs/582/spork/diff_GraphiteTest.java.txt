@@ -1,0 +1,117 @@
+7d6
+< 
+8a8
+> import java.io.IOException;
+16c16,17
+< import static org.assertj.core.api.Fail.failBecauseExceptionWasNotThrown;
+---
+> import static org.assertj.core.api.Assertions.assertThatNoException;
+> import static org.assertj.core.api.Assertions.assertThatThrownBy;
+35,36d35
+<     private Graphite graphite;
+< 
+66,68c65,67
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+< 
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             graphite.connect();
+>         }
+74,76c73,75
+<         graphite = new Graphite(host, port, socketFactory);
+<         graphite.connect();
+< 
+---
+>         try (Graphite graphite = new Graphite(host, port, socketFactory)) {
+>             graphite.connect();
+>         }
+81,84c80,83
+<     public void measuresFailures() {
+<         graphite = new Graphite(address, socketFactory);
+<         assertThat(graphite.getFailures())
+<                 .isZero();
+---
+>     public void measuresFailures() throws IOException {
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             assertThat(graphite.getFailures()).isZero();
+>         }
+89,91c88,90
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+<         graphite.close();
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             graphite.connect();
+>         }
+98,105c97,101
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+<         try {
+<             graphite.connect();
+<             failBecauseExceptionWasNotThrown(IllegalStateException.class);
+<         } catch (IllegalStateException e) {
+<             assertThat(e.getMessage())
+<                     .isEqualTo("Already connected");
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             assertThatNoException().isThrownBy(graphite::connect);
+>             assertThatThrownBy(graphite::connect)
+>                     .isInstanceOf(IllegalStateException.class)
+>                     .hasMessage("Already connected");
+111,117c107,111
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+<         graphite.send("name", "value", 100);
+<         graphite.close();
+< 
+<         assertThat(output.toString())
+<                 .isEqualTo("name value 100\n");
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             graphite.connect();
+>             graphite.send("name", "value", 100);
+>         }
+>         assertThat(output).hasToString("name value 100\n");
+122,128c116,120
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+<         graphite.send("name woo", "value", 100);
+<         graphite.close();
+< 
+<         assertThat(output.toString())
+<                 .isEqualTo("name-woo value 100\n");
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             graphite.connect();
+>             graphite.send("name woo", "value", 100);
+>         }
+>         assertThat(output).hasToString("name-woo value 100\n");
+133,139c125,129
+<         graphite = new Graphite(address, socketFactory);
+<         graphite.connect();
+<         graphite.send("name", "value woo", 100);
+<         graphite.close();
+< 
+<         assertThat(output.toString())
+<                 .isEqualTo("name value-woo 100\n");
+---
+>         try (Graphite graphite = new Graphite(address, socketFactory)) {
+>             graphite.connect();
+>             graphite.send("name", "value woo", 100);
+>         }
+>         assertThat(output).hasToString("name value-woo 100\n");
+143c133
+<     public void notifiesIfGraphiteIsUnavailable() {
+---
+>     public void notifiesIfGraphiteIsUnavailable() throws IOException {
+148,152c138,140
+<             unavailableGraphite.connect();
+<             failBecauseExceptionWasNotThrown(UnknownHostException.class);
+<         } catch (Exception e) {
+<             assertThat(e.getMessage())
+<                 .isEqualTo(unavailableHost);
+---
+>             assertThatThrownBy(unavailableGraphite::connect)
+>                     .isInstanceOf(UnknownHostException.class)
+>                     .hasMessage(unavailableHost);

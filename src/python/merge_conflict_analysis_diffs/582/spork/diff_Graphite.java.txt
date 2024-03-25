@@ -1,0 +1,33 @@
+12d11
+< import java.net.InetAddress;
+17a17
+> import static java.util.Objects.requireNonNull;
+68a69,76
+>         if (hostname == null || hostname.isEmpty()) {
+>             throw new IllegalArgumentException("hostname must not be null or empty");
+>         }
+> 
+>         if (port < 0 || port > 65535) {
+>             throw new IllegalArgumentException("port must be a valid IP port (0-65535)");
+>         }
+> 
+72,73c80,81
+<         this.socketFactory = socketFactory;
+<         this.charset = charset;
+---
+>         this.socketFactory = requireNonNull(socketFactory, "socketFactory must not be null");
+>         this.charset = requireNonNull(charset, "charset must not be null");
+107,109c115,117
+<         this.address = address;
+<         this.socketFactory = socketFactory;
+<         this.charset = charset;
+---
+>         this.address = requireNonNull(address, "address must not be null");
+>         this.socketFactory = requireNonNull(socketFactory, "socketFactory must not be null");
+>         this.charset = requireNonNull(charset, "charset must not be null");
+122,123c130,131
+<         if (address == null || hostname != null) {
+<             address = new InetSocketAddress(InetAddress.getByName(hostname), port);
+---
+>         if (address == null || address.getHostName() == null && hostname != null) {
+>             address = new InetSocketAddress(hostname, port);

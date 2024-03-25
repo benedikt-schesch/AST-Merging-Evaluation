@@ -1,0 +1,39 @@
+====1
+1:9c
+      <version>0.4.3-SNAPSHOT</version>
+2:9c
+3:9c
+      <version>0.4.2</version>
+====1
+1:14a
+2:15,16c
+3:15,16c
+          <spring-version>4.0.0.RELEASE</spring-version>
+  
+====2
+1:50a
+3:52a
+2:53c
+  <<<<<<< HEAD
+====
+1:51a
+2:55,61c
+          <module>webmagic-panel</module>
+          <module>webmagic-worker</module>
+  ||||||| ac516f9b
+          <module>webmagic-scripts/</module>
+  =======
+          <module>webmagic-samples/</module>
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:54,55c
+          <module>webmagic-panel</module>
+          <module>webmagic-worker</module>
+====1
+1:82a
+2:93,97c
+3:87,91c
+                  <groupId>com.alibaba</groupId>
+                  <artifactId>fastjson</artifactId>
+                  <version>1.1.37</version>
+              </dependency>
+              <dependency>

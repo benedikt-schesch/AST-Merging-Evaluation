@@ -1,0 +1,16 @@
+====3
+1:1c
+2:1c
+  /* Copyright (c) 2008-2022, Nathan Sweet
+3:1c
+  /* Copyright (c) 2008-2023, Nathan Sweet
+====1
+1:77a
+2:78c
+3:78c
+  		@Param({"DEFAULT", "MINIMAL", "NONE"}) public Kryo.GenericsStrategy generics;
+====1
+1:110a
+2:112c
+3:112c
+  			kryo.setGenericsStrategy(generics);

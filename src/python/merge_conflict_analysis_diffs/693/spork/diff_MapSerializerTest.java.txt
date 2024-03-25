@@ -1,0 +1,21 @@
+====3
+1:1c
+2:1c
+  /* Copyright (c) 2008-2022, Nathan Sweet
+3:1c
+  /* Copyright (c) 2008-2023, Nathan Sweet
+====3
+1:43c
+2:43c
+  import org.apache.commons.lang.builder.EqualsBuilder;
+3:43c
+  import org.apache.commons.lang3.builder.EqualsBuilder;
+====1
+1:120c
+  		input = new Input(output.toBytes());
+2:120,123c
+3:120,123c
+  		final byte[] bytes = output.toBytes();
+  		assertEquals(bytes.length, 13);
+  		
+  		input = new Input(bytes);

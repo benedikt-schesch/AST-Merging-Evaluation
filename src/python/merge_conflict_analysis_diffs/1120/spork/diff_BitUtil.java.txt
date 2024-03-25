@@ -1,0 +1,14 @@
+====1
+1:24c
+   * @author Peter Karich,
+2:24c
+3:24c
+   * @author Peter Karich
+====3
+1:108a
+2:108a
+3:109,112c
+      public static long toLong(int high, int low) {
+          return ((long) high << 32) | (low & 0xFFFFFFFFL);
+      }
+  

@@ -1,0 +1,37 @@
+====1
+1:13c
+      <version>2.15</version>
+2:13c
+3:13c
+      <version>2.16-SNAPSHOT</version>
+====
+1:19c
+    <version>2.15.1-SNAPSHOT</version>
+2:19,25c
+  <<<<<<< HEAD
+    <version>2.16.0-SNAPSHOT</version>
+  ||||||| 61efbfd
+    <version>2.15.1-SNAPSHOT</version>
+  =======
+    <version>2.15.3-SNAPSHOT</version>
+  >>>>>>> TEMP_RIGHT_BRANCH
+3:19c
+    <version>2.16.0-SNAPSHOT</version>
+====2
+1:53c
+3:53c
+      <project.build.outputTimestamp>2023-04-23T20:32:57Z</project.build.outputTimestamp>
+2:59c
+      <project.build.outputTimestamp>2023-05-30T20:33:25Z</project.build.outputTimestamp>
+====1
+1:110c
+          <version>1.6.8</version>
+2:116c
+3:110c
+          <version>1.6.13</version>
+====2
+1:124c
+3:124c
+          <version>0.2.0</version>
+2:130c
+          <version>0.4.0</version>
