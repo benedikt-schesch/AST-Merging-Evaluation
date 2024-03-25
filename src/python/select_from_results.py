@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Output a subset of the results that match a hard-coded condition, to a hard-coded file."""
+"""Output a subset of the results that match a hard-coded condition, to a hard-coded file.
+
+To change the condition or file, edit this script.
+"""
 
 import pandas as pd
 
