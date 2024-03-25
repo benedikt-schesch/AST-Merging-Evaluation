@@ -1,4 +1,5 @@
 """Runs a merge and uses diff3 to compare it to the base and final branch of a given repo.
+See readme for details on shell scripts to run these methods.
 """
 
 import sys

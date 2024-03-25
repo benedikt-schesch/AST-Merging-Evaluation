@@ -1,4 +1,5 @@
 """Recreates merges on selection of algorithms with a selection of commits.
+See readme for details on shell scripts to run these methods.
 """
 
 import sys
