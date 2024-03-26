@@ -1,0 +1,4 @@
+idx,branch_name,merge_commit,parent_1,parent_2,notes
+1,refs/heads/master,6296fe813edcd2243c169b113deb9c58e3b8bec5,ae9827b75c12de2a4c3d89155491e87b0fc7abf3,88c8b5597371f4843be4f607f319b724777aa3e5,a parent is the base
+2,refs/heads/master,2aa46af5efcb34a873c280db10727b25a3efaff5,8695bf2136ba30fbcae1d32f1d0d6fbd7254e2d6,704a68eacdd9a2716892b6474344026f02b178b1,a parent is the base
+3,refs/remotes/origin/wicket-6.x,5fea48fc2041018a1d8670bc91345714cc2b8774,c0b944c56d7bd08d058a674eeb76148bc252f09c,34b4a8531cd788b047060df9221296ccf7b4df06,

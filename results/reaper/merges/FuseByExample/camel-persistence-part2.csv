@@ -1,0 +1,4 @@
+idx,branch_name,merge_commit,parent_1,parent_2,notes
+1,refs/heads/jboss-fuse-6.2.1,bf4d32f831b82e428290faf3aa58a146ae70053d,acb82d5290c9226462d0d42945cc40bb49dfca2a,89ee6af477f9632ea8f2dd47ad98117726084cf1,a parent is the base
+2,refs/heads/jboss-fuse-6.2.1,acb82d5290c9226462d0d42945cc40bb49dfca2a,d4e440f4bb3b573ae07404d7ab3c5235302442d6,088cc8c8f3ea9a0bc51012fd4ca35630e6cbf6b2,
+3,refs/heads/jboss-fuse-6.2.1,d4e440f4bb3b573ae07404d7ab3c5235302442d6,57a5cbb88798f992409f524bea318000502b3d08,fccd5c882aa6101892ac877c9c85a2422eb3effd,a parent is the base

@@ -12,4 +12,4 @@
 set -e
 set -o nounset
 
-./run.sh input_data/repos_greatest_hits.csv results_greatest_hits 100 cache "$@"
+./run.sh input_data/repos_greatest_hits.csv greatest_hits 100 cache "$@"

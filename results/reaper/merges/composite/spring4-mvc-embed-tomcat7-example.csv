@@ -1,0 +1,3 @@
+idx,branch_name,merge_commit,parent_1,parent_2,notes
+1,refs/heads/master,ffba9a85d62e9e4b3baed5da27d077fab5a69350,4cda5cb106c9261596d52aa96789c2e3dc6716f7,7611333067d60b38178cf462dedd788092936030,a parent is the base
+2,refs/heads/master,9edf2bf50a6325f83abc50d44310c5adffc7bff4,9953b4e92028c2e3e5653452db7269a693abe11d,fef5158593b8b3507811c0e2769eafd81223881b,two initial commits

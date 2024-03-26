@@ -42,8 +42,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
         merges = pd.read_csv(args.merges / f"{repo_slug}.csv")
+        merges = merges.sample(frac=1, random_state=42)
         if len(merges) > args.n_sampled_timing:
-            merges = merges.sample(n=args.n_sampled_timing, random_state=42)
+            merges = merges.iloc[: args.n_sampled_timing]
 
         for idx, merge_data in tqdm(merges.iterrows(), total=len(merges)):
             for merge_tool in MERGE_TOOL:

@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+1,refs/heads/master,22832355bb7d6b65699366067e4b06af5209a0d7,0670b32fb77b3fde9a1d7722e2bca8601196e5aa,635f64c7cbf09fc7d47ab3092cfa76f46280db33,,False,False,False
+2,refs/heads/master,940cc01355ce1c68a2ea682bcbfe2dc17a2bf3a4,3d1bfc117607282ada54df60a810867f2264885b,fff369b423cdb33bb87ec68c208198be0c3d0095,,False,False,False
