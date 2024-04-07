@@ -84,33 +84,31 @@ def clone_repo(repo_slug: str) -> git.repo.Repo:
     return repo
 
 
-@timeout(10 * 60)
 def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
-        path (str): The path to clone the repo into
     """
-    repo_dir = path / repo_slug
+    repo_dir = Path(path) / Path(repo_slug)
     if repo_dir.exists():
         repo = git.repo.Repo(repo_dir)
     else:
         repo_dir.parent.mkdir(parents=True, exist_ok=True)
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
-        os.environ["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes"
         print(repo_slug, " : Cloning repo")
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
         github_url = "https://:@github.com/" + repo_slug + ".git"
+        print(repo_slug, " : Finished cloning")
         try:
             repo = git.repo.Repo.clone_from(github_url, repo_dir)
             print(repo_slug, " : Finished cloning")
             repo.remote().fetch()
             repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
             repo.submodule_update()
-        except GitCommandError as e:
-            print(repo_slug, "GitCommandError during cloning:\n", e)
-            raise Exception("GitCommandError during cloning") from e
+        except Exception as e:
+            print(repo_slug, "Exception during cloning:\n", e)
+            raise
     return repo
 
 

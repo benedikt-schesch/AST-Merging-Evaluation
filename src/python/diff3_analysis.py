@@ -34,7 +34,7 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
     shutil.rmtree("./repos", ignore_errors=True)
 
     # Retrieve left and right branch from hash in repo
-    df = pd.read_csv("../../results_greatest_hits/result.csv")
+    df = pd.read_csv("../../results/combined/result.csv")
     repo_name = df.iloc[results_index]["repository"]
 
     script = "../scripts/merge_tools/" + merge_tool + ".sh"
@@ -96,7 +96,10 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
     repo3.git.checkout(df.iloc[results_index]["merge"], force=True)
     repo3.submodule_update()
 
+    print(conflict_file_matches)
+
     for conflict_file_match in conflict_file_matches:
+        print("HELLO!!!")
         conflicting_file = str(conflict_file_match)
         conflict_path = os.path.join(repo_name, conflicting_file)
         conflict_path_merge_attempt = os.path.join(
@@ -123,6 +126,7 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
         # Check that diff3 didn't run into missing files in the base
         error_message = "No such file or directory"
         if error_message in diff_results.stderr:
+            print("WHERE WE NEED TO BE")
             # Since the conflict file was added in both parents we can't diff the base.
             diff_results = subprocess.run(
                 [
@@ -138,6 +142,9 @@ def diff3_analysis(merge_tool: str, results_index: int, repo_output_dir):
         diff_filename = os.path.join(
             repo_output_dir, f"diff_{os.path.basename(conflicting_file)}.txt"
         )
+
+        # Ensure the output directory exists
+        os.makedirs(diff_filename, exist_ok=True)
 
         # Write the diff results to the file
         with open(diff_filename, "w") as diff_file:
