@@ -1,0 +1,788 @@
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out lefteb16dbeb6b16bd0fad8eb1978a60c70e3241fed6
+Checking out right195d87c7aaf91ee56c9596fc9c31b182c87dff27
+Found base sha2358f475d349d04f50b190390d56ceb1f3a3b547
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging README.md
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/TreeCodec.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/TreeCodec.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+datastax/java-driver  : Cloning repo
+datastax/java-driver  : Finished cloning
+datastax/java-driver  : Finished cloning
+Checking out left7ad7bb97376d91ae00bb71086e9712275335a88f
+Checking out rightf7fb6aa1824482e9fd08f52a4240ff2744f8164c
+Found base sha88c925deb8be0eee4dfb0193b20aa4fa867be3ce
+
+datastax/java-driver  : Cloning repo
+datastax/java-driver  : Finished cloning
+datastax/java-driver  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging driver-core/CHANGELOG.rst
+CONFLICT (modify/delete): driver-core/src/main/java/com/datastax/driver/core/Codec.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of driver-core/src/main/java/com/datastax/driver/core/Codec.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+datastax/java-driver  : Cloning repo
+datastax/java-driver  : Finished cloning
+datastax/java-driver  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out lefte0d15fbfd819dd6b032675f4fde9d1815795fed6
+Checking out right0b31574d7bea6a229eb76ade99173c2afac9a424
+Found base shaee0a1c57f2ce940f8979f0492a4bc0fd282a8f09
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out left36dc9e8e50a91a37252dba924a1524a9bfee7418
+Checking out rightd5673d2e9ffa1357bad7bc3665051245447a47ce
+Found base shae0dfdd186161db10f79c7cebf3741acd2078f051
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonGenerator.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonGenerator.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+btrplace/scheduler  : Cloning repo
+btrplace/scheduler  : Finished cloning
+btrplace/scheduler  : Finished cloning
+Checking out left1dee1488250b037a35e41bbe493a6717002abf6c
+Checking out rightab15dc6284880891a2fa43994c8225ebef8d4cc9
+Found base shace8c5820793ef6c523bdfe5821947c1b324192eb
+
+btrplace/scheduler  : Cloning repo
+btrplace/scheduler  : Finished cloning
+btrplace/scheduler  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): json/src/main/java/org/btrplace/json/model/view/NetworkConverter.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of json/src/main/java/org/btrplace/json/model/view/NetworkConverter.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+btrplace/scheduler  : Cloning repo
+btrplace/scheduler  : Finished cloning
+btrplace/scheduler  : Finished cloning
+[]
+movsim/movsim  : Cloning repo
+movsim/movsim  : Finished cloning
+movsim/movsim  : Finished cloning
+Checking out left8f9c22cec00c429143d0047b5b1c209fa39e3980
+Checking out rightdae2eec008e544374baca219423478b406bdbe35
+Found base sha05aa54d32e10d9f1fdbf4209c3f5ad5a6c6dbd39
+
+movsim/movsim  : Cloning repo
+movsim/movsim  : Finished cloning
+movsim/movsim  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging src/main/java/org/movsim/facades/MovsimViewerFacade.java
+CONFLICT (modify/delete): src/main/java/org/movsim/simulator/SimulatorImpl.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/movsim/simulator/SimulatorImpl.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+movsim/movsim  : Cloning repo
+movsim/movsim  : Finished cloning
+movsim/movsim  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out left4e075e3fed9f8a97943bc326e65518acba5f2658
+Checking out right3facd90b488a21e9de4e6145358353bdb1420113
+Found base shafdf309749cd34285be2024377806310e8a70ec76
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonParser.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonParser.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/base/ParserBase.java
+CONFLICT (modify/delete): src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapper.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapper.java left in tree.
+Auto-merging src/test/java/tools/jackson/core/json/async/AsyncNumberCoercionTest.java
+CONFLICT (file location): src/test/java/com/fasterxml/jackson/core/json/async/AsyncNumberDeferredReadTest.java added in TEMP_RIGHT_BRANCH inside a directory that was renamed in HEAD, suggesting it should perhaps be moved to src/test/java/tools/jackson/core/json/async/AsyncNumberDeferredReadTest.java.
+CONFLICT (file location): src/test/java/com/fasterxml/jackson/core/read/NumberDeferredReadTest.java added in TEMP_RIGHT_BRANCH inside a directory that was renamed in HEAD, suggesting it should perhaps be moved to src/test/java/tools/jackson/core/read/NumberDeferredReadTest.java.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out left64a49cb5a81319f3417b5243b4a0e2aa25c1e04a
+Checking out right74ca3ac34c37ff87ce0108d42d91d313e4222057
+Found base shaab0e373b3af28b48474fc2de8af921c9a9729084
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/TSFBuilder.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/TSFBuilder.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/util/JsonBufferRecyclers.java
+Auto-merging src/main/java/tools/jackson/core/util/RecyclerPool.java
+Auto-merging src/test/java/tools/jackson/core/io/BufferRecyclerPoolTest.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+xuxueli/xxl-job  : Cloning repo
+xuxueli/xxl-job  : Finished cloning
+xuxueli/xxl-job  : Finished cloning
+Checking out leftddf132f0c97cb00f781d6ea1e2d02b5b5c65e5b1
+Checking out right49447c8edfc74df72f780843202b8062c8f12d80
+Found base sha9969e304e7a8e9089694c588d6904e042f2d4ff1
+
+xuxueli/xxl-job  : Cloning repo
+xuxueli/xxl-job  : Finished cloning
+xuxueli/xxl-job  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): xxl-job-admin/src/main/java/com/xxl/job/admin/core/conf/XxlJobScheduler.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of xxl-job-admin/src/main/java/com/xxl/job/admin/core/conf/XxlJobScheduler.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+xuxueli/xxl-job  : Cloning repo
+xuxueli/xxl-job  : Finished cloning
+xuxueli/xxl-job  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out leftac630741359950caed5cdc496397650e6f8e6d02
+Checking out right4858a747e0dcefe9353965f63dfe6d2336b3acd8
+Found base shaf511bcd022acb3d33fbe8cbf4c44d3de340e4b91
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/sym/ByteQuadsCanonicalizer.java
+Auto-merging src/main/java/tools/jackson/core/util/InternCache.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out lefte0d15fbfd819dd6b032675f4fde9d1815795fed6
+Checking out right0b31574d7bea6a229eb76ade99173c2afac9a424
+Found base shaee0a1c57f2ce940f8979f0492a4bc0fd282a8f09
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out left64a49cb5a81319f3417b5243b4a0e2aa25c1e04a
+Checking out right74ca3ac34c37ff87ce0108d42d91d313e4222057
+Found base shaab0e373b3af28b48474fc2de8af921c9a9729084
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/TSFBuilder.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/TSFBuilder.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/util/JsonBufferRecyclers.java
+Auto-merging src/main/java/tools/jackson/core/util/RecyclerPool.java
+Auto-merging src/test/java/tools/jackson/core/io/BufferRecyclerPoolTest.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out left6db2b7eaf38a2dd48e0b86ba06ac5c9b2fe9b5ea
+Checking out righteb112e6a483b273a7ac5b4fea6b42229e9a351f0
+Found base sha315ac5ad2ad5228129a3df50623570d9bc2d7045
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/json/UTF8DataInputJsonParser.java
+Auto-merging src/main/java/tools/jackson/core/json/async/NonBlockingJsonParserBase.java
+CONFLICT (modify/delete): src/test/java/com/fasterxml/jackson/core/json/JsonFactoryTest.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/fasterxml/jackson/core/json/JsonFactoryTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+jprante/elasticsearch-analysis-naturalsort  : Cloning repo
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+Checking out leftac175674fcddbd3e54316135cd5c145e92276b4c
+Checking out right9e1e7d77bda2cf2f9163716fad4c3795e4abaa5f
+Found base shaf891b1742c6866ec6c7a994264e4d51ceae0a380
+
+jprante/elasticsearch-analysis-naturalsort  : Cloning repo
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/org/elasticsearch/index/analysis/naturalsort/NaturalSortKeyFilter.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/elasticsearch/index/analysis/naturalsort/NaturalSortKeyFilter.java left in tree.
+Auto-merging src/test/java/org/xbib/elasticsearch/naturalsort/NaturalSortKeyTests.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+jprante/elasticsearch-analysis-naturalsort  : Cloning repo
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+jprante/elasticsearch-analysis-naturalsort  : Finished cloning
+[]
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Checking out leftda845948f0a9e8f5478cc0c37ccea81df49d185b
+Checking out right500019ee799f39f27fcf595633fb6a9a4a4898d4
+Found base sha35e0aeea6fc18a196a2d669462e4360680277bb5
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/org/omnifaces/ApplicationInitializer.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/ApplicationInitializer.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/ApplicationListener.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/ApplicationListener.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out leftac630741359950caed5cdc496397650e6f8e6d02
+Checking out right4858a747e0dcefe9353965f63dfe6d2336b3acd8
+Found base shaf511bcd022acb3d33fbe8cbf4c44d3de340e4b91
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/sym/ByteQuadsCanonicalizer.java
+Auto-merging src/main/java/tools/jackson/core/util/InternCache.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+robotframework/JavalibCore  : Cloning repo
+robotframework/JavalibCore  : Finished cloning
+robotframework/JavalibCore  : Finished cloning
+Checking out left11bf4ea41799866526a7c70d40d9c76fe8be7496
+Checking out rightf7adc77f3618f17cdd9af0ae35a485b724292fa4
+Found base shac38be2b2def1dfcfa411e5e33deb74a41aa1761e
+
+robotframework/JavalibCore  : Cloning repo
+robotframework/JavalibCore  : Finished cloning
+robotframework/JavalibCore  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/test/java/org/robotframework/javalib/beans/common/URLFileFactoryIntegrationTest.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of src/test/java/org/robotframework/javalib/beans/common/URLFileFactoryIntegrationTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+robotframework/JavalibCore  : Cloning repo
+robotframework/JavalibCore  : Finished cloning
+robotframework/JavalibCore  : Finished cloning
+[]
+arnim/HDP  : Cloning repo
+arnim/HDP  : Finished cloning
+arnim/HDP  : Finished cloning
+Checking out leftd47b8c4e62b612f326f1b31c4c0db125b6597622
+Checking out rightea7bd11d56e0b1869ec861ecb011fa7fa309f84b
+Found base sha89ce0c91f26c460e00e8eafa8e5a22d331c9d219
+
+arnim/HDP  : Cloning repo
+arnim/HDP  : Finished cloning
+arnim/HDP  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/de/uni_leipzig/informatik/asv/hdp/HDP.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of src/main/java/de/uni_leipzig/informatik/asv/hdp/HDP.java left in tree.
+CONFLICT (modify/delete): src/main/java/de/uni_leipzig/informatik/asv/io/CLDACorpus.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of src/main/java/de/uni_leipzig/informatik/asv/io/CLDACorpus.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+arnim/HDP  : Cloning repo
+arnim/HDP  : Finished cloning
+arnim/HDP  : Finished cloning
+[]
+gitools/gitools  : Cloning repo
+gitools/gitools  : Finished cloning
+gitools/gitools  : Finished cloning
+Checking out left7dcd65cfba3ae4786c0577b9c02ae9977a7654cb
+Checking out right8b6be2421840e3d391cab77724bc926e607c1295
+Found base shaae5e99b3452916baeffdd83e3449af2c5c62d691
+
+gitools/gitools  : Cloning repo
+gitools/gitools  : Finished cloning
+gitools/gitools  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/AnnotationMatrixTextPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/AnnotationMatrixTextPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/GeneMatrixPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/GeneMatrixPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/GeneMatrixTransposedPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/GeneMatrixTransposedPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/GeneSetPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/GeneSetPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/MatrixTextPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/MatrixTextPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapText2CPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapText2CPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapTextIndicesPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapTextIndicesPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapTextSimplePersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/ModuleMapTextSimplePersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/ObjectMatrixTextPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/ObjectMatrixTextPersistence.java left in tree.
+CONFLICT (modify/delete): gitools-core/src/main/java/org/gitools/persistence/text/StringMatrixTextPersistence.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of gitools-core/src/main/java/org/gitools/persistence/text/StringMatrixTextPersistence.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+gitools/gitools  : Cloning repo
+gitools/gitools  : Finished cloning
+gitools/gitools  : Finished cloning
+[]
+shopizer-ecommerce/shopizer  : Cloning repo
+shopizer-ecommerce/shopizer  : Finished cloning
+shopizer-ecommerce/shopizer  : Finished cloning
+Checking out left3346ec5054c196fb1872243321342c394ed207f6
+Checking out right6d9c8341ae335fa0f8003ff0d696e26ea9235df2
+Found base sha5c56ea49c76f747bd754864dd5ae21840a723905
+
+shopizer-ecommerce/shopizer  : Cloning repo
+shopizer-ecommerce/shopizer  : Finished cloning
+shopizer-ecommerce/shopizer  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging README.md
+Auto-merging sm-shop/pom.xml
+CONFLICT (modify/delete): sm-shop/src/main/java/com/salesmanager/shop/admin/controller/ControllerConstants.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of sm-shop/src/main/java/com/salesmanager/shop/admin/controller/ControllerConstants.java left in tree.
+CONFLICT (modify/delete): sm-shop/src/main/java/com/salesmanager/shop/admin/controller/merchant/MerchantStoreController.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of sm-shop/src/main/java/com/salesmanager/shop/admin/controller/merchant/MerchantStoreController.java left in tree.
+CONFLICT (modify/delete): sm-shop/src/main/java/com/salesmanager/shop/admin/controller/user/UserController.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of sm-shop/src/main/java/com/salesmanager/shop/admin/controller/user/UserController.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+shopizer-ecommerce/shopizer  : Cloning repo
+shopizer-ecommerce/shopizer  : Finished cloning
+shopizer-ecommerce/shopizer  : Finished cloning
+[]
+dius/java-faker  : Cloning repo
+dius/java-faker  : Finished cloning
+dius/java-faker  : Finished cloning
+Checking out left07703e9400a29b3a18170071bdc043efc0162f93
+Checking out right1d74a343a193dee0e2e7b4e7e03f64d2114fb6ed
+Found base shafee1da2eb63c9d0d19012d62214677230d749bf7
+
+dius/java-faker  : Cloning repo
+dius/java-faker  : Finished cloning
+dius/java-faker  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging src/main/java/com/github/javafaker/Faker.java
+CONFLICT (modify/delete): src/test/java/com/github/javafaker/FakerTest.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/github/javafaker/FakerTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+dius/java-faker  : Cloning repo
+dius/java-faker  : Finished cloning
+dius/java-faker  : Finished cloning
+[]
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Checking out left342124567c46b048fbfb2b8445163d32624d616a
+Checking out right38d03300cc194ba0a66272c5a6d462f0f3b0b55d
+Found base sha500019ee799f39f27fcf595633fb6a9a4a4898d4
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/org/omnifaces/ApplicationListener.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/ApplicationListener.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/cdi/Eager.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/cdi/Eager.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/cdi/eager/EagerBeansFilter.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/cdi/eager/EagerBeansFilter.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/cdi/eager/EagerBeansRepository.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/cdi/eager/EagerBeansRepository.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/cdi/eager/EagerBeansWebListener.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/cdi/eager/EagerBeansWebListener.java left in tree.
+Auto-merging src/main/java/org/omnifaces/component/validator/ValidateMultipleFields.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+[]
+KBNLresearch/europeananp-ner  : Cloning repo
+KBNLresearch/europeananp-ner  : Finished cloning
+KBNLresearch/europeananp-ner  : Finished cloning
+Checking out left43a2d582de17af1c2e128a66ef40cb346e70ce9d
+Checking out rightbab2b3182532ccf3cc63df5a00b6bdf47a72b630
+Found base sha02058bce7bad895e7b27640e4b1b3a4d68ca1cb2
+
+KBNLresearch/europeananp-ner  : Cloning repo
+KBNLresearch/europeananp-ner  : Finished cloning
+KBNLresearch/europeananp-ner  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/nl/kb/europeananewspaper/NerAnnotater/TextElementsExtractor.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/nl/kb/europeananewspaper/NerAnnotater/TextElementsExtractor.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+KBNLresearch/europeananp-ner  : Cloning repo
+KBNLresearch/europeananp-ner  : Finished cloning
+KBNLresearch/europeananp-ner  : Finished cloning
+[]
+mbosecke/pebble  : Cloning repo
+mbosecke/pebble  : Finished cloning
+mbosecke/pebble  : Finished cloning
+Checking out left11dd4783d44afbeb269c9d98cf9579aad0e53394
+Checking out right1fc456ea34a4fe92d28f87f8e780c9cd9be3ea1a
+Found base shae584ed36472db2e3a985635434df266aada276da
+
+mbosecke/pebble  : Cloning repo
+mbosecke/pebble  : Finished cloning
+mbosecke/pebble  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging .travis.yml
+CONFLICT (file location): src/test/java/com/mitchellbosecke/pebble/ForTest.java added in TEMP_RIGHT_BRANCH inside a directory that was renamed in HEAD, suggesting it should perhaps be moved to pebble/src/test/java/com/mitchellbosecke/pebble/ForTest.java.
+CONFLICT (modify/delete): src/main/java/com/mitchellbosecke/pebble/node/ForNode.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/mitchellbosecke/pebble/node/ForNode.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+mbosecke/pebble  : Cloning repo
+mbosecke/pebble  : Finished cloning
+mbosecke/pebble  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out lefteef0797eb32b129e5ba09b1704bc1fa3eea33cc6
+Checking out rightbe440b112b3e56415bdc7e47668d73feb2a1632e
+Found base shab8c57bdaa85d36860c2299aa82dfce696ce696b8
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging pom.xml
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/io/doubleparser/FastFloatMath.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/io/doubleparser/FastFloatMath.java left in tree.
+CONFLICT (modify/delete): src/test/java/com/fasterxml/jackson/core/io/doubleparser/FastDoubleMathTest.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/fasterxml/jackson/core/io/doubleparser/FastDoubleMathTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+perwendel/spark  : Cloning repo
+perwendel/spark  : Finished cloning
+perwendel/spark  : Finished cloning
+Checking out left07ba5e49f64fc6be1de89c301f2fe2d3bbfb4d29
+Checking out right82be04f24031f7c6e19fc377da7dd575b31f59e9
+Found base sha83f98bd7c329cc1215e4b61214b448482647cd3a
+
+perwendel/spark  : Cloning repo
+perwendel/spark  : Finished cloning
+perwendel/spark  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/spark/webserver/MatcherFilter.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/spark/webserver/MatcherFilter.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+perwendel/spark  : Cloning repo
+perwendel/spark  : Finished cloning
+perwendel/spark  : Finished cloning
+[]
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Checking out leftc171dce2b9380a64c16e4eb217241ae30b6687c2
+Checking out right60021d45003c8172c42e439043177bcf2af3cda6
+Found base sha3202876cf8018913dc0b9ef0fd9459286621e93f
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/org/omnifaces/cdi/param/RequestParameterProducer.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/cdi/param/RequestParameterProducer.java left in tree.
+CONFLICT (modify/delete): src/main/java/org/omnifaces/component/output/GraphicImage.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/component/output/GraphicImage.java left in tree.
+Auto-merging src/main/java/org/omnifaces/component/tree/Tree.java
+Auto-merging src/main/java/org/omnifaces/taghandler/Converter.java
+Auto-merging src/main/java/org/omnifaces/taghandler/Validator.java
+CONFLICT (modify/delete): src/main/java/org/omnifaces/util/Beans.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/org/omnifaces/util/Beans.java left in tree.
+Auto-merging src/main/java/org/omnifaces/util/FacesLocal.java
+Auto-merging src/main/java/org/omnifaces/util/Servlets.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+omnifaces/omnifaces  : Cloning repo
+omnifaces/omnifaces  : Finished cloning
+omnifaces/omnifaces  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out lefteef0797eb32b129e5ba09b1704bc1fa3eea33cc6
+Checking out rightbe440b112b3e56415bdc7e47668d73feb2a1632e
+Found base shab8c57bdaa85d36860c2299aa82dfce696ce696b8
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging pom.xml
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/io/doubleparser/FastFloatMath.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/io/doubleparser/FastFloatMath.java left in tree.
+CONFLICT (modify/delete): src/test/java/com/fasterxml/jackson/core/io/doubleparser/FastDoubleMathTest.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/fasterxml/jackson/core/io/doubleparser/FastDoubleMathTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out left5b91c61a84864ef5e54e6143503fd85dad25a794
+Checking out right97b13e62cdd2b05f41f527813308a04069f9c62b
+Found base shad5673d2e9ffa1357bad7bc3665051245447a47ce
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonGenerator.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonGenerator.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out left7bb08118150960a6011e048c4498fcfcf81a1685
+Checking out right2a87b6f50652df03c6c92d8a0db7790464faeea1
+Found base shaeca76ddfecb9dcc3e8aa85561623f88e16890b0a
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/TokenStreamFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/TokenStreamFactory.java left in tree.
+Auto-merging src/main/java/tools/jackson/core/sym/CharsToNameCanonicalizer.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out left7328acbdc126de4640c3ba4021c50cf91397ea13
+Checking out right5239017f7527097a47da258c0e7a2237b1ee40b2
+Found base shab38a0e4fe9408b1ad691100fdacef65641e65436
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonProcessingException.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonProcessingException.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/TSFBuilder.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/TSFBuilder.java left in tree.
+CONFLICT (rename/delete): src/test/java/com/fasterxml/jackson/core/ErrorReportConfigurationMaxRawContentLengthTest.java renamed to src/test/java/tools/jackson/core/ErrorReportConfigurationMaxRawContentLengthTest.java in HEAD, but deleted in TEMP_RIGHT_BRANCH.
+CONFLICT (modify/delete): src/test/java/tools/jackson/core/ErrorReportConfigurationMaxRawContentLengthTest.java deleted in TEMP_RIGHT_BRANCH and modified in HEAD.  Version HEAD of src/test/java/tools/jackson/core/ErrorReportConfigurationMaxRawContentLengthTest.java left in tree.
+Auto-merging src/test/java/tools/jackson/core/ErrorReportConfigurationTest.java
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+DiUS/java-faker  : Cloning repo
+DiUS/java-faker  : Finished cloning
+DiUS/java-faker  : Finished cloning
+Checking out left07703e9400a29b3a18170071bdc043efc0162f93
+Checking out right1d74a343a193dee0e2e7b4e7e03f64d2114fb6ed
+Found base shafee1da2eb63c9d0d19012d62214677230d749bf7
+
+DiUS/java-faker  : Cloning repo
+DiUS/java-faker  : Finished cloning
+DiUS/java-faker  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging src/main/java/com/github/javafaker/Faker.java
+CONFLICT (modify/delete): src/test/java/com/github/javafaker/FakerTest.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/test/java/com/github/javafaker/FakerTest.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+DiUS/java-faker  : Cloning repo
+DiUS/java-faker  : Finished cloning
+DiUS/java-faker  : Finished cloning
+[]
+jenkinsci/coverity-plugin  : Cloning repo
+jenkinsci/coverity-plugin  : Finished cloning
+jenkinsci/coverity-plugin  : Finished cloning
+Checking out left87532ca4c8b21662933d0c4e7e8a933c24ce27f5
+Checking out rightee330f951153295756ca3cffdc2944316d6a011b
+Found base shad690b31459b151aaa1f3acf5fd5a3cb1f078a663
+
+jenkinsci/coverity-plugin  : Cloning repo
+jenkinsci/coverity-plugin  : Finished cloning
+jenkinsci/coverity-plugin  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+Auto-merging src/main/java/jenkins/plugins/coverity/analysis/CoverityToolHandler.java
+CONFLICT (modify/delete): src/main/java/jenkins/plugins/coverity/analysis/FresnoToolHandler.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/jenkins/plugins/coverity/analysis/FresnoToolHandler.java left in tree.
+CONFLICT (modify/delete): src/main/java/jenkins/plugins/coverity/analysis/PreFresnoToolHandler.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/jenkins/plugins/coverity/analysis/PreFresnoToolHandler.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+jenkinsci/coverity-plugin  : Cloning repo
+jenkinsci/coverity-plugin  : Finished cloning
+jenkinsci/coverity-plugin  : Finished cloning
+[]
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Checking out left21ec9bed4b82b383d613b849e3774e2833010562
+Checking out right011dfd320faf33c1a14b411dd0fa3c3c883d1fc3
+Found base sha2f997429e7043d15a4c1354685a2f7e36179d8ef
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonFactory.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonFactory.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+FasterXML/jackson-core  : Cloning repo
+FasterXML/jackson-core  : Finished cloning
+FasterXML/jackson-core  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out leftf507094e02fbf3517eb771c9d4151a1726d613a6
+Checking out right44806cfffeb760d3d2d0a7a827fa0ab4a74401ed
+Found base sha7a6098f907f57754309200a71fdc897187b50f23
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/JsonParseException.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/JsonParseException.java left in tree.
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/exc/StreamReadException.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/exc/StreamReadException.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+[]
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Checking out left1446fedae67bae9899dd271088c4e21b1089635a
+Checking out right6c706b1ce83e36d8bcef7f6594915dcff87fe2ce
+Found base shaafeb03e34598780864adc3f7b7a694ea153bb78c
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning
+fasterxml/jackson-core  : Finished cloning
+Switched to branch 'TEMP_LEFT_BRANCH'
+Running: git merge --no-edit -s ort TEMP_RIGHT_BRANCH
+CONFLICT (modify/delete): src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java deleted in HEAD and modified in TEMP_RIGHT_BRANCH.  Version TEMP_RIGHT_BRANCH of src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java left in tree.
+Automatic merge failed; fix conflicts and then commit the result.
+Conflict
+
+fasterxml/jackson-core  : Cloning repo
+fasterxml/jackson-core  : Finished cloning

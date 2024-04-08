@@ -1,5 +1,4 @@
 """Runs a merge and uses diff3 to compare it to the base and final branch of a given repo.
-See readme for details on shell scripts to run these methods.
 """
 
 import sys
@@ -14,9 +13,12 @@ from repo import clone_repo_to_path
 from merge_tester import MERGE_STATE
 
 # pylint: disable-msg=too-many-locals
+# pylint: disable-msg=too-many-statements
 
 
-def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, repo_output_dir):
+def diff3_pair_analysis(
+    merge_tool1: str, merge_tool2: str, results_index: int, repo_output_dir
+):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
 
@@ -116,13 +118,11 @@ def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, 
     repo4.submodule_update()
     repo4.git.checkout("-b", "TEMP_RIGHT_BRANCH", force=True)
 
-
-
     for conflict_file_match in conflict_file_matches:
         conflicting_file = str(conflict_file_match)
         conflict_path = os.path.join(repo_name, conflicting_file)
         conflict_path_merge_attempt = os.path.join(
-            "./repos/merge_attempt", conflict_path
+            "./repos/merge_attempt1", conflict_path
         )
 
         conflict_path_base = os.path.join("./repos/base", conflict_path)
@@ -161,7 +161,10 @@ def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, 
 
         # Generate a filename for the diff result, including the new subdirectory
         diff_filename = os.path.join(
-            repo_output_dir, str(results_index), merge_tool1, f"diff_{conflicting_file_base}.txt"
+            repo_output_dir,
+            str(results_index),
+            merge_tool1,
+            f"diff_{conflicting_file_base}.txt",
         )
 
         # Extract the directory part from diff_filename
@@ -176,7 +179,6 @@ def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, 
 
         # Optionally, print or log the path of the diff file
         print(f"Diff results saved to {diff_filename}")
-
 
         """
 
@@ -193,7 +195,7 @@ def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, 
             [
                 "diff3",
                 conflict_path_base,
-                conflict_path_merge_attempt2,
+                conflict_path_merge_attempt,
                 conflict_path_programmer_merge,
             ],
             stdout=subprocess.PIPE,
@@ -208,16 +210,19 @@ def diff3_pair_analysis(merge_tool1: str, merge_tool2: str, results_index: int, 
             diff_results = subprocess.run(
                 [
                     "diff",
-                    conflict_path_merge_attempt2,
+                    conflict_path_merge_attempt,
                     conflict_path_programmer_merge,
                 ],
                 stdout=subprocess.PIPE,
                 text=True,
             )
-        
+
         # Generate a filename for the diff result, including the new subdirectory
         diff_filename = os.path.join(
-            repo_output_dir, str(results_index), merge_tool2, f"diff_{conflicting_file_base}.txt"
+            repo_output_dir,
+            str(results_index),
+            merge_tool2,
+            f"diff_{conflicting_file_base}.txt",
         )
 
         # Extract the directory part from diff_filename
