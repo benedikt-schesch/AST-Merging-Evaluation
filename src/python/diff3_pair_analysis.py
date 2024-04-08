@@ -121,7 +121,7 @@ def diff3_pair_analysis(
     for conflict_file_match in conflict_file_matches:
         conflicting_file = str(conflict_file_match)
         conflict_path = os.path.join(repo_name, conflicting_file)
-        conflict_path_merge_attempt = os.path.join(
+        conflict_path_merge_attempt1 = os.path.join(
             "./repos/merge_attempt1", conflict_path
         )
 
@@ -134,7 +134,7 @@ def diff3_pair_analysis(
             [
                 "diff3",
                 conflict_path_base,
-                conflict_path_merge_attempt,
+                conflict_path_merge_attempt1,
                 conflict_path_programmer_merge,
             ],
             stdout=subprocess.PIPE,
@@ -149,7 +149,7 @@ def diff3_pair_analysis(
             diff_results = subprocess.run(
                 [
                     "diff",
-                    conflict_path_merge_attempt,
+                    conflict_path_merge_attempt1,
                     conflict_path_programmer_merge,
                 ],
                 stdout=subprocess.PIPE,
@@ -187,7 +187,7 @@ def diff3_pair_analysis(
         """
 
         conflict_path = os.path.join(repo_name, conflicting_file)
-        conflict_path_merge_attempt = os.path.join(
+        conflict_path_merge_attempt2 = os.path.join(
             "./repos/merge_attempt2", conflict_path
         )
 
@@ -195,7 +195,7 @@ def diff3_pair_analysis(
             [
                 "diff3",
                 conflict_path_base,
-                conflict_path_merge_attempt,
+                conflict_path_merge_attempt2,
                 conflict_path_programmer_merge,
             ],
             stdout=subprocess.PIPE,
@@ -210,7 +210,7 @@ def diff3_pair_analysis(
             diff_results = subprocess.run(
                 [
                     "diff",
-                    conflict_path_merge_attempt,
+                    conflict_path_merge_attempt2,
                     conflict_path_programmer_merge,
                 ],
                 stdout=subprocess.PIPE,
