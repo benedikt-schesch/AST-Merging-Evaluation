@@ -164,7 +164,7 @@ idx,repository,head hash
 162,JavaProphet/Avuna-HTTPD,7f86f6d4dfaaf3701b4c87dcee5492935ebc0cbb
 163,plison/opendial,0c415dabd6bc62c1f62becfae316815143218dd3
 164,Sottti/MaterialDesignNavDrawer,46fb2012e323340c21dadefb6c05d7692167f55a
-165,mangstadt/ez-vcard,f308a61574b9182d151aa9d0cf5fbe5818a48fb8
+165,mangstadt/ez-vcard,95298de036f1df38fd7ca7e3225c4fd5ad5c44e6
 166,MaxCamillo/android-keystore-password-recover,79f907a3770148b09c8cad60f17ecb6781f43303
 167,rabbitmq/hop,ad49e0a6e4573c345d27f5b4c4c819defbe039e3
 168,unicorn1990/AndroidMiscWidgets,0c4087044406cf603a1f02244df46c22a5b1095c
@@ -2276,7 +2276,7 @@ idx,repository,head hash
 2274,Netflix/Raigad,b5e95394d9b90db6b920f372c8f028e330a6f0d1
 2275,making/jjugccc-handson,3c51a853a007e4076a1ac082dbe4afdbf65fff7e
 2276,romseygeek/samza-luwak,e007bdaaaac4fccf94d963409974b1490cf24765
-2277,pedrovgs/Algorithms,b04396ba1a8bf094494f9ba514ecbe806fdb9776
+2277,pedrovgs/Algorithms,c108e3a4b4fa2556b8c88d7ab6803084b01a4364
 2278,novoda/simple-easy-xml-parser,2213dd60621124d5726427bad0c4375ecaf50528
 2279,D4ddy-LiLd4rk/MaterialMenuDrawer,112eafc0d991467d1ea5c691691d210c366e8f53
 2280,vishalMobiledeveloper/SlidingPanelLayout,e3e5a1917ad79ce95a99e152531d3912cd9a72ac
@@ -18306,7 +18306,7 @@ idx,repository,head hash
 18304,jayway/facebook-test-java-api,90875eeddb90375d220e9bcb8a0095f80dc8b39e
 18305,Top-Cat/SteamKit-Java,b0f18031c63d2ed6bf1f599fa01894357d1f1f29
 18306,utcompling/texnlp,c4ce348764a3085ff51b952d548a5dbe788f5366
-18307,tntim96/JSCover,ed3541b6ddff7b25ab195329bb0ee8ea2f44dada
+18307,tntim96/JSCover,fff7a84ce12a037518e3c58e1d941a4d3dabb7e2
 18308,reprap/firmware,ed2cd604edbfadf7147f51c491992be87918381d
 18309,jexp/neo4j-java-rest-binding,93b3df3dc6591584baa4daf8edc3643a6e48a03f
 18310,darylteo/vertx-deployment-manager,1dea21d758301e84140ebfa3221ca4d3e5ecc087
@@ -25972,7 +25972,6 @@ idx,repository,head hash
 25970,adazzle/react-data-grid,87a3aa4683eb0b7690f093bec5fdd8f13805f296
 25971,adchsm/slidebars,dd6f21d3459afea6291f274b50e3b602a698689c
 25972,addepar/ember-table,eb2e80f638b67e7d3ca42dc13016969c4cce68e9
-25973,addthis/stream-lib,5a3bc87c5314f7771ea3968e9015a3d25536343e
 25974,addyosmani/a11y,09ff1202189de9a3877986f545c11f76d31961eb
 25975,addyosmani/backbone-fundamentals,0f96763df829c18eb5572f7dca124bdf9ff8491f
 25976,addyosmani/basket.js,f8ea6e9c645f2f146106bfb6a806c9e7b2eb0de8
@@ -26079,7 +26078,6 @@ idx,repository,head hash
 26077,airblader/i3,9f3e4157e66501fb3dc89abde5dc0d826193b77f
 26078,airbnb/aerosolve,442e76ebb7cbc7f60b04fbfac30dbf862aaffc67
 26079,airbnb/airmapview,533d6818ad4e6119a1aa7360e6868b5d990b9934
-26080,airbnb/airpal,f79d2c1708a2d246029289b0e14fba4c7a51ef60
 26081,airbnb/aloestackview,001e71afa4a74185d0811b76ca857ebebd387094
 26082,airbnb/babel-plugin-dynamic-import-node,a68388870de822183218515a1adbb3e8d7fa9486
 26083,airbnb/css,8ef3b3ce07f7eba3a7580beb069360e30fae86e3
@@ -26238,18 +26236,15 @@ idx,repository,head hash
 26236,alibaba/beehive,2e1186ced873bbf8de83751eecbecfa9a5fcbb2d
 26237,alibaba/beidou,218112eb300d7b82add9bc03b637e0fc5b482c1b
 26238,alibaba/bizcharts,b181662d047d6b4699ded7328f4e3d98783b7195
-26239,alibaba/canal,0e4c5c40d7c426c4c2a8eb4dd695dfece1ff3779
 26240,alibaba/cobar,bc36a14d4a3f8acc0db0b3b07a7db8d38afefda5
 26241,alibaba/cola,ca12d5fb8a84c580c38e0a74f300720a2962f8db
 26242,alibaba/coobjc,cf99ab4aae0ff73731bbf765d2bd08645684c733
 26243,alibaba/datax,86b7935bb4c0570895e6ab97d4e2fe50435f50cb
 26244,alibaba/dexposed,d1082567d6dc1de814b9ed2e9a3a63285a552bf9
 26245,alibaba/dragonwell8,b09c6e08e64fc26288311c1aa0480b4a1dd369cc
-26246,alibaba/druid,8b4b363b2ef987f9524045667e350f0e3a1ee51b
 26247,alibaba/easyexcel,c299e2333053f307e73c94d85b4e3b3d81328885
 26248,alibaba/euler,c2a71faae59c1495b6dabcf6aec0acb4d93a7bb1
 26249,alibaba/f2etest,3098bbe87f6b241c8e99c5f7ba75929e74cf8085
-26250,alibaba/fastjson,c942c83443117b73af5ad278cc780270998ba3e1
 26251,alibaba/fish-redux,40b853bfa0843e5bbe23e9217bae7598bb08bcf7
 26252,alibaba/flutter-go,a41b2124278e9f17d222ec1cea2ace3042be03f7
 26253,alibaba/flutter_boost,13eb9aed1dff9fcdfa6066666ba08a11b231af9f
@@ -26267,7 +26262,6 @@ idx,repository,head hash
 26265,alibaba/macaca,3b58d6aae6859f509dcaf34fd0fa90ae48554cb9
 26266,alibaba/mnn,8d5d8b8844893d4cc1d6e0d3572870b8d53867e3
 26267,alibaba/nacos,1257217c10740bfb4ecabe784d48574890759635
-26268,alibaba/otter,47327389943d416628d311c2287b64dc1a123fc3
 26269,alibaba/p3c,6c59c8c36ecd8722c712d5685b8c3822c1c8b030
 26270,alibaba/pont,8a442f93f0387ecdebf67354467f39d01d33cfe8
 26271,alibaba/pouch,8680cc4c3a816ef09d0f5fb1b1383472d6a06955
@@ -26579,10 +26573,8 @@ idx,repository,head hash
 26577,antirez/redis,463476933c47541c307eca47fd85e0ed4cb4f3e9
 26578,antirez/sds,a9a03bb3304030bb8a93823a9aeb03c157831ba9
 26579,antitypical/result,c30700bfcab7f555bf1d386fdd609407a94f369c
-26580,antlr/antlr4,d25d421780286e3de0714831a5f82eca59234249
 26581,antlr/antlrcs,7a4bf6b9903fa033ec6b594c87240c0a58ece1e2
 26582,antlr/grammars-v4,5b3f1b73e86588721f65b2601b8ccfb3923aec17
-26583,antoniolg/androidmvp,b7056a68806f723885c4c0e83853b7fdfc34e9ce
 26584,antoniolg/bandhook-kotlin,062e30f1bea041c57b31b2572e36bba2a094230d
 26585,antoniolg/kotlin-for-android-developers,6cd741c51bf4b5ceec8f54c7e0514fb77c5d7596
 26586,antonioribeiro/tracker,07e45b8a5846ac61160e73a952713306deeb5d92
@@ -26617,22 +26609,11 @@ idx,repository,head hash
 26615,apache/beam,2a20b09726293db7545cfb8eaf4ab4a50b884bad
 26616,apache/calcite,5385de959e2f198792c7d0a9ddba42bacb783c31
 26617,apache/camel,281213db42fbc43135d6256112cd3b9e5187c1d8
-26618,apache/cassandra,1793c3fd36837213d8938c4a78f9911baade3949
-26619,apache/commons-beanutils,0ac992114894e4acb6937c1aa37eb2e891b04f3f
-26620,apache/commons-codec,351950fb582667d52046082e4b4d4410774c5176
-26621,apache/commons-collections,a3c8e94365a528e5630b203c4d30790f342d2c4a
-26622,apache/commons-dbcp,d536765d775cef4f3f95d1573b6116bb7d23eaf3
-26623,apache/commons-io,f223c0c9b43f66282f9623678833360d591459d8
-26624,apache/commons-lang,c9dfff1c08f6fbe63c1795172f9221678eb89398
-26625,apache/commons-logging,e4d94ff51eb12d785e2ef52368527b317bef6e98
-26626,apache/cordova-android,4742358601e892a8c8816ef8b1827dfdf7b3754e
 26627,apache/cordova-ios,92017bbde3a4b6d4c62187f6804743224b7fe9c9
 26628,apache/cordova-node-xcode,e594cd453e8f26d8916e4be7bdfb309b8e820e2f
 26629,apache/cordova-plugin-device,cfb271166e1dd8d40bea0d9e4f4b248d09464882
 26630,apache/cordova-plugin-splashscreen,586b988371fc57919288caacf7e1486ac44d19ca
-26631,apache/cordova-plugin-whitelist,9fafd026c4c10a60b61efb46344defe6da7b1861
 26632,apache/couchdb,eb1a5881bb536453a355f16dcb09b223cfaec41e
-26633,apache/curator,f5fb6d109257e35de250af7d6c0090b42f2a18a2
 26634,apache/druid,c14cfc2a86f9f59310f215a53d329dcf27ce2a3c
 26635,apache/dubbo-admin,fdd3a6e4d907aff65693fee132585404fcfe7724
 26636,apache/dubbo-spring-boot-project,feb1783a182370e4bfacd903f4bd90f94ff1a550
@@ -26661,38 +26642,27 @@ idx,repository,head hash
 26659,apache/incubator-tvm,bce82432f98a93356f393166ae50834cb177caa9
 26660,apache/incubator-weex-ui,3a8ce2a21337965a272fea074cb72f92d50761a3
 26661,apache/incubator-weex,5c25f0b59f7ac90703c363e7261f60bd06356dbe
-26662,apache/jmeter,91d8aea7c42b10c68767e2f0a2a955389477f03f
 26663,apache/kafka,5d717f23434bc18e5d9317cfc196564a2e85fc23
 26664,apache/kylin,b60d5ae694dffc2281bfe0ef464eada0b3a9b774
 26665,apache/libcloud,dfbb5959739870313f4c47de499963a46a23010d
-26666,apache/log4j,b7e9154128cd4ae1244c877a6fda8f834a0f2247
-26667,apache/logging-log4j2,b1d4a2a3cf8cabf87e760f0692fdc865453418c3
 26668,apache/lucene-solr,860a9dbd42d1bfb021688bd40ded58d38dedaf8b
 26669,apache/mahout,19d75e456bd7d7491c8b079c81928e101af46898
-26670,apache/maven-plugins,a007e769ed5825774d5c31ec06c0013c8ee2b4d4
-26671,apache/maven-surefire,47c5816ae6d3e596d13a3253e214939f3a479b1f
 26672,apache/maven,e89b6fd53f320f31a0f2b3ce4e3ae1837cd4e081
 26673,apache/mesos,5109b9069b62510ab6d0cc0c78a9ed8327d3986a
 26674,apache/nifi,50efc55df6bb00ea15adcc2459d5cc82d128857f
-26675,apache/nutch,7ad382d9576784e7ca3b765865371196bb1e25de
 26676,apache/openwhisk,597d61d6eef974b25e5cdc6e1c284f9867429170
-26677,apache/poi,9965dc74db1c44ed9f30c99290405e6976ad0d08
 26678,apache/predictionio,d9628ca2f148b45a51bf4cea68699a72f25cb383
 26679,apache/pulsar,d1b7d0b7d86a7a8883407d3dc054bb8e21f96d60
 26680,apache/rocketmq-externals,1eb861c5b5a2e72441f37734e1730e471eb1d53d
 26681,apache/rocketmq,a7d493b2fbc153cc6cbdf2b2ffcbf19cf7cba803
 26682,apache/servicecomb-java-chassis,5d8ebe62fa30eb09282974ac1a2d94160c0741fe
 26683,apache/servicecomb-pack,1730008286ef6f0d3c5e451165b51acbbb9e68cd
-26684,apache/shiro,56895981e31eb607950bc0a8366b1e2f50beb46e
 26685,apache/singa,ba51f348db31d2fc6d2a8c8e21f280a1b2ef2c89
 26686,apache/skywalking,dd09d08c0cba8d2c66d01cf18a48643e64e040ce
 26687,apache/spark,2966c791cb9048e86407b03053a16033a56f422e
-26688,apache/storm,c0d7b475da99c28043b137e892d58aedde4eb840
 26689,apache/thrift,a06eedcbfc80c11b751d7cad20e3d9940b2bff67
-26690,apache/tomcat-maven-plugin,2a1797d7dce71b3d18ffc090a980162d8d67899a
 26691,apache/tomcat,8788d3d9beb82ee2edde824553403b4cdb4c08aa
 26692,apache/zeppelin,c9c3437a118bfdd472d474c22ae7393f21cf49b0
-26693,apache/zookeeper,75d0a0a850352743e584f78321cf7c51417f46f8
 26694,apachecn/ailearning,cc69360bed9da6745d0a11463339a34b61477707
 26695,apachecn/awesome-algorithm,ca52c3b386331be95ac1f1313dcf0d484cf89c04
 26696,apachecn/fe4ml-zh,3a9245b0408935dc5f642bad051e0233ed434897
@@ -26738,7 +26708,6 @@ idx,repository,head hash
 26736,apollographql/graphql-tools,3863a82bc5070b71eeda2cb9a94c9475291e998c
 26737,apollographql/react-apollo,70e692dbf421b3c4c4ed106e3fcb54a5a27c2cc3
 26738,apoorvsaxena/lozad.js,db6df75bbdc0a16b852a9e744e760d4b6a29e4b6
-26739,aporter/coursera-android,157373885fbfa18b83fa97cd46f6a003905970ea
 26740,apostrophecms/apostrophe,3faede4e97e815103355e0a612de2214dc95d429
 26741,apostrophecms/sanitize-html,c52a9f088e61719f7c51deca8c8ea0b91485a703
 26742,app-vnext/polly,db245e3a9b019292bd99e2a1a2c9aaff5262a891
@@ -26786,7 +26755,6 @@ idx,repository,head hash
 26784,arachni/arachni,8e5c5d0a9fd6c5555bc3bbf411c8fa411f12b6db
 26785,arachnys/athenapdf,bfd04f16b01bcfb596bc5c42a94714dba45cacb3
 26786,arachnys/cabot,eb0b3544f8c8ab2dee4643df191da346a941734f
-26787,aragozin/jvm-tools,840b7dbc600500f5e1d29aadf913b06098e511a6
 26788,arangodb/arangodb,4ae181d5f1f9ccedac0657078dc7893e2501e2e4
 26789,arasatasaygin/is.js,45d1c9fe37bb9abb17e64781906f97c803a4bb85
 26790,arasatasaygin/openlogos,6ca6bd44effb63e8b3495a78ad4f494132a54e1c
@@ -26945,7 +26913,6 @@ idx,repository,head hash
 26943,at-import/breakpoint,2214fa92125f2c19b4b16cac8c0554ea6b7eb4e5
 26944,at-import/singularity,3fd9091b637a1e3db76007b6b4e2bd7c84c5c21a
 26945,at-ui/at-ui,417a6f9e4771960f4f83caf483971c871e1ede7c
-26946,ata4/disunity,6c1c3215419faaca427fa8d1e960f13cde76e766
 26947,atconf/atswift-2016-resources,08be1164be62547ec52115c95264ae2328a1c5ae
 26948,aterrien/jquery-knob,755309e933d326ffaa5a2d758dc377147b766515
 26949,athityakumar/colorls,24e402c153274dc5b9cde89ad6235ac5a4746129
@@ -27040,8 +27007,6 @@ idx,repository,head hash
 27038,avajs/default-require-extensions,b998a0e72ca15f428299ad71bfc51e63b1454a75
 27039,avajs/find-cache-dir,795889c6c9218561dadcd9d0e5bd5bf40ccac40b
 27040,avalanche123/imagine,c4ca147a1fc4cb6917a616e33a7ff350ce9d77da
-27041,avast/android-butterknife-zelezny,ad040deda488cdc2d4f5b104917b8310e25b051a
-27042,avast/android-styled-dialogs,36d33e094e9cbadd4c02f54d41d54d736f082abe
 27043,avast/retdec,ce18766a2a98d0d33e67e269c1eadb3d656981ff
 27044,avatsaev/touchbar_nyancat,189e2e174fe0de381edd6ccf0aa00008b1d2638d
 27045,avelino/awesome-go,89f2a685b2f3b2c8bb87000a3ed3361de907c030
@@ -27119,7 +27084,6 @@ idx,repository,head hash
 27117,azat-io/you-dont-know-js-ru,5b2df2a3b9846384bbaa013c0880dde881818e4a
 27118,aziz/plaintasks,a8aa4e1148f896255bfb7502a48a30d4e2e17624
 27119,aziz/tmtheme-editor,d316ca09f8c73668b49701b0200fffe8f6f60233
-27120,azkaban/azkaban,6db750049f6fdf7842e18b8d533a3b736429bdf4
 27121,azl397985856/leetcode,8ba287b714c518caf8586a3db85787474e9dd040
 27122,azoft/carousellayoutmanager,979b5d3c17f44c5b5c1fa57472a8163efb2e9075
 27123,azure/autorest,fe71a68f5f65dcb48340a6bb350e9f583b838571
@@ -27232,7 +27196,6 @@ idx,repository,head hash
 27230,bassjobsen/bootstrap-3-typeahead,fc2d5dce4a5406d9b924224e395d5647918707c7
 27231,bastillion-io/bastillion,a52e25febf8cdb1ac232ae2b6cb1dfad1bd026bb
 27232,batsh-dev-team/batsh,bfd467bc0d2469c2c2d4f40b5d142e6a191edbee
-27233,bauerca/drag-sort-listview,c3cfccee21676149dfdf8e803c0ec2eaebc6b841
 27234,bayandin/awesome-awesomeness,c35ea15c5db11409f2bd6467725bcec57d9689df
 27235,bazelbuild/bazel,6d0716d465846a2954dceb49598aecd55ce7ed20
 27236,bazzite/statusfy,7918adc3aa6d40a4e59e55f85bee2dac9ddfa8ab
@@ -27375,7 +27338,6 @@ idx,repository,head hash
 27373,biezhi/java-bible,68b3e4fa1d5eaf08003d480802f2884c4243b41e
 27374,biezhi/wechat-api,4d7458a766752673cec956ea7afd956c3cbe7010
 27375,bigardone/phoenix-trello,60c874de63126b5659a42ef8e05846ca16e3e30a
-27376,bigbluebutton/bigbluebutton,4d8f2481673a1bb97d504ef5bd74b268f85d3681
 27377,bigchaindb/bigchaindb,3c89d306ef12d00a6859382d6953a5205c98f07d
 27378,bigkoo/android-pickerview,e200d8c063aa2568d728854c048340ad2e4e0c0b
 27379,bigspaceship/shine.js,b846f761d723a351ae08ede6b8492a159772d320
@@ -27424,7 +27386,6 @@ idx,repository,head hash
 27422,bitcoin/bips,e918b50731397872ad2922a1b08a5a4cd1d6d546
 27423,bitcoin/bitcoin,ddc4b9850af363fbd446ca0540497c69cd91abe5
 27424,bitcoinbook/bitcoinbook,6c472dd00b649b18b6ca6bbcc8ba23775619ce08
-27425,bitcoinj/bitcoinj,539d25b35a2a677760e9331d54e8bbd9fa8aed73
 27426,bitcoinjs/bitcoinjs-lib,1f92ada3fda587c1c0a6aa93649afa04e8382b93
 27427,bitemyapp/learnhaskell,76018bdb3ec35c498ef1a8546122c1fa96a0aa6d
 27428,bitly/data_hacks,c66693bc41299691974868557e9d7f4b30f2b3cd
@@ -27720,7 +27681,6 @@ idx,repository,head hash
 27718,bulletmark/libinput-gestures,bbe7e793718528a95819151fa0ab7435b0cf10ae
 27719,bulletphysics/bullet3,39b8de74df93721add193e5b3d9ebee579faebf8
 27720,bulmatemplates/bulma-templates,16b1c64709be53bf4cda9e68e56d27bea6f562aa
-27721,bumptech/glide,3bbc3908edd8432f55ccfae3257bad533c1bf7d1
 27722,bungle/awesome-resty,e89b3020fd93a186ca1d22eeaea235bb348c4c63
 27723,bunkat/later,c5b45ef076d7a2c175c27427e5af22b29a0cc241
 27724,bup/bup,c366018351396042080e8cc858e40b0b825332e8
@@ -27760,8 +27720,6 @@ idx,repository,head hash
 27758,bytecodealliance/wasmtime,b960adb8e7728557448d8b3aa62dcaf4ff955ac9
 27759,bytedance/byteps,f5df52fe2794d4e3d2931a9dcfa5ca56151062a1
 27760,bytedance/xgplayer,8b0fc7aabb9266b16cc65aed9b78eac0f60630ad
-27761,bytedeco/javacpp,2d03a8d76cacae4cfd76eb7873b2416afcb2d2de
-27762,bytedeco/javacv,6ce2032ed0e01b5455bc3db483758f597555534b
 27763,bytefury/crater,05d5ce26fdd8d9466009163444e944259bc0cc2a
 27764,byvoid/opencc,e5d6c5f1b78e28a5797e7ad3ede3513314e544b7
 27765,bz51/springboot-dubbo-docker-jenkins,d7367a3176cf4baef8cce11ec5c5af3b648c80fe
@@ -27786,7 +27744,6 @@ idx,repository,head hash
 27784,cake-build/cake,c8340a1576157b83227a3a70128bb68c46986528
 27785,cakephp/cakephp,c6f1e974377c5c5bc6ca06ab6dc99d128bc0856c
 27786,cakephp/phinx,192e7f7112b930fc71679d2128c0983074980a8a
-27787,calabash/calabash-android,4ff3f08420264e71b6f0cf1db845327d7672c213
 27788,calabash/calabash-ios,a8d40a8940215f9c57390e4165e587777b7d674e
 27789,caldis/mos,07e941f59ae83a27eb03f05d42885aa4cb7c2c86
 27790,calebfenton/simplify,29fb25d624aecf0b075dea5c6029b2541474ddfe
@@ -27898,7 +27855,6 @@ idx,repository,head hash
 27896,cayleygraph/cayley,1310f3b07fa069f060da3c6cf94358e5954be149
 27897,cazala/coin-hive,a240ee2de3ed7ec2c7a5ccccbd9cb72c916e1e53
 27898,cazala/synaptic,c1dbc3fd7a48cda63ed56b7d3e4121f20446ef41
-27899,cbeust/testng,1d9dba847ca810ec022083b6f21203d8f9494c31
 27900,cbpowell/marqueelabel,ae3cf7c647dd7f67f1946658285f5f0ce2476caf
 27901,cbucher/console,902d20e785e6e863cc16349b06147eee11d45c76
 27902,cburgmer/rasterizehtml.js,262b3404d1c469ce4a7750a2976dec09b8ae2d6c
@@ -27948,7 +27904,6 @@ idx,repository,head hash
 27946,cfenollosa/os-tutorial,ce8e050d246594fda7f0067d7f4c9abeaa2b269c
 27947,cferdinandi/smooth-scroll,416e2472dc47f1117b5acb1779b786187d367688
 27948,cgal/cgal,5c62ae44c84323d3f41a3ab3863cef1d230bb111
-27949,cglib/cglib,5c947539c1218dc4ff1a14a7c36b4856b0ee6397
 27950,cgoldsby/logincritter,03f27091f3915d1dc2362ea515f8be7c8e5571cd
 27951,cgrand/enlive,119ab97dd683681683354b60e356ed748bad5e78
 27952,ch11ng/exwm,56db521a3ed6a2ccc1193110a56545a1992e9654
@@ -27981,7 +27936,6 @@ idx,repository,head hash
 27979,changeweb/unifiedtransform,fac7f551ff9284f9586a6644b057b76c1254c194
 27980,changkun/modern-cpp-tutorial,ff6ee89e2a5b16e0ec2342a61171086187fd3a8b
 27981,changmingxie/tcc-transaction,d21a3d748c477fb14a175d5d05e54ef82cf68de6
-27982,chanjarster/weixin-java-tools,2a0b1c30c0f60c2de466cb8933c945bc0d391edf
 27983,chantastic/react-patterns,b6cf3a896eadd4191dd3f42eb48ff1fa62fb292f
 27984,chantastic/reactpatterns,12ad8ec6df7bb6b2d1572e63a25be0fa8d344f4f
 27985,chanxuehong/wechat,36f0325263cdec440d6e36f93d168e4cc39b64b8
@@ -28012,7 +27966,6 @@ idx,repository,head hash
 28010,checkcheckzz/system-design-interview,7c1d5d6debd51b0095d80d521bf23e929cab4117
 28011,checkly/puppeteer-examples,25a02618f6e5a2b1f2eda9e4a3b97b6091fc6491
 28012,checkly/puppeteer-recorder,4fb93c125f40bceb2dd9aac403e200a3ade5a8d9
-28013,checkstyle/checkstyle,11e2b4baee11523db5c15602380775e95fb437ba
 28014,cheeaun/life,a475ca962e5a575b4f41bc7fea948b2c972fd307
 28015,cheeriojs/cheerio,dbad0f9a38d47b864e49d5e6463064547653f659
 28016,cheeriojs/dom-serializer,22ea9db5d9fc8b177cf76eb263ae7c13ef6bde78
@@ -28154,7 +28107,6 @@ idx,repository,head hash
 28152,cjdelisle/cjdns,6271719f48861fb6da6028cb1967313514191318
 28153,cjex/regulex,1d0995b70641bdd0f804ae30089d6b792ad59c94
 28154,cjhutto/vadersentiment,94fbd74594ac0714dfc0e55bd7415994b24020cf
-28155,cjlin1/libsvm,aed66346593ec0e075f38eda10fef0c1fb132692
 28156,cjt2325/cameraview,c9d291102a2e1a883d8dd4f657977bd94dd750b2
 28157,cjwirth/awesome-ios-ui,2bb9ace467fc5048fbdbb52e8fb558cc3973a422
 28158,cjwirth/richeditorview,2aa67881e596639effa095aab4a93a73ba98b512
@@ -28201,7 +28153,6 @@ idx,repository,head hash
 28199,clipy/clipy,40445fd4f453edf5dd39cf18b9e4b5ffbf48deaa
 28200,clojure-cookbook/clojure-cookbook,1b3754a7f4aab51cc9b254ea102870e7ce478aa0
 28201,clojure-emacs/cider,e5e745b5c265db3cbf83298f0e550c29825662d9
-28202,clojure/clojure,08a2d9bdd013143a87e50fa82e9740e2ab4ee2c2
 28203,clojure/clojurescript,0c5ecd7b8030b610c979b06bc85ff0991d882f69
 28204,clojure/core.async,322adc72852bb79c143ebe5d203d100534fda8f2
 28205,clong/detectionlab,a4fd7271271e89ea597d1513f70b3611405c0135
@@ -28272,9 +28223,6 @@ idx,repository,head hash
 28270,code-mc/loadtoast,5d2ed47cd8356701b84131ce598cbcf5a7c12c0e
 28271,code-mc/material-icon-lib,dacdd82c9ae4b36a8fdd9a390df6bac51eb8d2a9
 28272,code-troopers/android-betterpickers,d729f248d98eb335e284c6d4f9fde4162b8f64cd
-28273,code4craft/netty-learning,73fd879a7dbc159a63157a6d91891b7e74783bbe
-28274,code4craft/tiny-spring,2e0a2ba49c703f33fcca359a97af86094b4ded0d
-28275,code4craft/webmagic,67644de3d9540611ef494f4bb595688a47a541a6
 28276,codeboxide/codebox,98b4710f1bdba615dddbab56011a86cd5f16897b
 28277,codebrew/backbone-rails,231090bd690cd365a9486c17b00eec1e73ec37ec
 28278,codebude/qrcoder,dd35a3b09f5920721af080b031e42ca123c8b09a
@@ -28359,7 +28307,6 @@ idx,repository,head hash
 28357,commixproject/commix,13c94efb89202bb5168dc0c231d5ea7dc8e4e0a9
 28358,commonmark/commonmark-spec,d5706b9553d4665ca730524323d484880440186c
 28359,commonsense/conceptnet5,fda1b39607ea6f07e41ddce22d9d5f8360ded581
-28360,commonsguy/cw-omnibus,f2ffeb687d002f4a41b52a6ef5bb2580eb6a4ed6
 28361,compass/compass,4de01475c98449c4435359544db443fd3da6e9d3
 28362,compodoc/compodoc,28cb2eabc3e2df87811288a41443e088f8c2a80b
 28363,component/array-equal,1b4f6cf9aea0d82517d501f992d55a8cb3aee720
@@ -28409,7 +28356,6 @@ idx,repository,head hash
 28407,conventional-commits/conventionalcommits.org,69f9447d5648efb3bb028bc27a2276fcacb9a20d
 28408,conversejs/converse.js,59753231b6f8e2a65a893015cb8f1c7c2efe8cc7
 28409,convox/rack,bd1b6970d18889bb0a0e683bb710c2d264e0c3ab
-28410,coobird/thumbnailator,951d04f352d90f34420a82909c15453fee1b75ff
 28411,coocood/freecache,c241df04cc882010d431ebe11464ec228651a978
 28412,coodict/javascript-in-one-pic,ffeeeac73e65f3d544a35656347068b2bc8f26e2
 28413,coodict/python3-in-one-pic,5eba3cafda8945e607ce9f198f01e9ae8c292a74
@@ -28804,7 +28750,6 @@ idx,repository,head hash
 28802,dataarts/webgl-globe,8d746a3dbf95e57ec3c6c2c6effe920c95135253
 28803,databasecleaner/database_cleaner,0bb7cd0ce6b99611d6ae994464ded256b4761b7d
 28804,databricks/koalas,476518d0537f5b9fe844276aed3c916f7e945019
-28805,databricks/learning-spark,6b34161e2c1351500784a0d500c664c90846cacf
 28806,databricks/scala-style-guide,7cc731d0df944ce2de1b67acd0faf9c7b6bc4166
 28807,databricks/spark-deep-learning,e4d95da431d724051d39a4326c096c798d9a529a
 28808,datacharmer/test_db,3c7fa05e04b4c339d91a43b7029a210212d48e6c
@@ -28831,7 +28776,6 @@ idx,repository,head hash
 28829,davecheney/httpstat,2e0784497a420220d58627635dc7258b444819a4
 28830,davegamble/cjson,cb8693b058ba302f4829ec6d03f609ac6f848546
 28831,davejamesmiller/laravel-breadcrumbs,4a25032b3470a7c56f03b44cbd976425f2aa6ad3
-28832,davemorrissey/subsampling-scale-image-view,173e421fdbfa971fe8db2d943c1bd758ce679d24
 28833,davewoodcom/xcglogger,a9c4667b247928a29bdd41be2ec2c8d304215a54
 28834,david-gpu/srez,d65a2aabdb04122be95e61c8aa420036cd6336d6
 28835,davidanson/markdownlint,a64295658eac40ed10a4cd52696f846e61aacbb3
@@ -29058,7 +29002,6 @@ idx,repository,head hash
 29056,diafygi/gethttpsforfree,c27c795552637751eed477db30ec595420e365d1
 29057,diafygi/webrtc-ips,ba63ef512c5f4bb0ac798679bef5cab9b71efc4f
 29058,diamondio/better-queue,8d0ff8ba8801b8fad4db429d76ed9afc01fc1e8e
-29059,dianping/cat,c667b7a03b3f456373647ba526bfa61e44a6b79c
 29060,dianqk/transitiontreasury,74564c264281193446e51e7eed12d28d38bd2df9
 29061,diaoul/subliminal,e25589dbcc5b2455bf9f0b49cf2083bb0eae449f
 29062,diaspora/diaspora,389b1870d3a59d17e5239a0168f69a6d84d13982
@@ -29174,8 +29117,6 @@ idx,repository,head hash
 29172,dmnd/dedent,53a7267590c8e0df98f15fee914e2f371cd204d3
 29173,dmotz/oridomi,418a5a2abb5adecbee14b3f3413c57bd24683dc0
 29174,dmq/mvvm,a4a2f71247ebc7cc9b90ec37e92cb711c004dd6a
-29175,dmytrodanylyk/android-process-button,c08f374da24538b66f38b894b89d5d12f1df6d3d
-29176,dmytrodanylyk/circular-progress-button,e105aead2b374110d819599a06cd12e129c28337
 29177,dmytrodanylyk/shadow-layout,3f0314ba0a1de87d8ff5b63c88d28ca1c43fd0a2
 29178,dnoegel/php-xdg-base-dir,12f5b94710c8f5b504432d57ce353075fc434339
 29179,dnschneid/crouton,ae59434013c12d1314c328c28333d35c77d47d31
@@ -29357,7 +29298,6 @@ idx,repository,head hash
 29355,drduh/yubikey-guide,c41729520faf06c352510118ec9bb042bf4a40e7
 29356,dreamans/syncd,71876dc6d3e7caa40e44a33ad47f8aa392881d40
 29357,dreamerslab/node.inflection,78a6166a8c0b3ff3c4f3010fc7d145353b78c9d2
-29358,dreamhead/moco,62e912a16fb5ef0b84f0045b408063d44faa6664
 29359,dreamingechoes/awesome-mental-health,227770d84cc6805262ecb2bf19db6b6e4233224a
 29360,dreikanter/ruby-bookmarks,2590f8722a4af55c06ae826026d0a703f4a34716
 29361,dresende/node-orm2,f4b49383ceba003a07d706e4b4ab265a37de9cc9
@@ -29386,8 +29326,6 @@ idx,repository,head hash
 29384,dropbox/lepton,f34c7f42d2e0d688239cb880648dc152713c4eae
 29385,dropbox/pyston,087dbba81c99bfa7c521f47949186ebc4f390c08
 29386,dropbox/zxcvbn,67c4ece9efc40c9d0a1d7d995b2b22a91be500c2
-29387,dropwizard/dropwizard,b6c8eb3d9f54feccb3dcb70a0548da211ceab392
-29388,dropwizard/metrics,916ba68c18eef60c0d720f80785e9bc99af4fdda
 29389,drublic/css-modal,f6a4028e76913642b24995db33fdd515dd9b37cf
 29390,drupal/drupal,1b1af634d57bdb7103b6325b7f9f555d7f4a065d
 29391,drush-ops/drush,8245acede57ecc62a90aa0f19ff3b29e5f11f971
@@ -29498,10 +29436,8 @@ idx,repository,head hash
 29496,eclipse/che,ddec5bf267ba1dae0b6636e1d8ab641a5b864e60
 29497,eclipse/deeplearning4j-examples,051c59bd06b38ed39ca92f5940a6ca43b0f34c0f
 29498,eclipse/deeplearning4j,6082079d30bf877d6306b7db28dc11de5328635a
-29499,eclipse/jetty.project,f82844e2a256c3426df029f028bf0fee8cd4879b
 29500,eclipse/mosquitto,15292b20b0894ec7c5c3d47e4b22ee9d89f91132
 29501,eclipse/openj9,9563621511be5d66175a319e969648caef7872a4
-29502,eclipse/org.aspectj,b821bedc716e04847314cc6c3bfae30c8fde838c
 29503,eclipse/paho.mqtt.android,3cb8af72f21b56ba72a6a6ddf3066d07d42f80b5
 29504,eclipsesource/j2v8,00dddaa31a80782abbe93c4a01f325db3c4975d6
 29505,ecomfe/echarts-for-weixin,8bc70ce0dbbc92fad3a0cc478ff17ef3a67f83b3
@@ -29572,8 +29508,6 @@ idx,repository,head hash
 29570,eidheim/simple-web-server,35ebb10782507f887802df64a2b6bfc8b427d81f
 29571,eigenteam/eigen-git-mirror,36b95962756c1fce8e29b1f8bc45967f30773c00
 29572,eip-work/kuboard-press,6b7e526bd336ca81aa5dbbbd1c7a9ac36d627bfb
-29573,eirslett/frontend-maven-plugin,4045aaf962f497f1ae7b1661537c2b1437360ded
-29574,eishay/jvm-serializers,3f7e4bc94e40f2c8c89acd3d2e51454867cec596
 29575,ejci/favico.js,6a3f430be559f93d96573e2a4a0116e154c11319
 29576,ejoy/ejoy2d,bf4af9140af2bf0692b96dbc78f7b1e89dfb6924
 29577,ejwa/gitinspector,b8375442a70f60d76f9c80993fcaaafbf7a745b9
@@ -29585,14 +29519,12 @@ idx,repository,head hash
 29583,elastic/curator,b41743a061ad790820affe7acee5f71abe819357
 29584,elastic/elasticsearch-definitive-guide,a10d667828ceb127d6b092bb3674f833dba98964
 29585,elastic/elasticsearch-dsl-py,ecf2e156a1e13109b7cd432300960353f8df7ab1
-29586,elastic/elasticsearch-hadoop,668fcc11d804fa1e73daa86f84a466b8d9ca091e
 29587,elastic/elasticsearch-js,426919709f43e3680a696de8880c4203be1e4dab
 29588,elastic/elasticsearch-net,76e9ea48b3e754b0ff0437bfc3ac3af7423707fa
 29589,elastic/elasticsearch-php,4c16dc67788afdec63294f072999594d0fd14ebb
 29590,elastic/elasticsearch-py,5ac64282a23fd737ce809b4f015cf6045dbb6b86
 29591,elastic/elasticsearch-rails,8fe0a555083d16d9d64dea7b0ae8a8695c1d4211
 29592,elastic/elasticsearch-ruby,f525965c2019dbacf10faecd66b0d853295cb4e2
-29593,elastic/elasticsearch,09edb78db3158c1d237ea0e8d6e07dc53653b04f
 29594,elastic/eui,88cb79c2ef15d85bbf2a7e974ed9a7904c3cf0d0
 29595,elastic/examples,2da957327d77c3284641ecf3bb2d624516fc7543
 29596,elastic/go-elasticsearch,0fba0e4b6ce5fbba43eb438a18c79c9f2d663c63
@@ -29849,7 +29781,6 @@ idx,repository,head hash
 29847,ethereum-mining/ethminer,8eaf50ab3baad9a1747e04dc295793d46740dcae
 29848,ethereum/aleth,5d1078ac43e0e2eaffb6e58300686d20a0bfb512
 29849,ethereum/eips,d89b671b835e1df03c89a88ed147d5e14aa88913
-29850,ethereum/ethereumj,200882753ee7c1a516d72b22cc5073055aa0c978
 29851,ethereum/go-ethereum,63127f5443bbf4dd6c56fcb11236d35b1ecad848
 29852,ethereum/mist,81228a3102c5444f3c739dcaf98a1185b5bf73d1
 29853,ethereum/pyethereum,180ab66e0833fa3bacd59e4bfbfae966077018a0
@@ -29961,28 +29892,23 @@ idx,repository,head hash
 29959,ezyang/htmlpurifier,bbc513d79acf6691fa9cf10f192c90dd2957f18c
 29960,f-stack/f-stack,81b0219b097156693e6061ce215dc79687ef7f92
 29961,f1xpl/openauto,48540385d7e2b339a07a8672d0987e645411662e
-29962,f2prateek/rx-preferences,713f86b880631935a803b9c1cd4c51e7159dd39a
 29963,f5oeo/rpitx,cce1fe6acf90d4d34ce304aed48fe80ec4ff51e7
 29964,f/graphql.js,607be0371297cbb3c4e897cf9821b3a2deb88bea
 29965,f/vue-wait,c2e093fabbc08c2d5bf3ba79a74583232583fbc8
 29966,fabien-d/alertify.js,e22b3efb2fd37aa2e84f37dfee94b3ed3adba861
 29967,fabiolb/fabio,642e425cf664e23d257ca357b7b1bfd1e432683d
 29968,fable-compiler/fable,43f34f92ef31bb9db5e2aca7d8a1473e95d0f4e9
-29969,fabric8io/fabric8,57bfc330f2af8b402f0c0cbac552696b4fdc6a40
 29970,fabric/fabric,33422523335df919cb8e7cb51d88ce38724f0019
 29971,fabricjs/fabric.js,ab7a0a45ad6a30d170e28b688fbd8425112f8f71
-29972,facebook/buck,9c7c421e49f4d92d67321f18c6d1cd90974c77c4
 29973,facebook/chisel,00a069c46b1d51430e35eaa7929ba909852d0b5c
 29974,facebook/codemod,41d6eabad7b055a83923150efd5518813831c9a5
 29975,facebook/componentkit,7344753038fbd76d80e46813425e508a37074933
 29976,facebook/conceal,f73541e79ac392ace032e53e2ef2ed4cc730b3fc
 29977,facebook/create-react-app,0a827f69ab0d2ee3871ba9b71350031d8a81b7ae
-29978,facebook/device-year-class,a6dc1f304da919a8bf4105ae35babfb51d04531d
 29979,facebook/docusaurus,bda8f14f8925de83c5a4f0c6a1430430dbc82ba1
 29980,facebook/draft-js,afdb5c3177c13fd26cb0abbdc439488f3e21b73b
 29981,facebook/duckling,7520daaeba28691cda8e1b5c3d946028a28fb64b
 29982,facebook/emitter,6b64b870f651dfd918153813fc124b988d000597
-29983,facebook/facebook-android-sdk,ed85622c06062572c8252dc770a0d75593551158
 29984,facebook/facebook-ios-sdk,a42e8700d7597a9650c82f19fb7dee9ee8a708d4
 29985,facebook/fbctf,4ec9b6be404fce1bed6d1066fccf10c4255767bb
 29986,facebook/fbjs,c47b64a43f307bb8e56bc44215982ab74fd9d150
@@ -29994,7 +29920,6 @@ idx,repository,head hash
 29992,facebook/flow,eee1117bc15356a1c8313ccdb2937df2d84c42d1
 29993,facebook/flux,4ee8c50865c357e005cb40ea03cdd403533aad26
 29994,facebook/folly,fb047caf8418b9e9480374673ac60e0abdc20888
-29995,facebook/fresco,318b9b9498cd04048101ac7952077d5e00900f96
 29996,facebook/haxl,6cd30c084debcde9bb83e0f517bbe98cdd80e945
 29997,facebook/hermes,9e90e7b63d3832615bae97c5b43016549b179350
 29998,facebook/hhvm,f5d6c0d6c7acb6f182b033c1338b8c6be7e5844f
@@ -30008,7 +29933,6 @@ idx,repository,head hash
 30006,facebook/memnn,d7c5f6d5e1a4af6417ffff98535a96bb0947a6a8
 30007,facebook/metro,afb0090cdd00d337e5e26b7ed152df40ba9c6d90
 30008,facebook/mysql-5.6,340fbaf5571ff6d08233804e87e69db353648e0c
-30009,facebook/network-connection-class,7282817fcf890c9ace568d0cc260e51c83954d7a
 30010,facebook/pathpicker,baf1214b5f4e0845f5783c88a84894be983104e4
 30011,facebook/php-graph-sdk,2d8250638b33d73e7a87add65f47fabf91f8ad9b
 30012,facebook/pop,87d1f8b74cdaa4699d7a9f6be1ff5202014c581f
@@ -30024,12 +29948,10 @@ idx,repository,head hash
 30022,facebook/react,a3172e933c7eb54aa02ec1d303453a96bc76181b
 30023,facebook/reason,56ceb6a3d87a2a46a94af99974e724838386ae70
 30024,facebook/rebound-js,6e6e9a90ee328caeaf98b57ea80e4f1e478f3d70
-30025,facebook/rebound,65f155c6cf4e7594da636b2ab5215067e24da6ae
 30026,facebook/redex,c9b447dacdc4f90752d92bdc54b86d6575842811
 30027,facebook/regenerator,7c16d9bf31787c10745efaa766ceb798086999d8
 30028,facebook/relay,e854fa04acfef0421001d507b220a0c74f7f38b6
 30029,facebook/rocksdb,f6fd4b9dbd15dba36f7e5ad23de407b5c26b1460
-30030,facebook/shimmer-android,32b784bd9811588b4e18c4a613fdfa8ce384cd84
 30031,facebook/shimmer,a7eba17652638ef894407ce13a4bc5ca347ba488
 30032,facebook/socketrocket,fa0ca2ce08199f4be6ea73486774b80b4b1fb96d
 30033,facebook/stetho,7c4dc8de4deb28c012b199ef52b9b5c7ad626793
@@ -30255,7 +30177,6 @@ idx,repository,head hash
 30253,feross/thanks,aeac99374ea4b6a70c4075223226b744608313eb
 30254,feross/typedarray-to-buffer,1ac12c35e21949c0d872e6c2ef0df0e4c770b4da
 30255,ferventdesert/hawk,cc3560b4ca8f1efbd6323351ce1a67bc41d51ccb
-30256,fesh0r/fernflower,630c1292b46793dfda4c6b6b1dcb58e1018a5da6
 30257,fetlife/rollout,4a7a0b96dc038f7ca057ca771693d8f5a7c90583
 30258,fewbytes/rubber-docker,9d07ba4f58e11f31bf9e2a28e81187404efc51c0
 30259,fex-team/fis,df24309102602bf32485e8e32f6bb20a9333a999
@@ -30356,7 +30277,6 @@ idx,repository,head hash
 30354,flatlogic/awesome-bootstrap-checkbox,467b43d3d7b304972a5992dbedc271c8b5580d01
 30355,flatpak/flatpak,67cdc0e5a5a94b0492803d6479f9a2019cb14f18
 30356,flatpickr/flatpickr,548330e6e18871d6ca1ca78746c0e89cb12a0303
-30357,flavienlaurent/datetimepicker,0f5d3999955e2171021e8bcdc1c07059c0486fe7
 30358,flavienlaurent/notboringactionbar,ed0ee792ffcba226c914b08afb20300bb36ecf94
 30359,flavioarfaria/kenburnsview,4d34c41d32ccceb2407dfdce0130a9b4809763a0
 30360,flavorjones/chromedriver-helper,fd988394602a807171fa595013b9cdb51f876380
@@ -30393,7 +30313,6 @@ idx,repository,head hash
 30391,florent37/materialviewpager,e2fb22e0ad95b00934c3d73cd1031c1cd5b407c1
 30392,florent37/shapeofview,a42debe4958a88cc3cce849dfc83ea11cb4531e9
 30393,florent37/viewanimator,bf8f68d8a4ad61c8fde6a3681d565724c3374e6a
-30394,flori/json,0cbcd0e61f96ce909c34a133e2d84f1cbd4fc10f
 30395,florianheinemann/passwordless,6c0cf08353591f65fe84e03a238203371d8d2891
 30396,floriankugler/flkautolayout,ff8243bd13351571d1dfab0db471b55f8e2f3eb6
 30397,floridoo/concat-with-sourcemaps,fa7922b69c4054a6c5dc8f415f0dfcabaf5b8fe4
@@ -30463,7 +30382,6 @@ idx,repository,head hash
 30461,fontforge/fontforge,4f4907d9541857b135bd0b361099e778325b4e28
 30462,fonttools/fonttools,a72139f3543d4c8509729686c6019caddb8121a8
 30463,fooidge/pleasejs,bb4631ba8891ee26962589572ffaaffc57a87b1f
-30464,fool2fish/dragon-book-exercise-answers,34db00b33f727571d4f0f338147f1eeaf18712b3
 30465,foolwood/benchmark_results,314e9d6a383a36596961c9cad066c35145249710
 30466,foolwood/siammask,0eaac33050fdcda81c9a25aa307fffa74c182e36
 30467,fooplugins/footable,fba11d1d8ad4eb61913c7538b26283eab2d9d777
@@ -30548,7 +30466,6 @@ idx,repository,head hash
 30546,frank-lam/fullstack-tutorial,566d7368741e805bc7e5f4f4e3abfb5f9eecc598
 30547,frank-zhu/pullzoomview,fed1339e86937d20ffba95f12b371aa459c7e3d9
 30548,frankfang/best-chinese-front-end-blogs,8e1b0287e7383d309a1aee43ce3e6f486f4befd9
-30549,frankiesardo/icepick,7a3fb08f8ef00cc5622c5ca41fdf711f888b633f
 30550,franmontiel/persistentcookiejar,02711dace737017e91e74bcdecade858164676a6
 30551,fransbouma/massive,d75f22a93707a27963e85e54d5035ef2c2e5da0a
 30552,franzejr/best-ruby,6edae9629c76bff65878f28d77a5401fb887e639
@@ -30645,7 +30562,6 @@ idx,repository,head hash
 30643,fuse-box/fuse-box,9b929aaec7d2d42b093357b95082deb6dd5fbced
 30644,future-architect/vuls,ef29afbf94dfa9337df23c888f2b425a014cf689
 30645,futurepress/epub.js,f09089cf77c55427bfdac7e0a4fa130e373a19c8
-30646,futuresimple/android-floating-action-button,639063555c5416e0d38980f38a34130494a30fc5
 30647,futuretap/inappsettingskit,08ab93cd15759eed534b821c2ea789d97a0fdca0
 30648,futurice/android-best-practices,d608f12971f64c0dc74ea08a9d64dd072e64181d
 30649,futurice/ios-good-practices,d976bbea6e460e6a3a04988f3e53ad82d407c9fe
@@ -30658,7 +30574,6 @@ idx,repository,head hash
 30656,fvbock/endless,447134032cb6a86814f570257390a379982dfc61
 30657,fx-max/point-of-android,34d325c10485ff3bdf54cea708dfa540ae513e74
 30658,fxsjy/jieba,67fa2e36e72f69d9134b8a1037b83fbb070b9775
-30659,fyhertz/libstreaming,3a78d2219a4cf5bc972cdc59a8f84349fda277c6
 30660,fyne-io/fyne,dc34dad76137def4466ab8eb4166e7ae741ef9ee
 30661,fyrd/caniuse,9ef838e637084e348f9089e9c323d112b304bff5
 30662,fython/materialstepperview,43cc491ad1d7dcd4b608f48691f9128c8d8d6009
@@ -30671,7 +30586,6 @@ idx,repository,head hash
 30669,gabrielbull/react-desktop,bba61374849dec896a9eea321cf4e3f02b3fd4c6
 30670,gabrielecirulli/2048,fc1ef4fe5a5fcccea7590f3e4c187c75980b353f
 30671,gabrielelana/awesome-terminal-fonts,25e7d59743452d1842427ba52a879c2bc2a5963c
-30672,gabrielemariotti/cardslib,d80384806cdffd2acc559bf1167251dcc797fa97
 30673,gabrielemariotti/recyclerviewitemanimators,1a94e4e69217be8711c12edb6004163b169c00a1
 30674,gabrielfalcao/httpretty,f9f012711597634d40066d144a36888b3addcc46
 30675,gabrielrcouto/php-gui,7849019063a2513b6b865c09c97991d40e20ce18
@@ -30735,7 +30649,6 @@ idx,repository,head hash
 30733,gbdev/awesome-gbdev,9cb72f71754281527170bb35355c0dd4ddff548b
 30734,gbeced/pyalgotrade,0898a1f29a4a1245531bb2946ca426cd6f3af1fb
 30735,gboeing/osmnx,9aa78c543a5f27a1e8c770502cfcfe42cb228e9f
-30736,gcacace/android-signaturepad,89d35965ad408bd3b3bfc96aa30cbc51d6dbd863
 30737,gcanti/fp-ts,05b78c4083d04bfb420dec32ac493af49abbfc14
 30738,gcanti/io-ts,616583de0198632cad7820ed8701b15f654c7fd2
 30739,gcanti/tcomb-form-native,cb70ddf0a2a900094fdf3809ae6dd0afa84b719f
@@ -30793,9 +30706,7 @@ idx,repository,head hash
 30791,geopandas/geopandas,1b1c9a65112610b20630d7beadd4a67f40e75985
 30792,geopy/geopy,a3175d7cd6f05e223e60642237bfe297dd88c4a5
 30793,georgeseif/semantic-segmentation-suite,f04c94c2077a957bca0e8509b8ed2861769c4ba6
-30794,geoserver/geoserver,0330cefc4d6f3e10bee74cc656123409d4eec3f9
 30795,geowarin/friendly-errors-webpack-plugin,51745900c9dcc582aa250033a856216ca2f64377
-30796,gephi/gephi,a42603fd0cb2c209f96c79481dcc1f7195058822
 30797,gerapy/gerapy,c9c91b8baad80011c9a91390e4f091e927e2a133
 30798,germanysbestkeptsecret/wookmark-jquery,d52574abbdb0550cdd2e8cee1150cdccb7d6894b
 30799,gernest/utron,699b668acbbd8d22389ce24976feb23d19481a57
@@ -30815,7 +30726,6 @@ idx,repository,head hash
 30813,getify/you-dont-know-js,5780d366bac282c13d972bc37505e9ccfa4afaf0
 30814,getlantern/download,0be5e6d081d2762c688666a51b5f36fb7c3e4281
 30815,getlantern/lantern-binaries,aded883eab531ef10cf46fb208283f8ed9848c4a
-30816,getlantern/lantern,e8b859953cbd37547eef4bc1517c7020b9321cfb
 30817,getmeuk/contenttools,650c422ceb6287604b9a86f82504690b1668bf5f
 30818,getnikola/nikola,8689cf324dcf99da42e7ee0884ee63627f3f53ae
 30819,getpelican/pelican-themes,d01c114ca8789e5254ec177059a6cca8ae1ad7c8
@@ -30884,7 +30794,6 @@ idx,repository,head hash
 30882,git/git-scm.com,b3a5bfa0037bf478ec4d1fdcfb338617d75cccbb
 30883,git/git,564d0252ca632e0264ed670534a51d18a689ef5d
 30884,gitalk/gitalk,ca06b9ff87e2bbc5553b86cd3bc5dcff9b0e8152
-30885,gitblit/gitblit,8d24e989eb0e3f79cabd63b92f8feb91da8bf818
 30886,gitbookio/gitbook,e350f4d8fc4fb0dda3f492200c4ffa1e56672143
 30887,gitbookio/javascript,09593f9ca9e396e383d1cdc49cf641ca9f0e9446
 30888,gitbucket/gitbucket,90bcbd212b43ee419dfcc6c73b8ed29a92a39179
@@ -30992,7 +30901,6 @@ idx,repository,head hash
 30990,go-ini/ini,b2f570e5b5b844226bbefe6fb521d891f529a951
 30991,go-jira/jira,4263bd24f9e9c702a92358c5cd7ce0ddd711df4c
 30992,go-kit/kit,dfe43fa6a8d72c23e2205d0b80e762346e203f78
-30993,go-lang-plugin-org/go-lang-idea-plugin,e73dab44213ffa76b3d6a853aecb109929c3e2b5
 30994,go-macaron/macaron,2d0f345397e9ceca947b977d42c8da601f48d515
 30995,go-martini/martini,22fa46961aabd2665cf3f1343b146d20028f5071
 30996,go-mgo/mgo,7446a0344b7872c067b3d6e1b7642571eafbae17
@@ -31061,7 +30969,6 @@ idx,repository,head hash
 31059,goldendict/goldendict,a14374dc904489d909eb46ab931b8949c02f74a8
 31060,goldfire/howler.js,003b917c40cb41cf382ba47ae0ed7a35ca2abe76
 31061,goldhand/sw-precache-webpack-plugin,c2857fa2045ae20459563247e99d2046d29a3591
-31062,goldmansachs/gs-collections,fa8bf3e103689efa18bca2ab70203e71cde34b52
 31063,goldsmith/wikipedia,1554943e8ab463cef5e93081def48fafbdef324e
 31064,goldze/mvvmhabit,ab2bf079815e260501e2f42b10c1b67329b1de26
 31065,golemfactory/golem,274d7cd230bc6c1b4df6c2785c5e7feeac4ae953
@@ -31088,7 +30995,6 @@ idx,repository,head hash
 31086,google-research/text-to-text-transfer-transformer,7ba7f298e5c8f2956e828f9e90c875cd20301e12
 31087,google/agera,04045ccbf41ac5fc6806724127b33cbe0dda372c
 31088,google/android-classyshark,78ddba71b0d869cc6283f8cdbb2061b6e57a3781
-31089,google/auto,855cd41a8e55edade861c9560ca3412b2d350dc9
 31090,google/battery-historian,d2356ba4fd5f69a631fdf766b2f23494b50f6744
 31091,google/bbr,937a45750113dd412cf36223d3fdeff3f5c0eef9
 31092,google/benchmark,4a2e34ba7342c780a11e3b5e809cc70b2cac0861
@@ -31104,7 +31010,6 @@ idx,repository,head hash
 31102,google/cameraview,68947cc1643e7434250e099f38f346eae9c46339
 31103,google/clasp,551000b55565d20fccc29673c5460022d42ee5cf
 31104,google/closure-compiler-js,026c1c18e6c82386cc49992a747e8fe75f20b736
-31105,google/closure-compiler,1d74e90f6e9c5316099e56988cd4b1e803e96119
 31106,google/closure-library,7818ff7dc0b53555a7fb3c3427e6761e88bde3a2
 31107,google/clusterfuzz,0cf0eb310471902db8e47c733e5dbe09c62c048c
 31108,google/code-prettify,e006587b4a893f0281e9dc9a53001c7ed584d4e7
@@ -31123,7 +31028,6 @@ idx,repository,head hash
 31121,google/end-to-end,de24f353bc2fe00f66ad6b3b0f643cd87cf1ca9d
 31122,google/eng-practices,f59560f820aca4d6621858b0ea7d405bf9be4514
 31123,google/enjarify,f2db0563aa83885ce6e6acd5b7dc9a8a1a1e1987
-31124,google/error-prone,88a224c9f00deca8757fd864a8d29941cff1ac12
 31125,google/exoplayer,5df25aefd9234f91716960430a4540baa8971315
 31126,google/filament,2bd48f58ff57c7757cf0c778708af7ce40f77de2
 31127,google/flatbuffers,c6f9e010bb0e284acb04776a07e140951ff5b7cb
@@ -31137,7 +31041,6 @@ idx,repository,head hash
 31135,google/go-cloud,53ccd8db26a14fd2a40bfcb28af1a1ceba4663f4
 31136,google/go-cmp,c3ad8435e7bef96af35732bc0789e5a2278c6d5f
 31137,google/go-github,a5f292c3c1585781bf3236aa481cd6fef626d3e8
-31138,google/google-authenticator,51781910ae2bb1abf8ac51b290272f86f3651235
 31139,google/google-ctf,7dc15ebb26df0c83a3eafd7ebd24410d85edca68
 31140,google/google-java-format,53390d99b56edae23cfab5adcafd7df28d9984c8
 31141,google/googletest,b10fad38c4026a29ea6561ab15fc4818170d1c10
@@ -31148,9 +31051,7 @@ idx,repository,head hash
 31146,google/grumpy,3ec87959189cfcdeae82eb68a47648ac25ceb10b
 31147,google/gson,3b1b361be1202a73b4fe4808c4553e735857e825
 31148,google/gts,faf6d7e60e7a382077de8fd7c8c5a9ec065259a5
-31149,google/guava,e5cc39c9e0bcca1347a937cb090321fb96de0e5c
 31150,google/guetzli,214f2bb42abf5a577c079d00add5d6cc470620d3
-31151,google/guice,e23d3b4369fbacfd7f077022c4dead4030e15f22
 31152,google/gumbo-parser,a0f9059087c690e700cf42df4cfa58a63c1dae95
 31153,google/gvisor,722ddab51ebf75ed42a8c6e8671a4e4d397c7f0d
 31154,google/gxui,f85e0a97b3a4aafc65be1b86d962a8734cd27bf9
@@ -31158,10 +31059,8 @@ idx,repository,head hash
 31156,google/hover,4242c499cf304dc88aaedbcfc61ef4bbaf8eaa0c
 31157,google/incremental-dom,3be2338cb18bce102b65a2df3d22add2680fc13e
 31158,google/ios-webkit-debug-proxy,c5d2e959043293ee7d0587618af2bcc4dde7feef
-31159,google/iosched,738e1e008096fad5f36612325275e80c33dbe436
 31160,google/j2objc,c532f941b6231e524e2f57313881a2c93b1613a8
 31161,google/jax,bf2464ec826b7ce4946e6c25e7cf22ad2f33cf2d
-31162,google/jimfs,a62ae2c2bdc7b28e1e3bc857ae47e01150445aba
 31163,google/jsonnet,067985894aaad4e6b92210c721aaa3e3ea108013
 31164,google/ko,59a676e42450cb9019e06ef8da9b1280b27ccad6
 31165,google/leveldb,068d5ee1a3ac40dabd00d211d5013af44be55bea
@@ -31181,7 +31080,6 @@ idx,repository,head hash
 31179,google/open-location-code,817c0086479ac263d328f903605db8233a018546
 31180,google/or-tools,f3d1d5f6a67356ec38a7fd2ab607624eea8ad3a6
 31181,google/oss-fuzz,69ec65b482d72ac03f005467611e6b573ef594bd
-31182,google/physical-web,12604319e99b6d6dff451fc5a58a13a271f1dc7a
 31183,google/pprof,4ca4178f5c7ab3f10300f07dab7422ead8dc17bc
 31184,google/promises,e70e889c0196c76d22759eb50d6a0270ca9f1d9e
 31185,google/pyringe,76dff5d1ac29cd5e7bf32677654a83291a15ad8a
@@ -31194,7 +31092,6 @@ idx,repository,head hash
 31192,google/roboto,cb3cde1a3069f28b9a66f3d104f51fd6c0734be1
 31193,google/robotstxt,455b1583103d13ad88fe526bc058d6b9f3309215
 31194,google/sanitizers,b586eafe5b72076bff127606bb812a7924e0a5a5
-31195,google/santa-tracker-android,ee84db8e0f58f5777bb10e4d576c73f9cbcba5c9
 31196,google/santa,f499654951b98a5cce94ce46e2927d12a6b39b72
 31197,google/seesaw,8bdff8d55416c1f070a13185d8d7550304781c72
 31198,google/sentencepiece,022f8c3fed4d2feb4e4c670949cf01cef477dcc4
@@ -31212,7 +31109,6 @@ idx,repository,head hash
 31210,google/tracing-framework,89ca6c25bae7c11d12409739b2ef707ed9afe6c2
 31211,google/trax,d72bd659406557982513251b852eb1bd3f60e768
 31212,google/trillian,7b8b3533db5d54e5b162bcba41abe7daee7bcc1f
-31213,google/truth,c36962776539775f88865efb0d93cef49012d9a8
 31214,google/uuid,8de8764e294f072b7a2f1a209e88fdcdb1ebc875
 31215,google/volley,a4b92e04473aff9651521306d765650958f41620
 31216,google/webfundamentals,f457a26e610a6c17d0b1864c04c892f38c117e8e
@@ -31291,7 +31187,6 @@ idx,repository,head hash
 31289,googleforgames/agones,018dc20afccc4ac151f1d84af7f5b93b60f3772d
 31290,googleforgames/open-match,c58996da626cf3aefcdac574dd35efa7d4171611
 31291,googlehosts/hosts,03dbc91a03ab26b694a3ee7ce54e2ae50e1ed050
-31292,googlemaps/android-maps-utils,e22ea200e90840042aa47e517cfd9ef5c9de7fb3
 31293,googlemaps/android-samples,c10fa9671ed9e4dbc5f1e95c8755c3fd63e0eb06
 31294,googlemaps/google-maps-services-js,67c0e489a01b4b409c9984e453ffa585aaa9a326
 31295,googlemaps/google-maps-services-python,645e07de5a27c4c858b2c0673f0dd6f23ca62d28
@@ -31349,22 +31244,18 @@ idx,repository,head hash
 31347,gpmgo/gopm,8898a4094f1ad736405a91d3559ae2acb3edaa25
 31348,gpujs/gpu.js,6d7dde32679f56f3dc99013cfdb5aa8accc159da
 31349,grab/front-end-guide,1c42022b3cae66c44249639307a01a06ecea75f4
-31350,gradle/gradle,4486781e90e0997b37168263113fe60c65f2473c
 31351,gradle/kotlin-dsl-samples,3c977388f78bdcff1f7ed466e8d27feb5bf32275
 31352,grafana/grafana,5b851d7410592030dfb77f43554e89b327ce856b
 31353,grafana/loki,f3b32023eefd4f57e9a2b95ea2ca01cc582707c2
 31354,grahamdumpleton/wrapt,5c0997c0b5be36da5f621c3473c95f9efe14891e
 31355,grahamjenson/list_of_recommender_systems,b5e420181aaa9f710571e1c88658bda340f65f8e
-31356,grails/grails-core,a81876ed0e5700122d0079ed0e5365b3f965cc80
 31357,graknlabs/grakn,ef289da0007bde00fdbdc093709fd3a15f598fd6
 31358,gramantin/awesome-rails,5219cf12be82503c7d8b56906b8787ebefdc0de6
 31359,grandcentrix/tray,6b7e1a23e2e1cdca66c0781e19769a2418c73ff3
 31360,grandyang/leetcode,c558e90142ef1cad60504edaaf83ad40f047a5eb
 31361,grangier/python-goose,09023ec9f5ef26a628a2365616c0a7c864f0ecea
 31362,grantjenks/python-sortedcontainers,92ef500158f87f7684023823d689cfd7bef892a1
-31363,grantland/android-autofittextview,5c565aa5c3ed62aaa31140440bb526e7435e7947
 31364,graph-gophers/graphql-go,12e9b901a628190cb35c85d315230a5fb7e6e584
-31365,graphhopper/graphhopper,0748dcc99cfa063a697f49c7f60f60fbd612e817
 31366,graphific/deepdreamvideo,9983c76e08a58e4c88f8ca3bef443965d597b3d2
 31367,graphile/postgraphile,e28e9a0a1ecf156fe17d1dfd11d563ea4c84ef3a
 31368,graphite-project/graphite-web,0ec7201c42ac2c14485c4c7eaab8a644082dc687
@@ -31427,7 +31318,6 @@ idx,repository,head hash
 31425,grpc-ecosystem/grpc-gateway,3af5887ce1097b11deebfa3597ba8829086385e9
 31426,grpc/grpc-dotnet,2bbb977dd2d269b4b3182360a87c7402ed2b6114
 31427,grpc/grpc-go,02ea031697b40d379d7364ef75d0b131590557d8
-31428,grpc/grpc-java,0567ab5773e27bc62a24a419ccb5d471f55cf134
 31429,grpc/grpc-node,f04db5b87a5561db486caf771ccc83bd8a060406
 31430,grpc/grpc-web,9d2e24462a7aa1c515ff3a7b3b112a7354dfa3b3
 31431,grpc/grpc,42284424acd2ba4ba649599984592f5d2eade919
@@ -31537,7 +31427,6 @@ idx,repository,head hash
 31535,guo-yu/douban.fm,777928a28ab43c12733505a9374a8323d44df4b5
 31536,guo-yu/koa-guide,9ab9b6179dcf77bef16a2dbdc4983cf4a7b5869f
 31537,guodongxiaren/readme,bd1a9aff94a8f626a07fa0454df53ca7b85880e9
-31538,guoguibing/librec,296082c072ce7d973ebfccde793e59062d8a3add
 31539,guohongze/adminset,340de2d1db2e370606318b4e17c5a32094e0df2b
 31540,guolindev/booksource,e61f533816111c8899b2009a49b322e63cabbfd5
 31541,guolindev/coolweatherjetpack,ed80122b7f1a9df880dd78a3f88c67d5fbfef23f
@@ -31609,7 +31498,6 @@ idx,repository,head hash
 31607,hadley/r4ds,528606008e1e3d18c677b179cce9215dcd2bb735
 31608,hadley/stats337,c285022b83e4fbc58e86e3eec2bb08c359475368
 31609,hadolint/hadolint,b264eaa92ca2fe7df22a480a67b1c16e6e3e5f7c
-31610,haifengl/smile,ffeb922db1b80265f4de5ff6a7b72022dba089d1
 31611,hainproject/hain,7cbb09cbad51d09f34ad2b14de024e52a0d2afab
 31612,haiwen/seafile,9ec8f933c8c0a406ffd074f9d53ab5cc87fd888f
 31613,haizlin/fe-interview,2ffab777807315beeec0f0c6cdafbe39f9cbdbac
@@ -31721,7 +31609,6 @@ idx,repository,head hash
 31719,haxefoundation/haxe,e60332de3b178b315b140ba6fb8cac741f584ba2
 31720,haxiomic/gpu-fluid-experiments,20210bd9e64884146a73e6cedc0c696ca50bd0fd
 31721,haxpor/potatso,27e88cfe07f955a5f1840a77168e395f1546a441
-31722,hazelcast/hazelcast,65e2bf0829ee2106d3b18468fd6396122cd15e33
 31723,hazyresearch/deepdive,93330afc1dc73d96cd4e61fc4cc13016565f3f54
 31724,hbin/top-programming-fonts,c8b0a2a5acbe6ba9296fed4c58215a71e9cf1ee2
 31725,hbons/sparkleshare,86b8ca020a4548138f5dd84b9c3da75d21a2f81e
@@ -31824,8 +31711,6 @@ idx,repository,head hash
 31822,hholtmann/smcfancontrol,e1bd672bcd2d72eddff9b6da7b9cae38e35c4206
 31823,hhxsv5/laravel-s,37b69ae79aab8d1aaaa6f11eee07bf5f2a6b36cf
 31824,hibayesian/awesome-automl-papers,0a3b6790536a7c2ac9bdb938021eb0c745f644ce
-31825,hibernate/hibernate-orm,c6bc135b2df7d8a02ea8e7f0105ee4fb7cd17462
-31826,hibernate/hibernate-validator,6e73c5f45d81a74b4f51754a80c629ef5ffc42cb
 31827,hiddentao/fast-levenshtein,93bd3fcf9228806900204878d9a926df572c4c71
 31828,hiddentao/squel,afa1cb52a61e89404e193bf4e36c2e79dd21c020
 31829,hidroh/materialistic,b631d5111b7487d2328f463bd95e8507c74c3566
@@ -31950,7 +31835,6 @@ idx,repository,head hash
 31948,html5blank/html5blank,e23dbedddfa4aeb33001aa9673d0a1dfff520fc9
 31949,html5rocks/www.html5rocks.com,b3f798544112f07fe2fa45d59a2a4d7b7d19ea1f
 31950,htmlhint/htmlhint,21022c653721451da2bab49da10ea0e226acf862
-31951,http-kit/http-kit,e00279f6d921efd3aad3b513ebfa42604d3cf3bd
 31952,http-party/http-server,8f7fcb08003952ec300874559690d0d75d241ffa
 31953,http-party/node-http-proxy,9b96cd725127a024dabebec6c7ea8c807272223d
 31954,http-party/node-portfinder,123a06f8028288a0f196cef4bf1346f818a8cd73
@@ -32253,7 +32137,6 @@ idx,repository,head hash
 32251,immortalz/stereoview,d263062bd2b5908f37201a2443304f5a56d49520
 32252,immortalz/transitionhelper,f835a6e5fc12720e9867eb7bf2d2f29e3241edf5
 32253,immutable-js/immutable-js,372d376278dcde481efe69c7ede0602423db2024
-32254,immutables/immutables,7c78f66766bd96e9f37ed02b866c2a08871cd89a
 32255,imochen/hotcss,d59de113803ebf5d22979f1fbd8fa00dd8b51aa6
 32256,imolorhe/altair,d48c89c2eaeb78645e1206415703b8fb6c88b8af
 32257,impress/impress.js,d0ba7ff88474b989482e52848eac34efece4317a
@@ -32311,7 +32194,6 @@ idx,repository,head hash
 32309,injetlee/python,94faec41b8a74cde03ec79c2140da4b8839b224a
 32310,inkle/ink,6a512190365002f54bd501b0863ded40123cb8e5
 32311,inloop/svg2android,dc694b7936b8ee24dc66d2cd0f42f4f02b24199f
-32312,inmite/android-selector-chapek,854dc37b7a70ed1ff03a9dc352d2282ae1c4b65f
 32313,inorganik/countup.js,9f9b0b4d1b46fde3e6bad866c01516ac827d98a3
 32314,inorichi/tachiyomi,60150423d7771d9317883e1e2a26a59fba886a72
 32315,inotify-tools/inotify-tools,63af779670655aa395ca1e2c70e665dc45c202a5
@@ -32499,7 +32381,6 @@ idx,repository,head hash
 32497,izzimach/react-three,3ede927e66db1261794402acafc52968f4791d01
 32498,j-delaney/easy-application,41edefcdd95cc1567d492a18a439ea5ca748fd1e
 32499,j-easy/easy-rules,d4450831533e47a5c0cb361edb80dad43db228a4
-32500,j256/ormlite-android,71373ea30e61b233676b15a335f2a55b3271a7ae
 32501,j3ssie/osmedeus,71132e2a17c34a9551a2144957bd453e2b61c7c6
 32502,j4mie/idiorm,cb4b5cf0c97731fc0ac8848564e3866dcd24a4b5
 32503,j7mbo/twitter-api-php,f1a84c8c39a854ac7a8bc87e59c997b526c7bbc7
@@ -32531,7 +32412,6 @@ idx,repository,head hash
 32529,jacobeisenstein/gt-nlp-class,31919fc5b03ee4a3a696dcf2aac64eac2dee2e81
 32530,jacobian/dj-database-url,9a74cc52834ee88680da567fbee0974d02969fb9
 32531,jacoborus/nanobar,786e75295f0c00825242c9c0ca3a4ad5afb7824c
-32532,jacoco/jacoco,962b3fa4dab8f541f2a94096793a59b638f97130
 32533,jacomyal/sigma.js,7b3a5ead355f7c54449002e6909a9af2eecae6db
 32534,jadagates/shadowsocksbio,0ca48c706042930d3688fe3731912b862fc0b06f
 32535,jadengeller/helium,e416f0d704e522d38d76fc3ffcd8a569fcc48525
@@ -32684,7 +32564,6 @@ idx,repository,head hash
 32682,java-decompiler/jd-gui,b3c1ced04e571fc316648d114ff0c8121e051d8f
 32683,java-native-access/jna,d8e55dc7aebb2a6234d79f607a18cf3a683e6f4b
 32684,java8/java8inaction,4786c46a24e2f7d0a749d34d585bb2c1d9f64c53
-32685,javaee-samples/javaee7-samples,4a67b232d71bc2b3b6d418e955218fa71741b943
 32686,javagrowing/jgrowing,425cd785cb93c9daeaf3630529ece76ca4a7bbd3
 32687,javallone/regexper-static,126d29588d30b2beac6ce684c575b0c5dda1b006
 32688,javallone/regexper,2baed284bfc09c4ed7d56cdc9e5ae77467d76168
@@ -32693,13 +32572,11 @@ idx,repository,head hash
 32691,javanoober/backgroundlibrary,add5d38e64af896bd8ab0bc4ad7f7100fe7acfda
 32692,javanthropus/archive-zip,c41459ad70f002962ebbb78ee17139151b27af29
 32693,javanthropus/io-like,e8c307fda179f27014f90eccba9fd74cb267549b
-32694,javaparser/javaparser,83b5e5c8c65f5fb549f435e9314011cd6373457e
 32695,javascript-obfuscator/javascript-obfuscator,1000402f10f61bd367cd971d55f0f832d940d60e
 32696,javascript-society/javascript-path,b6905969583daf22927745468c6833ed8447fa92
 32697,javascript-tutorial/en.javascript.info,5ab1ce20b521af0feb3692429e6278f0cbb7d17c
 32698,javascript-tutorial/zh.javascript.info,d3ec009434d6364147efe47f9159978e60b56031
 32699,javaswing/neteasecloudwebapp,630de8fa667dbdb0f9c3b3709b425d488389871b
-32700,javax-inject/javax-inject,1f74ea7bd05ce4a3a62ddfe4a2511bf1b4287a61
 32701,javen205/ijpay,4605f295c9554426175a4b3e4519c3d3dcefdde5
 32702,javierbyte/img2css,441c7c968f0a659b48392c8cf7fd61b9f854d329
 32703,javiersantos/appupdater,ca6bcd2495095d6965ddf15d6a6fea6e80fab35c
@@ -32736,7 +32613,6 @@ idx,repository,head hash
 32734,jbhuang0604/awesome-computer-vision,9b82b1645aecdc9b895fc378d5209a9f6672bb15
 32735,jbloch/effective-java-3e-source-code,bdc828a7af2bdfac28e3c38bd7d1a2ae05736ccc
 32736,jbogard/mediatr,6baaeef7a16ca75cb905829f870f79c6334ef40e
-32737,jboss-javassist/javassist,700be6f6f9546e8af049b1a763ce27f1fde5955d
 32738,jbranchaud/til,778555636ec689344363d23bf31d2b31c3fe553e
 32739,jbrownlee/cleveralgorithms,c0f18139905e8e387158474aaa48266dfaf7a237
 32740,jbt/markdown-editor,58aa8bfe18c5a30af2c6fb08221b00b841688dd9
@@ -32750,11 +32626,9 @@ idx,repository,head hash
 32748,jcjohnson/neural-style,07c4b8299f8fbdafec0c514fc820ff1d7ff62e46
 32749,jcjohnson/pytorch-examples,0003fcdc606a79951e53bf8f46f8574fa4739f23
 32750,jcjohnson/torch-rnn,6e72b866e0a7fe544b7de2d9951063c9c11c00e3
-32751,jcoleman/tomcat-redis-session-manager,bb72ab23096ce7620e6f5b166be24a821b7b87fb
 32752,jctools/jctools,0dae71cc8b8aa2a013f6b3d258c3c5872bc4c271
 32753,jd-alexander/likebutton,42cc1ec18c72bd3b3efa7e7620fb073b2926ab0e
 32754,jd/tenacity,b647dcd2ba60711174bf35ca6a2fd365c37af2b4
-32755,jdamcd/android-crop,f4b2d25a0508f45b1b961064a9b3e4a8ae30227c
 32756,jdan/cleaver,0606224ad38f1a1a92cbd4993500ce677d464884
 32757,jdan/isomer,b9d0bf672d2a6cac17960fe7637a6828be8ee6bc
 32758,jdesboeufs/connect-mongo,962c7db8afb14778ef6e3530f0ed9e4edff47ce9
@@ -32850,7 +32724,6 @@ idx,repository,head hash
 32848,jerrylead/sparkinternals,86e6a913f6eb763f0371a0e8ecfe9c7d4e8da428
 32849,jerryscript-project/iotjs,02599f35810cfa6ea5495bbc42194ed576b969de
 32850,jerryscript-project/jerryscript,ef4cb2bf7444f4b859fa61cfeb8dab9d749868ce
-32851,jersey/jersey,5370944094e510dc78fe01382ddd181140ce679f
 32852,jesolem/pcv,376d5975a033a7bde0102fa4b8fc29750d7fc98b
 32853,jesseduffield/lazydocker,80af149b023f4d9be68a643412183d389d73368d
 32854,jesseduffield/lazygit,d8059d7f7de21bedd2d989f6961f62ec48781463
@@ -32887,7 +32760,6 @@ idx,repository,head hash
 32885,jfeinstein10/slidingmenu,4254feca3ece9397cd501921ee733f19ea0fdad8
 32886,jfelchner/ruby-progressbar,93d0d3e806e1686c05819a7d008403f5b4ac8bfa
 32887,jfhbrook/node-ecstatic,c2de337332a5137944c117000b13d368ce6e24f6
-32888,jfinal/jfinal,076e76a4941c989d7f535035295aa3d055123131
 32889,jflinter/dwifft,6fec2bc0246091b3e17a9d42e722fb98e05ac3ff
 32890,jfoenixadmin/jfoenix,a1be87d91d578e7799bc308b3b1bbe1d742a020d
 32891,jfromaniello/selfsigned,40c030eaf928a71a2b6af8d7e8660af6d286ab8a
@@ -32895,8 +32767,6 @@ idx,repository,head hash
 32893,jfzhang95/pytorch-deeplab-xception,9135e104a7a51ea9effa9c6676a2fcffe6a6a2e6
 32894,jgable/gulp-cache,018bde813c5ab4ced2b510ed178baad1fa14faeb
 32895,jgamblin/mirai-source-code,3273043e1ef9c0bb41bd9fcdc5317f7b797a2a94
-32896,jgilfelt/android-sqlite-asset-helper,74a9b0d68aeb1bb0b9778c5598e37da573919ce1
-32897,jgilfelt/android-viewbadger,e08c3a78cb92c0c8587790b15e73434f972912cf
 32898,jgilfelt/chuck,152f9a79f94ea23e9f0542137765961918909a76
 32899,jgilfelt/systembartint,daa0796a488b5480ef808aa6363d300675b4af83
 32900,jglovier/gifs,a1db3e18ac053f3de185e092c1a866c68f2435a7
@@ -32931,7 +32801,6 @@ idx,repository,head hash
 32929,jhuckaby/webcamjs,063832df25e8de8b7ed3a3a68b05dfd76444a376
 32930,jhurliman/node-rate-limiter,9bbd3b036c33e974d51d7b40ddeee13e71bb69b0
 32931,jhurray/jhchainableanimations,14e2248a93514a35279b1e73c7d3b9970e42c8d3
-32932,jhy/jsoup,bc798109ea212dc6117a31c114a0b3641d2658a5
 32933,ji4n1ng/openinterminal,d51f29b04d2b7b1aa88845f26606012f4660b734
 32934,jiaaro/pydub,996cec42e9621701edb83354232b2c0ca0121560
 32935,jiahaog/nativefier,9078a3071a3c7fab977d4e0bb54d3579af8296f3
@@ -32961,7 +32830,6 @@ idx,repository,head hash
 32959,jinder/path,7fbaede3ca9d224494cbdd47d7ca803ee96d2055
 32960,jindongwang/transferlearning-tutorial,2ae0b46c748a79c899996561263fe12d5a49efa5
 32961,jindongwang/transferlearning,5a5c472bfeef37b92d2c08e8b37e1e93cecd4074
-32962,jindrapetrik/jpexs-decompiler,e2c431aecd15774533f548b47774649cd2d35720
 32963,jinfagang/tensorflow_poems,559f4be38bfda4d9d648e8b050064d2370a0ddb2
 32964,jinfagang/weibo_terminater,1ba66c2553eac2f6fa5decba9559445c9a3cfdca
 32965,jingweno/ccat,27844a750a88dceac99932514f0b2846e4427dd9
@@ -32979,7 +32847,6 @@ idx,repository,head hash
 32977,jisungk/deepjazz,ac87a1d041a966dae901e246e756ac76ceb477c6
 32978,jitpack/jitpack.io,1256e1849b16837f44d7dd151b77ccdb4f239739
 32979,jitsi/jitsi-meet,109b83d6f1fab2fba2382fb8b94b0729dade0cfb
-32980,jitsi/jitsi,72354ded13d4aff628ac75d9b0a1502f7e4d4c1d
 32981,jivesoftware/pdtsimplecalendar,d79e4ce1d49219c84953d19bd8d9da457f4beb07
 32982,jivoi/awesome-ml-for-cybersecurity,f7ce468af02ac6eb35bfc06f4148c427e5771054
 32983,jivoi/awesome-osint,53cee60e55ac05ebd1cd5477c6c80cf4ba3cb132
@@ -33012,7 +32879,6 @@ idx,repository,head hash
 33010,jmpressjs/jmpress.js,c21df7e02407bbef366f41808eacf46d0cde96ca
 33011,jmschrei/pomegranate,a446005b33ccd52cdd235da619921f4274f0b479
 33012,jmurzy/react-native-foldview,892f89569cd851867602ce7412852515dccc7e5f
-33013,jmxtrans/jmxtrans,a826aa34885fd6bf600cfbe359f3bf4937c072f3
 33014,jnicol/particleground,124f7dbe732693ff5ab7f6c9edaea46acd2416a2
 33015,jnordberg/gif.js,92d27a02841339e202c75150dcf6fe5f4fa42ec5
 33016,jnordberg/wintersmith,be757f5f7d72ddce462f67913c9cd7c578162018
@@ -33047,12 +32913,10 @@ idx,repository,head hash
 33045,joefitzgerald/go-plus,0192d4719894d347e8f0cbc1826031fbcf49b002
 33046,joefitzgerald/packer-windows,c87ab553b2d27c99ed543da9fd8e231b21c27446
 33047,joehewitt/scrollability,fed4b023d10401a527c4797461c84b43f8797000
-33048,joel-costigliola/assertj-core,8ec30c71d4e2a27f362546750ff874a04f9923de
 33049,joelbesada/activate-power-mode,ac060c2476ba8b323ca932eda97da9bc0c051b34
 33050,joelbesada/scrollpath,d3a388efbce68a8b646c49f43c03fc6819e1b26e
 33051,joeldev/jlroutes,462682e6d07331950c539f54bcd2d6f6d0b449db
 33052,joelgrus/data-science-from-scratch,d5d0f117f41b3ccab3b07f1ee1fa21cfcf69afa1
-33053,joelittlejohn/jsonschema2pojo,72050f6b94d46d51d7c93c51e35383cdf5fc733f
 33054,joelotter/kajero,85e86ff49b5c5fac415663a906aa8ca5efdb4d5e
 33055,joelparkerhenderson/architecture_decision_record,ab49e5ecad09b0e80c6ebeaf4f41c7958a2ad291
 33056,joemasilotti/ui-testing-cheat-sheet,b20e1218339a5144ed530f2de8114c68aa2fbb88
@@ -33069,10 +32933,8 @@ idx,repository,head hash
 33067,johan/world.geo.json,34c96bba9c07d2ceb30696c599bb51a5b939b20f
 33068,johang/btfs,80ee126c934eb167f35d0029d6a7dcc287f64d87
 33069,johanhaleby/kubetail,6bed6794c9521934b83a4ac22e3ced7484b9657d
-33070,johannilsson/android-pulltorefresh,ccd0c71a4b291a5ad4673081dfbb72877fb3b346
 33071,john-lluch/swrevealviewcontroller,bb4a110989d67a5fc5f5c533cacc92f6cb02f5e2
 33072,johnagan/clean-webpack-plugin,0207fe42de3da90c30ad492fd1dbe042dec2623b
-33073,johncarl81/parceler,52e6b14709eb0b84835907e71d9380124f3c6b6e
 33074,johncoates/aerial,0fd56f56876c2abdd61164fa725d5e812d3b569b
 33075,johncoates/cssketch,1adc9fb0dac35e836702b597e604b3848268f5cc
 33076,johnestropia/corestore,4b6d9a54e75d2c9fd2c3c768f7d4aa3175c09133
@@ -33228,7 +33090,6 @@ idx,repository,head hash
 33226,jossmac/react-images,11f2237e74f7d9053ad34b58a2eb1f7d9746df70
 33227,jostmey/nakedtensor,02681ccd3cffff0ca0a1962f0ca50cffe0c5c423
 33228,jounce/surge,ac638794d4b02377e3628c1c8b1e07c2a15f1d52
-33229,journeyapps/zxing-android-embedded,d09b7c76c3124fbfbd096a65d60b1997f37ff90f
 33230,joxeankoret/diaphora,1260d2d7689c3a359f86b406bfc517437eb7a389
 33231,joyent/libuv,0b07b299e9c3bbf3bb59b71fccae18418b356101
 33232,joyent/node-asn1,5c7db248f9f8eee513812d7a554e230f6b3661d1
@@ -33501,7 +33362,6 @@ idx,repository,head hash
 33499,jwise/horndis,10ba210bec2ce0538f2a3c126cec3fe2dc33535e
 33500,jwplayer/jwplayer,30353cd1e1f3017a96ef2854ef758fb4f479cd7a
 33501,jwt/ruby-jwt,e1fce4ead3f221ad3c52ffd8dbbe14dfb4c70b9a
-33502,jwtk/jjwt,917ffbb5d92d70b261159572a4e6bad39fe972e8
 33503,jwyang/faster-rcnn.pytorch,f9d984d27b48a067b29792932bcb5321a39c1f09
 33504,jxa-cookbook/jxa-cookbook,e03c8dc6f19f0aed11a0496151450f81892f17d0
 33505,jxcore/jxcore,b05f1f2d2c9d62c813c7d84f3013dbbf30b6e410
@@ -33517,7 +33377,6 @@ idx,repository,head hash
 33515,k4m4/terminals-are-sexy,c53af64e02a56cd99a119242b07be7fdf5811c48
 33516,k88hudson/git-flight-rules,e1fd8abce866303d217ff305dfd2a1ebd4d4b776
 33517,k8gege/k8tools,03c4e24c75f7da50620fe6c1106e4d91a17df7b9
-33518,k9mail/k-9,1596adc0c535aea02ab16059d964b1c13475dd53
 33519,kabouzeid/phonograph,d156872cc5ac7f5f295b5fad361974c5fea45631
 33520,kabukky/journey,58d81ca85b7716ed4a986acce99530759d4f5ffd
 33521,kach/nearley,6e24450f2b19b5b71557adf72ccd580f4e452b09
@@ -33531,7 +33390,6 @@ idx,repository,head hash
 33529,kaimallea/ismobile,05abb5552d9887e3033762a6c92dc7cfeccb0b8b
 33530,kaiminghe/deep-residual-networks,a7026cb6d478e131b765b898c312e25f9f6dc031
 33531,kaina404/flutterdouban,65be8be97ae7c9b618e380de8c028cc51f1d88ad
-33532,kairosdb/kairosdb,285388a90fa6be1f61deeb5bbde14a2c9ce999e6
 33533,kaishengtai/neuralart,dc53993a209bfd1c93b18128f4575a2ad362eb1a
 33534,kaishin/gifu,e051504ce6fff6530d72c5c5454c139f51bff9c9
 33535,kaitai-io/kaitai_struct,ba2b6f8f52afcdfe62c3502bb2772829922eca9a
@@ -33557,7 +33415,6 @@ idx,repository,head hash
 33555,kangax/html-minifier,e15a892cd2f578aa281e766924fdd6f17f80f607
 33556,kanwangzjm/funiture,71ca0fb0658b3d839d9e049ac36429207f05329b
 33557,kanwei/algorithms,d8834b21317c34ce313efae64eba903822e7523a
-33558,kanytu/android-parallax-recyclerview,cad6b8d619a3d2d87efa35e7a8f456f55b120dc5
 33559,kaola-fed/megalo,3ae4db12edd5e647581e0373ffa733477c0ca614
 33560,kaonashi-tyc/zi2zi,546025f59690b7c7c85de0146aba6f24f26f6b9d
 33561,kaopiz/android-segmented-control,519e553c84a351929d4ef2fdf31854e3a36735b9
@@ -33703,7 +33560,6 @@ idx,repository,head hash
 33701,kevinchappell/formbuilder,28e1236b6967dceb04d35d9ae187c1eed2fab7b3
 33702,kevinlawler/nsdate-timeago,89c50ce239d504b988c0531b3a9d454d8197af01
 33703,kevinoconnor/klipper,ea2f6bc0f544132738c7f052ffcc586fa884a19a
-33704,kevinsawicki/http-request,2d62a3e9da726942a93cf16b6e91c0187e6c0136
 33705,kevinzhow/pnchart,75e54fe69609f3c2e446e6d8ff995977a273098a
 33706,kevva/astral-regex,bf63ccebfdea142167aa46e4d149096c77c5ef99
 33707,kevva/bin-wrapper,569681b2dbcac7d138c840044134edb06615cedf
@@ -33747,14 +33603,11 @@ idx,repository,head hash
 33745,kieronquinn/persistentsearch,a342b0a9545040373b49b7dbeb2003844a10660f
 33746,kif-framework/kif,c18a19b8c369888e2f9a80795a718d8ff603a1ce
 33747,kikobeats/emojis-list,d6287f12f428ff86e416299671ffc15d12a16c27
-33748,kikoso/android-stackblur,35696424fcb1bbb561ad5a281270fdc5abd7f1af
 33749,kilian/electron-to-chromium,c838deae9cfb30107d738dd63856e800a19c9f82
 33750,kilianc/rtail,1234c9f7f1249572bd7a8cd2713a5f9b7a17dedc
 33751,kiliman/operator-mono-lig,eec76d8792f7865583a73a7f80a180188ea1839f
 33752,kilimchoi/engineering-blogs,5373fe3f7ab340b5d62f0c5867851c0badd01a31
-33753,killbill/killbill,33aa3e9a65bf40de10edee7429341370488d4fb5
 33754,killgcd/chromego,1775962c565688a70cefc1a814a2654212e5942f
-33755,killme2008/aviator,44feeb1e061031d3266f352cf57cb535eb48449d
 33756,kiloreux/awesome-robotics,cc31271f16172e74a00bf56b17d978e44a32de9a
 33757,kimchi-project/kimchi,36ed74be5d2016848ea6e453d7fb990d3d7fe3cd
 33758,kimiyoung/transformer-xl,44781ed21dbaec88b280f74d9ae2877f52b492a5
@@ -33814,7 +33667,6 @@ idx,repository,head hash
 33812,kneath/kss,b0791708cb397f5e8995a855af0d1a8b0aa89a2e
 33813,knex/knex,82f43d53abd2b6215015c11061a9793ed68e8611
 33814,kni-labs/rrssb,270f9273321c86c8d7193a7978727bad3d81ff15
-33815,knightliao/disconf,872e69c71bc34ad6f3d6bead1bb1f96a5e9cfdb4
 33816,knockout/knockout,45e86bf0347cf742ca359bab051ea82fdfae7a5d
 33817,knolleary/pubsubclient,2d228f2f862a95846c65a8518c79f48dfc8f188c
 33818,knowm/xchange,d56e61f2cf1368f917965a8c43f292a2a1b28ebc
@@ -33885,7 +33737,6 @@ idx,repository,head hash
 33883,kotlinby/awesome-kotlin,171daac3546f4fd1da17fdd937d2589ca041c16a
 33884,kotlintest/kotlintest,591e54c4c5f4cf2441e90072d6435273e892bca9
 33885,koush/androidasync,12f9e20443db5c8e79e7e4d43d9e2b3f4230266b
-33886,koush/ion,2e48671fb865e993f714b5ffed16e82aed6d04fb
 33887,koute/memory-profiler,f8397e70efcdad1d48c4999d609d786ed8ab988b
 33888,koute/stdweb,9b418d98df6fafaa4d4b87b04c304d0220292055
 33889,kovidgoyal/calibre,c08be4e4283a97887de51d5d7604a25afb239978
@@ -34033,7 +33884,6 @@ idx,repository,head hash
 34031,lancopku/pkuseg-python,071d57c7df9ac0680edda7034b47787d7c6f9184
 34032,lando/lando,04e3759ecb5e44cc48eda2e31d99cf3fee6e0d52
 34033,langren1353/gm_script,d6ad711dd3e035fad35652bf0cb8afa499a575f7
-34034,languagetool-org/languagetool,5f5a71585a5c1ae26eca94d9561e9c31141a3ded
 34035,lanjelot/patator,204a12a7892ea60c199b5438cda3e2ca1f0cf4ec
 34036,lanpa/tensorboardx,ce08ab4ca1ebb0e8d09d140dbc1531f3923490a7
 34037,lantaoyu/marl-papers,0c415601d5c3a423926b325d9a8027a132593777
@@ -34143,7 +33993,6 @@ idx,repository,head hash
 34141,lebab/lebab,bdc8eccbe0490d8058390303ffd8a5c231e8f0fc
 34142,lebinh/nginx-conf,c790c6b6628ff153bf54bbfd21e7483ea9b270e7
 34143,lebinh/ngxtop,35b3f1e40e87c221b7156300b3611518c1d37745
-34144,lecho/hellocharts-android,c41419c9afa097452dee823c7eba0e5136aa96bd
 34145,lecoupa/awesome-cheatsheets,d63d75bb28a64ed082d748c847d233576dea0b29
 34146,ledger/ledger,f480f37a847100d351a970a1b83a86d9eeccbcc7
 34147,leebaird/discover,1d943b4b9693d66ee934c01298f30de1201c6557
@@ -34170,7 +34019,6 @@ idx,repository,head hash
 34168,lelylan/betterspecs,f43165c51415d92518fd10c146ed3008fa40a4fd
 34169,lemire/simdjson,d6551bf278470aff440c9b8b9e763a18cec4c0ec
 34170,lemonjing/easyjob,04753550bd620522f98a741e62ecd65989a4a759
-34171,lendylongli/qianghongbao,291276fd9477b71af2b1176c3ce6aa8bcbc4f994
 34172,lengstrom/falcon,2c2676c1a72ef977923de642922675672ccf9928
 34173,lengstrom/fast-style-transfer,0d3d981f7ab948253d355585bdbdfa914247b4d0
 34174,lennylxx/ipv6-hosts,b7d37e9304be9c45e042ae6a9465b1e960248f98
@@ -34270,7 +34118,6 @@ idx,repository,head hash
 34268,life4/textdistance,e9718c5883c7a04d99217bb7fcde58324083fc27
 34269,lifei6671/mindoc,77fccc637a34ba3d7c48f4caf06f0602d8c15827
 34270,liferay/alloy-ui,96c120776b96553c6d92d67e7ecd416c27e99ff6
-34271,liferay/liferay-portal,6f29802034e02288cc7bf1ce59e912d7cf715d14
 34272,liferay/senna.js,fd89ca02de0ad57e7697c5088f4e490f8d181958
 34273,lifo/cramp,60f6f30fe69fedd076ac7cb64f65ba8f382c8a67
 34274,lifting-bits/mcsema,26368053f761be05dab708bc28fb97090c64b2be
@@ -34317,7 +34164,6 @@ idx,repository,head hash
 34315,linkedin/dustjs,113943a45dd9e10fa5a859d415258a7e55772494
 34316,linkedin/layoutkit,1f1b067b6b11a0779ea6b6ccd976585a1d7bb79b
 34317,linkedin/qark,ba1b26562507d631389b111e5033dad4128a8541
-34318,linkedin/rest.li,a45e6612a119bce16cd9cf0b46bd28988afc39e9
 34319,linkedinattic/hopscotch,11df61a2222330f60ab7a989d01abfc014e472ee
 34320,linkerd/linkerd,ea82499d386e44e8958be58e0386f593e639645b
 34321,linkerd/linkerd2,6a260fa69f9c472800487cbb369662476d87d25f
@@ -34344,7 +34190,6 @@ idx,repository,head hash
 34342,lipis/flag-icon-css,c757fc7268266d8c3353d8f1bd2021ac38287ede
 34343,lipka/piecon,d0f8d1a1a0cb05f730753cb41929af78e9e84836
 34344,lipp/login-with,1a914ce27e3086cec8d0471ca650d8803c9ebeb6
-34345,liquibase/liquibase,40e77a15a8b7b5010f3c58781cb7805c08dccd84
 34346,lirancohen/stickup,e28d8b76024d83939392d0771909de93d3ab6092
 34347,lirantal/dockly,c83e34491d558c9d708ae46e552a3a0c541e04fc
 34348,liriliri/eruda,e983115d3428ef698550b34595460dd6b32b3764
@@ -34392,7 +34237,6 @@ idx,repository,head hash
 34390,livoras/blog,ba5efb2508b47ee60ea7ebce75597caa23675592
 34391,liyasthomas/postwoman,23afc201a12e221c01f79d731513fcfeff928fdd
 34392,liyifeng1994/ssm,f3f90d79e50410c2f661ff309dd022322bdbc7cf
-34393,liyiorg/weixin-popular,864994ee4841b08535db3ea6062489663adb672f
 34394,liyong03/ylgifimage,4b953716ca600c50a95445ef1f0bb5bdc0eb878a
 34395,liyuanlucasliu/radam,d9fd30a337894c4003768561d45e8730dbd41333
 34396,lizhangqu/corelink,ad4754115408e86c87f6712a34e3bebf8126114e
@@ -34471,7 +34315,6 @@ idx,repository,head hash
 34469,longld/peda,84d38bda505941ba823db7f6c1bcca1e485a2d43
 34470,longsoft/uefitool,bf93a5eacc900de3b2665f0bbe52d116aa1fba25
 34471,looly/elasticsearch-definitive-guide-cn,ef70babe5fdd248f9fa092c7671e8d4e4b6b8ce5
-34472,looly/hutool,d296e27fbbfd49a22bdcd665bf4f99a8626a912a
 34473,loomio/loomio,076382c28832e0802f16ff0142e787a5253503c7
 34474,loopeer/cardstackview,f38ae1163aa9f12ccc15354558664f6a577bf182
 34475,loopj/jquery-tokeninput,8a8390e779fb693112de59f13f6c8d934b4fab17
@@ -34522,7 +34365,6 @@ idx,repository,head hash
 34520,lucadegasperi/oauth2-server-laravel,b884f6030ce562dc21838e408371b5e942a3e967
 34521,lucas-clemente/quic-go,3bf2e19d0dc617135ec9d6f3c5191740a27097c7
 34522,lucasg/dependencies,1997a40000b77bd3326cbc33672a7b9f78bb23f3
-34523,lucasr/twoway-view,e563d319c9166a3d039ce43d5f36df67c1e8fc5a
 34524,lucifier129/react-lite,b7586ae247615f2d4c4373f206e6c284d7931f81
 34525,lucksiege/pictureselector,d099dac6f83009fe0a2644419d4ba74810c87955
 34526,luckybilly/cc,368b8dd029b997ee5a36fc3c6e2b51d4fd82021b
@@ -34758,7 +34600,6 @@ idx,repository,head hash
 34756,mapnik/mapnik,437feebaf1041f12a6d922466a95f771dc45a39e
 34757,maps4print/azul,c8d3205dc4359f2beb489927f17a4799f9a1e9ed
 34758,mapsplugin/cordova-plugin-googlemaps,bdb7af4730857a6b51662a8cfd180f6c5a3dce35
-34759,mapstruct/mapstruct,2af291ce2f1a9978c9d3f449d8bb8a9bb3b969f2
 34760,maptalks/maptalks.js,34cf41dfbb4c9a7672018b0755c53db984b4803d
 34761,mar10/fancytree,52a5276bd6a2a86ad70387979bf9b8768ec4edc5
 34762,marak/colors.js,6bc50e79eeaa1d87369bb3e7e608ebed18c5cf26
@@ -34808,7 +34649,6 @@ idx,repository,head hash
 34806,markmarkoh/datamaps,c05d20014a480bd1bd8750a6ee9ba57023daf8c4
 34807,marko-js/marko,d3fc4336bf90f797a911a715efa778cb84d65a00
 34808,marktext/marktext,b75895cdd1a51638f2e67b222b266ff8b9cb9d69
-34809,markushi/android-ui,a589fad7b74ace063c2b0e90741d43225b200a18
 34810,markyun/my-blog,f535cd4a289ac0eebfd383b21c8ada4b6e5e61c1
 34811,markzhai/androidperformancemonitor,ed688391cdf95742892ce61494736667cf5baf08
 34812,marlinfirmware/marlin,bf61e5239083fad148c84b7a3bce355c9e32ec6a
@@ -34892,7 +34732,6 @@ idx,repository,head hash
 34890,mattbryson/touchswipe-jquery-plugin,14d0bc1bcd020a16289a7ae98851064d94cca6c0
 34891,mattdesl/budo,fc434246a5c63a64c3cb21368b7c7d956ec4575d
 34892,mattdesl/canvas-sketch,1fc6555a10ea024e3ddd6f6d0dd14ff09476a9ab
-34893,mattdesl/lwjgl-basics,552b1f9cbb00000fb4132d6a792af6e0c7476eab
 34894,mattdiamond/fuckitjs,d12803f6f746e61346b040f0f0a08fd94537e31a
 34895,mattdiamond/recorderjs,08e7abd99739be6946f19f6806ccb368138f2dd3
 34896,mattdimu/postcss-replace-overflow-wrap,9fee648455ab6758a58f93bf39e4cc12ef03887b
@@ -35000,7 +34839,6 @@ idx,repository,head hash
 34998,mcollina/cloneable-readable,bf82cb6b07a427d28f5223e8b26e2ac022afe924
 34999,mcollina/split2,1b9a6a5b0b52fffb27afd65cdebb1229edd22d60
 35000,mcwhittemore/staged-git-files,7a10914cc99899ca8a5c5c4b490fdc8d87bb7218
-35001,mcxiaoke/android-volley,6864be3efadf3a33793228c0ce721a72d7a78731
 35002,mcxiaoke/awesome-kotlin,5f7c76a649d83c88dfb5f2087dba67e50a901421
 35003,mcxiaoke/mqtt,58916a4f60ad04e3ccd7b908f278dabf2c923116
 35004,mcxiaoke/packer-ng-plugin,ffbe05a2d27406f3aea574d083cded27f0742160
@@ -35033,8 +34871,6 @@ idx,repository,head hash
 35031,me115/linuxtools_rst,7e40155c7d3610e785b014b885ef3028f0c5ceaa
 35032,meanjs/mean,ed8d04c4cacf305c25a7a13fface589fd80d1d58
 35033,mechanicalsoup/mechanicalsoup,5dea9531e21e2dfa5dce72f5dd54433981f2fd3d
-35034,medcl/elasticsearch-analysis-ik,13c39692387d314fa0b9afda605ec54a3ac2ffe7
-35035,medcl/elasticsearch-analysis-pinyin,cb04ca46eae601d2be3a64ba205a86b69b025429
 35036,medcl/elasticsearch-rtf,299d30851b93e4e46ff965eb98d9c19d61615e6a
 35037,mediabrowser/emby,1d7c2ab4bfebdae31f89fdaabd3b68782ccf495a
 35038,mediaelement/mediaelement,c194fafa438d7eda121c7d6e44d6405c741cf686
@@ -35055,7 +34891,6 @@ idx,repository,head hash
 35053,medikoo/type,7ed65a6ae49f366e809b1b4aa55bc195cbf54382
 35054,medium/medium-api-docs,602a9f8c7b19e0a42ccf488b5fb2dec5baaa90c9
 35055,medyo/android-about-page,1fd208ca287d152cd1bec7733949df9914615ecb
-35056,medyo/fancybuttons,374c5ac6c0faf5835b4316c430258240ea07a963
 35057,meefik/linuxdeploy,d2f1af07a2f4880eae7da0d33b79691716ff9883
 35058,meetalva/alva,bfdb6aef4a55b5d99ed154a1dcced1acf9aca894
 35059,meetecho/janus-gateway,63e4945b760995bbb54aebeb795fc1369bdadec4
@@ -35335,8 +35170,6 @@ idx,repository,head hash
 35333,miguelgrinberg/flasky,f37dbad01acd963403429dd839f0ff43d49157af
 35334,miguelgrinberg/microblog,3472187155ba60d36aa819cf4e6dbfeefeadf2fa
 35335,miguelgrinberg/python-socketio,f72139b89e4de9eb38aa90d62ca0fa205db196d9
-35336,mihaip/dex-method-counts,92ce28416cad857a5500b6dba543543d942bfa6f
-35337,mik3y/usb-serial-for-android,573c7e41ca687a26293fd111b18df7cf40dd3cd1
 35338,mikaelbr/cli-usage,2974153db243d8d28ae2a872a9ee21f61586d0e0
 35339,mikaelbr/gulp-notify,ed803de01d9dd8d593f3153a29c22ad4ca9d4f77
 35340,mikaelbr/marked-terminal,5b0f1e71f05eb67bd7cbccabf640b9a09579c687
@@ -35515,7 +35348,6 @@ idx,repository,head hash
 35513,mochi/mochiweb,4e5372e2fddac7ccfab8ef6f44b7f11246d3f842
 35514,mock-server/mockserver,b607ad690543b17a6f6d6ecd92292ca3f28afe0d
 35515,mockery/mockery,e0544243a874a0012bc64a7ad2a7bdf12507ecad
-35516,mockito/mockito,757b37a1445be3abd08238c0da62a9a9e635f1ba
 35517,mockk/mockk,fa0fb5a8dea1681c301e6e16421443051c8a139f
 35518,mockoon/mockoon,2933974407262a13cfb546e5a1f2890aa2a9a9b4
 35519,modernizr/modernizr,bd024b52005f5d5b11735ea2c432d760ca1edf03
@@ -35564,7 +35396,6 @@ idx,repository,head hash
 35562,mongodb/js-bson,a382485db33c0db92f74a706789574b8edd6e6d0
 35563,mongodb/mongo-csharp-driver,96fa5f2873198e4963250a2504ff4892c0d0545c
 35564,mongodb/mongo-go-driver,b12ee6dcee0db24383edea6e7389d8dc31b9f0fb
-35565,mongodb/mongo-java-driver,80f9603e667cc5f7c31c64b7d267c4b2464850f1
 35566,mongodb/mongo-python-driver,51f7fe29f6c763158229ae3adf8855d5c7350d1f
 35567,mongodb/mongo,976ce50f6134789e73c639848b35f10040f0ff4a
 35568,mongodb/node-mongodb-native,16025da2677b4cb16b1901e263a8f6c6ef8aad6f
@@ -35665,7 +35496,6 @@ idx,repository,head hash
 35663,mozilla/persona,59827a456d99399d4f09fb93e6f9b28bd1aaeab4
 35664,mozilla/popcorn-js,95162da9c4de6f7a1e200242c5ab7cc556b55f1a
 35665,mozilla/readability,2524fe371da2356b0bb79e0d34b028fa23388cd3
-35666,mozilla/rhino,ef18cb92067d2ff2e14a038d29e2d4adce0de446
 35667,mozilla/rr,d9e4547a8e94242b62efe684d55c6edc7690c7ea
 35668,mozilla/send,ade10e496c064d3b29191dd33b1066bf99607d74
 35669,mozilla/serviceworker-cookbook,fb3b7c5584f89aaa0893d2d7eb9f7f6261dcfde4
@@ -35711,10 +35541,8 @@ idx,repository,head hash
 35709,mritd/dockerfile,6686c3423f3939e3f4a1fbe6f02c03a954dd6cb9
 35710,mrjbq7/ta-lib,a304bdcd46cdc336fda59ca20017f9339f8c4a18
 35711,mrkmg/node-external-editor,e1070a8295b8ebbafa7b29802ae0e2da0fad47c0
-35712,mrmans0n/smart-location-lib,bfefb04770bb3a9653515a526c01908c36ed1c66
 35713,mrmlnc/fast-glob,4b71e29a69453931842642fd6b16778c46137a9f
 35714,mrmrs/colors,5da3127136d5206afb861dfa838f7711cb90a0ff
-35715,mrniko/netty-socketio,3198506c88c7e0ad5c0bcf948d4be888c27cab96
 35716,mrnothing/ai-blocks,07f78ba400db93c701ff137aded78a556ec4816c
 35717,mroderick/pubsubjs,e7b62f5d4f9eaa708fb3858570dbf08116763440
 35718,mrrio/jspdf,5d09af9135a2fe049c7d3c8b95df280d22e4a6db
@@ -35797,9 +35625,6 @@ idx,repository,head hash
 35795,mxstbr/sharingbuttons.io,fd33ca574eeb3e59236ef2eba3ab21391ad495f6
 35796,mxw/vim-jsx,8879e0d9c5ba0e04ecbede1c89f63b7a0efa24af
 35797,my8100/scrapydweb,ef255ff22040991148296bfbecdb7adb90fb9e83
-35798,mybatis/generator,6a7d4435cba6a96819e88767592f386163feb01e
-35799,mybatis/mybatis-3,3eca96cc5d09273fd9d02c27e87eb5e3b0bfd5c2
-35800,mybatis/spring,bc7e2855f3608f08e0239ab455e2300fd194aa0a
 35801,mycatapache/mycat-server,243539fb74bbdcb9819fecc7e7b50ccf0899e671
 35802,myclabs/deepcopy,202aaf6b7c2e1e0a622b0298e9f3f537e4d84018
 35803,mycolorway/simditor,4eb1259270b4270c24ce6486f54fe717a8bbdc1f
@@ -35881,7 +35706,6 @@ idx,repository,head hash
 35879,nathancahill/anycomplete,f5c75d21a0d056e4fa652b6eb05655260570b1f8
 35880,nathancahill/split,48759432a50510e2ed762109d5a8d12a3aac9e63
 35881,nathangitter/fluid-interfaces,da5c66cc5f7986339ed29c6b6d995bbd1f8b0a8b
-35882,nathanmarz/storm,cdb116e942666973bc4eaa0df098d5bab82739e7
 35883,nathanpeck/awesome-ecs,4433037cdb505b0d6d902be7c181b9030c874ccd
 35884,nathanreyes/v-calendar,05ae3d812f8473c9fe0f56a36791c8e61200c0ef
 35885,nathansearles/slides,a3e22149ff56cecd9d340f3acd5d54bebfc8979a
@@ -35906,7 +35730,6 @@ idx,repository,head hash
 35904,navdeep-g/samplemod,d469f2f5e0a472be2c7d95ff90ed46e975810dc8
 35905,navdeep-g/setup.py,3a03ee20c0d2b795c8d5cb1aa1d7c3c6468d2ffc
 35906,naver/billboard.js,3a1804c43db6ca43a7970829a17c3629f9226c8c
-35907,naver/pinpoint,e2b20dbd403c4e66e27847492cc2cae968011b5c
 35908,nayafia/lemonade-stand,f0f3927dcb9984b2d30cf3bd7aec35ab8b32ad34
 35909,nb312/flutter-ui-nice,b8654a0d7d184fcd8acca0821cb4acc75c2c23b1
 35910,nbedos/termtosvg,258a3fdb17faf06d4f1525603185ef18b4ab7920
@@ -35947,7 +35770,6 @@ idx,repository,head hash
 35945,nemotyrant/manong,7c9e5228e133b9267ad3a415833bc9bb53193bb4
 35946,neo-project/neo,2e7e70e74647485031dd5ec567d861cf14814854
 35947,neo23x0/sigma,2c24b24cf1269a4087acf04136fd2d6eaf447452
-35948,neo4j/neo4j,60f235e37443d4820c5c5c2a251a4096cf18a430
 35949,neoclide/coc.nvim,9c3723a011e68a4e4e7a37298bd0f6c64ab59dca
 35950,neokree/materialnavigationdrawer,86e355f6190dcb7255c6b9c28c1e54cf96f46358
 35951,neologd/mecab-ipadic-neologd,abc61e33d8be3d0ead202e6b1df064c72d5ccf11
@@ -36004,7 +35826,6 @@ idx,repository,head hash
 36002,netguru/responsedetective,55ec742268b86da5e293fa55eecb545e186303b1
 36003,netlify/netlify-cms,672fbfe9bd2e8408d0812884ba98e5cd2fbd46fa
 36004,netlify/staticgen,bcfdffdf9cab657feee0ca4041613416ff16c44e
-36005,netty/netty,7dba4fcf499425914e09993d1f2bd439794cb3d6
 36006,networknt/light-4j,d6164f62ae3553e9ba99bf0d3ddc2c33e19c6a6d
 36007,networkprotocol/netcode.io,997c0e67b84bf385e9789fd7d99942cbab216c6f
 36008,networkprotocol/yojimbo,b2eda0a794bddc89bff681d61407a9c19c050b49
@@ -36129,7 +35950,6 @@ idx,repository,head hash
 36127,nim-lang/nim,ce1a5cb165570547c0c687c6ba0add19a8579721
 36128,ninenines/cowboy,22adc4de517bf54661795f6e18b6b2e62aec4140
 36129,ninja-build/ninja,82a7cb3f263a6af7cc4c24408cf0a4ca5b648b55
-36130,ninjaframework/ninja,e5f1945f5861850196f88423020e82f7e43224f9
 36131,ninjaprox/nvactivityindicatorview,3c6c224115a2cce7608c9698d407a149283cdbdb
 36132,ninject/ninject,5dc43690b23716fc7ad7df5a810fa7c8731ce392
 36133,ninjinkun/njkwebviewprogress,377b7e1dc58d389369cf9d27dac0cd95ebdbdd04
@@ -36273,13 +36093,11 @@ idx,repository,head hash
 36271,nothings/single_file_libs,a8b2fffe87ed3bce76e2facd2caba66cca70a22a
 36272,nothings/stb,03f50e343d796e492e6579a11143a085429d7f5d
 36273,notifme/notifme-sdk,1a70dab409085dc0781f02c21d63354860d96ed0
-36274,notnoop/java-apns,4b02c9e9196087530590bf6442abbf3c35423216
 36275,notwaldorf/tiny-care-terminal,fd7f710f735721ceb7b73c96ff322a0c8c6f668b
 36276,novastone-media/mqtt-client-framework,f450455f83f5d6ac1ab6c6f45409c24a39ad78f1
 36277,novnc/novnc,7d2dad0f9e96a170281c054a534e4ca5fdbdaa53
 36278,novnc/websockify,43c371fc7a7dc2439268b743ed722be489cd6fec
 36279,novocaine/sourcemapped-stacktrace,d775db97c6d1270729ee6f03318c888c1f010c44
-36280,novoda/android-demos,f3999dcb3170617dda1ef3915c8ae0d8040f83a4
 36281,novoda/bintray-release,a5b1a7c2d5a90a2b2accbe1ceb477d6f52148763
 36282,novus/nvd3,447cce8c180a92fcabd571cca410760deb3a2c1d
 36283,nozbe/watermelondb,62774d5ebc4aa9ed6a2f61c8d4e795b32322cec6
@@ -36362,7 +36180,6 @@ idx,repository,head hash
 36360,nupthale/weinre,fdd5e54d6aca8fc93a69ea3c9d4539232f461080
 36361,nushell/nushell,57808ca7cc84c42b4c319650485a89411223c811
 36362,nusr/hacker-laws-zh,ed529576c961e88c73bc4a7c6099928fc877891c
-36363,nutzam/nutz,17c2dbc97e705b9ea670a16bbebbaf63faf7bf2d
 36364,nuwave/lighthouse,889c7bc8015acb3eab7b5071c7faf5eaacd2a203
 36365,nuxt-community/awesome-nuxt,27fe512905f034e341701bf09697b3a296113bf3
 36366,nuxt/consola,90d48077dad650d7b45026f350eb9acce83fd9ec
@@ -36434,7 +36251,6 @@ idx,repository,head hash
 36432,objectbox/objectbox-java,cd2556f1fa63ec72bd47c110e685b386cb13e913
 36433,objective-see/lulu,4136b68d40f01e64d6d9f68f875391782c308e4d
 36434,objectivehtml/flipclock,6559204ce92585d29ccc1b5f303de9b85bf3f76a
-36435,oblac/jodd,3a0790e4d52be2b9c9db7675184c6fc3ad9b16dc
 36436,oblador/angular-scroll,ce0b3e6bfd0d7fff98702cdb8dc83998ed32861a
 36437,oblador/react-native-animatable,dfd7413734eb693358defcac536b0b32e9dc0b8c
 36438,oblador/react-native-collapsible,2bd7f8d50c2f3d876119bc65da8e7681c38563ad
@@ -36509,7 +36325,6 @@ idx,repository,head hash
 36507,olahol/melody,b889a3674583cf310fce1a60e3ea10539ca18364
 36508,oldboyxx/jira_clone,26a9e77b1789fef9cb43edb5d6018cf1663cf035
 36509,oldj/switchhosts,0d948d93af8bb0c856ffe92d1f0377557ccb1add
-36510,oldmanpushcart/greys-anatomy,383d17d4dbc2f0cfcf73ce5b1477204b86f1992a
 36511,oldratlee/translations,9a58c1dbcb8beccdca04d9e1a3cf41df5fc246d4
 36512,oldratlee/useful-scripts,90eb4418dc1f85a3e1302367b68c94ab130d01c6
 36513,ole/whats-new-in-swift-4,3c0d461d41c323c0795cc71f9572e9cf768e22be
@@ -36607,7 +36422,6 @@ idx,repository,head hash
 36605,openai/universe,cc9ce6ec241821bfb0f3b85dd455bd36e4ee7a8c
 36606,openalpr/openalpr,736ab0e608cf9b20d92f36a873bb1152240daa98
 36607,openannotation/annotator,5ef5edf157fe728b2d6d95d01e26a55c508c0c44
-36608,openaphid/android-flip,fbfbdbe101987525a4959e09e2fa914c5ced5398
 36609,openapitools/openapi-generator,0d2a01611c8350b596a2b883964da2589e7baa93
 36610,openarl/pathofbuilding,81eeead3f6c9ba62f8a02fc305b742d5ecae3ead
 36611,openatx/uiautomator2,3b0dfd75364f4ba5e92823c0ac49888715de1286
@@ -36725,8 +36539,6 @@ idx,repository,head hash
 36723,orderedlist/minimal,c9bcbd06346a6797cef4480749d42ac8bb30f525
 36724,orderella/popupdialog,d41ac7c7fa7b940c355490281ea8b2fc39c8f599
 36725,oreilly-japan/deep-learning-from-scratch,cb755e9549f858e9804b5f03e41fa24ee7f8345a
-36726,orhanobut/dialogplus,40dcdad57a797f7aa34460a0bd0e375d8a4c32a8
-36727,orhanobut/hawk,0d22dde128b1ab5f50ac20d802db79cf402aa150
 36728,orhanobut/logger,c64a72c2ce3d0fcdebe829b091e3a530c94ca6bd
 36729,orientechnologies/orientdb,8902c29d292b08964fc037c3067c048288cb39a0
 36730,origamitower/folktale,069ddbea6774269de62f586e8df0c955b7dfdfec
@@ -36793,7 +36605,6 @@ idx,repository,head hash
 36791,owasp/owasp-mstg,4d87755e8d381b467048e6f4909794b516601ac2
 36792,owen-it/laravel-auditing,1a9cc9a442a048f3e41c2a424dc883b6df05103e
 36793,owlcarousel2/owlcarousel2,4eedccac4ea061931162a86e3f268332c16a1ad0
-36794,owncloud/android,208aac869f413865b2b286cbfc46b15ed948f6ec
 36795,owncloud/core,dcb0f9d0be586d170166f0b97eccd1ba92543b85
 36796,owner888/phpspider,31cc4051e3ae25abcc9307893be8c6bd88d189ce
 36797,ownthink/knowledgegraphdata,444fd9b4f9ac67c10ead2d2f056a6d32ff8ed7cc
@@ -36821,7 +36632,6 @@ idx,repository,head hash
 36819,paascloud/paascloud-master,781281a9503332ed3cef44ea618349d14230a127
 36820,pablohpsilva/vuejs-component-style-guide,2f5f7faa3cb367bc635292a028346bd83df5e316
 36821,pablojim/highcharts-ng,9aa5ce582b2f35768daa617deeed22edf1dbfe81
-36822,pac4j/pac4j,fe97dae393cce6140f4e853c43302a343c4fba01
 36823,pachyderm/pachyderm,90f7bba7f0ac58fe24733d60f79c0f210bf38a37
 36824,pact-foundation/pact-ruby,2e1030a73cddd8c33d76e9c3086bcef17aff12f7
 36825,paddingme/front-end-web-development-interview-question,882656394b93474c740d27c891b943f5411ff596
@@ -36921,7 +36731,6 @@ idx,repository,head hash
 36919,pasvaz/bindonce,0fcf71e6effc88179893c9c06baf6c6bf9037632
 36920,pat/thinking-sphinx,5caa63fe93878e702348046841986e037f8b5f14
 36921,patchthecode/jtapplecalendar,abf4cfccc62ef75a070d0dded0fd823d5a86f72a
-36922,path/android-priority-jobqueue,8b8c70834ee2e4aec8f0b7894f55cdb82272be36
 36923,path/fastimagecache,2615d275abe6195f4a90a7b46593768b74b3b273
 36924,pathgather/please-wait,e920f1273d04617a0c32233fcf1e8affb4c384bc
 36925,patriciogonzalezvivo/glslviewer,23481b30f4a415f1a62102873ca217685c2df895
@@ -36966,7 +36775,6 @@ idx,repository,head hash
 36964,pazguille/offline-first,d778c2757eb534063fda6a00e69f2fa6098171a4
 36965,pbakaus/scroller,a99b5a9847b6ef042355ccd0e957b243896d11c6
 36966,pbharrin/machinelearninginaction,6d71774805b945016a57df97c2f59d8cf2b4b1fd
-36967,pbreault/adb-idea,3792aa6d380a0a193289fe279ff9aa7ff327d862
 36968,pburtchaell/redux-promise-middleware,6dc6b375361c2142ec8c88ed55282243775fbf5a
 36969,pchmn/materialchipsinput,da7da62b75639494b0e893c0508655fa3d834c76
 36970,pcottle/learngitbranching,7532b67b523a9ba7d3e7afca5a0bc458c78ddaa3
@@ -36981,7 +36789,6 @@ idx,repository,head hash
 36979,peatio/peatio,40b9887f72eabc4b839d217a33dd7c1026cfa512
 36980,peco/peco,51f38bf44ce24166f8707f295e23d30c948f8db5
 36981,pedant/safe-java-js-webview-bridge,70234d774099b238a3a31d8ae48c276c517633ad
-36982,pedant/sweet-alert-dialog,770bb183fb4fc7311b60392b470c508a0a4df16e
 36983,pedestal/pedestal,235876a46e79c56482ebb20c24cf343b756e5d8a
 36984,pedrommcarrasco/brooklyn,09c1dc765a2c3712b435f33298df07e19a14b570
 36985,pedronauck/react-adopt,6ad801083eae3c29eb43d33e6da6f7c241891e18
@@ -37001,7 +36808,6 @@ idx,repository,head hash
 36999,pengjianbo/galleryfinal,b41dd7727eb21a86e0e6fb36e2bb5cb1f0175392
 37000,pennersr/django-allauth,dbdf6cb9d90fe92aaab32091c22ec9bdbbbc8ee6
 37001,penrose/penrose,f245d1471cd1bca18b4c9913c618872fb7d38929
-37002,pentaho/pentaho-kettle,01b2bf733959c0039065d1f372c8e416649c26da
 37003,perfare/assetstudio,d158e864b556b5970709c2a52e47944d53aa98a2
 37004,perfectlysoft/perfect,859e696457fa91a9f998ad94080632f20b47fe58
 37005,peripheryapp/periphery,df4568b6697ef2831c9a2255dfc9a62365501f10
@@ -37009,7 +36815,6 @@ idx,repository,head hash
 37007,permissions-dispatcher/permissionsdispatcher,74b532bf1fe430fb12ad8414b80399f2d7cfc954
 37008,persepolisdm/persepolis,7ce2d579f8ffa40a9e899ecc304bcea4f94bf195
 37009,pervognsen/bitwise,5a261e99efea080e1111a312d897f8d794f061a7
-37010,perwendel/spark,1973e402f5d4c1442ad34a1d38ed0758079f7773
 37011,pest-parser/pest,ab70fe68c58be6acf0ce892726da37a147226971
 37012,pester/pester,acc66a965219a8e70981977289227a211af4c70e
 37013,petehunt/react-howto,791949c32e040605f1bfbfd9a41a96d0a48e93ce
@@ -37035,7 +36840,6 @@ idx,repository,head hash
 37033,pfnet/paintschainer,aa6679444b75b550de17b2cfe78a47e3c98364ff
 37034,pfsense/pfsense,83bca4954db2a52c35c1581e53be2faa7a47d49b
 37035,pgbi/kong-dashboard,7f67701dc1e06266f92c7cb9291c553de4eae2b6
-37036,pgjdbc/pgjdbc,ab1f2914a21edf9f8b7bfb35ad0d08789723b19f
 37037,pgmodeler/pgmodeler,503382dbabe1c69ed0a857e0394f42b29ae9ff50
 37038,phacility/phabricator,5720a38cfe95b00ca4be5016dd0d2f3195f4fa04
 37039,phacility/xhprof,0bbf2a2ac34f495e42aa852293fe0ed821659047
@@ -37064,7 +36868,6 @@ idx,repository,head hash
 37062,philjay/mpandroidchart,0550d3f7907c635744c08ad8ff9c45e1b6281cc7
 37063,phillipi/pix2pix,89ff2a81ce441fbe1f1b13eca463b87f1e539df8
 37064,philpep/testinfra,dc48cd98f3b1970ecbad63f866a94f8283b79ce4
-37065,phishman3579/java-algorithms-implementation,f2d115704691e8e4f6cfe490231d0adb0c3ce7d0
 37066,phith0n/mind-map,8438438b95c90b45d9f1f4943598c5fa4a01144e
 37067,phobal/ivideo,e9a26b66177a643f53bbadeb89da45dfee821abc
 37068,phoboslab/ejecta,678a37c2f9425612e8606fb688b9096f9f62a9d6
@@ -37236,7 +37039,6 @@ idx,repository,head hash
 37234,plaidml/plaidml,49fbaa5ac387e621f11ba0b81f49461e4b2d02ef
 37235,plamere/spotipy,1416d47cba95428e3a22b22d105d39aa9c08d904
 37236,plamoni/siriproxy,eb03199ffa1ad1085c0146578c56e1e745536cfd
-37237,plantuml/plantuml,e4c246750eb6910288d3ee54b2bcb53e3ada2973
 37238,plasma-disassembler/plasma,ec7df9b2b9b356dd5d8caf01b7e68c0ab5a1ef42
 37239,plasma-umass/browsix,04f0830088560f27d480cde3e37c28269375f59f
 37240,plasma-umass/coz,d0e7b8e375c241eb6e334b4e0e8e7cad1d2caa6c
@@ -37270,7 +37072,6 @@ idx,repository,head hash
 37268,pmusolino/pmalertcontroller,bcb9a6ac8ebd82d1ae99f16c1400993669e5e488
 37269,pmusolino/wormholy,695ccee03c595177ddc4b9356e2381254aae8eba
 37270,pmwkaa/sophia,941cc494c305aa5fd317faa29f560c008ab6ec84
-37271,pnikosis/materialish-progress,f82831e11c81a4385cdd5bf4ced93e5ecd93550d
 37272,pnpm/pnpm,3db0db8d12aed3bd2a396b7ac4a4be066b340113
 37273,pnre/exswift,864c6a23bc313fc7053c6463315fb05eb0607f63
 37274,pockethub/pockethub,8228cb8f7197a7c2227e67ee48a2c8dc843fb553
@@ -37497,7 +37298,6 @@ idx,repository,head hash
 37495,proxyee-down-org/proxyee-down,378f353e130b48095608409494f9d2698ff1ea4d
 37496,prusa3d/prusaslicer,3284959e1f5648ffa7c1f19b2725370a2775e197
 37497,pry/pry,d5a1f1c9847bb5272f2f8b2c2a0c174c83064b66
-37498,psal/anonymouth,7bd8e24b661f587facf8715a1de345dffde9734e
 37499,psf/black,fb5e5d2be6367a0402a60da94f139dfb8943ed37
 37500,psf/requests-html,075ac162dc62fc532037df0d98954ab840a97516
 37501,psf/requests,0b4d494192de489701d3a2e32acef8fb5d3f042e
@@ -37530,7 +37330,6 @@ idx,repository,head hash
 37528,pulumi/pulumi,8b263931631cd5f7d2ea66416c858ce3552946ed
 37529,puma/puma,32e011ab9e029c757823efb068358ed255fb7ef4
 37530,pump-io/pump.io,ba6b392c0720404a9e689d334e9436ce71b814c3
-37531,puniverse/quasar,db0ac29f55bc0515023d67ab86a2178c5e6eeb94
 37532,puphpet/puphpet,a4da7b71c5c80f8a1bfff6b29f8f6ac8f2b27233
 37533,puppeteer/examples,59355609ecb3c2e396a289b28f34d5116fc89b8e
 37534,puppeteer/puppeteer,a7fcde918190d8b2da358eec1690bc217a8626f8
@@ -37541,19 +37340,16 @@ idx,repository,head hash
 37539,purescript/purescript,a6feba021f6513b3f2dedc3b20384f6c23ec739a
 37540,purifycss/purifycss,be52c1c6b1b6e287b6989428c57f05a79aa135dc
 37541,purpleidea/mgmt,d022d7f09e7c1e1fd193175a075f7e75c132db22
-37542,pushtorefresh/storio,58f53d81bcc7b069c8bb271c46a90e37775abe8d
 37543,pvorb/clone,ab17eb66a4527da4c94b276dae9af0727095483d
 37544,pvorb/node-md5,2d876a38da854da5274008d6966740b176368da4
 37545,pwa-builder/pwabuilder-cli,20c4a7d12dadfb3bc1ce6c1d95fe7c23a0d8b33b
 37546,pwittchen/reactivenetwork,ddfde340e4c1f3acb6bfe10b8c3804dd63ae121b
 37547,pwn20wndstuff/undecimus,53ba03f796ef1ad0a1896f4488dbce31d9e5f377
-37548,pwnall/chromeview,03cb92921a9100a9f6e65b7f9eabf846b85e91dd
 37549,pwnall/node-xhr2,ab483bbbcd619697303cfa9d7cea35a5231b63cf
 37550,pwndbg/pwndbg,61787b3597a91e86ca80ffc9dcab880b1d2a7466
 37551,pwnlandia/mhn,be58cbf8c726c29c4c0f993023688fdbd026ee05
 37552,pwxcoo/chinese-xinhua,fe6d6c2e8baa82187f4c96bbe042e43f96c05666
 37553,px4/firmware,19964d56edc7b74d06d50e52ebb5fd26ce6f3371
-37554,pxb1988/dex2jar,b5bda4fb4935ae8b3869b422454ae3b3896c7bc1
 37555,pybind/pybind11,dc9b39596d986aeb061bd3debe52d30e2467dc48
 37556,pybrain/pybrain,dcdf32ba1805490cefbc0bdeb227260d304fdb42
 37557,pyca/cryptography,bedc9902fcf6f3730a02eea4a942838067192dfb
@@ -37649,7 +37445,6 @@ idx,repository,head hash
 37647,qihoo360/replugin,a71dba29ed433b1e2accdab8656cee6c1d613b3f
 37648,qihoo360/wayne,ed58ac27eaebb6cb117fad7e93932363d1364d53
 37649,qihoo360/xlearning,0cafa45084ada26919d827fc59bb0efd27f9e67e
-37650,qii/weiciyuan,b8f4de854b12c4160a850c2217c779609c5eb445
 37651,qingdaou/onlinejudge,64ef15420a993cbe598423d96e7024e3037ae78c
 37652,qingshuisiyuan/electron-ssr-backup,3ad2dfbf6b874ba4464b2ad1cb48c546d1d634d5
 37653,qinjx/30min_guides,a0024e76dedb5f1d556b1fd581e3de32f700593b
@@ -37673,8 +37468,6 @@ idx,repository,head hash
 37671,qmlbook/qmlbook,826765f46a9cba1d926a4f13fe1215309e6f46cc
 37672,qnjr-group/easytransaction,cadfc96d2d6fc9df1243f8b18f47b29a28b76ae2
 37673,qor/qor,90ab4326e1b8400f046d460f9bd67d401a94f8c3
-37674,qos-ch/logback,2946e3b0b34c2a22fd20b97058944aeb67d4361f
-37675,qos-ch/slf4j,c12667b9063b2b9409ed49072d9746f34f968440
 37676,qq449245884/xiaozhi,7d1beeaeb495f3f52af31f323240c717831bc2f8
 37677,qq547276542/agriculture_knowledgegraph,4a4bf41d9df777c1119a0eae2a597e84f83f486a
 37678,qquick/transcrypt,ded7a2f4da3e4aca73e8c192959a8ed4a8e0962f
@@ -37707,7 +37500,6 @@ idx,repository,head hash
 37705,que-etc/resize-observer-polyfill,4a148452494a155656e4d04b9732b5914896b2e0
 37706,que-rb/que,fb9278e728b6aca688b3ec8f5b340042a4942062
 37707,quericy/one-key-ikev2-vpn,e8c133687028a6990063ffc5bd0bad02f8857752
-37708,querydsl/querydsl,cd608f04ed7534b1b62a78a28beb141071d149b6
 37709,questbeat/qbimagepicker,93ba9d54016722e82d46e1cf19750dd285b81a81
 37710,quick/nimble,ef552dcfc42948f29ffe50be8f935df6073df853
 37711,quick/quick,cc96a4bd61f65798fd3f951ab1586d9d0a225c3f
@@ -37765,7 +37557,6 @@ idx,repository,head hash
 37763,rafrex/spa-github-pages,4b898016074be230db5196111c7b3ad866914764
 37764,raganwald-deprecated/homoiconic,a9823fb32af75222da3d3db815d45a1e9bf602a1
 37765,raghakot/keras-vis,90ae5565951b5e6a90d706b8205c2c4dfc271505
-37766,ragunathjawahar/android-saripaar,fe05e4efcb73460fc254891a42e603b4ca2c9118
 37767,raiden-network/raiden,90cd5a6cc27e31088a39fd35c0dccf89871dfa88
 37768,rails-api/active_model_serializers,9f0ba48f0be0b584aab676a5941ec767c8fdf1b6
 37769,rails-api/rails-api,91c6c35a3babfcec535e7e2469eca8aa49289b4a
@@ -37977,7 +37768,6 @@ idx,repository,head hash
 37975,reactide/reactide,564d8c3bdd26ddc05424257c5ec497fe7ad60792
 37976,reactioncommerce/reaction,b04166ddfb30d28bd96be31c10d612c4b3a84519
 37977,reactive-extensions/rxjs,6770d24307ed4baaecdbb21cfc178c13e459f42f
-37978,reactive-streams/reactive-streams-jvm,a625d3aba756e9842ad1291a5b73f5db280b6168
 37979,reactivecocoa/reactivecocoa,1b014240bad02886b6954796f949765e34327212
 37980,reactivecocoa/reactiveobjc,1af6617f007cae727dce48d2031cc1e66d06f04a
 37981,reactivecocoa/reactiveswift,74dce06b90f39ae77a7f6b3f4050bd9cda05b031
@@ -38036,7 +37826,6 @@ idx,repository,head hash
 38034,reakit/reakit,6e5f06b153aa8858d5be285bd846df8b4c42eb61
 38035,real-logic/aeron,034d70b9d72efa0652bb96198dacc0b8b41081a0
 38036,real-logic/agrona,99ce41279bba13ddbdf7251db5959c0b6bd4c773
-38037,real-logic/simple-binary-encoding,3a7d44595e054c377eb0044074b10bc2bb68f64e
 38038,realm/jazzy,5354fc0eb2655faf8d3a43da54ce49920afc1830
 38039,realm/realm-cocoa,95cb711d60801e82542b866d16d75608c40d7b2e
 38040,realm/realm-java,28d62fde4a7ef821a729146b9b1b006a0df65d9c
@@ -38057,7 +37846,6 @@ idx,repository,head hash
 38055,recruit-lifestyle/waveswiperefreshlayout,1da2d9eb2d6dd8ff928eaa04cbfc76a8786cdccf
 38056,recruit-mp/rmpzoomtransitionanimator,c7ac32ead21d65037f02eaf095bf57b672c9a4bb
 38057,rectorphp/rector,d63b3725a351f475c6738d7bda5d35b51a6b8c0e
-38058,red5/red5-server,2d0baecfc7832800c4787714f2e96bb7c74b6043
 38059,red/red,c2d323e2e8ff8616587c875fbd775492e8a67649
 38060,redapparat/fotoapparat,9454f3e4d1d222799049b00f3d84b274c3e02ee6
 38061,redbooth/teambox,87417c27d60be799848bf9fe9d14523eb6357b88
@@ -38080,7 +37868,6 @@ idx,repository,head hash
 38078,redox-os/redox,c95aebe9ccacf26d5503651e3d2853c4bbe71a50
 38079,redox-os/tfs,facbfb6bb7999bfda79cd90bd83adc23daa14743
 38080,redplanetlabs/specter,67e86806020b9d02fbca8cdb1efad3002fc81a32
-38081,redsolution/xabber-android,e6a435084f1afa7eb2080f8bc0ce378bbf5e5660
 38082,redspread/spread,382198ac9350d771facc76f4242ab76ca774acb9
 38083,redstonewill/ntu-hsuantienlin-machinelearning,19398bd1f81055db0a5b72f88b0f52f262e70229
 38084,redth/pushsharp,f68bb1e0309d8d5cf4fde73fab87e6afc6072e7b
@@ -38297,7 +38084,6 @@ idx,repository,head hash
 38295,rmerl/asuswrt-merlin,263449f32bf292fb6bc5a08cd645e61a7fb10485
 38296,rmm5t/jquery-timeago,bad4ffd729009939f03e5e6ccb08bd51c7470bdc
 38297,rmosolgo/graphql-ruby,565b62f13d3cdd7d2cd880e82d189ab64278b1e8
-38298,rmtheis/android-ocr,41445b44c9c88ad03841c3e664f8cce0805a25e6
 38299,rmtheis/tess-two,ab4cab1bd9794aacb74162aff339daa921a68c3f
 38300,rmurphey/js-assessment,7f84d40e30faf7e6bd347ed0da699038f69ee0ef
 38301,rmusser01/infosec_reference,4dab5209d5bea60abffab929f120b4dec2e74850
@@ -38342,7 +38128,6 @@ idx,repository,head hash
 38340,robinweser/css-in-js-utils,f04cb1541956f4b5590bdc18a6552737507e2aa7
 38341,robinweser/fela,3665a44e015e5b8ab0f2f1c6df2bec4173507220
 38342,robinweser/inline-style-prefixer,280a31441af4d2789a7a067c298193ae34f1466f
-38343,roboguice/roboguice,d96250c41149e13a159d26a532365c3f7034c07e
 38344,robolectric/robolectric,934e2aa6658fcf4e1585b83cea292a6ba27788f3
 38345,roboll/helmfile,50636ce243351c2febc7baaa87bf07c070cf5847
 38346,robot-will/stino,a94831cd1bf40a59587a7b6cc2e9b5c4306b1bf2
@@ -38354,7 +38139,6 @@ idx,repository,head hash
 38352,robrich/gulp-if,1b846bb06421a47c972b28a333ab601a34a0a7fb
 38353,robrich/orchestrator,c30f236cc002aec0d2fb8b7821966b68dad1944b
 38354,rochal/jquery-slimscroll,dccdd53954844dd8cd1f9d2679275bffa846c483
-38355,rockerhieu/emojicon,c96c4a4f113b4403ea92d1f34f67fb8b9bd5c2e4
 38356,rocketchat/rocket.chat,f340139d87d3f17ebe964a2d5c306a04b0ad5154
 38357,rocketeers/rocketeer,75836510481a74bc302d13fc392b494d12b55fd8
 38358,rocketmap/rocketmap,97d63a9985faa487ca08c0d2e9f0e8997592e219
@@ -38384,7 +38168,6 @@ idx,repository,head hash
 38382,romandanylyk/pageindicatorview,b1bad589b506add6842cc44ef6f2ca7e561dfebd
 38383,romannurik/androidassetstudio,ac5649658291b556db017817914f843a41d344b9
 38384,romannurik/materialcolorsapp,25e25932e81180876f516f6a1139731cb0918a98
-38385,romannurik/muzei,d1bb3a2407008aaa11533df1592d13d85abd1898
 38386,romaonthego/refrostedviewcontroller,3563492f39bdd11c3190563fac25cdc12e87741e
 38387,romaonthego/remenu,328c564f2fe2ee50783980d3e54bb7def2ec89db
 38388,romaonthego/residemenu,44a22b42372058440ca9797adba8d3a844582b4c
@@ -38397,7 +38180,6 @@ idx,repository,head hash
 38395,roncoo/roncoo-pay,9428382af21cd5568319eae7429b7e1d0332ff40
 38396,roncoo/spring-boot-demo,0ea84900e60b49cd000038fc26b13b7327abd695
 38397,ronggang/transmission-web-control,5aeb20c141f6c1ca30c0aaae6b861471a48210d8
-38398,ronmamo/reflections,f5514b125c4f4b58e92beb0979a40ddce48d5be1
 38399,roo-rb/roo,8fbd663bb7cea3d9acd2d4f8de35008d52c9b217
 38400,rook/rook,510d2721b4ca350f26c998d528926eb1e3b66e4f
 38401,root-two/react-native-drawer,0bbf531076b02d027c9ac776eee64fa43545ad8e
@@ -38471,7 +38253,6 @@ idx,repository,head hash
 38469,rstudio/bookdown,cedaac98f2d4b54a97865e5b050a38fb8938cc7f
 38470,rstudio/cheatsheets,a045e18875cde4c9cf9c7f5f8bee71b4c8c2a2b7
 38471,rstudio/rmarkdown,dde9fe3badd47fd90d2e109041d63616e3d18195
-38472,rstudio/rstudio,1cf9ea3e031c0c1b51954c6a2248076885df2495
 38473,rstudio/shiny,61a51a869f0fa32aa947dc9ce32f7da91399141b
 38474,rsuite/rsuite,4266e79928ce75a4e856b68003510d1d12ee4b70
 38475,rswier/c4,2feb8c0a142b2e513be69442c24af82dbaf41a25
@@ -38537,7 +38318,6 @@ idx,repository,head hash
 38535,rukey7/mvpapp,ff0a6f2eab1d680fb4df9c25b26832e4be1368c4
 38536,run-youngjoo/sc-fegan,1f9d47f9516f6121dc7da37aa2ffbc3013f67195
 38537,runatlantis/atlantis,6ff0e2f90e5aa70fc76d8498eeec745306697a7b
-38538,rundeck/rundeck,aeaa6ff6fb93d1b21c7b59960fcbbaa38ed0f383
 38539,runelite/runelite,bbaf9709e2372f45592d549e95e9cb54ffd93a70
 38540,runk/node-chardet,f548e5a8bf1b7594bb637fe4bedadd430ab03119
 38541,runner365/livevideocoresdk,774b6e80b1f666e6ebf02a0fa707a2eb6f9cc986
@@ -38606,7 +38386,6 @@ idx,repository,head hash
 38604,ryansolid/solid,7353a470aff39264bd6c331c9a53eb8df2503c53
 38605,ryanve/eol,7045668d0b0aba1e9f1433638548235baf0c04cb
 38606,ryanzim/universalify,dc17e0e00fb39c8d52e97ce77e494cdadfa8d19c
-38607,rzwitserloot/lombok,6fbe057fb9842c424b47370efd249e42935e64e3
 38608,s-a/iron-node,3d4d254524216acb36f1731458aaca0d3f4e4356
 38609,s-macke/voxelspace,60d7ae12f232f940805afafd5720fa908c173833
 38610,s-matyukevich/raspberry-pi-os,31fc1481f529ba1a72a8a6bc62dc488b84fc2cdb
@@ -38697,7 +38476,6 @@ idx,repository,head hash
 38695,sarahdayan/dinero.js,b4cdbebbc143f07f1b83f82363cfeee9e02ee6de
 38696,sarcadass/granim.js,dcffc0f5f723ba47483d24e906c8861b192309e5
 38697,sarojaba/awesome-devblog,1106089ee274c0846e422e45031cc9b48a289591
-38698,sarxos/webcam-capture,fdfcaea80c8f50eeb8f7c24475ff85a3c1fdcb32
 38699,saschawillems/vulkan,ef50bf9b8fe2ea848006549abfabfe7b0fbe7dce
 38700,sass-mq/sass-mq,bf533b3d8b628e860abf9062d6c0bf48490b4ded
 38701,sass/dart-sass,cd3b0cc1626f31a909d21fc87112d614cbb013e2
@@ -39130,7 +38908,6 @@ idx,repository,head hash
 39128,signalr/signalr,f3600c71f83d8312ad61bced0ca547795734d51e
 39129,siilwyn/css-declaration-sorter,cba681dcce2e65d51d123979636021f510464af4
 39130,sikaozhe1997/xin-yue,35cc2c7b418e66dad24d22f96c9b9982c195b69c
-39131,sikuli/sikuli,4adaab7880d2f3e14702ca7287ae9c9e4f4de9ab
 39132,silencelove/hxphotopicker,f59abe550d11028be63bbe9876d0aa94402f1e6a
 39133,silenceper/wechat,a5e674bf10d5770605f90a94ba77f2d56fd957b2
 39134,silexphp/pimple,ac517c3d14233d2e938b8134ca0dd70dfa4d9262
@@ -39412,7 +39189,6 @@ idx,repository,head hash
 39410,single-spa/single-spa,aff9d053a65eb03ee1106412c29733ae759312ba
 39411,singro/v2ex,c8ffba334555e7c60060eba1aae45bcce4a6f8f2
 39412,singwhatiwanna/android-art-res,b88333cf8ce6e3d035064af6097bec20cf8e15e1
-39413,singwhatiwanna/dynamic-load-apk,bbd3bfa84c3a26cc89615a7539aef3ac4e9491e5
 39414,sinonjs/formatio,f1806f1c5996cbb6c2dcb0ab5719b73dbe1a1525
 39415,sinonjs/nise,e1a6f3d2955028d30dc4019a6445800a57859823
 39416,sinonjs/samsam,6002eb50df805b171b31fa7b15fd7a9b1cebcbbe
@@ -39433,7 +39209,6 @@ idx,repository,head hash
 39431,sixlabors/imagesharp,c5cc7a70febdc7c8da415ad43bbec9abc38893df
 39432,sixohsix/twitter,8313dc57d0c44c9f88f92d46e9f9d7512e5cd9ca
 39433,sixpack/sixpack,cce333c04de77f33e5281292b546b846eafc8558
-39434,siyamed/android-shape-imageview,e38e701b228e97229216d145f524deeb12152bfe
 39435,sj26/mailcatcher,98cb69f7f775a332da871dcdab02f0f8c01f71c9
 39436,sjchoi86/dl_tutorials,414b0a6406d65c82e1c4f8286ac47b891ef672f0
 39437,sjchoi86/tensorflow-101,582cc1d946f0ecbce078e493b8ccb1d7b40684df
@@ -39457,7 +39232,6 @@ idx,repository,head hash
 39455,skwp/dotfiles,9e3425d11dcde7706fbeabc3e9c3f7a7bdc63e23
 39456,sky24n/flutter_wanandroid,51061b34a4923bfeaad02f9d1fa53f296391d9e7
 39457,skycocker/chromebrew,1f4cafa53e5714f80b81f4fc5ff8fdcbcf731079
-39458,skyfishjy/android-ripple-background,2911efdea8d247894bff8b429b916bd61b0c73be
 39459,skygragon/leetcode-cli,5245886992ceb64bfb322256b2bdc24184b36d76
 39460,skykai521/ectranslation,6f18391a9be8968241933b30e0c301ba3a6d3c42
 39461,skykai521/stickercamera,d0a9c4d3f0ea1acfe339128624ddcb28c4bf85df
@@ -39700,7 +39474,6 @@ idx,repository,head hash
 39698,splitbrain/dokuwiki,d03efe743b065f0a47fa4fc29f640c0f4f814f52
 39699,splitrb/split,d29e26a67f148aff249f5a8288c76c0fd6c01bad
 39700,spmallick/learnopencv,3ef3815e4eafe6e0c7d3c2606091272b42c87ac7
-39701,spockframework/spock,9feb9dd9b065b196510cd92f38f1c53119ef1a55
 39702,sporkmonger/addressable,20879a973ce12dbd75224ed082bd9727122a9478
 39703,sporto/awesome-elm,145f376fdc28b8145c9b9150456ac82790fe1722
 39704,spotbugs/spotbugs,fa621992930f446756acd60aefbdce3b76a478c8
@@ -39708,9 +39481,7 @@ idx,repository,head hash
 39706,spotify/apollo,a03105ee1f98f8c5878f4e3c4d03c8732c6384bd
 39707,spotify/chartify,8f94f23da68ec8cacdeb5d82e15d7f2fe9a66144
 39708,spotify/docker-gc,1e4dbcf1f683670432914be6701d22a0da82a530
-39709,spotify/docker-maven-plugin,bae07ca8b69227886114191a4d933b57b212c100
 39710,spotify/dockerfile-maven,986f960cb82085d2f666acd6c2682672d47f5bb0
-39711,spotify/helios,0b2855955dc6f3268e772252d84861082a516b6e
 39712,spotify/hubframework,f55da06dba78702e8eae4fccd34be92044c5737c
 39713,spotify/luigi,fe7ecf4acf7cf4c084bd0f32162c8e0721567630
 39714,spotify/scio,d493e75e1eff678ff8d524f4657e7f524ec1761a
@@ -39719,28 +39490,20 @@ idx,repository,head hash
 39717,sprang/inkpad,fea84e3f69324211cf666faa804165912ea28763
 39718,spray/spray,da11335d03898b36040c1ad358084d371b1795d0
 39719,spree/spree,6def7ab1b64623458d47394d448030bb27907cb3
-39720,spring-cloud/spring-cloud-config,dc9d207d8065ddd9668cd2b97eaeff4d707bb61d
 39721,spring-cloud/spring-cloud-gateway,2f39ba705d19d631451e18245bd952d1902036e6
 39722,spring-cloud/spring-cloud-kubernetes,ef6d06f3373abcc5ffc7c391b10fd7083b2678ab
 39723,spring-cloud/spring-cloud-netflix,1351202d94cd76b171be534ebb48ec43c23ed3cc
 39724,spring-cloud/spring-cloud-release,775cf8970bcf0295134c3fd96b83e9e931814449
 39725,spring-guides/tut-spring-security-and-angular-js,6939ac7acd4b6263ce80375e883229f370ded67a
 39726,spring-io/initializr,c49d582915578fab408666b975915ffe48502879
-39727,spring-io/sagan,d048075533efe59653115578e58d31eac0815a11
 39728,spring-projects/spring-boot,9c68a2ab876e5011718dbe6abb8f5902f7031deb
 39729,spring-projects/spring-data-elasticsearch,ddd795a3d31b491fe21c171c72a18933c9842309
-39730,spring-projects/spring-data-examples,529fc71c33ba7dee0ea9250e8693537d051c8e4d
 39731,spring-projects/spring-data-jpa,adaae1c04066fbdc413547688b3e00c2a56e5ad9
 39732,spring-projects/spring-framework,d50b51e312e7d2ee8a7aeb560b02205b6a20bdba
-39733,spring-projects/spring-integration-samples,62e2ae1c723fc4274da56a4fb0e638d62d84e3d1
 39734,spring-projects/spring-loaded,d1c4385aba630d73630219b08af276db15f156c7
-39735,spring-projects/spring-mvc-showcase,71d8c7e3432b226f09092dd13a7cfe2298fdd265
-39736,spring-projects/spring-petclinic,923e2b7aa331b8194a6579da99fb6388f15d7f3e
 39737,spring-projects/spring-security-oauth,0344de8cc75055742f638b1e476a646a6f5891d9
 39738,spring-projects/spring-security,8e93e4715fad221c4d11cc138dcbb93ed1c558a1
 39739,spring/spring,e73a6cc30fe2b709cc3224eb424d18479b59a804
-39740,springfox/springfox,ab5868471cdbaf54dac01af12933fe0437cf2b01
-39741,springside/springside4,8950746bb53ce209b4cb5d2d1706712e9c6a0efc
 39742,spritejs/spritejs,c2393573adfd427ca6de0689efae3fc0ccc9356e
 39743,spro/practical-pytorch,c520c52e68e945d88fff563dba1c028b6ec0197b
 39744,spujadas/elk-docker,893c81e4c54a81d563b5461f69bda00fee558552
@@ -39752,7 +39515,6 @@ idx,repository,head hash
 39750,sqitchers/sqitch,664813e5140a698bd7619f89e9481156b9e77da0
 39751,sql-machine-learning/sqlflow,6c492098320875427b08ad82ce3f874c0b6aaa7a
 39752,sqlalchemy/sqlalchemy,87929a9c55163ebcd7edd031d222c7f115922842
-39753,sqlcipher/android-database-sqlcipher,b3df67d8731bd0ebd987acb561a2c3fdd8e17082
 39754,sqlcipher/sqlcipher,7c460791eba939e6c6872825219a6644ca47283b
 39755,sqlectron/sqlectron-gui,5ec4fec2053241727b05dfcfb46b9c4343d4a30b
 39756,sqlitebrowser/sqlitebrowser,212199aa39fbc8d8790b2efb95a535feb1f650d5
@@ -39761,31 +39523,16 @@ idx,repository,head hash
 39759,sqreen/awesome-nodejs-projects,16d30283c1f2914e25467866896b06a052762c8b
 39760,sqshq/piggymetrics,6bb2cf9ddbca980b664d3edbb6ff775d75369278
 39761,sqshq/sampler,9bc7ba732d31f32a917ad4b5605f00b76ebe0891
-39762,square/android-times-square,36e247f5beca6e47fd7c3866604a298c3dc0b9e6
-39763,square/assertj-android,7d4da5c468bce780e43c243853d5b8f1e7b93135
 39764,square/crossfilter,a930ef504f00353df97534058446484751dac851
 39765,square/cube,d09728455fa5319ad174d175907078a90dc4396f
 39766,square/cubism,f4c44622351f4639d5d945097971db8ed0491cdf
-39767,square/dagger,0fa73e0ee07015f191c25b1f3fdf7048321d1610
-39768,square/flow,438663b5755d7db124ed3d62889844bf565b15f7
 39769,square/java-code-styles,63e0030b157dc13a384a2e568efbe37055fbf47c
-39770,square/javapoet,d682f2013751d25725349d79b449870d0e77354c
-39771,square/keywhiz,52e77fd9f477637d5ed36ed6d1815b9c96c06166
 39772,square/kotlinpoet,75cd912794d40a93c4e61500d8fa90752a12c2ce
 39773,square/leakcanary,8e4c80212dd11571d965a3d1b7b474303f5087a6
 39774,square/maximum-awesome,2df0ca23b78ecfa844f9cda0e456f5fdf2415f27
-39775,square/moshi,23438ead9f410c0cc6af8e461d33110558d29d4a
-39776,square/okhttp,4eb2aa22a899045eecd954bf3b8ef0d2b0fbfb17
-39777,square/okio,78c49cfbc6f3c55eec75757c6dd9731c04128c3a
-39778,square/otto,2a67589abd91879cf23a8c96542b59349485ec3d
-39779,square/picasso,dc82fdfef0dc4070a0e27cb08e9f546dd8199a35
 39780,square/ponydebugger,3e5ba266d091f421df843984e967965535aecc60
-39781,square/retrofit,8617c742a6ee812839569f2b56bf9c89c0d395ea
-39782,square/spoon,973e12fe4178290554ae1fe2299a692cc3b9d602
-39783,square/sqlbrite,d4cf6ef967452f19a508e14b7c46f64964f8052e
 39784,square/tape,445cd3fd0a7b3ec48c9ea3e0e86663fe6d3735d8
 39785,square/valet,c095ce0ac15716bee167aefc273e17c2c3cd4919
-39786,square/wire,2df1c0eeaeba41b692d6645903673601edcd6cf4
 39787,squaremo/amqp.node,4791f2dfbe8f3bfbd02bb0907e3c35129ae71c13
 39788,squaremo/bitsyntax-js,16622ff739d947eed0d2fb97cf22eeacf83450c0
 39789,squeaky-pl/japronto,e73b76ea6ee2e2cc888da569f9caf6d59d1d3d8c
@@ -39828,7 +39575,6 @@ idx,repository,head hash
 39826,stacktracejs/error-stack-parser,9f33c224b5d7b607755eb277f9d51fcdb7287e24
 39827,stacktracejs/stackframe,e07cfd43e89b0565f41856e9285d154aee6c0be3
 39828,stacktracejs/stacktrace.js,710bba1118d396466ee342a30b3dfd19ecbda8b5
-39829,stagemonitor/stagemonitor,326bb3f03344f2b0380a6453a7b7b96564e586c4
 39830,stalniy/casl,db65410b3099c2aa7afa25a1a8d6ea1bb6e1c3d9
 39831,staltz/callbag-basics,ef0e93633817a1e19ac3ce00180e4f862186e126
 39832,staltz/flux-challenge,961b12fd7e0a263b2c32b7e846fce68c189ec265
@@ -40291,7 +40037,6 @@ idx,repository,head hash
 40289,tckmn/mkcast,7d6ac78e4d316aa6f64b9e47b5c31378294004b4
 40290,tcoopman/image-webpack-loader,75879a7c7b99fb853f5f8ea542560bd7e062a1f6
 40291,tcorral/design-patterns-in-javascript,e37f712d8a3c0988d05cda3ca91893ea78349fc1
-40292,tdebatty/java-string-similarity,93240df9aab3ecea98b869c9536aa7ebc555b281
 40293,tdeboissiere/deeplearningimplementations,5c4094880fc6992cca2d6e336463b2525026f6e2
 40294,tdewolff/minify,be084bb11b53852ae0b8147585b210bed1f85a85
 40295,tdlib/td,07c1d53a6d3cb1fad58d2822e55eef6d57363581
@@ -40549,7 +40294,6 @@ idx,repository,head hash
 40547,thingengineer/php-mysqli-database-class,5159467ae081adbe96586e45e65a58c0fe7a32ce
 40548,thingsboard/thingsboard,2548825dd0dcb07c4381c14b779a7f78d072dc9f
 40549,think2011/localresizeimg,8248c3d327723abd70ec38a6cf0268d2a4f6c486
-40550,thinkaurelius/titan,ee226e52415b8bf43b700afac75fa5b9767993a5
 40551,thinkcmf/thinkcmf,82fab21bd9a6655295931a2f12a3c674e83a37f0
 40552,thinkdevelop/free-ss-ssr,8068831428d5ee6dcb00b54614eed9f19e650eba
 40553,thinkdevelopers/phpconchina,f9edb18d8ae77b7f69c2d2993026c764c54e6680
@@ -40621,7 +40365,6 @@ idx,repository,head hash
 40619,thuquant/awesome-quant,d55532027b8b87be489257aa1106810ba3c500a2
 40620,thx/rap,ef873adad4682671fc1ceab725e005698de48c3b
 40621,thx/rap2-delos,2e84684d41b1785e2961cf7a831f8d945b233e1f
-40622,thymeleaf/thymeleaf,db314973254ca8d9ee8661cf13c680b93349ee59
 40623,thysultan/stylis.js,7b0fac1005b74b2131e7e35f0ea67fe0eaf49451
 40624,tiancode/learn-hacking,6a78f68033f7402c257602fc58d77a058a23109d
 40625,tiangolo/fastapi,ac93277d3b506f4076aee1af6ae5a86406f545c6
@@ -40666,7 +40409,6 @@ idx,repository,head hash
 40664,timbrel/gitsavvy,c7c795ebbac4295a6b721af229f011807275ba65
 40665,timdonnelly/advance,3156e6c5ba2960de7b5a910a2c8433d7fd612c25
 40666,timdown/rangy,8aea7eb14b31d9c7240ce539544bef9337a8b597
-40667,timehop/sticky-headers-recyclerview,f5a9e9b8f5d96734e20439b0a41381865fa52fb7
 40668,timekit-io/booking-js,78fb6bf620746ed7468eb6775b587b37936ab560
 40669,timescale/timescaledb,03ef1abb7383664c03c5d5a58863a0d5cadaa9d2
 40670,timjacobi/angular-education,7addd8c9a80eceb814ad4dfb29d85ef13ec1e118
@@ -40688,7 +40430,6 @@ idx,repository,head hash
 40686,tinacms/tinacms,47bea971c82e1840529efb8cd1cce811abbef23f
 40687,tinder/scarlet,121ae9b0f402032d5a9912a05e6e24773ab3171d
 40688,tingsongyu/pytorch_tutorial,faee5b3d5a24adc77b216532a97037e24d70fdc9
-40689,tinkerpop/gremlin,b0eb5575c4ecb241a87805e2dc51d5142510018f
 40690,tinode/chat,4184ed941080daec1bb6b7804f64fb6a4fc2818d
 40691,tiny-dnn/tiny-dnn,c0f576f5cb7b35893f62127cb7aec18f77a3bcc5
 40692,tinycrayon/tinycrayon-ios-sdk,3ba99ce46455c428944822c3726d2ad0810f962a
@@ -40776,7 +40517,6 @@ idx,repository,head hash
 40774,tokio-rs/mio,f6a20da1c81c2d56a78bc6f6832b9904b9215914
 40775,tokio-rs/tokio,7a30504fd423aa782239ead92f3afa3474f8037c
 40776,tomahawk-player/tomahawk,ad59c9acde5bdc6dfc715e09764fd89b476d3d1d
-40777,tomakehurst/wiremock,bb6aa06046979618497b08fa96321abe7db1a5f6
 40778,tomanthony/itermocil,736cfe7b221c9c2746cf49e6ca8933a32f198bd7
 40779,tomas/needle,f9d554e0ba1fc545fb406b6093b620bbab92c43c
 40780,tomasr/molokai,c67bdfcdb31415aa0ade7f8c003261700a885476
@@ -40797,7 +40537,6 @@ idx,repository,head hash
 40795,tommybuonomo/dotsindicator,6b7ba888bb53e7d4a6ffe15ae6f5b50dc9a08d27
 40796,tommylemon/android-zblibrary,2e628f482eeb150c14c0a0cdd9c42c1fc6794236
 40797,tomnomnom/gron,13561bd6339bff18ba571e62313b3f5a6db00111
-40798,tomwhite/hadoop-book,472f6a86ed5865de2abde79eed1c267d0621ed00
 40799,tonaljs/tonal,1e34b9b1096d262be154812cd8ec419e29760b84
 40800,tonejs/tone.js,08df7ad68cb9ed4c88d697f2230e3864ca15d206
 40801,tonerdo/coverlet,21d3964f0399a8b353894806f774fdcf973b4324
@@ -40976,7 +40715,6 @@ idx,repository,head hash
 40974,tudou527/marketch,2b265678c1391d95f115c2e58dc800760c1702cc
 40975,tuesda/circlerefreshlayout,92a27db47ddb07d6e034e2abf93c34332b7aefce
 40976,tufu9441/maupassant-hexo,886e0b2a0362af81c9bc541fbab7c47889c66129
-40977,tuguangquan/mybatis,0483a1dcbe92e2d226ab045420f41a85e01d6c04
 40978,tuhdo/os01,a7587edc10c5c5c5dd822b0437f22419c54fe784
 40979,tuiqiao/cboard,c6873b85b5ae222fd7b4b59e2f3506c359de9e80
 40980,tulios/json-viewer,4195c33f4d06e622befaf1102004e2c478d4b9d8
@@ -41185,7 +40923,6 @@ idx,repository,head hash
 41183,uncss/grunt-uncss,6328d7ad9a980907e320f56d67e228d55085adf6
 41184,uncss/uncss,84f7ab089631993cd08f5fe3e780ca269e7d6e76
 41185,understrap/understrap,546b350b62c22d384a563a9c0ad1b77f2331e046
-41186,undertow-io/undertow,c96363d683feb4b1066959d46be59cf2d59a7b7c
 41187,unetworking/uwebsockets.js,d73eab190e755ecb9cea1c465c47f87409f76549
 41188,unetworking/uwebsockets,bc2815d95b6ff4cad0973226d0058eadaaec99ad
 41189,unicodeveloper/awesome-nextjs,577727df230838f0cae036876efe5cbc3029e066
@@ -41370,7 +41107,6 @@ idx,repository,head hash
 41368,victorporof/sublime-htmlprettify,652d1e770e8a020742cf14fc0f22541a52a7e7ab
 41369,victorqribeiro/isocity,92e2523b07cf232650b973738d243e10fa8d2a75
 41370,victorstanciu/dbv,f5509cced06a58142111a74c881b6c10811c2935
-41371,videlalvaro/gifsockets,0ccb1fd01edeb835a90c0c1140ad91dbd1a354b1
 41372,video-dev/hls.js,2660d27878b288c3fd00f84e2660e6d0c341d1c0
 41373,video-react/video-react,3835d5bdfdbccb5d96d7589358dde403effec7f3
 41374,videogular/videogular,8e90e06b9c93f3165cf38ccbe9092931c6ace79b
@@ -41466,7 +41202,6 @@ idx,repository,head hash
 41464,volatiletech/authboss,47760dc1e06478483d5e105ee363fea50e2a58b7
 41465,volatiletech/sqlboiler,73f2bf0e1e47d2dcd66b1da1bcec59fc7e89c55c
 41466,volatilityfoundation/volatility,a438e768194a9e05eb4d9ee9338b881c0fa25937
-41467,voldemort/voldemort,99127eab3078eed90faa66cc671259a85cb89464
 41468,volkanceylan/serenity,fe95744a67a0c5d2d22991bc3de7d066c596a551
 41469,voltdb/voltdb,e88df04517dff5606272d883d88eacbfa164a8e4
 41470,voltrb/volt,f942b92385adbc894ee4a37903ee6a9c1a65e9a4
@@ -41563,7 +41298,6 @@ idx,repository,head hash
 41561,wagtail/wagtail,e763a614f1e9d5a4dbefefa9d85a9747b26a9b24
 41562,wahyd4/work-in-australia,7ff6b748ab908e82fedb983f4535317870b858ed
 41563,wainshine/chinese-names-corpus,aa244db13a7c2ad880a1b125b96a992a55c2abf3
-41564,wakaleo/game-of-life,c24bb1ae41bfd5980ce9f0aa8b9a636b920c71fd
 41565,wal-e/wal-e,f5b3e790fe10daa098b8cbf01d836c4885dc13c7
 41566,walidshaari/kubernetes-certified-administrator,f99899ef9f9a89262e9609415c9339d91135968f
 41567,walkccc/clrs,b7022ccec233cb96fb411f00017de56059f732ac
@@ -41601,14 +41335,11 @@ idx,repository,head hash
 41599,wasabeef/awesome-android-libraries,c904af4ec29ae328bedcd2be820f78dd6a583187
 41600,wasabeef/awesome-android-ui,5de08dff3225c7cb1174caa99c9ca77c5a9b2265
 41601,wasabeef/blurry,d53d019cffb630452be88215781ac4c410c543f2
-41602,wasabeef/glide-transformations,d950f0c33f27f864e4ab4b26fce66c27079911c1
 41603,wasabeef/picasso-transformations,c472a5bd117d4123051b44f69f23fa127a244776
-41604,wasabeef/recyclerview-animators,6c5c7748e86f43d3d03f7b3122f473e1fd807681
 41605,wasabeef/richeditor-android,ce152b910a59c66863baa68b007ac67e6b9de671
 41606,wasdk/webassemblystudio,5eda37b478139dba782974aed2bf8354bc01310a
 41607,wasm3/wasm3,772f8f4648fcba75f77f894a6050db121e7651a2
 41608,wasmerio/wasmer,5afcc59d99df25c7296c5dc15c1545286b9867d6
-41609,watabou/pixel-dungeon,ca458a28f053612973d5d6059dae5f6f2ca4fcb7
 41610,watson/bonjour,bdc467a4f3c7b9fe8bc54468b6fc4d80b8f1c098
 41611,watson/ci-info,3e1488e98680f1f776785fe8708a157b7f00e568
 41612,watson/dns-txt,8c48aed198f9eb1840e7d12c37a84fcba545c8fa
@@ -41816,7 +41547,6 @@ idx,repository,head hash
 41814,wildbit/postmark-templates,fa73527acb4eb59cf673a54572d213e908f1515c
 41815,wilddeer/stickyfill,2b446408e3baccb11d3074b263c2285902b86716
 41816,wildfirechat/server,08b813cd9f7016ad879aae1b10da54d53495cab1
-41817,wildfly/wildfly,f97b69c078155e91fa196651eaa295311f7f6729
 41818,wilk/microjob,00e17709d32543e61e25be500d7849b9595ddfdd
 41819,willfarrell/alfred-workflows,3104386a8cee53d39c3497627e1bb3db2527306f
 41820,williamfiset/algorithms,da50861a53fc2f6642cfc7d82c285166f41d03e2
@@ -41841,7 +41571,6 @@ idx,repository,head hash
 41839,wingjay/jianshi,5098ae8fe32e1e40f2e33a7504bb6f5c5f59f85f
 41840,winjs/winjs,b9e0b33f76c57caac941c9b1885bf69443320b1c
 41841,winstonjs/winston,91ec06961d2cc9a522f65c023cd02871aa6d97b2
-41842,winterbe/java8-tutorial,9b79999be76274f0c11a5b1d4a4fff4e785dc774
 41843,wireapp/wire-android,5d2ca2ee3d2b9cf415ef2d31d70a95e4c52ae449
 41844,wireapp/wire-server,f787f792e7db3eede4d923a8fb9dd7a806b430a0
 41845,wireapp/wire,d13c3a9d243d098edb97b6ae61a51a13a8681794
@@ -41996,7 +41725,6 @@ idx,repository,head hash
 41994,xdspacelab/openvslam,0fcb16115eb47c5054f0d9967ebcd9b758e36dba
 41995,xenko3d/xenko,09b657aeb08fb37690a6752f062127a638af8a21
 41996,xethron/migrations-generator,a05bd7319ed808fcc3125212e37d30ccbe0d2b8b
-41997,xetorthio/jedis,c1cc657e8b3a984aab8779f84aa0ff55c2b29118
 41998,xfennec/progress,208422ad2928e34eb9196cefdf45ffac8d357de7
 41999,xflux-gui/fluxgui,91ef659911e94c47d9e17480b8b1855d778b536b
 42000,xfumihiro/viewinspector,d239cbd8ad20b25a40307162d91dcda9b883cf92
@@ -42167,7 +41895,6 @@ idx,repository,head hash
 42165,yangchaojiang/yjplay,c269b1aba12df720920c0049fc91281805633f0a
 42166,yangchong211/lifehelper,83c22ffbd61186aa86d29a325755e5f796d1e117
 42167,yangchong211/ycblogs,37b421609b7428644364152c9df4d735187a8462
-42168,yangfuhai/afinal,5fce6d71f6baa9cd0bea5eeb7258a33943b6284c
 42169,yangfuhai/asimplecache,7935b04751aa57299cfb8b89e5b1e12a2d96e7cb
 42170,yangshun1029/aria2gui,15f8a039ab4abede2afae56fc42de9b9adf3ac21
 42171,yangshun/front-end-interview-handbook,9ae74e430e1dca4e0a5c3b4699f285c2236871a7
@@ -42208,7 +41935,6 @@ idx,repository,head hash
 42206,yarrick/iodine,b82bc776b36b727f593f98e43cbd306a9f6358fc
 42207,yarrick/pingfs,f2f2b5ff1893d0531d0a0d1ea2ae96b52dcf780e
 42208,yasoob/intermediatepython,257709f4acb61539bf654fc6a5b72ac5e2c86ba0
-42209,yasserg/crawler4j,68f5c1e4fb86542e74d31c0bcb4b1ae14ba2ea71
 42210,ybayle/awesome-deep-learning-music,a8705155ee09ba93c633bb7f4ade9b5a16f2886a
 42211,ybq/android-spinkit,aa83e4d0a42c76eae15e8b18b79aa2a231cca5f8
 42212,ycg09/chinese_ocr,9af64905f7e1a226d902feac5c0dfd64399ce6b2
@@ -42336,7 +42062,6 @@ idx,repository,head hash
 42334,yued-fe/lulu,c57208fe386a31743505121619244b3bf7603d70
 42335,yugabyte/yugabyte-db,d0076e7cb254542c7ec7f74af86e9af5fc45c1a2
 42336,yui/yui3,25264e3629b1c07fb779d203c4a25c0879ec862c
-42337,yui/yuicompressor,cf0497e53fffe4ddbd50e71518c40e0c07d120de
 42338,yuin/gopher-lua,9d7d9218cfac858b2134bb7c8f1f1498e5ea3850
 42339,yujiangshui/a-programmers-guide-to-english,1f79642fc1c044f56246b622ab3f642d2fc36645
 42340,yujiosaka/headless-chrome-crawler,f4004f6f1a27534222703f9161f44815c8eefbe3
@@ -42438,7 +42163,6 @@ idx,repository,head hash
 42436,zerobias/effector,b7770df502eaf9a63cb5257deab71ee4f456e424
 42437,zeroclipboard/zeroclipboard,f3174aa95f0d3a95cac5c442a692941375b464a2
 42438,zerodb/zerodb,334be242c87a131819f0f86c817301b3a91866d6
-42439,zeromq/jeromq,5c88b571c18367f142c3335f878864e6d92e6502
 42440,zeromq/libzmq,2622e618f0badcd8aad7906e2dc6984f2c57e81a
 42441,zeromq/netmq,4d85c07abc926d34536c0015a0f1bc2437b54103
 42442,zeromq/pyzmq,4bbf09eccd012276ebd77b99e34fdf8fc9d540cf
@@ -42460,8 +42184,6 @@ idx,repository,head hash
 42458,zhanghai/douya,14d2f3e6760ba4659db0d1c602159719e2c8b78b
 42459,zhanghai/materialprogressbar,2b39099237bb265b6a20357470e6cecf6e3112b2
 42460,zhanghai/materialratingbar,50ec0bff414cbdf7993d3c110c6cd4db0c70a099
-42461,zhangkaitao/es,0c6b3cbb8ef26f29b32d164efb0d9d97dd7e497f
-42462,zhangkaitao/shiro-example,a6ec8176e8c84c852167ae8c05f5baef3e91835b
 42463,zhanglei-workspace/shopping-management-system,846c7d6c94047b00c3e2731426e9f6ba4720719a
 42464,zhangqianhui/adversarialnetspapers,b0e6343e661bdd626a146c22da20ebd9f73c0445
 42465,zhangxd1989/spring-boot-cloud,e3966d7cefa4fa429d13bbc8de7f4dafbae0de35
@@ -42574,7 +42296,6 @@ idx,repository,head hash
 42572,zuzoovn/machine-learning-for-software-engineers,9b8d735aa17094d3963d877b731216ebc2469028
 42573,zwwill/yanxuan-weex-demo,282f4db75fa949b381c426f7cd91584c5b66fd58
 42574,zxh0/jvm.go,129b147ebcc820279748f6095c916da1986ebef1
-42575,zxing/zxing,b777f31274f9eed9b388df8edc633e3c1161aa51
 42576,zxingify/zxingify-objc,510db5f6ed293bf2f9e1905d3b8268c502f3fb55
 42577,zxlie/fehelper,e9bd606b35a7e2a94529284290d4e4df7f448b9d
 42578,zxlie/weixinapi,54ee4b8d3921cb6fa9caf0be0b0dc2bc92a38965

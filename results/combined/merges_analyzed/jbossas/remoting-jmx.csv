@@ -7,7 +7,7 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 6,refs/heads/3.1.x,a9ae0d2bb885932b3dc3ff105e6b1026acf35c91,11ab9bf8002e875c66c39db5447bb68d5a0ba0bd,3731c696b170372c04a479071faf01312b7dd83e,,False,False,,,,,,False
 8,refs/heads/3.1.x,ef060d7f0d839495c66da04bb28e3da2e586dc74,e2f2ad50526b16b5b5c7b8717a67e8b44b2e5af0,d0aa9a8f7dead492e57ace2d52bf83fc086f8535,,False,False,,,,,,False
 9,refs/heads/3.1.x,e2f2ad50526b16b5b5c7b8717a67e8b44b2e5af0,afdfcc29afc6bf16a8935c964dea00e5491b33b8,de3218ef58ebd3293e2afbe472f5a90f5c33e0e0,,False,False,,,,,,False
-10,refs/heads/3.1.x,de3218ef58ebd3293e2afbe472f5a90f5c33e0e0,849c1ba2e793648fbcc7db096c779a4cdfeefd68,a4117d9bf5588ef4a21fa3a349e3ffc7b29bdccc,,True,True,4df238cd83f07f057949a8ffa998d0c9e182a30a6236dd946b8d51530c57c9b7,Tests_passed,e8f331a3e4d076da1ef2b0cb68fe365fa0986b0389d0f89e2367d890e4f8447f,Tests_passed,True,True
+10,refs/heads/3.1.x,de3218ef58ebd3293e2afbe472f5a90f5c33e0e0,849c1ba2e793648fbcc7db096c779a4cdfeefd68,a4117d9bf5588ef4a21fa3a349e3ffc7b29bdccc,,False,True,4df238cd83f07f057949a8ffa998d0c9e182a30a6236dd946b8d51530c57c9b7,Tests_timedout,e8f331a3e4d076da1ef2b0cb68fe365fa0986b0389d0f89e2367d890e4f8447f,Tests_passed,False,False
 11,refs/heads/3.1.x,afdfcc29afc6bf16a8935c964dea00e5491b33b8,3453d16cb97746a496249a62a5f16317b6e9ed13,849c1ba2e793648fbcc7db096c779a4cdfeefd68,,False,False,,,,,,False
 12,refs/heads/3.1.x,3453d16cb97746a496249a62a5f16317b6e9ed13,216f21055db7740ec4a48b1d7c817f03386a276e,df87f58d9dcad1c360b6243234ff1fe016fa69ae,,False,False,,,,,,False
 13,refs/heads/3.1.x,df87f58d9dcad1c360b6243234ff1fe016fa69ae,08d2672d693688c0a51735e5eee7f97ea2ad5008,56d5b24a9fbe038532876cfe595caf921b1626b4,,False,False,,,,,,False

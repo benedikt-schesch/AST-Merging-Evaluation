@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Replay merges and their test results"""
 import argparse
-import shutil
 from pathlib import Path
 from tqdm import tqdm
 import pandas as pd
@@ -159,7 +158,6 @@ if __name__ == "__main__":
         cache_directory=Path("no_cache/"),
         workdir_id="todelete",
     )
-    shutil.rmtree(repo.path, ignore_errors=True)
     results_df = merge_replay(str(repo_slug), merge_data, arguments.test)
     for idx, row in results_df.iterrows():
         print("=====================================")

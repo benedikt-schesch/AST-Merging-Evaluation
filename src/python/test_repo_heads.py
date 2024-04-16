@@ -78,10 +78,17 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     test_state, _, repo_info["head tree fingerprint"] = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
     )
-    repo_info["head test result"] = test_state.name
+    if test_state == TEST_STATE.Tests_passed:
+        # Make sure the repo is cloned and exists
+        repo.clone_repo()
+        assert (
+            repo.repo_path.exists()
+        ), f"Repo {repo_slug} does not exist but it has passed tests \
+            (Either clone the repo or remove the cache entry)"
+    else:
+        shutil.rmtree(repo.repo_path, ignore_errors=True)
 
-    if test_state != TEST_STATE.Tests_passed:
-        shutil.rmtree(repo.path, ignore_errors=True)
+    repo_info["head test result"] = test_state.name
 
     print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
     return repo_info
