@@ -83,7 +83,9 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
     try:
         repo.submodule_update()
     except ValueError as e:
-        logger.debug(f"clone_repo: ValueError during submodule update {repo_slug}:\n{e}")
+        logger.debug(
+            f"clone_repo: ValueError during submodule update {repo_slug}:\n{e}"
+        )
     if not repo_dir.exists():
         logger.error(f"Repo {repo_slug} does not exist after cloning {repo_dir}")
         raise Exception(
@@ -214,8 +216,12 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             logger.error("Exception during cloning:\n", e)
             raise
         if not self.repo_path.exists():
-            logger.error(f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}")
-            raise Exception(f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}")
+            logger.error(
+                f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"
+            )
+            raise Exception(
+                f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"
+            )
 
     def copy_repo(self) -> None:
         """Copies the repository and adjusts permissions."""
@@ -624,7 +630,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             float: The test coverage.
             Union[str,None]: The tree fingerprint of the result.
         """
-        result, explanation = self.checkout(commit)
+        result, _ = self.checkout(commit)
         assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         if not result:
             return TEST_STATE.Git_checkout_failed, 0, None
@@ -691,7 +697,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         cache_data["test_log_file"] = []
         cache_data["test_coverage"] = []
         for i in range(n_tests):
-            logger.debug(f"test: Running test {i+1}/{n_tests} for {self.repo_slug} at {sha}")
+            logger.debug(
+                f"test: Running test {i+1}/{n_tests} for {self.repo_slug} at {sha}"
+            )
             test_state, test_output = repo_test(self.local_repo_path, timeout)
             if test_log_file is None:
                 test_log_file = Path(

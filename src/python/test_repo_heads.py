@@ -15,6 +15,7 @@ Output: the rows of the input for which the commit at head hash passes tests.
 import multiprocessing
 import os
 import argparse
+import sys
 from pathlib import Path
 import shutil
 from functools import partialmethod
@@ -24,7 +25,6 @@ from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
 from loguru import logger
-import sys
 
 logger.add(sys.stderr, colorize=True, backtrace=True, diagnose=True)
 logger.add("run.log", colorize=False, backtrace=True, diagnose=True)
@@ -66,7 +66,6 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         logger.error(f"head_passes_tests: No valid head hash {repo_info['repository']}")
         raise ValueError(f"No valid head hash {repo_info['repository']}")
 
-
     # Load repo
     try:
         repo = Repository(
@@ -78,7 +77,9 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     except Exception as e:
         repo_info["head test result"] = TEST_STATE.Git_checkout_failed.name
         repo_info["head tree fingerprint"] = None
-        logger.success(f"head_passes_tests: Git checkout failed {repo_info['repository']}")
+        logger.success(
+            f"head_passes_tests: Git checkout failed {repo_info['repository']} {e}"
+        )
         return repo_info
 
     # Test repo
@@ -101,7 +102,9 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
 
     repo_info["head test result"] = test_state.name
 
-    logger.success(f"head_passes_tests: Finished {repo_info['repository']} {test_state}")
+    logger.success(
+        f"head_passes_tests: Finished {repo_info['repository']} {test_state}"
+    )
     return repo_info
 
 

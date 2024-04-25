@@ -37,7 +37,9 @@ def set_in_cache(
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_directory (Path): The path to the cache directory.
     """
-    logger.debug(f"set_in_cache: {cache_key} {cache_value} {repo_slug} {cache_directory}")
+    logger.debug(
+        f"set_in_cache: {cache_key} {cache_value} {repo_slug} {cache_directory}"
+    )
     lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
         lock.acquire()

@@ -187,7 +187,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
 
-    logger.success("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
+    logger.success(
+        "merge_tester: Number of newly tested merges:", len(merge_tester_arguments)
+    )
     logger.success("merge_tester: Total number of tested merges:", n_total_merges)
     logger.success("merge_tester: Finished Writing Output")
     logger.success("merge_tester: Done")
