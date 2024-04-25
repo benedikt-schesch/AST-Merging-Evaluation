@@ -25,6 +25,7 @@ from tqdm import tqdm
 import pandas as pd
 from repo import Repository
 from test_repo_heads import num_processes
+from loguru import logger
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -39,10 +40,10 @@ def get_latest_hash(args):
     """
     _, row = args
     repo_slug: str = row["repository"]
-    print("write_head_hashes:", repo_slug, ": Started get_latest_hash")
+    logger.info("write_head_hashes:", repo_slug, ": Started get_latest_hash")
 
     try:
-        print("write_head_hashes:", repo_slug, ": Cloning repo")
+        logger.info("write_head_hashes:", repo_slug, ": Cloning repo")
         repo = Repository(
             repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
@@ -50,7 +51,7 @@ def get_latest_hash(args):
         )
         row["head hash"] = repo.get_head_hash()
     except Exception as e:
-        print(
+        logger.info(
             "write_head_hashes:",
             repo_slug,
             ": Finished get_latest_hash, result = exception, cause:",
@@ -58,14 +59,14 @@ def get_latest_hash(args):
         )
         return None
 
-    print("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
+    logger.info("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
     return row
 
 
 if __name__ == "__main__":
     Path("repos").mkdir(parents=True, exist_ok=True)
 
-    print("write_head_hashes: Started storing repo HEAD hashes")
+    logger.info("write_head_hashes: Started storing repo HEAD hashes")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_csv", type=Path)
     parser.add_argument("--output_path", type=Path)
@@ -73,12 +74,12 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(arguments.output_path):
-        print("write_head_hashes: File already exists, skipping")
+        logger.info("write_head_hashes: File already exists, skipping")
         sys.exit(0)
 
     df = pd.read_csv(arguments.repos_csv, index_col="idx")
 
-    print("write_head_hashes: Started cloning repos and collecting head hashes")
+    logger.info("write_head_hashes: Started cloning repos and collecting head hashes")
 
     with multiprocessing.Pool(processes=num_processes()) as pool:
         get_latest_hash_result = list(
@@ -88,10 +89,10 @@ if __name__ == "__main__":
             )
         )
 
-    print("write_head_hashes: Finished cloning repos and collecting head hashes")
+    logger.info("write_head_hashes: Finished cloning repos and collecting head hashes")
 
     result_df = pd.DataFrame([i for i in get_latest_hash_result if i is not None])
     result_df = result_df.reset_index(drop=True)
-    print("write_head_hashes: Started storing repo HEAD hashes")
+    logger.info("write_head_hashes: Started storing repo HEAD hashes")
     result_df.to_csv(arguments.output_path, index_label="idx")
-    print("write_head_hashes: Finished storing repo HEAD hashes")
+    logger.info("write_head_hashes: Finished storing repo HEAD hashes")

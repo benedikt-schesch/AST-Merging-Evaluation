@@ -14,6 +14,7 @@ from io import BytesIO
 
 import pandas as pd
 import numpy as np
+from loguru import logger
 
 repos_csv = "input_data/repos.csv"
 
@@ -32,4 +33,4 @@ if __name__ == "__main__":
 
     df.to_csv(repos_csv, index_label="idx")
 
-    print("Number of repos written to", repos_csv, ":", len(df))
+    logger.info("Number of repos written to", repos_csv, ":", len(df))

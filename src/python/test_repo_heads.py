@@ -23,6 +23,11 @@ from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
 from tqdm import tqdm
 import pandas as pd
+from loguru import logger
+import sys
+
+logger.add(sys.stderr, colorize=True, backtrace=True, diagnose=True)
+logger.add("run.log", colorize=False, backtrace=True, diagnose=True)
 
 
 if os.getenv("TERM", "dumb") == "dumb":
@@ -49,16 +54,18 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         TEST_STATE: The result of the test.
     """
     repo_info, cache = args
+    logger.info(f"head_passes_tests: Started {repo_info['repository']}")
     repo_slug = repo_info["repository"]
     if "/" not in repo_slug:
         repo_info["head test result"] = "Wrong format"
-        return repo_info
+        logger.error(f"head_passes_tests: Wrong format {repo_info['repository']}")
+        raise ValueError(f"Wrong format {repo_info['repository']}")
 
     if len(repo_info["head hash"]) != 40:
         repo_info["head test result"] = "No valid head hash"
-        return repo_info
+        logger.error(f"head_passes_tests: No valid head hash {repo_info['repository']}")
+        raise ValueError(f"No valid head hash {repo_info['repository']}")
 
-    print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
 
     # Load repo
     try:
@@ -69,9 +76,9 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
             lazy_clone=True,
         )
     except Exception as e:
-        print("test_repo_heads:", repo_slug, ": exception head_passes_tests :", e)
         repo_info["head test result"] = TEST_STATE.Git_checkout_failed.name
         repo_info["head tree fingerprint"] = None
+        logger.success(f"head_passes_tests: Git checkout failed {repo_info['repository']}")
         return repo_info
 
     # Test repo
@@ -81,16 +88,20 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     if test_state == TEST_STATE.Tests_passed:
         # Make sure the repo is cloned and exists
         repo.clone_repo()
-        assert (
-            repo.repo_path.exists()
-        ), f"Repo {repo_slug} does not exist but it has passed tests \
-            (Either clone the repo or remove the cache entry)"
+        if not repo.repo_path.exists():
+            logger.error(
+                f"head_passes_tests: Repo {repo_slug} does not exist after passing tests."
+            )
+            raise Exception(
+                f"Repo {repo_slug} does not exist after passing tests. \
+                    (Either clone the repo or remove the cache entry)"
+            )
     else:
         shutil.rmtree(repo.repo_path, ignore_errors=True)
 
     repo_info["head test result"] = test_state.name
 
-    print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
+    logger.success(f"head_passes_tests: Finished {repo_info['repository']} {test_state}")
     return repo_info
 
 
@@ -105,7 +116,7 @@ if __name__ == "__main__":
 
     df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
 
-    print("test_repo_heads: Started Testing")
+    logger.info("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=num_processes()) as pool:
         head_passes_tests_results = list(
@@ -114,14 +125,14 @@ if __name__ == "__main__":
                 total=len(head_passes_tests_arguments),
             )
         )
-    print("test_repo_heads: Finished Testing")
+    logger.info("test_repo_heads: Finished Testing")
 
-    print("test_repo_heads: Started Building Output")
+    logger.info("test_repo_heads: Started Building Output")
     df = pd.DataFrame(head_passes_tests_results)
     filtered_df = df[df["head test result"] == TEST_STATE.Tests_passed.name]
-    print("test_repo_heads: Finished Building Output")
+    logger.info("test_repo_heads: Finished Building Output")
 
-    print(
+    logger.success(
         "test_repo_heads: Number of repos whose head passes tests:",
         len(filtered_df),
         "out of",
@@ -134,4 +145,4 @@ if __name__ == "__main__":
         arguments.output_path.parent / "all_repos_head_test_results.csv",
         index_label="idx",
     )
-    print("test_repo_heads: Done")
+    logger.success("test_repo_heads: Done")

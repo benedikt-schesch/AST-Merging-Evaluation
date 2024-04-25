@@ -31,6 +31,7 @@ from variables import (
     RIGHT_BRANCH_NAME,
     DELETE_WORKDIRS,
 )
+from loguru import logger
 
 
 def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
@@ -61,11 +62,10 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
     """
-    print(repo_slug, " : Cloning repo to", repo_dir)
+    logger.debug(f"clone_repo: Cloning {repo_slug} to {repo_dir}")
     repo_dir.parent.mkdir(parents=True, exist_ok=True)
     os.environ["GIT_TERMINAL_PROMPT"] = "0"
     os.environ["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes"
-    print(repo_slug, " : Cloning repo")
     # ":@" in URL ensures that we are not prompted for login details
     # for the repos that are now private.
     github_url = "https://:@github.com/" + repo_slug + ".git"
@@ -74,19 +74,21 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
         assert (
             repo_dir.exists()
         ), f"Repo {repo_slug} does not exist after cloning {repo_dir}"
-        print(repo_slug, " : Finished cloning")
+        logger.debug(repo_slug, "clone_repo: Finished cloning")
         repo.remote().fetch()
         repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
     except GitCommandError as e:
-        print(repo_slug, "GitCommandError during cloning:\n", e)
+        logger.debug(f"clone_repo: GitCommandError during cloning {repo_slug}:\n{e}")
         raise Exception(f"GitCommandError during cloning {repo_slug}") from e
     try:
         repo.submodule_update()
     except ValueError as e:
-        print(repo_slug, "GitCommandError during submodule update:\n", e)
-    assert (
-        repo_dir.exists()
-    ), f"Repo {repo_slug} does not exist after cloning {repo_dir}"
+        logger.debug(f"clone_repo: ValueError during submodule update {repo_slug}:\n{e}")
+    if not repo_dir.exists():
+        logger.error(f"Repo {repo_slug} does not exist after cloning {repo_dir}")
+        raise Exception(
+            f"Repo {repo_slug} does not exist after cloning {repo_dir}"
+        ) from None
 
 
 TEST_STATE = Enum(
@@ -206,31 +208,24 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         """Clones the repository."""
         if self.repo_path.exists():
             return
-        print(
-            "Cloning",
-            self.repo_slug,
-            "to",
-            self.repo_path,
-            "because:",
-            self.repo_path.exists(),
-        )
         try:
             clone_repo(self.repo_slug, self.repo_path)
         except Exception as e:
-            print("Exception during cloning:\n", e)
+            logger.error("Exception during cloning:\n", e)
             raise
-        assert (
-            self.repo_path.exists()
-        ), f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"
+        if not self.repo_path.exists():
+            logger.error(f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}")
+            raise Exception(f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}")
 
     def copy_repo(self) -> None:
-        """Copies the repository."""
+        """Copies the repository and adjusts permissions."""
         if not self.repo_path.exists():
             self.clone_repo()
         if self.local_repo_path.exists():
             return
         self.workdir.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.repo_path, self.local_repo_path, symlinks=True)
+        shutil.copytree(self.repo_path, self.local_repo_path)
+        os.system("chmod -R 777 " + str(self.local_repo_path))
         self.repo = Repo(self.local_repo_path)
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
@@ -321,7 +316,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             _,
         ) = self.merge(tool, left_commit, right_commit, -1)
         if merge_status != MERGE_STATE.Merge_success:
-            # print("Merge failed for", self.repo_slug, merge_fingerprint)
             return (
                 merge_status,
                 merge_fingerprint,
@@ -329,7 +323,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
                 right_fingerprint,
                 -1,
             )
-        # print("Testing", self.repo_slug, merge_fingerprint)
         test_result, test_coverage = self.test(timeout, n_tests)
         return (
             test_result,
@@ -489,6 +482,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             )
 
         # Merge
+        logger.debug(
+            f"merge: Merging {self.repo_slug} {left_commit} {right_commit} with {tool.name}"
+        )
         start_time = time.time()
         command = [
             "src/scripts/merge_tools/" + tool.name + ".sh",
@@ -631,7 +627,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         result, explanation = self.checkout(commit)
         assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         if not result:
-            print("Checkout failed for", self.repo_slug, commit, explanation)
             return TEST_STATE.Git_checkout_failed, 0, None
         sha = self.compute_tree_fingerprint()
         result, test_coverage = self.test(timeout, n_tests)
@@ -696,6 +691,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         cache_data["test_log_file"] = []
         cache_data["test_coverage"] = []
         for i in range(n_tests):
+            logger.debug(f"test: Running test {i+1}/{n_tests} for {self.repo_slug} at {sha}")
             test_state, test_output = repo_test(self.local_repo_path, timeout)
             if test_log_file is None:
                 test_log_file = Path(

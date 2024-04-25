@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import List
 from tqdm import tqdm
 
-
 def merge_json_data(paths: List[Path], output_path: Path):
     """Merge multiple json files into one"""
     data = {}

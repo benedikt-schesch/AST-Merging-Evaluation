@@ -10,13 +10,6 @@ import pandas as pd
 
 df = pd.read_csv("../../results/combined/result.csv", index_col="idx")
 
-# print(df.iloc[3])
-# print(df.iloc[3].gitmerge_ort_imports_ignorespace)
-# print(df.iloc[3].gitmerge_ort_ignorespace)
-# print(
-#     df.iloc[3].gitmerge_ort_imports_ignorespace == df.iloc[3].gitmerge_ort_ignorespace
-# )
-
 
 def is_success(val):
     """Returns true if the given result is a success result."""

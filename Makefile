@@ -99,6 +99,9 @@ gradle-assemble:
 clean-local:
 	rm -rf repos .workdir
 
+protect-repos:
+	find repos -mindepth 1 -type d -exec chmod a-w {} +
+
 java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 

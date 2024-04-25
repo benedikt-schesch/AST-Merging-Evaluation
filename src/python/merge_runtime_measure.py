@@ -18,11 +18,12 @@ import pandas as pd
 from repo import Repository, MERGE_TOOL
 from cache_utils import lookup_in_cache, set_in_cache
 import numpy as np
+from loguru import logger
 
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
     """Main function"""
-    print("merge_timer: Start")
+    logger.info("merge_timer: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges", type=Path)
@@ -37,7 +38,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_timer: Started collecting merges to test")
+    logger.info("merge_timer: Started collecting merges to test")
 
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
@@ -62,7 +63,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                         cache_entry["run_time"]  # type: ignore
                     )
                 else:
-                    print(
+                    logger.info(
                         f"merge_timer: Running {merge_tool.name} "
                         f"on {repo_slug} {left_hash} {right_hash}"
                     )
@@ -103,7 +104,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         out_file = args.output_dir / f"{repo_slug}.csv"
         out_file.parent.mkdir(parents=True, exist_ok=True)
         merges.to_csv(out_file, index=False)
-    print("merge_timer: Done")
+    logger.info("merge_timer: Done")
 
 
 if __name__ == "__main__":
