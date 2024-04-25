@@ -27,7 +27,8 @@ jobs:
         distribution: 'zulu'
         java-version: 17
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools" >> $GITHUB_PATH
+    - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools" >> $GITHUB_
+    - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools/merging/src/main/sh" >> $GITHUB_
     - run: java -version
     - uses: actions/checkout@v4
     - name: Set up Python 3.8
@@ -49,6 +50,8 @@ jobs:
       with:
         java-version: 17
         maven-version: ${{ matrix.maven }}
+    - name: Run gradle in merging
+      run: cd src/scripts/merge_tools/merging && ./gradlew shadowJar
     - name: Clean caches & workspace
       run: make clean
     - name: Build Java programs
