@@ -19,7 +19,7 @@
 %%   \import{<path to file>}{<filename>.pgf}
 %%
 %% Matplotlib used the following preamble
-%%
+%%   
 %%   \makeatletter\@ifpackageloaded{underscore}{}{\usepackage[strings]{underscore}}\makeatother
 %%
 \begingroup%
@@ -197,7 +197,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.031373,0.228835,0.479892}%
+\definecolor{currentfill}{rgb}{0.031373,0.224775,0.473864}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -347,7 +347,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.031373,0.228835,0.479892}%
+\definecolor{currentfill}{rgb}{0.031373,0.224775,0.473864}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -1019,7 +1019,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.925567,0.956755,0.986221}%
+\definecolor{currentfill}{rgb}{0.928643,0.958724,0.987205}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -1055,7 +1055,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.925567,0.956755,0.986221}%
+\definecolor{currentfill}{rgb}{0.928643,0.958724,0.987205}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -1073,7 +1073,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.031373,0.200415,0.437693}%
+\definecolor{currentfill}{rgb}{0.031373,0.196355,0.431665}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -1127,7 +1127,7 @@
 \pgfusepath{clip}%
 \pgfsetbuttcap%
 \pgfsetroundjoin%
-\definecolor{currentfill}{rgb}{0.925567,0.956755,0.986221}%
+\definecolor{currentfill}{rgb}{0.928643,0.958724,0.987205}%
 \pgfsetfillcolor{currentfill}%
 \pgfsetlinewidth{0.000000pt}%
 \definecolor{currentstroke}{rgb}{1.000000,1.000000,1.000000}%
@@ -1568,7 +1568,7 @@
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=5.066000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 824}%
+\pgftext[x=2.419792in,y=5.066000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 819}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1586,7 +1586,7 @@
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=4.543333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 824}%
+\pgftext[x=2.991393in,y=4.543333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 819}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1598,19 +1598,19 @@
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 830}%
+\pgftext[x=2.419792in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 823}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 97}%
+\pgftext[x=2.991393in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 94}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.562994in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 830}%
+\pgftext[x=3.562994in,y=4.020667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 823}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1622,25 +1622,25 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 12}%
+\pgftext[x=2.419792in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 833}%
+\pgftext[x=2.991393in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 826}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.562994in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 12}%
+\pgftext[x=3.562994in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.134595in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 822}%
+\pgftext[x=4.134595in,y=3.498000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 817}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1652,25 +1652,25 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 12}%
+\pgftext[x=2.419792in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 833}%
+\pgftext[x=2.991393in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 826}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.562994in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 12}%
+\pgftext[x=3.562994in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.134595in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 822}%
+\pgftext[x=4.134595in,y=2.975333in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 817}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1688,37 +1688,37 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
+\pgftext[x=2.419792in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 9}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 833}%
+\pgftext[x=2.991393in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 827}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.562994in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
+\pgftext[x=3.562994in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 9}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.134595in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 828}%
+\pgftext[x=4.134595in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 822}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.706195in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
+\pgftext[x=4.706195in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 9}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=5.277796in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 10}%
+\pgftext[x=5.277796in,y=2.452667in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 9}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1730,25 +1730,25 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.419792in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 48}%
+\pgftext[x=2.419792in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 46}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.991393in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 858}%
+\pgftext[x=2.991393in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 851}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.562994in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 48}%
+\pgftext[x=3.562994in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 46}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{1.000000,1.000000,1.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.134595in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 847}%
+\pgftext[x=4.134595in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 842}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1766,7 +1766,7 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=5.849397in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 47}%
+\pgftext[x=5.849397in,y=1.930000in,,]{\color{textcolor}\rmfamily\fontsize{6.000000}{7.200000}\selectfont 46}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
@@ -1849,7 +1849,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{2.156002in}%
+\pgfsys@transformshift{7.201665in}{2.160010in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1857,7 +1857,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=2.107776in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {100}\)}%
+\pgftext[x=7.298888in, y=2.111785in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {100}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1874,7 +1874,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{2.643337in}%
+\pgfsys@transformshift{7.201665in}{2.651354in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1882,7 +1882,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=2.595111in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {200}\)}%
+\pgftext[x=7.298888in, y=2.603129in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {200}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1899,7 +1899,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{3.130671in}%
+\pgfsys@transformshift{7.201665in}{3.142697in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1907,7 +1907,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=3.082446in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {300}\)}%
+\pgftext[x=7.298888in, y=3.094472in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {300}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1924,7 +1924,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{3.618006in}%
+\pgfsys@transformshift{7.201665in}{3.634041in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1932,7 +1932,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=3.569781in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {400}\)}%
+\pgftext[x=7.298888in, y=3.585816in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {400}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1949,7 +1949,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{4.105341in}%
+\pgfsys@transformshift{7.201665in}{4.125384in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1957,7 +1957,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=4.057116in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {500}\)}%
+\pgftext[x=7.298888in, y=4.077159in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {500}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1974,7 +1974,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{4.592676in}%
+\pgfsys@transformshift{7.201665in}{4.616728in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -1982,7 +1982,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=4.544451in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {600}\)}%
+\pgftext[x=7.298888in, y=4.568503in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {600}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1999,7 +1999,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{5.080011in}%
+\pgfsys@transformshift{7.201665in}{5.108071in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -2007,7 +2007,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=5.031786in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {700}\)}%
+\pgftext[x=7.298888in, y=5.059846in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {700}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -2024,7 +2024,7 @@
 \pgfusepath{stroke,fill}%
 }%
 \begin{pgfscope}%
-\pgfsys@transformshift{7.201665in}{5.567346in}%
+\pgfsys@transformshift{7.201665in}{5.599415in}%
 \pgfsys@useobject{currentmarker}{}%
 \end{pgfscope}%
 \end{pgfscope}%
@@ -2032,7 +2032,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=7.298888in, y=5.519120in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {800}\)}%
+\pgftext[x=7.298888in, y=5.551190in, left, base]{\color{textcolor}\rmfamily\fontsize{10.000000}{12.000000}\selectfont \(\displaystyle {800}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetrectcap%
