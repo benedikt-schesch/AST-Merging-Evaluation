@@ -16,6 +16,7 @@ import json
 from typing import Union, Tuple
 import time
 import fasteners
+from loguru import logger
 
 CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
@@ -36,10 +37,12 @@ def set_in_cache(
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_directory (Path): The path to the cache directory.
     """
+    logger.debug(
+        f"set_in_cache: {cache_key} {cache_value} {repo_slug} {cache_directory}"
+    )
     lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
         lock.acquire()
-    # print("set_in_cache", cache_directory, cache_key, cache_value)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
     write_cache(cache, repo_slug, cache_directory)
@@ -84,6 +87,7 @@ def lookup_in_cache(
         lock.release()
         return cache_data
     if set_run:
+        logger.debug(f"lookup_in_cache: Setting {cache_key} to None")
         set_in_cache(cache_key, None, repo_slug, cache_directory, acquire_lock=False)
     lock.release()
     return None
