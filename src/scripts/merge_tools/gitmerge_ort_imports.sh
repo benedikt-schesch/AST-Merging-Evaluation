@@ -7,21 +7,19 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 strategy="-s ort"
+
+export JAVA_HOME=$JAVA17_HOME
+
+cd "$clone_dir" || exit 1
+
+attributes_file=".git/info/attributes"
+echo "*.java merge=merge-java" >> "$attributes_file"
+
+git config --local merge.merge-java.name "Merge Java files"
+git config --local merge.merge-java.driver "java-merge-driver.sh "%A" "%O" "%B""
+
 if "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strategy"; then
   exit 0
 fi
 
-cd "$clone_dir" || exit 1
-"$MERGE_SCRIPTS_DIR"/resolve-import-conflicts;
-
-# Detect conflicts using Git commands
-conflict_files=$(git diff --name-only --diff-filter=U)
-
-if [ -n "$conflict_files" ]; then
-    echo "Conflict detected in the following files:"
-    echo "$conflict_files"
-    exit 1
-fi
-
-echo "No conflicts detected."
 exit 0
