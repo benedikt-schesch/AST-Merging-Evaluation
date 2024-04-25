@@ -31,6 +31,7 @@ jobs:
     - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools/merging/src/main/sh" >> $GITHUB_PATH
     - run: java -version
     - uses: actions/checkout@v4
+      submodules: 'true'
     - name: Set up Python 3.8
       uses: actions/setup-python@v5
       with:
