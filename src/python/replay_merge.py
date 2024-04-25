@@ -1,14 +1,16 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Replay merges and their test results"""
 import argparse
-import shutil
 from pathlib import Path
+import shutil
 from tqdm import tqdm
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
-from variables import TIMEOUT_TESTING_MERGE, N_TESTS
+from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
 
 
+# pylint: disable=too-many-locals
 def merge_replay(
     repo_slug: str, merge_data: pd.Series, test_merge: bool
 ) -> pd.DataFrame:
@@ -22,12 +24,26 @@ def merge_replay(
     print("merge_replay: Started ", repo_slug, merge_data["left"], merge_data["right"])
     result_df = pd.DataFrame()
     for merge_tool in tqdm(MERGE_TOOL):
+        workdir = Path(
+            repo_slug
+            + f"/merge-replay-{merge_tool.name}-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
+
+        if (WORKDIR_DIRECTORY / workdir).exists():
+            # Ask the user if they want to delete the workdir
+            print(f"workdir {workdir} already exists. Do you want to delete it? (y/n)")
+            answer = input()
+            if answer == "y":
+                shutil.rmtree(WORKDIR_DIRECTORY / workdir)
+            else:
+                print(f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping")
+                continue
+
         repo = Repository(
             repo_slug,
             cache_directory=Path("no_cache/"),
-            workdir_id=repo_slug
-            + f"/merge-tester-{merge_tool.name}-"
-            + f'{merge_data["left"]}-{merge_data["right"]}',
+            workdir_id=workdir,
             delete_workdir=False,
         )
         (
@@ -44,7 +60,12 @@ def merge_replay(
             timeout=TIMEOUT_TESTING_MERGE,
             use_cache=False,
         )
-        assert merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
+        assert (
+            merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
+        ), (
+            f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
+            + f" {merge_fingerprint} but found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+        )
         root_dir = Path("replay_logs")
         log_path = root_dir / Path(
             "merges/"
@@ -66,7 +87,7 @@ def merge_replay(
         ] = [
             merge_result.name,
             log_path,
-            repo.repo_path,
+            repo.local_repo_path,
         ]
 
         if merge_result not in (
@@ -149,7 +170,6 @@ if __name__ == "__main__":
         cache_directory=Path("no_cache/"),
         workdir_id="todelete",
     )
-    shutil.rmtree(repo.path, ignore_errors=True)
     results_df = merge_replay(str(repo_slug), merge_data, arguments.test)
     for idx, row in results_df.iterrows():
         print("=====================================")
