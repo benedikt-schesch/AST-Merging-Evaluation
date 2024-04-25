@@ -39,14 +39,16 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     Returns:
         pd.Series: The result of the test.
     """
-    logger.info("merge_tester: Started", args[0], args[1]["left"], args[1]["right"])
     repo_slug, merge_data, cache_directory = args
+    logger.info(
+        f"merge_tester: Started {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
     while psutil.cpu_percent() > 90:
         logger.trace(
-            "merge_tester: Waiting for CPU load to come down",
-            repo_slug,
-            merge_data["left"],
-            merge_data["right"],
+            "merge_tester: Waiting for CPU load to come down"
+            + repo_slug
+            + merge_data["left"]
+            + merge_data["right"]
         )
         time.sleep(60)
 
@@ -95,7 +97,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
-    logger.info("merge_tester: Finished", args[0], args[1]["left"], args[1]["right"])
+    logger.info(
+        f"merge_tester: Finished {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
     return merge_data
 
 

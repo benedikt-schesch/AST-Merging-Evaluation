@@ -168,10 +168,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             if len(merges) == 0:
                 raise pd.errors.EmptyDataError
         except pd.errors.EmptyDataError:
-            logger.log(
-                "latex_output: Skipping",
-                repo_slug,
-                "because it does not contain any merges.",
+            logger.info(
+                "latex_output: Skipping"
+                + repo_slug
+                + "because it does not contain any merges."
             )
             continue
         merges = merges[merges["parents pass"]]

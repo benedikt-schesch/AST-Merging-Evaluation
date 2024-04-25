@@ -210,6 +210,14 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         """Clones the repository."""
         if self.repo_path.exists():
             return
+        print(
+            "Cloning",
+            self.repo_slug,
+            "to",
+            self.repo_path,
+            "because:",
+            self.repo_path.exists(),
+        )
         try:
             clone_repo(self.repo_slug, self.repo_path)
         except Exception as e:

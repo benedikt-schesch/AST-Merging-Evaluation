@@ -104,7 +104,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         out_file = args.output_dir / f"{repo_slug}.csv"
         out_file.parent.mkdir(parents=True, exist_ok=True)
         merges.to_csv(out_file, index=False)
-    logger.info("merge_timer: Done")
+    logger.success("merge_timer: Done")
 
 
 if __name__ == "__main__":
