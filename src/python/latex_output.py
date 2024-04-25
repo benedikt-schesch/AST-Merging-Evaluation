@@ -189,6 +189,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         ["repo-idx", "merge-idx"]
         + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
+    result_df.index = (
+        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)
+    )
 
     # Remove undesired states
     for merge_tool in MERGE_TOOL:
