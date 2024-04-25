@@ -25,6 +25,7 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
 from tqdm import tqdm
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
+from loguru import logger
 
 if os.getenv("TERM", "dumb") == "dumb":
     tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
@@ -38,14 +39,16 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     Returns:
         pd.Series: The result of the test.
     """
-    print("merge_tester: Started", args[0], args[1]["left"], args[1]["right"])
     repo_slug, merge_data, cache_directory = args
+    logger.info(
+        f"merge_tester: Started {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
     while psutil.cpu_percent() > 90:
-        print(
-            "merge_tester: Waiting for CPU load to come down",
-            repo_slug,
-            merge_data["left"],
-            merge_data["right"],
+        logger.trace(
+            "merge_tester: Waiting for CPU load to come down"
+            + repo_slug
+            + merge_data["left"]
+            + merge_data["right"]
         )
         time.sleep(60)
 
@@ -94,8 +97,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
-    # print("merge_tester: Finished", repo_slug, merge_data["left"], merge_data["right"])
-    print("merge_tester: Finished", args[0], args[1]["left"], args[1]["right"])
+    logger.info(
+        f"merge_tester: Finished {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
     return merge_data
 
 
@@ -120,7 +124,7 @@ def build_arguments(
 
     merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
     if len(merges) == 0:
-        print(
+        logger.info(
             "merge_tester: Skipping",
             repo_slug,
             "because it does not contain any merges.",
@@ -135,7 +139,7 @@ def build_arguments(
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
     """Main function"""
-    print("merge_tester: Start")
+    logger.info("merge_tester: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
@@ -147,7 +151,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_tester: Started collecting merges to test")
+    logger.info("merge_tester: Started collecting merges to test")
     merge_tester_arguments = []
     for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
         repo_slug = repository_data["repository"]
@@ -157,10 +161,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     random.seed(42)
     random.shuffle(merge_tester_arguments)
 
-    print("merge_tester: Finished collecting merges to test")
-    print("merge_tester: Number of merges to test:", len(merge_tester_arguments))
+    logger.info("merge_tester: Finished collecting merges to test")
+    logger.info("merge_tester: Number of merges to test:", len(merge_tester_arguments))
 
-    print("merge_tester: Started Testing")
+    logger.info("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=num_processes()) as pool:
         merge_tester_results = list(
             tqdm(
@@ -168,10 +172,10 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                 total=len(merge_tester_arguments),
             )
         )
-    print("merge_tester: Finished Testing")
+    logger.info("merge_tester: Finished Testing")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_tester: Started Writing Output")
+    logger.info("merge_tester: Started Writing Output")
 
     for i in tqdm(range(len(merge_tester_arguments))):
         repo_slug = merge_tester_arguments[i][0]
@@ -187,10 +191,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         df.to_csv(output_file, index_label="idx")
         n_total_merges += len(df)
 
-    print("merge_tester: Number of newly tested merges:", len(merge_tester_arguments))
-    print("merge_tester: Total number of tested merges:", n_total_merges)
-    print("merge_tester: Finished Writing Output")
-    print("merge_tester: Done")
+    logger.success(
+        "merge_tester: Number of newly tested merges:", len(merge_tester_arguments)
+    )
+    logger.success("merge_tester: Total number of tested merges:", n_total_merges)
+    logger.success("merge_tester: Finished Writing Output")
+    logger.success("merge_tester: Done")
 
 
 if __name__ == "__main__":

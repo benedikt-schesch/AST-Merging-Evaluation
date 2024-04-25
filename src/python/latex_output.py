@@ -36,6 +36,7 @@ import seaborn as sns
 
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
+from loguru import logger
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -167,10 +168,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             if len(merges) == 0:
                 raise pd.errors.EmptyDataError
         except pd.errors.EmptyDataError:
-            print(
-                "latex_output: Skipping",
-                repo_slug,
-                "because it does not contain any merges.",
+            logger.info(
+                "latex_output: Skipping"
+                + repo_slug
+                + "because it does not contain any merges."
             )
             continue
         merges = merges[merges["parents pass"]]
@@ -188,6 +189,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         ["repo-idx", "merge-idx"]
         + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
+    result_df.index = (
+        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)
+    )
 
     # Remove undesired states
     for merge_tool in MERGE_TOOL:
@@ -370,7 +374,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
                 ]
             )
 
-        print(my_table)
+        logger.success(my_table)
         if total == 0:
             raise Exception("No merges found in the results")
 

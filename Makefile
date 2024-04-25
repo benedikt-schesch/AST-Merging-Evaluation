@@ -80,9 +80,9 @@ small-test:
 	${MAKE} small-test-diff
 
 update-figures:
-	sh run_combined.sh -op
-	sh run_greatest_hits.sh -op
-	sh run_reaper.sh -op
+	./run_combined.sh -op
+	./run_greatest_hits.sh -op
+	./run_reaper.sh -op
 
 run-all:
 	./run_combined.sh
@@ -98,6 +98,9 @@ gradle-assemble:
 
 clean-local:
 	rm -rf repos .workdir
+
+protect-repos:
+	find repos -mindepth 1 -type d -exec chmod a-w {} +
 
 java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
