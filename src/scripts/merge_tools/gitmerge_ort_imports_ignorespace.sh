@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./gitmerge_ort_imports_ignorespace.sh <clone_dir> <branch-1> <branch-2>
+# usage: ./git_hires_merge.sh <clone_dir> <branch-1> <branch-2>
 
 clone_dir=$1
 branch1=$2
