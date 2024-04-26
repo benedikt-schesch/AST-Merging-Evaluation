@@ -1,5 +1,5 @@
 idx,repository,language,architecture,community,continuous_integration,documentation,history,issues,license,size,unit_test,stars,scorebased_org,randomforest_org,scorebased_utl,randomforest_utl,head hash,head tree fingerprint,head test result
 0,benedikt-schesch/git-hires-merge-example,Java,1.0,1,0,0.433617,10.5,0.0,1,34146,0.448443,54,1,0,1,1,4ae40d33c3b959e3a15e458eb9b0676251e36a41,1cebc99cd5f8a1b210b66b6985f8aa5c38c4af194a32ad23dc3c6261f43d2968,Tests_passed
 1,mangstadt/ez-vcard,Java,1.0,1,0,0.433617,10.5,0.0,1,34146,0.448443,54,1,0,1,1,95298de036f1df38fd7ca7e3225c4fd5ad5c44e6,134a29559bbdf9bcea93d2153b59e65ef205410c0c295f63b6d82a5e9dc828f9,Tests_passed
-2,pedrovgs/Algorithms,Java,0.932927,1,1,0.390942,89.0,0.75,1,6616,0.556371,1377,1,1,1,1,c108e3a4b4fa2556b8c88d7ab6803084b01a4364,3c7ee13d6f66c42510e5edb8cff2102d8c61ed625f7cc871397eaa2b1e529895,Tests_passed
-4,tntim96/JSCover,Java,0.985816,1,0,0.490264,25.0,6.448276,1,54612,0.627527,298,1,1,1,1,fff7a84ce12a037518e3c58e1d941a4d3dabb7e2,db8ac3637a22e488a08c15d4ddae3d115f42359e9fd0f42e2b2246aa8767d43e,Tests_passed
+2,pedrovgs/algorithms,Java,0.932927,1,1,0.390942,89.0,0.75,1,6616,0.556371,1377,1,1,1,1,c108e3a4b4fa2556b8c88d7ab6803084b01a4364,3c7ee13d6f66c42510e5edb8cff2102d8c61ed625f7cc871397eaa2b1e529895,Tests_passed
+4,tntim96/jscover,Java,0.985816,1,0,0.490264,25.0,6.448276,1,54612,0.627527,298,1,1,1,1,fff7a84ce12a037518e3c58e1d941a4d3dabb7e2,db8ac3637a22e488a08c15d4ddae3d115f42359e9fd0f42e2b2246aa8767d43e,Tests_passed

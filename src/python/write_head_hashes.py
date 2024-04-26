@@ -78,6 +78,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     df = pd.read_csv(arguments.repos_csv, index_col="idx")
+    df["repository"] = df["repository"].str.lower()
 
     logger.info("write_head_hashes: Started cloning repos and collecting head hashes")
 

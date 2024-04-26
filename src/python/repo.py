@@ -194,7 +194,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_directory (Path): The prefix of the cache.
         """
-        self.repo_slug = repo_slug
+        self.repo_slug = repo_slug.lower()
         self.repo_path = REPOS_PATH / repo_slug
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.local_repo_path = self.workdir / self.repo_path.name
