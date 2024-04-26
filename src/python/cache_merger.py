@@ -8,7 +8,14 @@ import json
 from argparse import ArgumentParser
 from pathlib import Path
 from typing import List
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def merge_json_data(paths: List[Path], output_path: Path):
@@ -33,7 +40,13 @@ def copy_file(source: Path, destination: Path):
 
 def process_directory(directory: Path, other_caches: List[Path], output_cache: Path):
     """Process a directory recursively"""
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("Traversing dir...", total=directory.stat().st_size)
         for path in directory.rglob("*"):
             if path.is_file():

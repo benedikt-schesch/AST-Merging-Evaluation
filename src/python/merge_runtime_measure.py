@@ -18,7 +18,14 @@ from repo import Repository, MERGE_TOOL
 from cache_utils import lookup_in_cache, set_in_cache
 import numpy as np
 from loguru import logger
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
@@ -40,18 +47,22 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     logger.info("merge_timer: Started collecting merges to test")
 
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("Collecting merges...", total=len(repos))
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
             repo_slug = repository_data["repository"]
-            merges = pd.read_csv(args.merges / f"{repo_slug}.csv")
+            merges = pd.read_csv(args.merges / f"{repo_slug}.csv", index_col="idx")
             merges = merges.sample(frac=1, random_state=42)
             if len(merges) > args.n_sampled_timing:
                 merges = merges.iloc[: args.n_sampled_timing]
-            task2 = progress.add_task(f"Testing {repo_slug}...", total=len(merges))
             for idx, merge_data in merges.iterrows():
-                task2.update(advance=1)
                 for merge_tool in MERGE_TOOL:
                     left_hash, right_hash = (
                         merge_data["left"],
@@ -109,10 +120,9 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
                         cache_entry["run_time"]  # type: ignore
                     )
-            task2.completed = True
             out_file = args.output_dir / f"{repo_slug}.csv"
             out_file.parent.mkdir(parents=True, exist_ok=True)
-            merges.to_csv(out_file, index=False)
+            merges.to_csv(out_file, index_label="idx")
     logger.success("merge_timer: Done")
 
 

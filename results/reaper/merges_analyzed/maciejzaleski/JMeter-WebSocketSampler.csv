@@ -1,6 +1,0 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-1,refs/heads/master,bb5c4358ae5fc9c767cc7fe32e99969126f1e5df,928fbabd7c7292ea41610b9df0b96bb56eff82a6,5039fb9c869e1e2eb7aee718d786ab54763e44bd,,5d078a1abb2dc38b5eac03cd51e092eb0f497b7364c198e22f8ff0eef4c1a703,Tests_passed,e159b749eb7574aee691b271ab55ff23196d4677dc2beeaf6f7da32eb649bb89,Tests_passed,True,True,True,True
-2,refs/heads/master,928fbabd7c7292ea41610b9df0b96bb56eff82a6,fb3e353709aaa9733dc481f2e227aeb4a777d29d,a037bc0af82b776f6f104917316c2f33b01bc357,,,,,,,False,False,False
-4,refs/heads/master,efde4bf42d8ee69ffd163eb9f1e44f6d7e541251,07aba5bc1f9112e0f5fcc41b6c350732d6e1e8c5,4a3ac190d463ffd09af4e695c9a2cb4415aadd6a,,,,,,,False,False,False
-5,refs/heads/master,07aba5bc1f9112e0f5fcc41b6c350732d6e1e8c5,04d1a4f54a996ec5d451ffa71ae50b6058b177c7,35e5452aa590d3f6e6884fc1f3ff665d7357a882,,,,,,,False,False,False
-7,refs/remotes/origin/pull/47,face21f60c86918d3378b274371409369e05fbce,e096d4b3d34a5c5461e9f140db72d995c1de8e66,3b8de2a489e2811827eec053ef1fb8715c234012,,,,,,,False,False,False

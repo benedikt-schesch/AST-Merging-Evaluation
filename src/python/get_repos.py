@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
     df.to_csv(repos_csv, index_label="idx")
 
-    logger.info("Number of repos written to", repos_csv, ":", len(df))
+    logger.info("Number of repos written to " + repos_csv + " : " + str(len(df)))

@@ -31,7 +31,14 @@ import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 from prettytable import PrettyTable
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 import seaborn as sns
 
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
@@ -152,7 +159,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     # Combine results file
     result_df_list = []
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("Processing repos...", total=len(repos))
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
@@ -213,7 +226,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
         # Figure Heat map diffing
         result = np.zeros((len(merge_tools), len(merge_tools)))
-        with Progress() as progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
             task = progress.add_task("Processing merges...", total=len(result_df))
             for _, row in result_df.iterrows():
                 progress.update(task, advance=1)
@@ -468,13 +487,20 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         Tool & Mean & Median & Max \\\\
         \\hline\n"""
                 timed_df = []
-                with Progress() as progress:
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn("[progress.description]{task.description}"),
+                    BarColumn(),
+                    TimeElapsedColumn(),
+                    TimeRemainingColumn(),
+                ) as progress:
                     task = progress.add_task(
                         "Processing timed merges...", total=len(repos)
                     )
                     for _, repository_data in repos.iterrows():
                         progress.update(task, advance=1)
                         repo_slug = repository_data["repository"]
+                        print(Path(args.timed_merges_path) / f"{repo_slug}.csv")
                         merges = pd.read_csv(
                             Path(args.timed_merges_path) / f"{repo_slug}.csv",
                             header=0,
@@ -520,7 +546,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_non_trivial_merges = 0
     count_non_trivial_repos = 0
 
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task(
             "Processing merges...", total=len(repos_head_passes_df)
         )
@@ -559,7 +591,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_repos_merges_java_diff = 0
     count_merges_diff_and_parents_pass = 0
     count_repos_merges_diff_and_parents_pass = 0
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task(
             "Processing merges...", total=len(repos_head_passes_df)
         )
@@ -599,7 +637,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = 0
     count = 0
     full = 0
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task(
             "Processing merges...", total=len(repos_head_passes_df)
         )

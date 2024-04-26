@@ -24,7 +24,14 @@ import pandas as pd
 from repo import Repository
 from test_repo_heads import num_processes
 from loguru import logger
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def get_latest_hash(args):
@@ -36,10 +43,10 @@ def get_latest_hash(args):
     """
     _, row = args
     repo_slug: str = row["repository"]
-    logger.info("write_head_hashes:", repo_slug, ": Started get_latest_hash")
+    logger.info("write_head_hashes: " + repo_slug + " : Started get_latest_hash")
 
     try:
-        logger.info("write_head_hashes:", repo_slug, ": Cloning repo")
+        logger.info("write_head_hashes " + repo_slug + " : Cloning repo")
         repo = Repository(
             repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
@@ -48,14 +55,14 @@ def get_latest_hash(args):
         row["head hash"] = repo.get_head_hash()
     except Exception as e:
         logger.info(
-            "write_head_hashes:",
-            repo_slug,
-            ": Finished get_latest_hash, result = exception, cause:",
-            e,
+            "write_head_hashes: "
+            + repo_slug
+            + " : Finished get_latest_hash, result = exception, cause: "
+            + e
         )
         return None
 
-    logger.info("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
+    logger.info("write_head_hashes: " + repo_slug + " : Finished get_latest_hash")
     return row
 
 
@@ -78,7 +85,13 @@ if __name__ == "__main__":
 
     logger.info("write_head_hashes: Started cloning repos and collecting head hashes")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        with Progress() as progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
             task = progress.add_task("Collecting hashes...", total=len(df))
             get_latest_hash_result = []
             for i in pool.imap_unordered(get_latest_hash, df.iterrows()):

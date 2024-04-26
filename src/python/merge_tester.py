@@ -24,7 +24,14 @@ from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 from loguru import logger
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
@@ -121,9 +128,9 @@ def build_arguments(
     merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
     if len(merges) == 0:
         logger.info(
-            "merge_tester: Skipping",
-            repo_slug,
-            "because it does not contain any merges.",
+            "merge_tester: Skipping"
+            + repo_slug
+            + "because it does not contain any merges."
         )
         return []
     merges = merges[merges["sampled for testing"]]
@@ -149,7 +156,13 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     logger.info("merge_tester: Started collecting merges to test")
     merge_tester_arguments = []
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("Collecting merges...", total=len(repos))
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
@@ -161,11 +174,19 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     random.shuffle(merge_tester_arguments)
 
     logger.info("merge_tester: Finished collecting merges to test")
-    logger.info("merge_tester: Number of merges to test:", len(merge_tester_arguments))
+    logger.info(
+        f"merge_tester: Number of merges to test: {len(merge_tester_arguments)}"
+    )
 
     logger.info("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        with Progress() as progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
             task = progress.add_task(
                 "Testing merges...", total=len(merge_tester_arguments)
             )
@@ -178,14 +199,20 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     logger.info("merge_tester: Started Writing Output")
 
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task(
             "Constructing output...", total=len(merge_tester_arguments)
         )
-        for merge_results in merge_tester_arguments:
-            task.update(advance=1)
+        for idx, merge_results in enumerate(merge_tester_arguments):
+            progress.update(task, advance=1)
             repo_slug = merge_results[0]
-            repo_result[repo_slug].append(merge_results)
+            repo_result[repo_slug].append(merge_tester_results[idx])
 
     n_total_merges = 0
     for repo_slug in repo_result:
@@ -197,9 +224,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         n_total_merges += len(df)
 
     logger.success(
-        "merge_tester: Number of newly tested merges:", len(merge_tester_arguments)
+        "merge_tester: Number of newly tested merges: "
+        + str(len(merge_tester_arguments))
     )
-    logger.success("merge_tester: Total number of tested merges:", n_total_merges)
+    logger.success(
+        "merge_tester: Total number of tested merges: " + str(n_total_merges)
+    )
     logger.success("merge_tester: Finished Writing Output")
     logger.success("merge_tester: Done")
 

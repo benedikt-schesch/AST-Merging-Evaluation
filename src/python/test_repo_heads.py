@@ -23,7 +23,14 @@ from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
 import pandas as pd
 from loguru import logger
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 logger.add(sys.stderr, colorize=True, backtrace=True, diagnose=True)
 logger.add("run.log", colorize=False, backtrace=True, diagnose=True)
@@ -117,7 +124,13 @@ if __name__ == "__main__":
     logger.info("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        with Progress() as progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
             task = progress.add_task(
                 "Testing repos...", total=len(head_passes_tests_arguments)
             )
@@ -133,10 +146,10 @@ if __name__ == "__main__":
     logger.info("test_repo_heads: Finished Building Output")
 
     logger.success(
-        "test_repo_heads: Number of repos whose head passes tests:",
-        len(filtered_df),
-        "out of",
-        len(df),
+        "test_repo_heads: Number of repos whose head passes tests:"
+        + str(len(filtered_df))
+        + "out of"
+        + str(len(df))
     )
     if len(filtered_df) == 0:
         raise Exception("No repos found whose head passes tests")

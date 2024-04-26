@@ -7,7 +7,14 @@ import shutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 # pylint: disable=too-many-locals
@@ -23,7 +30,13 @@ def merge_replay(
     """
     print("merge_replay: Started ", repo_slug, merge_data["left"], merge_data["right"])
     result_df = pd.DataFrame()
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task(
             f"Replaying {repo_slug} {merge_data['left']} {merge_data['right']}",
             total=len(MERGE_TOOL),

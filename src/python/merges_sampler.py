@@ -18,7 +18,14 @@ import argparse
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -34,10 +41,16 @@ if __name__ == "__main__":
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     missing_merges_repos = 0
     total_valid_repos = 0
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("Sampling merges...", total=len(repos))
         for _, repository_data in repos.iterrows():
-            task.update(advance=1)
+            progress.update(task, advance=1)
             repo_slug = repository_data["repository"]
             merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
             output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))

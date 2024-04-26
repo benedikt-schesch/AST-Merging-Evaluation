@@ -1,4 +1,0 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-1,refs/heads/master,87dc5978e11081df8a7d82eca04400809239778d,6b8dc1e1d293f56518fa5a21fc5b67a552098667,16940c19c41eab7c18433f383605124efe1075aa,,False,False,False
-2,refs/heads/master,6b8dc1e1d293f56518fa5a21fc5b67a552098667,72e982d26119cb223728f2dbe6a7283c792658c1,e175b5c89218a4bfa7a50e7233260eaa3571f0b7,,False,False,False
-4,refs/remotes/origin/nativeemoji,728d4a776c5139cca4a4c3f6c4f302351241a324,6ae2cc2935038865fb64b5959e8f75041ffc32e3,8711d8080dd31c96eff987302441578e844c45c5,,False,False,False

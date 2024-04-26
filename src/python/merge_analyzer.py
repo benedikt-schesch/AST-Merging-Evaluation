@@ -25,7 +25,14 @@ from test_repo_heads import num_processes
 from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 from loguru import logger
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def is_test_passed(test_state: str) -> bool:
@@ -278,7 +285,13 @@ if __name__ == "__main__":
 
     logger.info("merge_analyzer: Constructing Inputs")
     merger_arguments = []
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("[green]Constructing Input...", total=len(repos))
         for _, repository_data in repos.iterrows():
             repo_slug = repository_data["repository"]
@@ -291,11 +304,17 @@ if __name__ == "__main__":
 
     logger.info("merge_analyzer: Finished Constructing Inputs")
     # New merges are merges whose analysis does not appear in the output folder.
-    logger.info("merge_analyzer: Number of new merges:", len(merger_arguments))
+    logger.info("merge_analyzer: Number of new merges: " + str(len(merger_arguments)))
 
     logger.info("merge_analyzer: Started Merging")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        with Progress() as progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
             task = progress.add_task("[green]Analyzing...", total=len(merger_arguments))
             merger_results = []
             for result in pool.imap(merge_analyzer, merger_arguments):
@@ -308,10 +327,17 @@ if __name__ == "__main__":
     n_new_analyzed = 0
     n_new_candidates_to_test = 0
     n_new_passing_parents = 0
-    with Progress() as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
         task = progress.add_task("[green]Processing...", total=len(merger_arguments))
-        for idx, results_data in enumerate(merger_arguments):
-            repo_slug = results_data[0]
+        for idx, merge_data in enumerate(merger_arguments):
+            repo_slug = merge_data[0]
+            results_data = merger_results[idx]
             repo_result[repo_slug].append(merger_results[idx])
             n_new_analyzed += 1
             if "test merge" in results_data and results_data["test merge"]:
@@ -368,21 +394,21 @@ if __name__ == "__main__":
 
     # Print summaries
     logger.success(
-        "merge_analyzer: Total number of merges that have been compared:",
-        n_total_analyzed,
+        "merge_analyzer: Total number of merges that have been compared: "
+        + str(n_total_analyzed)
     )
     logger.success(
-        "merge_analyzer: Total number of merges that have been compared and have a java diff:",
-        n_java_contains_diff,
+        "merge_analyzer: Total number of merges that have been compared and have a java diff: "
+        + str(n_java_contains_diff)
     )
     logger.success(
         "merge_analyzer: Total number of merges that have been "
-        "compared and are testable (Has Java Diff + Parents Pass)",
-        n_candidates_to_test,
+        "compared and are testable (Has Java Diff + Parents Pass) "
+        + str(n_candidates_to_test)
     )
     logger.success(
-        "merge_analyzer: Total number of merges that are testable which have been sampled",
-        n_sampled_for_testing,
+        "merge_analyzer: Total number of merges that are testable which have been sampled "
+        + str(n_sampled_for_testing)
     )
     logger.info("merge_analyzer: Finished Constructing Output")
 
