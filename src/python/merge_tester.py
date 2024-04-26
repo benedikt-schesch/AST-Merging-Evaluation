@@ -15,7 +15,6 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-from functools import partialmethod
 from typing import Tuple
 import random
 import time
@@ -23,12 +22,9 @@ import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
-from tqdm import tqdm
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS
 from loguru import logger
-
-if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
+from rich.progress import Progress
 
 
 def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
@@ -153,9 +149,12 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     logger.info("merge_tester: Started collecting merges to test")
     merge_tester_arguments = []
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merge_tester_arguments += build_arguments(args, repo_slug)
+    with Progress() as progress:
+        task = progress.add_task("Collecting merges...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            progress.update(task, advance=1)
+            repo_slug = repository_data["repository"]
+            merge_tester_arguments += build_arguments(args, repo_slug)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
@@ -166,21 +165,27 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     logger.info("merge_tester: Started Testing")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        merge_tester_results = list(
-            tqdm(
-                pool.imap(merge_tester, merge_tester_arguments),
-                total=len(merge_tester_arguments),
+        with Progress() as progress:
+            task = progress.add_task(
+                "Testing merges...", total=len(merge_tester_arguments)
             )
-        )
+            merge_tester_results = []
+            for result in pool.imap(merge_tester, merge_tester_arguments):
+                merge_tester_results.append(result)
+                progress.update(task, advance=1)
     logger.info("merge_tester: Finished Testing")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
     logger.info("merge_tester: Started Writing Output")
 
-    for i in tqdm(range(len(merge_tester_arguments))):
-        repo_slug = merge_tester_arguments[i][0]
-        merge_results = merge_tester_results[i]
-        repo_result[repo_slug].append(merge_results)
+    with Progress() as progress:
+        task = progress.add_task(
+            "Constructing output...", total=len(merge_tester_arguments)
+        )
+        for merge_results in merge_tester_arguments:
+            task.update(advance=1)
+            repo_slug = merge_results[0]
+            repo_result[repo_slug].append(merge_results)
 
     n_total_merges = 0
     for repo_slug in repo_result:

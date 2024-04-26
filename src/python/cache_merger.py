@@ -8,7 +8,7 @@ import json
 from argparse import ArgumentParser
 from pathlib import Path
 from typing import List
-from tqdm import tqdm
+from rich.progress import Progress
 
 
 def merge_json_data(paths: List[Path], output_path: Path):
@@ -33,21 +33,24 @@ def copy_file(source: Path, destination: Path):
 
 def process_directory(directory: Path, other_caches: List[Path], output_cache: Path):
     """Process a directory recursively"""
-    for path in tqdm(directory.rglob("*"), desc=f"Processing {directory}"):
-        if path.is_file():
-            # Skip the first part of the path (the cache name)
-            relative_path = Path(*path.parts[1:])
-            corresponding_paths = [
-                cache / relative_path
-                for cache in other_caches
-                if (cache / relative_path).exists()
-            ]
-            if path.suffix == ".json":
-                merge_json_data(
-                    [path] + corresponding_paths, output_cache / relative_path
-                )
-            elif path.suffix != ".lock":
-                copy_file(path, output_cache / relative_path)
+    with Progress() as progress:
+        task = progress.add_task("Traversing dir...", total=directory.stat().st_size)
+        for path in directory.rglob("*"):
+            if path.is_file():
+                # Skip the first part of the path (the cache name)
+                relative_path = Path(*path.parts[1:])
+                corresponding_paths = [
+                    cache / relative_path
+                    for cache in other_caches
+                    if (cache / relative_path).exists()
+                ]
+                if path.suffix == ".json":
+                    merge_json_data(
+                        [path] + corresponding_paths, output_cache / relative_path
+                    )
+                elif path.suffix != ".lock":
+                    copy_file(path, output_cache / relative_path)
+            progress.update(task, advance=path.stat().st_size)
 
 
 def merge_caches(caches: List[Path], output_cache: Path):

@@ -15,21 +15,17 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-from functools import partialmethod
 from typing import Tuple, Dict, Union, Any
 import random
 import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
-from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache
 from test_repo_heads import num_processes
 from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
 from loguru import logger
-
-if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
+from rich.progress import Progress
 
 
 def is_test_passed(test_state: str) -> bool:
@@ -282,9 +278,12 @@ if __name__ == "__main__":
 
     logger.info("merge_analyzer: Constructing Inputs")
     merger_arguments = []
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merger_arguments += build_merge_analyzer_arguments(args, repo_slug)
+    with Progress() as progress:
+        task = progress.add_task("[green]Constructing Input...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            repo_slug = repository_data["repository"]
+            merger_arguments += build_merge_analyzer_arguments(args, repo_slug)
+            progress.update(task, advance=1)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
@@ -296,11 +295,12 @@ if __name__ == "__main__":
 
     logger.info("merge_analyzer: Started Merging")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        merger_results = list(
-            tqdm(
-                pool.imap(merge_analyzer, merger_arguments), total=len(merger_arguments)
-            )
-        )
+        with Progress() as progress:
+            task = progress.add_task("[green]Analyzing...", total=len(merger_arguments))
+            merger_results = []
+            for result in pool.imap(merge_analyzer, merger_arguments):
+                merger_results.append(result)
+                progress.update(task, advance=1)
     logger.info("merge_analyzer: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
@@ -308,16 +308,17 @@ if __name__ == "__main__":
     n_new_analyzed = 0
     n_new_candidates_to_test = 0
     n_new_passing_parents = 0
-    for i in tqdm(range(len(merger_arguments))):
-        repo_slug = merger_arguments[i][0]
-        results_data = merger_results[i]
-
-        repo_result[repo_slug].append(merger_results[i])
-        n_new_analyzed += 1
-        if "test merge" in results_data and results_data["test merge"]:
-            n_new_candidates_to_test += 1
-        if "parents pass" in results_data and results_data["parents pass"]:
-            n_new_passing_parents += 1
+    with Progress() as progress:
+        task = progress.add_task("[green]Processing...", total=len(merger_arguments))
+        for idx, results_data in enumerate(merger_arguments):
+            repo_slug = results_data[0]
+            repo_result[repo_slug].append(merger_results[idx])
+            n_new_analyzed += 1
+            if "test merge" in results_data and results_data["test merge"]:
+                n_new_candidates_to_test += 1
+            if "parents pass" in results_data and results_data["parents pass"]:
+                n_new_passing_parents += 1
+            progress.update(task, advance=1)
 
     # Initialize counters
     n_total_analyzed = 0

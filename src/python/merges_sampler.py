@@ -17,8 +17,8 @@ import os
 import argparse
 from pathlib import Path
 import pandas as pd
-from tqdm import tqdm
 import numpy as np
+from rich.progress import Progress
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -34,40 +34,43 @@ if __name__ == "__main__":
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     missing_merges_repos = 0
     total_valid_repos = 0
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
-        output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
-        if not merge_list_file.exists():
-            print(
-                f"merges_sampler: {repo_slug} does not have a list of merges."
-                f"Missing file: {merge_list_file}"
-            )
-            missing_merges_repos += 1
-            continue
+    with Progress() as progress:
+        task = progress.add_task("Sampling merges...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            task.update(advance=1)
+            repo_slug = repository_data["repository"]
+            merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
+            output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
+            if not merge_list_file.exists():
+                print(
+                    f"merges_sampler: {repo_slug} does not have a list of merges."
+                    f"Missing file: {merge_list_file}"
+                )
+                missing_merges_repos += 1
+                continue
 
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-        except pd.errors.EmptyDataError:
-            print(
-                f"merges_sampler: Skipping {repo_slug}"
-                " because it does not contain any merges."
-            )
-            pd.DataFrame(columns=["idx"]).to_csv(output_file)
-            continue
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+            except pd.errors.EmptyDataError:
+                print(
+                    f"merges_sampler: Skipping {repo_slug}"
+                    " because it does not contain any merges."
+                )
+                pd.DataFrame(columns=["idx"]).to_csv(output_file)
+                continue
 
-        merges["notes"].replace(np.nan, "", inplace=True)
-        if args.only_trivial_merges:
-            merges = merges[merges["notes"].str.contains("a parent is the base")]
-        elif not args.include_trivial_merges:
-            merges = merges[~merges["notes"].str.contains("a parent is the base")]
-        total_valid_repos += 1
-        n_merges = min(merges.shape[0], args.n_merges)
-        sample = merges.sample(frac=1.0, random_state=42)
-        sample = sample[:n_merges]
-        sample.sort_index(inplace=True)
-        sample.to_csv(output_file)
+            merges["notes"].replace(np.nan, "", inplace=True)
+            if args.only_trivial_merges:
+                merges = merges[merges["notes"].str.contains("a parent is the base")]
+            elif not args.include_trivial_merges:
+                merges = merges[~merges["notes"].str.contains("a parent is the base")]
+            total_valid_repos += 1
+            n_merges = min(merges.shape[0], args.n_merges)
+            sample = merges.sample(frac=1.0, random_state=42)
+            sample = sample[:n_merges]
+            sample.sort_index(inplace=True)
+            sample.to_csv(output_file)
 
     print(
         f"merges_sampler: {missing_merges_repos} files were "

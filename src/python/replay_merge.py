@@ -4,10 +4,10 @@
 import argparse
 from pathlib import Path
 import shutil
-from tqdm import tqdm
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
+from rich.progress import Progress
 
 
 # pylint: disable=too-many-locals
@@ -23,96 +23,62 @@ def merge_replay(
     """
     print("merge_replay: Started ", repo_slug, merge_data["left"], merge_data["right"])
     result_df = pd.DataFrame()
-    for merge_tool in tqdm(MERGE_TOOL):
-        workdir = Path(
-            repo_slug
-            + f"/merge-replay-{merge_tool.name}-"
-            + f'{merge_data["left"]}-{merge_data["right"]}'
+    with Progress() as progress:
+        task = progress.add_task(
+            f"Replaying {repo_slug} {merge_data['left']} {merge_data['right']}",
+            total=len(MERGE_TOOL),
         )
+        for merge_tool in MERGE_TOOL:
+            progress.update(task, advance=1)
+            workdir = Path(
+                repo_slug
+                + f"/merge-replay-{merge_tool.name}-"
+                + f'{merge_data["left"]}-{merge_data["right"]}'
+            )
 
-        if (WORKDIR_DIRECTORY / workdir).exists():
-            # Ask the user if they want to delete the workdir
-            print(f"workdir {workdir} already exists. Do you want to delete it? (y/n)")
-            answer = input()
-            if answer == "y":
-                shutil.rmtree(WORKDIR_DIRECTORY / workdir)
-            else:
-                print(f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping")
-                continue
+            if (WORKDIR_DIRECTORY / workdir).exists():
+                # Ask the user if they want to delete the workdir
+                print(
+                    f"workdir {workdir} already exists. Do you want to delete it? (y/n)"
+                )
+                answer = input()
+                if answer == "y":
+                    shutil.rmtree(WORKDIR_DIRECTORY / workdir)
+                else:
+                    print(
+                        f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping"
+                    )
+                    continue
 
-        repo = Repository(
-            repo_slug,
-            cache_directory=Path("no_cache/"),
-            workdir_id=workdir,
-            delete_workdir=False,
-        )
-        (
-            merge_result,
-            merge_fingerprint,
-            left_fingerprint,
-            right_fingerprint,
-            explanation,
-            _,
-        ) = repo.merge(
-            tool=merge_tool,
-            left_commit=merge_data["left"],
-            right_commit=merge_data["right"],
-            timeout=TIMEOUT_TESTING_MERGE,
-            use_cache=False,
-        )
-        assert (
-            merge_data[f"{merge_tool.name}_merge_fingerprint"] == merge_fingerprint
-        ), (
-            f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
-            + f" {merge_fingerprint} but found {merge_data[f'{merge_tool.name}_merge_fingerprint']}"
-        )
-        root_dir = Path("replay_logs")
-        log_path = root_dir / Path(
-            "merges/"
-            + repo_slug
-            + "-"
-            + merge_data["left"]
-            + "-"
-            + merge_data["right"]
-            + "-"
-            + merge_tool.name
-            + ".log"
-        )
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(log_path, "w", encoding="utf-8") as f:
-            f.write(explanation)
-        result_df.loc[
-            merge_tool.name,
-            ["merge result", "merge log path", "repo path"],
-        ] = [
-            merge_result.name,
-            log_path,
-            repo.local_repo_path,
-        ]
-
-        if merge_result not in (
-            MERGE_STATE.Merge_failed,
-            MERGE_STATE.Git_checkout_failed,
-            TEST_STATE.Git_checkout_failed,
-        ) and (
-            left_fingerprint != merge_data["left_tree_fingerprint"]
-            or right_fingerprint != merge_data["right_tree_fingerprint"]
-        ):
-            raise Exception(
-                "merge_replay: The merge tester is not testing the correct merge.",
-                merge_result,
+            repo = Repository(
                 repo_slug,
-                merge_data["left"],
-                merge_data["right"],
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+            )
+            (
+                merge_result,
+                merge_fingerprint,
                 left_fingerprint,
                 right_fingerprint,
-                merge_data["left_tree_fingerprint"],
-                merge_data["right_tree_fingerprint"],
-                merge_data,
+                explanation,
+                _,
+            ) = repo.merge(
+                tool=merge_tool,
+                left_commit=merge_data["left"],
+                right_commit=merge_data["right"],
+                timeout=TIMEOUT_TESTING_MERGE,
+                use_cache=False,
             )
-        if merge_result == MERGE_STATE.Merge_success:
+            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
+                raise Exception(
+                    f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
+                    + f" {merge_fingerprint} but found "
+                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+                )
+            root_dir = Path("replay_logs")
             log_path = root_dir / Path(
-                "merge_tests/"
+                "merges/"
                 + repo_slug
                 + "-"
                 + merge_data["left"]
@@ -122,21 +88,65 @@ def merge_replay(
                 + merge_tool.name
                 + ".log"
             )
-            if test_merge:
-                test_result, _ = repo.test(
-                    timeout=TIMEOUT_TESTING_MERGE,
-                    n_tests=N_TESTS,
-                    use_cache=False,
-                    test_log_file=log_path,
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(log_path, "w", encoding="utf-8") as f:
+                f.write(explanation)
+            result_df.loc[
+                merge_tool.name,
+                ["merge result", "merge log path", "repo path"],
+            ] = [
+                merge_result.name,
+                log_path,
+                repo.local_repo_path,
+            ]
+
+            if merge_result not in (
+                MERGE_STATE.Merge_failed,
+                MERGE_STATE.Git_checkout_failed,
+                TEST_STATE.Git_checkout_failed,
+            ) and (
+                left_fingerprint != merge_data["left_tree_fingerprint"]
+                or right_fingerprint != merge_data["right_tree_fingerprint"]
+            ):
+                raise Exception(
+                    "merge_replay: The merge tester is not testing the correct merge.",
+                    merge_result,
+                    repo_slug,
+                    merge_data["left"],
+                    merge_data["right"],
+                    left_fingerprint,
+                    right_fingerprint,
+                    merge_data["left_tree_fingerprint"],
+                    merge_data["right_tree_fingerprint"],
+                    merge_data,
                 )
-                result_df.loc[
-                    merge_tool.name,
-                    ["merge test result", "merge test log path"],
-                ] = [
-                    test_result.name,
-                    log_path,
-                ]
-                assert merge_data[f"{merge_tool.name}"] == test_result.name
+            if merge_result == MERGE_STATE.Merge_success:
+                log_path = root_dir / Path(
+                    "merge_tests/"
+                    + repo_slug
+                    + "-"
+                    + merge_data["left"]
+                    + "-"
+                    + merge_data["right"]
+                    + "-"
+                    + merge_tool.name
+                    + ".log"
+                )
+                if test_merge:
+                    test_result, _ = repo.test(
+                        timeout=TIMEOUT_TESTING_MERGE,
+                        n_tests=N_TESTS,
+                        use_cache=False,
+                        test_log_file=log_path,
+                    )
+                    result_df.loc[
+                        merge_tool.name,
+                        ["merge test result", "merge test log path"],
+                    ] = [
+                        test_result.name,
+                        log_path,
+                    ]
+                    assert merge_data[f"{merge_tool.name}"] == test_result.name
     return result_df
 
 

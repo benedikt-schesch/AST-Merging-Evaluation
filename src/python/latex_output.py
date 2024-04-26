@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 from prettytable import PrettyTable
-from tqdm import tqdm
+from rich.progress import Progress
 import seaborn as sns
 
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
@@ -152,36 +152,39 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     # Combine results file
     result_df_list = []
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merge_list_file = args.tested_merges_path / (repo_slug + ".csv")
-        if not merge_list_file.exists():
-            raise Exception(
-                "latex_ouput.py:",
-                repo_slug,
-                "does not have a list of merges. Missing file: ",
-                merge_list_file,
-            )
+    with Progress() as progress:
+        task = progress.add_task("Processing repos...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            progress.update(task, advance=1)
+            repo_slug = repository_data["repository"]
+            merge_list_file = args.tested_merges_path / (repo_slug + ".csv")
+            if not merge_list_file.exists():
+                raise Exception(
+                    "latex_ouput.py:",
+                    repo_slug,
+                    "does not have a list of merges. Missing file: ",
+                    merge_list_file,
+                )
 
-        try:
-            merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
-            if len(merges) == 0:
-                raise pd.errors.EmptyDataError
-        except pd.errors.EmptyDataError:
-            logger.info(
-                "latex_output: Skipping"
-                + repo_slug
-                + "because it does not contain any merges."
-            )
-            continue
-        merges = merges[merges["parents pass"]]
-        if len(merges) > args.n_merges:
-            merges = merges.sample(args.n_merges, random_state=42)
-            merges.sort_index(inplace=True)
-        merges["repository"] = repo_slug
-        merges["repo-idx"] = repository_data.name
-        merges["merge-idx"] = merges.index
-        result_df_list.append(merges)
+            try:
+                merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
+                if len(merges) == 0:
+                    raise pd.errors.EmptyDataError
+            except pd.errors.EmptyDataError:
+                logger.info(
+                    "latex_output: Skipping"
+                    + repo_slug
+                    + "because it does not contain any merges."
+                )
+                continue
+            merges = merges[merges["parents pass"]]
+            if len(merges) > args.n_merges:
+                merges = merges.sample(args.n_merges, random_state=42)
+                merges.sort_index(inplace=True)
+            merges["repository"] = repo_slug
+            merges["repo-idx"] = repository_data.name
+            merges["merge-idx"] = merges.index
+            result_df_list.append(merges)
 
     result_df = pd.concat(result_df_list, ignore_index=True)
     result_df.sort_values(by=["repo-idx", "merge-idx"], inplace=True)
@@ -210,17 +213,20 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
         # Figure Heat map diffing
         result = np.zeros((len(merge_tools), len(merge_tools)))
-        for _, row in tqdm(result_df.iterrows(), total=len(result_df)):
-            for idx, merge_tool1 in enumerate(merge_tools):
-                for idx2, merge_tool2 in enumerate(merge_tools[(idx + 1) :]):
-                    if row[merge_tool1 + "_merge_fingerprint"] != row[
-                        merge_tool2 + "_merge_fingerprint"
-                    ] and (
-                        row[merge_tool1] in MERGE_CORRECT_NAMES
-                        or row[merge_tool2] in MERGE_CORRECT_NAMES
-                    ):
-                        result[idx][idx2 + idx + 1] += 1
-                        result[idx2 + idx + 1][idx] += 1
+        with Progress() as progress:
+            task = progress.add_task("Processing merges...", total=len(result_df))
+            for _, row in result_df.iterrows():
+                progress.update(task, advance=1)
+                for idx, merge_tool1 in enumerate(merge_tools):
+                    for idx2, merge_tool2 in enumerate(merge_tools[(idx + 1) :]):
+                        if row[merge_tool1 + "_merge_fingerprint"] != row[
+                            merge_tool2 + "_merge_fingerprint"
+                        ] and (
+                            row[merge_tool1] in MERGE_CORRECT_NAMES
+                            or row[merge_tool2] in MERGE_CORRECT_NAMES
+                        ):
+                            result[idx][idx2 + idx + 1] += 1
+                            result[idx2 + idx + 1][idx] += 1
         _, ax = plt.subplots(figsize=(8, 6))
         result = np.tril(result)
         latex_merge_tool = [
@@ -462,14 +468,19 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         Tool & Mean & Median & Max \\\\
         \\hline\n"""
                 timed_df = []
-                for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-                    repo_slug = repository_data["repository"]
-                    merges = pd.read_csv(
-                        Path(args.timed_merges_path) / f"{repo_slug}.csv",
-                        header=0,
+                with Progress() as progress:
+                    task = progress.add_task(
+                        "Processing timed merges...", total=len(repos)
                     )
-                    timed_df.append(merges)
-                timed_df = pd.concat(timed_df, ignore_index=True)
+                    for _, repository_data in repos.iterrows():
+                        progress.update(task, advance=1)
+                        repo_slug = repository_data["repository"]
+                        merges = pd.read_csv(
+                            Path(args.timed_merges_path) / f"{repo_slug}.csv",
+                            header=0,
+                        )
+                        timed_df.append(merges)
+                    timed_df = pd.concat(timed_df, ignore_index=True)
 
                 for merge_tool in merge_tools:
                     table3 += f"    {merge_tool_latex_name(merge_tool):32}"
@@ -509,23 +520,30 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_non_trivial_merges = 0
     count_non_trivial_repos = 0
 
-    for _, repository_data in tqdm(
-        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
-    ):
-        merge_list_file = args.merges_path / (repository_data["repository"] + ".csv")
-        if not os.path.isfile(merge_list_file):
-            continue
-        try:
-            df = pd.read_csv(merge_list_file, index_col=0)
-        except pd.errors.EmptyDataError:
-            continue
-        # Ensure notes column is treated as string
-        df["notes"] = df["notes"].astype(str)
-        count_merges_initial += len(df)
-        # Use na=False to handle NaN values properly
-        non_trivial_mask = df["notes"].str.contains("a parent is the base", na=False)
-        count_non_trivial_merges += non_trivial_mask.sum()
-        count_non_trivial_repos += non_trivial_mask.any()
+    with Progress() as progress:
+        task = progress.add_task(
+            "Processing merges...", total=len(repos_head_passes_df)
+        )
+        for _, repository_data in repos_head_passes_df.iterrows():
+            progress.update(task, advance=1)
+            merge_list_file = args.merges_path / (
+                repository_data["repository"] + ".csv"
+            )
+            if not os.path.isfile(merge_list_file):
+                continue
+            try:
+                df = pd.read_csv(merge_list_file, index_col=0)
+            except pd.errors.EmptyDataError:
+                continue
+            # Ensure notes column is treated as string
+            df["notes"] = df["notes"].astype(str)
+            count_merges_initial += len(df)
+            # Use na=False to handle NaN values properly
+            non_trivial_mask = df["notes"].str.contains(
+                "a parent is the base", na=False
+            )
+            count_non_trivial_merges += non_trivial_mask.sum()
+            count_non_trivial_repos += non_trivial_mask.any()
 
     # Assuming output and latex_def functions are defined elsewhere in your code
     output += latex_def(run_name_camel_case + "MergesInitial", count_merges_initial)
@@ -541,26 +559,29 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     count_repos_merges_java_diff = 0
     count_merges_diff_and_parents_pass = 0
     count_repos_merges_diff_and_parents_pass = 0
-    for _, repository_data in tqdm(
-        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
-    ):
-        merge_list_file = args.analyzed_merges_path / (
-            repository_data["repository"] + ".csv"
+    with Progress() as progress:
+        task = progress.add_task(
+            "Processing merges...", total=len(repos_head_passes_df)
         )
-        if not os.path.isfile(merge_list_file):
-            continue
-        try:
-            df = pd.read_csv(merge_list_file, index_col=0)
-        except pd.errors.EmptyDataError:
-            continue
-        if len(df) == 0:
-            continue
-        count_merges_java_diff += df["diff contains java file"].dropna().sum()
-        count_merges_diff_and_parents_pass += df["test merge"].dropna().sum()
-        if df["diff contains java file"].dropna().sum() > 0:
-            count_repos_merges_java_diff += 1
-        if df["test merge"].dropna().sum() > 0:
-            count_repos_merges_diff_and_parents_pass += 1
+        for _, repository_data in repos_head_passes_df.iterrows():
+            progress.update(task, advance=1)
+            merge_list_file = args.analyzed_merges_path / (
+                repository_data["repository"] + ".csv"
+            )
+            if not os.path.isfile(merge_list_file):
+                continue
+            try:
+                df = pd.read_csv(merge_list_file, index_col=0)
+            except pd.errors.EmptyDataError:
+                continue
+            if len(df) == 0:
+                continue
+            count_merges_java_diff += df["diff contains java file"].dropna().sum()
+            count_merges_diff_and_parents_pass += df["test merge"].dropna().sum()
+            if df["diff contains java file"].dropna().sum() > 0:
+                count_repos_merges_java_diff += 1
+            if df["test merge"].dropna().sum() > 0:
+                count_repos_merges_diff_and_parents_pass += 1
 
     output += latex_def(run_name_camel_case + "MergesJavaDiff", count_merges_java_diff)
     output += latex_def(
@@ -578,28 +599,31 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
     repos = 0
     count = 0
     full = 0
-    for _, repository_data in tqdm(
-        repos_head_passes_df.iterrows(), total=len(repos_head_passes_df)
-    ):
-        merge_list_file = args.tested_merges_path / (
-            repository_data["repository"] + ".csv"
+    with Progress() as progress:
+        task = progress.add_task(
+            "Processing merges...", total=len(repos_head_passes_df)
         )
-        if not os.path.isfile(merge_list_file):
-            continue
-        try:
-            merges = pd.read_csv(merge_list_file, index_col=0)
-        except pd.errors.EmptyDataError:
-            continue
-        if len(merges) > 0:
-            repos += 1
-        # Makre sure each element has "parents pass" set to True
-        for _, merge in merges.iterrows():
-            assert merge["parents pass"]
-            assert merge["test merge"]
-            assert merge["diff contains java file"]
-        count += len(merges)
-        if len(merges) == args.n_merges:
-            full += 1
+        for _, repository_data in repos_head_passes_df.iterrows():
+            progress.update(task, advance=1)
+            merge_list_file = args.tested_merges_path / (
+                repository_data["repository"] + ".csv"
+            )
+            if not os.path.isfile(merge_list_file):
+                continue
+            try:
+                merges = pd.read_csv(merge_list_file, index_col=0)
+            except pd.errors.EmptyDataError:
+                continue
+            if len(merges) > 0:
+                repos += 1
+            # Makre sure each element has "parents pass" set to True
+            for _, merge in merges.iterrows():
+                assert merge["parents pass"]
+                assert merge["test merge"]
+                assert merge["diff contains java file"]
+            count += len(merges)
+            if len(merges) == args.n_merges:
+                full += 1
 
     output += latex_def(run_name_camel_case + "ReposSampled", repos)
     output += latex_def(run_name_camel_case + "MergesSampled", count)

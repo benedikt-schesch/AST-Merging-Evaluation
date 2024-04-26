@@ -13,12 +13,12 @@ but with the test results.
 
 import argparse
 from pathlib import Path
-from tqdm import tqdm
 import pandas as pd
 from repo import Repository, MERGE_TOOL
 from cache_utils import lookup_in_cache, set_in_cache
 import numpy as np
 from loguru import logger
+from rich.progress import Progress
 
 
 def main():  # pylint: disable=too-many-locals,too-many-statements
@@ -40,70 +40,79 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
 
     logger.info("merge_timer: Started collecting merges to test")
 
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merges = pd.read_csv(args.merges / f"{repo_slug}.csv")
-        merges = merges.sample(frac=1, random_state=42)
-        if len(merges) > args.n_sampled_timing:
-            merges = merges.iloc[: args.n_sampled_timing]
+    with Progress() as progress:
+        task = progress.add_task("Collecting merges...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            progress.update(task, advance=1)
+            repo_slug = repository_data["repository"]
+            merges = pd.read_csv(args.merges / f"{repo_slug}.csv")
+            merges = merges.sample(frac=1, random_state=42)
+            if len(merges) > args.n_sampled_timing:
+                merges = merges.iloc[: args.n_sampled_timing]
+            task2 = progress.add_task(f"Testing {repo_slug}...", total=len(merges))
+            for idx, merge_data in merges.iterrows():
+                task2.update(advance=1)
+                for merge_tool in MERGE_TOOL:
+                    left_hash, right_hash = (
+                        merge_data["left"],
+                        merge_data["right"],
+                    )
+                    cache_key = f"{left_hash}-{right_hash}-{merge_tool.name}"
+                    cache_entry = lookup_in_cache(
+                        cache_key, repo_slug, cache_dir, set_run=True
+                    )
 
-        for idx, merge_data in tqdm(merges.iterrows(), total=len(merges)):
-            for merge_tool in MERGE_TOOL:
-                left_hash, right_hash = (
-                    merge_data["left"],
-                    merge_data["right"],
-                )
-                cache_key = f"{left_hash}-{right_hash}-{merge_tool.name}"
-                cache_entry = lookup_in_cache(
-                    cache_key, repo_slug, cache_dir, set_run=True
-                )
+                    if cache_entry is not None:
+                        merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                            cache_entry["run_time"]  # type: ignore
+                        )
+                    else:
+                        logger.info(
+                            f"merge_timer: Running {merge_tool.name} "
+                            f"on {repo_slug} {left_hash} {right_hash}"
+                        )
+                        run_times = []
+                        for _ in range(args.n_timings):
+                            repo = Repository(
+                                repo_slug,
+                                workdir_id=repo_slug
+                                + f"/merge-tester-{merge_tool.name}-"
+                                + f"{left_hash}-{right_hash}",
+                            )
+                            (
+                                _,
+                                _,
+                                _,
+                                _,
+                                _,
+                                run_time,
+                            ) = repo.merge(
+                                tool=merge_tool,
+                                left_commit=left_hash,
+                                right_commit=right_hash,
+                                timeout=0,
+                                use_cache=False,
+                            )
+                            del repo
+                            run_times.append(run_time)
+                        cache_entry = {
+                            "run_time": run_times,
+                        }
+                        set_in_cache(
+                            cache_key,
+                            cache_entry,
+                            repo_slug,
+                            cache_dir,
+                            acquire_lock=False,
+                        )
 
-                if cache_entry is not None:
                     merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
                         cache_entry["run_time"]  # type: ignore
                     )
-                else:
-                    logger.info(
-                        f"merge_timer: Running {merge_tool.name} "
-                        f"on {repo_slug} {left_hash} {right_hash}"
-                    )
-                    run_times = []
-                    for _ in range(args.n_timings):
-                        repo = Repository(
-                            repo_slug,
-                            workdir_id=repo_slug
-                            + f"/merge-tester-{merge_tool.name}-"
-                            + f"{left_hash}-{right_hash}",
-                        )
-                        (
-                            _,
-                            _,
-                            _,
-                            _,
-                            _,
-                            run_time,
-                        ) = repo.merge(
-                            tool=merge_tool,
-                            left_commit=left_hash,
-                            right_commit=right_hash,
-                            timeout=0,
-                            use_cache=False,
-                        )
-                        del repo
-                        run_times.append(run_time)
-                    cache_entry = {
-                        "run_time": run_times,
-                    }
-                    set_in_cache(
-                        cache_key, cache_entry, repo_slug, cache_dir, acquire_lock=False
-                    )
-
-                merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
-                    cache_entry["run_time"]  # type: ignore
-                )
-        out_file = args.output_dir / f"{repo_slug}.csv"
-        out_file.parent.mkdir(parents=True, exist_ok=True)
-        merges.to_csv(out_file, index=False)
+            task2.completed = True
+            out_file = args.output_dir / f"{repo_slug}.csv"
+            out_file.parent.mkdir(parents=True, exist_ok=True)
+            merges.to_csv(out_file, index=False)
     logger.success("merge_timer: Done")
 
 
