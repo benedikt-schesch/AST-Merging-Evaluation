@@ -639,9 +639,9 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             Union[str,None]: The tree fingerprint of the result.
         """
         result, _ = self.checkout(commit)
-        assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         if not result:
             return TEST_STATE.Git_checkout_failed, 0, None
+        assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         sha = self.compute_tree_fingerprint()
         result, test_coverage = self.test(timeout, n_tests)
         return result, test_coverage, sha

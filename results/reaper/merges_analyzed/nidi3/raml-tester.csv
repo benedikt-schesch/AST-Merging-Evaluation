@@ -1,0 +1,6 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
+4,refs/heads/master,79cb62cf59c28cc0d82b7d05d7185b3dd2131b4e,2d885fac9e1d9643a31c94f544a3299440cce903,708d5d1ac3cf023034408baf733717df49df96d4,,False,False,,,,,,False
+6,refs/heads/master,ced80d46dd584e3761c23f966b4142029be672c9,071fd80bb670f9f407ba98855ab5b872e2fe25d6,c8b1a7ce84890d84a0d43795292316e3a517c5eb,,False,False,,,,,,False
+7,refs/heads/master,a1cc8d2cc124d01a55ea947955e6b1b9e5f5db3c,7fc391599758c27b3020d9fb1d0978f03569002f,db34ce96b6eeae173afc8dc6b37ad30dadfd9979,,False,False,,,,,,False
+12,refs/remotes/origin/raml-parser-2,cc5016503ced9274c0b92ff91db66d0e9e4ad5ca,4a10a7bbb752a4fac185980b88d58ae839a53b3c,5fdc3ea072696b189eaea0c1f16a0c8d7731544a,,False,True,db4be7973d9c65443ef91a12cc5c88cd9c505b94ab6409c24d820dcca6800dfd,Tests_failed,30c0484403bb43c70f04ebfa6b8d7680565deb402d3ba15207848c07b30202e5,Tests_failed,False,False
+13,refs/remotes/origin/raml-parser-2,7680be51650a4fcfa76be3f6ca1a80fa791dc29d,9892d083d2ac71d284da8807796fb0a10f80a8a7,e019a01098a5d180602ab18b978d68602c827adf,,False,False,,,,,,False
