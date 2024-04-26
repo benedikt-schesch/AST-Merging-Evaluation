@@ -253,13 +253,13 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results/combined/result.csv",
+        default="results/small/result.csv",
     )
     parser.add_argument(
         "--idx",
         help="Index of the merge to replay",
         type=str,
-        default="1-7",
+        default="0-1",
     )
     parser.add_argument(
         "-test",
