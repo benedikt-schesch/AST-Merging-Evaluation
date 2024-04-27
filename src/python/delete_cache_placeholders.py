@@ -44,5 +44,5 @@ if __name__ == "__main__":
                 n_deleted += 1
 
         with open(file, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4)
+            json.dump(data, f, indent=4, sort_keys=True)
     print(f"Deleted {n_deleted} placeholders")

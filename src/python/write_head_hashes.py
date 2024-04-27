@@ -20,15 +20,18 @@ import sys
 import argparse
 from pathlib import Path
 import multiprocessing
-from functools import partialmethod
-from tqdm import tqdm
 import pandas as pd
 from repo import Repository
 from test_repo_heads import num_processes
 from loguru import logger
-
-if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def get_latest_hash(args):
@@ -40,10 +43,10 @@ def get_latest_hash(args):
     """
     _, row = args
     repo_slug: str = row["repository"]
-    logger.info("write_head_hashes:", repo_slug, ": Started get_latest_hash")
+    logger.info("write_head_hashes: " + repo_slug + " : Started get_latest_hash")
 
     try:
-        logger.info("write_head_hashes:", repo_slug, ": Cloning repo")
+        logger.info("write_head_hashes " + repo_slug + " : Cloning repo")
         repo = Repository(
             repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
@@ -52,14 +55,14 @@ def get_latest_hash(args):
         row["head hash"] = repo.get_head_hash()
     except Exception as e:
         logger.info(
-            "write_head_hashes:",
-            repo_slug,
-            ": Finished get_latest_hash, result = exception, cause:",
-            e,
+            "write_head_hashes: "
+            + repo_slug
+            + " : Finished get_latest_hash, result = exception, cause: "
+            + e
         )
         return None
 
-    logger.info("write_head_hashes:", repo_slug, ": Finished get_latest_hash")
+    logger.info("write_head_hashes: " + repo_slug + " : Finished get_latest_hash")
     return row
 
 
@@ -78,17 +81,22 @@ if __name__ == "__main__":
         sys.exit(0)
 
     df = pd.read_csv(arguments.repos_csv, index_col="idx")
+    df["repository"] = df["repository"].str.lower()
 
     logger.info("write_head_hashes: Started cloning repos and collecting head hashes")
-
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        get_latest_hash_result = list(
-            tqdm(
-                pool.imap(get_latest_hash, df.iterrows()),
-                total=len(df),
-            )
-        )
-
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
+            task = progress.add_task("Collecting hashes...", total=len(df))
+            get_latest_hash_result = []
+            for i in pool.imap_unordered(get_latest_hash, df.iterrows()):
+                get_latest_hash_result.append(i)
+                progress.update(task, advance=1)
     logger.info("write_head_hashes: Finished cloning repos and collecting head hashes")
 
     result_df = pd.DataFrame([i for i in get_latest_hash_result if i is not None])

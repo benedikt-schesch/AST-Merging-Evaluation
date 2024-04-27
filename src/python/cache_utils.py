@@ -8,7 +8,6 @@ There will be 4 caches in total which are stored on disk after running the run.s
 2) cache/test_cache: A cache that maps a sha256 to test results.
 3) cache/merge_results: A cache that maps a merge to the result
         of the merge (sha256, run time, and MERGE_STATE).
-4) cache/merge_diffs: A cache that stores the diff between merge tools.
 """
 
 from pathlib import Path
@@ -170,7 +169,7 @@ def write_cache(
     """
     cache_path = get_cache_path(repo_slug, cache_directory)
     cache_path.parent.mkdir(parents=True, exist_ok=True)
-    output = json.dumps(cache, indent=4)
+    output = json.dumps(cache, indent=4, sort_keys=True)
     with open(cache_path, "w", encoding="utf-8") as f:
         f.write(output)
         f.flush()
