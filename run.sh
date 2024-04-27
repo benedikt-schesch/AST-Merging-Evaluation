@@ -53,10 +53,10 @@ while [ $# -gt 0 ]; do
 done
 
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
 export PATH
 
-GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
-export GIT_CONFIG_GLOBAL
+./src/scripts/merge_tools/merging/gradlew shadowJar
 
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
