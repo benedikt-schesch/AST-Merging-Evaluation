@@ -1,6 +1,0 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-1,refs/heads/4.3.x,d4d5dff0bed9e35b51bf72b55af45bac4f62a568,e589fd85e653961e32d57e5deff0320a115d0080,dcd0f0701e9e2692fc080d65088f01ec4f8311ef,,False,False,False
-2,refs/heads/4.3.x,b9f6762eefcae6334ca04401d51481b4f7a29e0d,ab308bd0d9ec03c7e3e1d965c49f938deb6cf36d,33dcc399757df825d145900ad45ae5d8daf9a66b,,False,False,False
-3,refs/heads/4.3.x,5f0f3cff2aa9572572fd7cba3e01a966340834c7,44e6f6081c07a9ad62398094b072b70a077647e3,0873835e2d5220c2747818f3e69c5cecdd324429,,False,False,False
-4,refs/heads/4.3.x,e6a102b7fec0c5ff3b4cdc70c319b1f1c89f39bb,ec0dc1056719c99f8c3b28d6c8d91eb680c5e10f,0b5c53579172ccd48f9a64a9c9cf6b5a969af834,,False,False,False
-5,refs/remotes/origin/4.2.x,e77604768430cc745dbca6aa9d1851dcc566978d,54457a072645f8b3157ed62ef403de1b41084786,7f666a8a13c2b7e356cc6c640222c0a9b9f571a7,,False,False,False

@@ -1,5 +1,0 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-2,refs/heads/master,d3e47c23997b86bac026c9ec60fb4cd2182c4678,19b029bc4da9be997d46b355436ba12b238eedcf,ebdb90e93197b8aff391bc357776101579ed5d7b,,False,False,,,,,,False
-3,refs/heads/master,64deac27a74f3edd62d5790abdabbb064c54e808,eb0fdb7f6471df9409a6bf135b2da42386486ddc,1cea20623d09e3466ed7f75d6add08f2caf2b811,,False,False,,,,,,False
-4,refs/heads/master,edc38f43e4cc7d97c803c5544c65e49fbb9eba21,99ccd0cf866a93fbae61b3a98738fbb242508c96,47d86243dd086670bd7ce4c154ba5e21d099f149,,False,False,,,,,,False
-10,refs/remotes/origin/pull/19,1435679f1f269c64bd9b23a6552edc3c35b28db1,972fe255f92ac41caba829c6cf0cbfa3f6d0a00f,7c7256255733e0bfaea0b76b27696ce3aa8627ef,,False,True,661cb81a4a14a6c5dbbf5323c126f0573459ab8bf37fe67f05890f4111332b71,Tests_failed,0f766cac66da0dde514ad141b3ddbfc5bb1927527a177c85ff3a077e7b40124d,Tests_failed,False,False

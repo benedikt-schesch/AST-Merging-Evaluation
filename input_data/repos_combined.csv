@@ -27407,7 +27407,6 @@ idx,repository
 27405,aasm/aasm
 27406,aaugustin/websockets
 27407,ab77/netflix-proxy
-27408,abel533/mapper
 27409,abel533/mybatis-spring-boot
 27410,aben1188/awesome-wepy
 27411,abhat222/data-science--cheat-sheet
@@ -27461,7 +27460,6 @@ idx,repository
 27459,activerecord-hackery/ransack
 27460,activerecord-hackery/squeel
 27461,activestate/code
-27462,activiti/activiti
 27463,activitywatch/activitywatch
 27464,actix/actix-web
 27465,actix/actix
@@ -27480,7 +27478,6 @@ idx,repository
 27478,adamcooke/staytus
 27479,adamdbradley/foresight.js
 27480,adametry/gulp-eslint
-27481,adamfisk/littleproxy
 27482,adamhalasz/uniqid
 27483,adamschwartz/log
 27484,adamschwartz/magic-of-css
@@ -27598,7 +27595,6 @@ idx,repository
 27597,airblade/vim-gitgutter
 27598,airblader/i3
 27599,airbnb/aerosolve
-27600,airbnb/airmapview
 27602,airbnb/aloestackview
 27603,airbnb/babel-plugin-dynamic-import-node
 27604,airbnb/css
@@ -27665,7 +27661,6 @@ idx,repository
 27665,akveo/react-native-ui-kitten
 27666,akxcv/vuera
 27667,alacritty/alacritty
-27668,alamkanak/android-week-view
 27669,alamofire/alamofire
 27670,alamofire/alamofireimage
 27671,alangpierce/sucrase
@@ -27739,8 +27734,6 @@ idx,repository
 27739,alexreardon/tiny-warning
 27740,alexreisner/geocoder
 27741,alextatiyants/pev
-27742,alexvasilkov/foldablelayout
-27743,alexvasilkov/gestureviews
 27744,alexwolfe/buttons
 27745,alfajango/jquery-dynatable
 27746,alfred1984/interesting-python
@@ -27798,7 +27791,6 @@ idx,repository
 27803,alibaba/tangram-android
 27804,alibaba/tangram-ios
 27805,alibaba/tengine
-27806,alibaba/tprofiler
 27807,alibaba/transmittable-thread-local
 27808,alibaba/tsar
 27809,alibaba/ultraviewpager
@@ -27856,7 +27848,6 @@ idx,repository
 27861,alskipp/asvaluetrackingslider
 27862,alsotang/node-lessons
 27863,altair-viz/altair
-27864,altbeacon/android-beacon-library
 27865,altercation/solarized
 27866,altercation/vim-colors-solarized
 27867,altryne/extensionizr
@@ -27893,7 +27884,6 @@ idx,repository
 27898,amitshekhariitbhu/fast-android-networking
 27899,amitshekhariitbhu/rxjava2-android-samples
 27900,amix/vimrc
-27901,amlcurran/showcaseview
 27902,ammar/regexp_parser
 27903,amoffat/bootstrap-application-wizard
 27904,amoffat/sh
@@ -27909,7 +27899,6 @@ idx,repository
 27914,amsul/pickadate.js
 27915,amueller/introduction_to_ml_with_python
 27916,amueller/word_cloud
-27917,amulyakhare/textdrawable
 27918,amusi/ai-job-notes
 27919,amusi/awesome-object-detection
 27920,amusi/daily-paper-computer-vision
@@ -27932,7 +27921,6 @@ idx,repository
 27937,andersao/l5-repository
 27938,andersbakken/rtags
 27939,andersbll/neural_artistic_style
-27940,anderweb/discreteseekbar
 27941,andialbrecht/sqlparse
 27942,andkret/cookbook
 27943,andkulikov/transitions-everywhere
@@ -27992,7 +27980,6 @@ idx,repository
 27997,android/topeka
 27998,android/uamp
 27999,androidannotations/androidannotations
-28000,androidbootstrap/android-bootstrap
 28001,androidknife/rxbus
 28002,androidquery/androidquery
 28003,andsens/homeshick
@@ -28093,7 +28080,6 @@ idx,repository
 28098,antbranch/awesome-github
 28099,antennapod/antennapod
 28100,anthonycalandra/modern-cpp-features
-28101,anthonycr/lightning-browser
 28102,anthonynsimon/bild
 28103,anthonyshort/deku
 28104,antiboredom/videogrep
@@ -28228,7 +28214,6 @@ idx,repository
 28257,apis-guru/openapi-directory
 28258,apitrace/apitrace
 28259,aploium/zmirror
-28260,apmem/android-flowlayout
 28261,apneadiving/google-maps-for-rails
 28262,apocas/dockerode
 28263,apolloauto/apollo
@@ -28617,7 +28602,6 @@ idx,repository
 28651,axi0mx/ipwndfu
 28652,axios/axios
 28653,axkibe/lsyncd
-28654,axonframework/axonframework
 28655,aylei/interview
 28656,aymericdamien/tensorflow-examples
 28657,aymericdamien/topdeeplearning
@@ -28860,7 +28844,6 @@ idx,repository
 28896,bestony/logoly
 28897,bestswifter/mysamplecode
 28898,betaflight/betaflight
-28899,bethrobson/head-first-design-patterns
 28900,bettercap/bettercap
 28901,bettererrors/better_errors
 28902,bevacqua/dragula
@@ -29055,7 +29038,6 @@ idx,repository
 29093,bolt/bolt
 29094,boltdb/bolt
 29095,boltpkg/bolt
-29096,boltsframework/bolts-android
 29097,boltsframework/bolts-objc
 29098,bonnyfone/vectalign
 29099,bonsaiden/javascript-garden
@@ -29142,14 +29124,12 @@ idx,repository
 29180,brennerm/pytricks
 29181,brentozarultd/sql-server-first-responder-kit
 29182,bretfisher/udemy-docker-mastery
-29183,brettwooldridge/hikaricp
 29184,brianc/node-packet-reader
 29185,brianc/node-pg-pool
 29186,brianc/node-pg-types
 29187,brianc/node-postgres
 29188,brianchirls/seriously.js
 29189,brianegan/flutter_architecture_samples
-29190,brianfrankcooper/ycsb
 29191,briangonzalez/jquery.adaptive-backgrounds.js
 29192,brianleroux/lawnchair
 29193,brianloveswords/base64url
@@ -29161,7 +29141,6 @@ idx,repository
 29199,brianway/java-learning
 29200,brianway/springmvc-mybatis-learning
 29201,brianway/webporter
-29202,brianwernick/exomedia
 29203,briatte/awesome-network-analysis
 29204,brickspert/blog
 29205,bridgedotnet/bridge
@@ -29249,7 +29228,6 @@ idx,repository
 29287,buginux/wechatredenvelop
 29288,buildbot/buildbot
 29289,builderbook/builderbook
-29290,bukkit/bukkit
 29291,bulletmark/libinput-gestures
 29292,bulletphysics/bullet3
 29293,bulmatemplates/bulma-templates
@@ -29320,7 +29298,6 @@ idx,repository
 29361,cakephp/phinx
 29363,calabash/calabash-ios
 29364,caldis/mos
-29365,calebfenton/simplify
 29366,calebmadrigal/trackerjacker
 29367,caliburn-micro/caliburn.micro
 29368,caligatio/jssha
@@ -29368,7 +29345,6 @@ idx,repository
 29410,caolan/jam
 29411,caolan/nodeunit
 29412,caouecs/laravel-lang
-29413,caoxinyu/redisclient
 29414,capistrano/capistrano
 29415,capnproto/capnproto
 29416,cappuccino/cappuccino
@@ -29419,7 +29395,6 @@ idx,repository
 29461,casperjs/casperjs
 29462,cassetterocks/react-infinite-scroller
 29463,cassidoo/getting-a-gig
-29464,castorflex/smoothprogressbar
 29465,catalinmiron/react-native-dribbble-app
 29466,catalyst-team/catalyst
 29467,catamphetamine/libphonenumber-js
@@ -29572,7 +29547,6 @@ idx,repository
 29618,chenyuntc/simple-faster-rcnn-pytorch
 29619,chenz24/vue-blu
 29620,cherow/cherow
-29621,chewiebug/gcviewer
 29622,chiahsien/chtcollectionviewwaterfalllayout
 29623,chicagoboss/chicagoboss
 29624,chicoxyzzy/node-releases
@@ -29624,7 +29598,6 @@ idx,repository
 29670,chrisboulton/php-resque
 29671,chrisdiana/cms.js
 29672,chrisdickinson/raf
-29673,chrisjenx/calligraphy
 29674,chrisjohnsen/tmux-macosx-pasteboard
 29675,chrisk44/hijacker
 29676,chriskacerguis/codeigniter-restserver
@@ -29884,7 +29857,6 @@ idx,repository
 29935,colszowka/simplecov-html
 29936,colszowka/simplecov
 29937,colyseus/colyseus
-29938,comcast/freeflow
 29939,comeforu2012/truth
 29940,comfy/comfortable-mexican-sofa
 29941,commaai/neo
@@ -30024,10 +29996,8 @@ idx,repository
 30077,craftcms/cms
 30078,craftpip/jquery-confirm
 30079,craftyjs/crafty
-30080,crate/crate
 30081,crawlab-team/artipub
 30082,crawlab-team/crawlab
-30083,crawlscript/webcollector
 30084,crazy-max/windowsspyblocker
 30085,crazyandcoder/citypicker
 30086,crazycodeboy/githubpopular
@@ -30205,11 +30175,9 @@ idx,repository
 30258,cydrobolt/polr
 30259,cyfdecyf/cow
 30260,cymchad/baserecyclerviewadapterhelper
-30261,cymcsg/ultimateandroid
 30262,cymcsg/ultimaterecyclerview
 30263,cypherpunkarmory/userland
 30264,cypress-io/cypress
-30265,cyrilmottier/greendroid
 30266,cyrus-and/chrome-remote-interface
 30267,cyrus-and/gdb-dashboard
 30268,cysharp/magiconion
@@ -30254,13 +30222,6 @@ idx,repository
 30307,dahlbyk/posh-git
 30308,dahlia/awesome-sqlalchemy
 30309,dai-siki/vue-image-crop-upload
-30310,daimajia/androidimageslider
-30311,daimajia/androidswipelayout
-30312,daimajia/androidviewanimations
-30313,daimajia/androidviewhover
-30314,daimajia/animationeasingfunctions
-30315,daimajia/animetaste
-30316,daimajia/numberprogressbar
 30317,dakshshah96/awesome-tup-credits.tar
 30318,daliansky/hackintosh
 30319,daliansky/xiaomi-pro-hackintosh
@@ -30462,7 +30423,6 @@ idx,repository
 30517,ded/script.js
 30518,dedupeio/dedupe
 30519,deedy/deedy-resume
-30520,deemopen/zkui
 30521,deepchem/deepchem
 30522,deepfakes/faceswap
 30523,deepgraphlearning/literaturedl4graph
@@ -30650,7 +30610,6 @@ idx,repository
 30707,dinuscxj/loadingdrawable
 30708,dinuscxj/recyclerrefreshlayout
 30709,diogobernardino/williamchart
-30710,diolor/swipecards
 30711,dipakkr/a-to-z-resources-for-students
 30712,directus/directus
 30713,direnv/direnv
@@ -30666,7 +30625,6 @@ idx,repository
 30723,disposaboy/gosublime
 30724,distribworks/dkron
 30725,districtdatalabs/yellowbrick
-30726,dius/java-faker
 30727,divan/expvarmon
 30728,divan/gotrace
 30729,divan/txqr
@@ -30695,7 +30653,6 @@ idx,repository
 30752,dkirwan/calendar-heatmap
 30753,dkozlov/awesome-knowledge-distillation
 30754,dlang/dmd
-30755,dlazaro66/qrcodereaderview
 30756,dleitee/strman
 30757,dlew/joda-time-android
 30758,dli/paint
@@ -30888,7 +30845,6 @@ idx,repository
 30947,dovamir/awesome-design-patterns
 30948,downshift-js/downshift
 30949,doxygen/doxygen
-30950,dozermapper/dozer
 30951,dperini/nwmatcher
 30952,dperini/nwsapi
 30953,dpgaspar/flask-appbuilder
@@ -31054,7 +31010,6 @@ idx,repository
 31117,eclipse/mosquitto
 31118,eclipse/openj9
 31120,eclipse/paho.mqtt.android
-31121,eclipsesource/j2v8
 31122,ecomfe/echarts-for-weixin
 31123,ecomfe/echarts-gl
 31124,ecomfe/fontmin
@@ -31207,7 +31162,6 @@ idx,repository
 31276,eloston/ungoogled-chromium
 31277,elrumordelaluz/csshake
 31278,elsewhencode/project-guidelines
-31279,eluleci/flatui
 31280,elunez/eladmin
 31281,elves/elvish
 31282,elvirbrk/notehighlight2016
@@ -31232,7 +31186,6 @@ idx,repository
 31301,emicklei/go-restful
 31302,emijrp/awesome-awesome
 31303,emilbaehr/automatic-app-landing-page
-31304,emilsjolander/stickylistheaders
 31305,emilwallner/screenshot-to-code
 31306,emirozer/fake2db
 31307,emirpasic/gods
@@ -31271,7 +31224,6 @@ idx,repository
 31340,enocom/gopher-reading-list
 31341,enormego/egotableviewpullrefresh
 31342,enquirer/enquirer
-31343,enterprisequalitycoding/fizzbuzzenterpriseedition
 31344,entilzha/pyfunctional
 31345,entotsu/pulltobounce
 31346,entotsu/tksubmittransition
@@ -31303,7 +31255,6 @@ idx,repository
 31372,equinusocio/material-theme
 31373,eragonruan/text-detection-ctpn
 31374,eranyanay/1m-go-websockets
-31375,ereza/customactivityoncrash
 31376,erguotou520/bye
 31377,erhwenkuo/deep-learning-with-keras-notebooks
 31378,erica/uidevice-extension
@@ -31372,7 +31323,6 @@ idx,repository
 31441,esnet/iperf
 31442,esnme/ultrajson
 31443,esotericsoftware/kryo
-31444,esotericsoftware/kryonet
 31445,esotericsoftware/spine-runtimes
 31446,esoxjem/movieguide
 31447,esp8266/arduino
@@ -31420,7 +31370,6 @@ idx,repository
 31490,ethicalml/awesome-production-machine-learning
 31491,etianen/django-reversion
 31492,etrepat/baum
-31493,etsy/androidstaggeredgrid
 31494,etsy/deployinator
 31495,etsy/logster
 31496,etsy/skyline
@@ -31703,10 +31652,6 @@ idx,repository
 31782,fastai/courses
 31783,fastai/fastai
 31784,fastai/numerical-linear-algebra
-31785,fasterxml/jackson-annotations
-31786,fasterxml/jackson-core
-31787,fasterxml/jackson-databind
-31788,fasterxml/jackson
 31789,fastify/fast-json-stringify
 31790,fastify/fastify
 31791,fastlane-old/deliver
@@ -31759,7 +31704,6 @@ idx,repository
 31838,feathersjs/feathers
 31839,featurelabs/featuretools
 31840,fecshop/yii2_fecshop
-31841,federicoiosue/omni-notes
 31842,feedbin/feedbin
 31843,feedjira/feedjira
 31844,feelschaotic/androidknowledgesystem
@@ -31918,7 +31862,6 @@ idx,repository
 31998,flatlogic/awesome-bootstrap-checkbox
 31999,flatpak/flatpak
 32000,flatpickr/flatpickr
-32002,flavienlaurent/notboringactionbar
 32003,flavioarfaria/kenburnsview
 32004,flavorjones/chromedriver-helper
 32005,flavorjones/loofah
@@ -32111,7 +32054,6 @@ idx,repository
 32194,francoischalifour/medium-zoom
 32195,francoispqt/gojay
 32196,frank-lam/fullstack-tutorial
-32197,frank-zhu/pullzoomview
 32198,frankfang/best-chinese-front-end-blogs
 32200,franmontiel/persistentcookiejar
 32201,fransbouma/massive
@@ -32139,7 +32081,6 @@ idx,repository
 32223,freedomofpress/securedrop
 32224,freelander/android_data
 32225,freerdp/freerdp
-32226,freetymekiyan/leetcode-sol-res
 32227,freeyourgadget/gadgetbridge
 32228,fregante/iphone-inline-video
 32229,fregante/object-fit-images
@@ -32162,7 +32103,6 @@ idx,repository
 32246,froala/design-blocks
 32247,froala/wysiwyg-editor
 32248,frogermcs/androiddevmetrics
-32249,frogermcs/instamaterial
 32250,frogermcs/likeanimation
 32251,froggey/mezzano
 32252,frohoff/ysoserial
@@ -32217,7 +32157,6 @@ idx,repository
 32302,futurice/ios-good-practices
 32303,futurice/pepperoni-app-kit
 32304,fuyaode/react-native-app-intro
-32305,fuzion24/justtrustme
 32306,fuzzdb-project/fuzzdb
 32307,fuzzyautocomplete/fuzzyautocompleteplugin
 32308,fuzzysecurity/powershell-suite
@@ -32236,7 +32175,6 @@ idx,repository
 32322,gabrielbull/react-desktop
 32323,gabrielecirulli/2048
 32324,gabrielelana/awesome-terminal-fonts
-32326,gabrielemariotti/recyclerviewitemanimators
 32327,gabrielfalcao/httpretty
 32328,gabrielrcouto/php-gui
 32329,gaearon/babel-plugin-react-transform
@@ -32354,7 +32292,6 @@ idx,repository
 32442,geocoder-php/geocoder
 32443,geohot/qira
 32444,geokit/geokit
-32445,geometer/fbreaderj
 32446,geopandas/geopandas
 32447,geopy/geopy
 32448,georgeseif/semantic-segmentation-suite
@@ -32940,7 +32877,6 @@ idx,repository
 33050,gravityblast/web-app-theme
 33051,gravitylabs/goose
 33052,graykode/nlp-tutorial
-33053,graylog2/graylog2-server
 33054,graypegg/chromatism
 33055,grbl/grbl
 33056,gre/gl-react-native-v2
@@ -32951,8 +32887,6 @@ idx,repository
 33061,greena13/react-hotkeys
 33062,greenkeeperio/greenkeeper
 33063,greenplum-db/gpdb
-33064,greenrobot/eventbus
-33065,greenrobot/greendao
 33066,greenshot/greenshot
 33067,greensock/gsap
 33068,greenwolf/social_mapper
@@ -33185,7 +33119,6 @@ idx,repository
 33298,halostatue/diff-lcs
 33299,haltu/muuri
 33300,hamcrest/hamcrest-php
-33301,hamcrest/javahamcrest
 33302,haml/haml
 33303,hammerjs/hammer.js
 33304,hammerspoon/hammerspoon
@@ -33204,7 +33137,6 @@ idx,repository
 33317,hangfireio/hangfire
 33318,hangtwenty/dive-into-machine-learning
 33319,hangyan/docker-resources
-33320,hankcs/hanlp
 33321,hanks-zyh/htextview
 33322,hannahmitt/homemirror
 33323,hannob/snallygaster
@@ -33284,7 +33216,6 @@ idx,repository
 33398,hcysunyang/vue-design
 33399,hdodenhof/circleimageview
 33400,hdoria/xcode-themes
-33401,hdrhistogram/hdrhistogram
 33402,headjs/headjs
 33403,healthchecks/healthchecks
 33404,heapsio/heaps
@@ -33419,7 +33350,6 @@ idx,repository
 33535,hmaverickadams/beginner-network-pentesting
 33536,hmbsbige/shadowsocksr-windows
 33537,hmemcpy/milewski-ctfp-pdf
-33538,hmkcode/android
 33539,hmmlearn/hmmlearn
 33540,hnes/libaco
 33541,hoanhan101/algo
@@ -33751,8 +33681,6 @@ idx,repository
 33868,igglybuff/awesome-piracy
 33869,ighibli/ios-devicesupport
 33870,ignacemaes/materialskin
-33871,igniterealtime/openfire
-33872,igniterealtime/smack
 33873,igorbarinov/awesome-data-engineering
 33874,igorescobar/jquery-mask-plugin
 33875,igorprado/react-notification-system
@@ -33768,7 +33696,6 @@ idx,repository
 33885,iina/iina
 33886,iissnan/hexo-theme-next
 33887,ikarus23/mifareclassictool
-33888,ikew0ng/swipebacklayout
 33889,ikostrikov/pytorch-a2c-ppo-acktr-gail
 33890,ilanyu/reverseproxy
 33891,ildoonet/tf-pose-estimation
@@ -33979,7 +33906,6 @@ idx,repository
 34098,iovisor/bcc
 34099,iovisor/bpftrace
 34100,ipader/swiftguide
-34101,ipaulpro/afilechooser
 34102,ipaulpro/android-itemtouchhelper-demo
 34103,iperov/deepfacelab
 34104,ipfs/awesome-ipfs
@@ -34076,7 +34002,6 @@ idx,repository
 34196,j4mie/idiorm
 34197,j7mbo/twitter-api-php
 34198,jabez128/stream-handbook
-34199,jabref/jabref
 34200,jack-cherish/machine-learning
 34201,jack-cherish/python-spider
 34202,jack-lee-hiter/algorithmsbypython
@@ -34091,7 +34016,6 @@ idx,repository
 34211,jackmoore/autosize
 34212,jackmoore/colorbox
 34213,jackocnr/intl-tel-input
-34214,jackpal/android-terminal-emulator
 34215,jacksgong/jkeyboardpanelswitch
 34216,jacksonliam/mjpg-streamer
 34217,jacksontian/eventproxy
@@ -34129,23 +34053,13 @@ idx,repository
 34250,jakesgordon/javascript-state-machine
 34251,jakevdp/pythondatasciencehandbook
 34252,jakevdp/whirlwindtourofpython
-34253,jakewharton/actionbarsherlock
-34254,jakewharton/butterknife
-34255,jakewharton/disklrucache
-34256,jakewharton/hugo
 34257,jakewharton/kotterknife
-34258,jakewharton/nineoldandroids
 34259,jakewharton/pidcat
 34260,jakewharton/retrofit2-kotlin-coroutines-adapter
 34261,jakewharton/rxbinding
 34262,jakewharton/rxrelay
-34263,jakewharton/scalpel
 34264,jakewharton/sdksearch
-34265,jakewharton/telecine
 34266,jakewharton/threetenabp
-34267,jakewharton/timber
-34268,jakewharton/u2020
-34269,jakewharton/viewpagerindicator
 34270,jakiestfu/behave.js
 34271,jakiestfu/himawari.js
 34272,jakiestfu/medium.js
@@ -34193,7 +34107,6 @@ idx,repository
 34314,janishar/placeholderview
 34315,jankallman/epplus
 34316,janko/vim-test
-34317,jankotek/mapdb
 34318,janl/mustache.js
 34319,janl/node-jsonpointer
 34320,janlelis/unicode-display_width
@@ -34255,7 +34168,6 @@ idx,repository
 34376,jaungiers/lstm-neural-network-for-time-series-prediction
 34377,java-decompiler/jd-gui
 34378,java-native-access/jna
-34379,java8/java8inaction
 34381,javagrowing/jgrowing
 34382,javallone/regexper-static
 34383,javallone/regexper
@@ -34319,7 +34231,6 @@ idx,repository
 34444,jcjohnson/neural-style
 34445,jcjohnson/pytorch-examples
 34446,jcjohnson/torch-rnn
-34448,jctools/jctools
 34449,jcubic/jquery.terminal
 34450,jd-alexander/likebutton
 34451,jd/tenacity
@@ -34405,7 +34316,6 @@ idx,repository
 34532,jeremyevans/sequel
 34533,jeremykenedy/laravel-auth
 34534,jeremyliao/liveeventbus
-34535,jeremylong/dependencycheck
 34536,jeremyskinner/fluentvalidation
 34538,jergason/recursive-readdir
 34539,jermic/android-crack-tool
@@ -34436,14 +34346,11 @@ idx,repository
 34565,jest-community/eslint-plugin-jest
 34566,jest-community/jest-watch-typeahead
 34567,jest-community/vscode-jest
-34568,jesusfreke/smali
 34569,jetbrains/create-react-kotlin-app
 34570,jetbrains/exposed
-34571,jetbrains/ideavim
 34572,jetbrains/intellij-community
 34573,jetbrains/jetbrainsmono
 34574,jetbrains/kotlin-native
-34575,jetbrains/kotlin
 34576,jetbrains/kotlinconf-app
 34577,jetbrains/ring-ui
 34578,jetpacapp/deepbeliefsdk
@@ -34453,7 +34360,6 @@ idx,repository
 34582,jezen/is-thirteen
 34583,jfcoz/postgresqltuner
 34584,jfeinstein10/jazzyviewpager
-34585,jfeinstein10/slidingmenu
 34586,jfelchner/ruby-progressbar
 34587,jfhbrook/node-ecstatic
 34589,jflinter/dwifft
@@ -34464,7 +34370,6 @@ idx,repository
 34594,jgable/gulp-cache
 34595,jgamblin/mirai-source-code
 34598,jgilfelt/chuck
-34599,jgilfelt/systembartint
 34600,jglovier/gifs
 34601,jgm/gitit
 34602,jgm/pandoc
@@ -34570,7 +34475,6 @@ idx,repository
 34705,jmespath/jmespath.js
 34706,jmettraux/rufus-scheduler
 34707,jmoiron/sqlx
-34708,jmonkeyengine/jmonkeyengine
 34709,jmoon018/pacvim
 34710,jmpews/dobby
 34711,jmpressjs/jmpress.js
@@ -34582,9 +34486,6 @@ idx,repository
 34718,jnunemaker/flipper
 34719,jnunemaker/httparty
 34720,jnv/lists
-34721,joanzapata/android-iconify
-34722,joanzapata/android-pdfview
-34723,joanzapata/base-adapter-helper
 34724,joaotavora/yasnippet
 34725,joaoventura/full-speed-python
 34726,joaquimserafim/base64-url
@@ -34601,7 +34502,6 @@ idx,repository
 34737,jobbole/awesome-programming-books
 34738,jobbole/awesome-python-cn
 34739,joblib/joblib
-34740,jodaorg/joda-time
 34741,joedog/siege
 34742,joeferner/node-bplist-creator
 34743,joeferner/node-bplist-parser
@@ -34648,7 +34548,6 @@ idx,repository
 34788,johnpapa/angular-styleguide
 34789,johnpapa/lite-server
 34790,johnpapa/ng-demos
-34791,johnpersano/supertoasts
 34792,johnpolacek/scrollorama
 34793,johnpolacek/superscrollorama
 34794,johnrengelman/shadow
@@ -34744,9 +34643,6 @@ idx,repository
 34884,jonsuh/hamburgers
 34885,jonthornton/jquery-timepicker
 34886,joomla/joomla-cms
-34887,jooq/jool
-34888,jooq/jooq
-34889,jooq/joor
 34890,joowani/binarytree
 34891,jopohl/urh
 34892,jordansinger/hook
@@ -34939,7 +34835,6 @@ idx,repository
 35080,jspahrsummers/libextobjc
 35081,jsplumb/jsplumb
 35082,jspm/jspm-cli
-35083,jsqlparser/jsqlparser
 35084,jssor/slider
 35085,jstedfast/mailkit
 35086,jstransformers/jstransformer
@@ -35434,7 +35329,6 @@ idx,repository
 35584,kong/mockbin
 35585,kong/unirest-java
 35586,konifar/android-material-design-icon-generator-plugin
-35587,konloch/bytecode-viewer
 35588,konmik/nucleus
 35589,konpa/devicon
 35590,konvajs/konva
@@ -35458,7 +35352,6 @@ idx,repository
 35608,kotlin/kotlinx.serialization
 35609,kotlinby/awesome-kotlin
 35610,kotlintest/kotlintest
-35611,koush/androidasync
 35613,koute/memory-profiler
 35614,koute/stdweb
 35615,kovidgoyal/calibre
@@ -35509,7 +35402,6 @@ idx,repository
 35660,ksimka/go-is-not-good
 35661,ksky521/nodeppt
 35662,ksm/swiftinflux
-35663,ksoichiro/android-observablescrollview
 35664,kstenerud/ios-universal-framework
 35665,kstenerud/kscrash
 35666,ksuther/ksimagenamed-xcode
@@ -35568,7 +35460,6 @@ idx,repository
 35719,kyle-kyle/baidudl
 35720,kyleamathews/typefaces
 35721,kyleamathews/typography.js
-35722,kyleduo/switchbutton
 35723,kyleduo/tinypng4mac
 35724,kylef/swiftenv
 35725,kylefox/jquery-modal
@@ -35757,7 +35648,6 @@ idx,repository
 35911,lenve/vblog
 35912,lenve/vhr
 35913,leo-g/data-science-wiki
-35914,leolin310148/shortcutbadger
 35915,leon-ai/leon
 35916,leonar15/tup-checklist.tar
 35917,leonardomso/33-js-concepts
@@ -35941,8 +35831,6 @@ idx,repository
 36098,listen1/listen1_desktop
 36099,litaio/lita
 36100,liteos/liteos
-36101,litepalframework/litepal
-36102,litesuits/android-common
 36103,litl/rauth
 36104,litten/hexo-theme-yilia
 36105,littlecodersh/itchat
@@ -35954,7 +35842,6 @@ idx,repository
 36111,liuchengxu/blockchain-tutorial
 36112,liuchengxu/space-vim
 36113,liuchuo/pat
-36114,liuguangqiang/swipeback
 36115,liuhuanyong/qasystemonmedicalkg
 36116,liujingxing/okhttp-rxhttp
 36117,liuliu/ccv
@@ -36006,7 +35893,6 @@ idx,repository
 36164,llvm-mirror/llvm
 36165,llvm/llvm-project
 36166,lmacken/pyrasite
-36167,lmax-exchange/disruptor
 36168,lmcinnes/umap
 36169,lmenezes/cerebro
 36170,lmenezes/elasticsearch-kopf
@@ -36057,7 +35943,6 @@ idx,repository
 36216,loomio/loomio
 36217,loopeer/cardstackview
 36218,loopj/jquery-tokeninput
-36219,lopspower/circularimageview
 36220,lordnoteworthy/al-khaser
 36221,loregr/lgbutton
 36222,lorenwest/node-config
@@ -36109,7 +35994,6 @@ idx,repository
 36269,luckybilly/cc
 36270,luckyframework/lucky
 36271,luckyjayce/largeimage
-36272,luckyjayce/viewpagerindicator
 36273,luggit/react-native-config
 36274,luhuisicnu/the-flask-mega-tutorial-zh
 36275,luin/ioredis
@@ -36193,13 +36077,11 @@ idx,repository
 36353,lzfse/lzfse
 36354,lzxb/vue2-demo
 36355,lzyzsd/awesome-rxjava
-36356,lzyzsd/circleprogress
 36357,lzyzsd/jsbridge
 36358,m1entus/mzformsheetcontroller
 36359,m3db/m3
 36360,m4ll0k/wascan
 36361,m66b/netguard
-36362,m66b/xprivacy
 36363,ma6174/vim
 36364,maatwebsite/laravel-excel
 36365,mabeijianxi/small-video-record
@@ -36307,7 +36189,6 @@ idx,repository
 36467,malcommac/swiftrichstring
 36468,malept/sumchecker
 36469,malihu/malihu-custom-scrollbar-plugin
-36470,malinskiy/superrecyclerview
 36471,malsup/blockui
 36472,malte-wessel/react-custom-scrollbars
 36473,malwaredllc/byob
@@ -36316,7 +36197,6 @@ idx,repository
 36476,mame/quine-relay
 36477,mamedev/mame
 36478,man-group/arctic
-36479,manabu-gt/expandabletextview
 36480,mancj/materialsearchbar
 36481,mancj/slideup-android
 36482,mandliya/algorithms_and_data_structures
@@ -36332,7 +36212,6 @@ idx,repository
 36492,mantle/mantle
 36493,manuelbieh/geolib
 36494,manuelkiessling/nodebeginner.org
-36495,manuelpeinado/fadingactionbar
 36496,manuelruder/artistic-videos
 36497,maoruibin/translateapp
 36498,mapbox/mapbox-gl-js
@@ -36532,7 +36411,6 @@ idx,repository
 36695,matze/mtheme
 36696,mauricecruz/chrome-devtools-zerodarkmatrix-theme
 36697,maurosoria/dirsearch
-36698,maurycyw/staggeredgridview
 36699,mautic/mautic
 36700,mavam/stat-cookbook
 36701,mavoweb/mavo
@@ -36583,7 +36461,6 @@ idx,repository
 36746,mcasimir/mobile-angular-ui
 36747,mccormicka/string-argv
 36748,mcharmas/android-parcelable-intellij-plugin
-36749,mcharmas/android-reactivelocation
 36750,mchristopher/pokemongo-desktopmap
 36751,mciastek/sal
 36752,mckinsey666/bullet
@@ -36777,11 +36654,9 @@ idx,repository
 36944,mickhansen/graphql-sequelize
 36945,mickhansen/retry-as-promised
 36946,micku7zu/vanilla-tilt.js
-36947,micode/notes
 36948,micode/xiaomi_kernel_opensource
 36949,micro/go-micro
 36950,micro/micro
-36951,microg/android_packages_apps_gmscore
 36952,microjs/microjs.com
 36953,micromata/awesome-javascript-learning
 36954,micromatch/anymatch
@@ -36954,11 +36829,8 @@ idx,repository
 37123,mikemcl/bignumber.js
 37124,mikemcl/decimal.js
 37125,mikenicholson/passport-jwt
-37126,mikeortiz/touchimageview
-37127,mikepenz/aboutlibraries
 37128,mikepenz/android-iconics
 37129,mikepenz/fastadapter
-37130,mikepenz/lollipopshowcase
 37131,mikepenz/materialdrawer
 37132,mikeric/rivets
 37133,mikespook/learning-go-zh-cn
@@ -36992,7 +36864,6 @@ idx,repository
 37161,mindorksopensource/from-java-to-kotlin
 37162,mindorksopensource/prdownloader
 37163,mindsdb/mindsdb
-37164,minecraftforge/minecraftforge
 37165,mineschan/mztimerlabel
 37166,minetest/minetest
 37167,ming1016/study
@@ -37224,7 +37095,6 @@ idx,repository
 37395,mosn/mosn
 37396,mosra/magnum
 37397,mossmann/hackrf
-37398,mostafagazar/customshapeimageview
 37399,mostlyadequate/mostly-adequate-guide
 37400,motdotla/dotenv-expand
 37401,motdotla/dotenv
@@ -37238,7 +37108,6 @@ idx,repository
 37409,mourner/suncalc
 37410,mouse0270/bootstrap-notify
 37411,mout/mout
-37412,movingblocks/terasology
 37413,moxiecode/plupload
 37414,moxystudio/node-cross-spawn
 37415,moya/moya
@@ -37503,7 +37372,6 @@ idx,repository
 37681,naturomics/capsnet-tensorflow
 37682,naudio/naudio
 37683,naugtur/xhr
-37684,navasmdc/materialdesignlibrary
 37685,navdeep-g/samplemod
 37686,navdeep-g/setup.py
 37687,naver/billboard.js
@@ -37548,7 +37416,6 @@ idx,repository
 37727,neo-project/neo
 37728,neo23x0/sigma
 37730,neoclide/coc.nvim
-37731,neokree/materialnavigationdrawer
 37732,neologd/mecab-ipadic-neologd
 37733,neomake/neomake
 37734,neomutt/neomutt
@@ -37578,30 +37445,24 @@ idx,repository
 37758,netease/pomelo
 37759,netflix-skunkworks/scumblr
 37760,netflix-skunkworks/stethoscope
-37761,netflix/archaius
 37762,netflix/asgard
 37763,netflix/atlas
 37764,netflix/bless
 37765,netflix/chaosmonkey
 37766,netflix/concurrency-limits
 37767,netflix/conductor
-37768,netflix/curator
 37769,netflix/dynomite
-37770,netflix/eureka
 37771,netflix/falcor
 37772,netflix/fast_jsonapi
 37773,netflix/flamescope
-37774,netflix/hystrix
 37775,netflix/metaflow
 37776,netflix/pollyjs
-37777,netflix/ribbon
 37778,netflix/security_monkey
 37779,netflix/simianarmy
 37780,netflix/titus
 37781,netflix/vector
 37782,netflix/vizceral
 37783,netflix/vmaf
-37784,netflix/zuul
 37785,netguru/responsedetective
 37786,netlify/netlify-cms
 37787,netlify/staticgen
@@ -37666,7 +37527,6 @@ idx,repository
 37847,ngrx/store
 37848,ngx-translate/core
 37849,ngxs/store
-37850,nhaarman/listviewanimations
 37851,nhaarman/mockito-kotlin
 37852,nhachicha/snappydb
 37853,nhibernate/nhibernate-core
@@ -37700,7 +37560,6 @@ idx,repository
 37881,nicolascarpi/jquery_jeditable
 37882,nicolaschengdev/wypopovercontroller
 37883,nicolasff/webdis
-37884,nicolasgramlich/andengine
 37885,nicolashery/mac-dev-setup
 37886,nicolashug/surprise
 37887,nicolaskruchten/pivottable
@@ -37763,8 +37622,6 @@ idx,repository
 37945,nlohmann/json
 37946,nlopes/slack
 37947,nlp-love/ml-nlp
-37948,nlpchina/ansj_seg
-37949,nlpchina/elasticsearch-sql
 37950,nlpir-team/nlpir
 37951,nlrx-wjc/learn-vue-source-code
 37952,nltk/nltk
@@ -37865,7 +37722,6 @@ idx,repository
 38047,nosir/obelisk.js
 38048,nosqlclient/nosqlclient
 38049,nostalgic-css/nes.css
-38050,nostra13/android-universal-image-loader
 38051,not-kennethreitz/envoy
 38052,not-kennethreitz/osx-gcc-installer
 38053,notable/notable
@@ -38089,7 +37945,6 @@ idx,repository
 38275,ogham/exa
 38276,ogrecave/ogre
 38277,ogrisel/parallel_ml_tutorial
-38278,oguzbilgener/circularfloatingactionmenu
 38279,oguzhaninan/stacer
 38280,oh-my-fish/oh-my-fish
 38281,ohanhi/elm-native-ui
@@ -38169,7 +38024,6 @@ idx,repository
 38356,onevcat/fengniao
 38357,onevcat/kingfisher
 38358,onevcat/vvdocumenter-xcode
-38359,ongakuer/circleindicator
 38360,onivim/oni
 38361,onivim/oni2
 38362,onlurking/awesome-infosec
@@ -38250,8 +38104,6 @@ idx,repository
 38438,opengl-tutorials/ogl
 38439,openhab/openhab1-addons
 38440,openhardwaremonitor/openhardwaremonitor
-38441,openhft/chronicle-map
-38442,openhft/chronicle-queue
 38443,openimages/dataset
 38444,openkinect/libfreenect
 38445,openkinect/libfreenect2
@@ -38267,7 +38119,6 @@ idx,repository
 38455,openpgpjs/openpgpjs
 38456,openra/openra
 38457,openrct2/openrct2
-38458,openrefine/openrefine
 38459,openresty/lua-nginx-module
 38460,openresty/nginx-tutorials
 38461,openresty/openresty
@@ -38291,7 +38142,6 @@ idx,repository
 38479,opentk/opentk
 38480,opentoonz/opentoonz
 38481,opentracing/opentracing-go
-38482,opentsdb/opentsdb
 38483,openttd/openttd
 38484,opentypejs/opentype.js
 38485,openvenues/libpostal
@@ -38350,7 +38200,6 @@ idx,repository
 38540,ory/hydra
 38541,ory/ladon
 38542,ory/oathkeeper
-38543,oryxproject/oryx
 38544,os-js/os.js
 38545,os/slacker
 38546,osano/cookieconsent
@@ -38358,7 +38207,6 @@ idx,repository
 38548,oscarotero/embed
 38549,osgeo/gdal
 38550,osixia/docker-openldap
-38551,osmandapp/osmand
 38552,osmdroid/osmdroid
 38553,osquery/osquery
 38554,osrg/gobgp
@@ -38418,7 +38266,6 @@ idx,repository
 38609,oxyplot/oxyplot
 38610,oyvindeh/ucss
 38611,oyvindkinsey/easyxdm
-38612,ozodrukh/circularreveal
 38613,p-christ/deep-reinforcement-learning-algorithms-with-pytorch
 38614,p-e-w/finalterm
 38615,p-e-w/maybe
@@ -38601,10 +38448,7 @@ idx,repository
 38796,pedestal/pedestal
 38797,pedrommcarrasco/brooklyn
 38798,pedronauck/react-adopt
-38799,pedrovgs/algorithms
 38800,pedrovgs/androidwifiadb
-38801,pedrovgs/draggablepanel
-38802,pedrovgs/effectiveandroidui
 38803,peek/peek
 38804,peer5/sharefest
 38805,peerigon/updtr
@@ -38675,7 +38519,6 @@ idx,repository
 38873,philipwalton/flexbugs
 38874,philipwalton/html-inspector
 38875,philipwalton/solved-by-flexbox
-38876,philjay/mpandroidchart
 38877,phillipi/pix2pix
 38878,philpep/testinfra
 38880,phith0n/mind-map
@@ -38861,7 +38704,6 @@ idx,repository
 39061,plasticboy/vim-markdown
 39062,plasticine/inject-loader
 39063,platformio/platformio-core
-39064,plattysoft/leonids
 39065,play/play
 39066,playcanvas/engine
 39067,playdeadgames/temporal
@@ -39114,14 +38956,12 @@ idx,repository
 39315,protonet/jquery.inview
 39316,protonmail/webclient
 39317,prototeam/blog
-39318,prototik/holoeverywhere
 39319,prototypejs/prototype
 39320,provenance-emu/provenance
 39321,proxmark/proxmark3
 39322,proxyee-down-org/proxyee-down
 39323,prusa3d/prusaslicer
 39324,pry/pry
-39326,psaravan/jamsmusicplayer
 39327,psf/black
 39328,psf/requests-html
 39329,psf/requests
@@ -39252,7 +39092,6 @@ idx,repository
 39458,qazbnm456/awesome-cve-poc
 39459,qazbnm456/awesome-web-security
 39460,qbittorrent/qbittorrent
-39461,qdrzwd/videorecorder
 39462,qemu/qemu
 39463,qfish/xalign
 39464,qgis/qgis
@@ -39282,7 +39121,6 @@ idx,repository
 39489,qiu-deqing/fe-interview
 39490,qiu-deqing/fe-learning
 39491,qiubaiying/qiubaiying.github.io
-39492,qiujuer/genius-android
 39493,qiurunze123/miaosha
 39494,qiwihui/hiwifi-ss
 39495,qiwsir/algorithm
@@ -39360,7 +39198,6 @@ idx,repository
 39570,qyxxjd/multiplestatusview
 39571,r-lib/devtools
 39572,r-spacex/spacex-api
-39573,r0adkll/slidr
 39574,r0f1/datascience
 39575,r0oth3x49/udemy-dl
 39576,r0x0r/pywebview
@@ -39421,7 +39258,6 @@ idx,repository
 39632,rainglow/jetbrains
 39633,rainloop/rainloop-webmail
 39634,rainmeter/rainmeter
-39635,rajawali/rajawali
 39636,rakshasa/rtorrent
 39637,rakyll/boom
 39638,rakyll/hey
@@ -39614,11 +39450,9 @@ idx,repository
 39826,reactiveui/akavache
 39827,reactiveui/reactiveui
 39828,reactiveui/refit
-39829,reactivex/rxandroid
 39830,reactivex/rxcpp
 39831,reactivex/rxdart
 39832,reactivex/rxgo
-39833,reactivex/rxjava
 39834,reactivex/rxjs
 39835,reactivex/rxkotlin
 39836,reactivex/rxpy
@@ -39663,11 +39497,8 @@ idx,repository
 39875,readthedocs/sphinx_rtd_theme
 39876,reagent-project/reagent
 39877,reakit/reakit
-39878,real-logic/aeron
-39879,real-logic/agrona
 39881,realm/jazzy
 39882,realm/realm-cocoa
-39883,realm/realm-java
 39884,realm/realm-js
 39885,realm/swiftlint
 39886,realpython/discover-flask
@@ -39779,7 +39610,6 @@ idx,repository
 39994,rendora/rendora
 39995,rendrjs/rendr
 39996,rendro/easy-pie-chart
-39997,rengwuxian/materialedittext
 39998,rengwuxian/rxjavasamples
 39999,renovatebot/renovate
 40000,renpy/renpy
@@ -39843,7 +39673,6 @@ idx,repository
 40058,rexxars/hyphenate-style-name
 40059,rexxars/react-markdown
 40060,rexxars/registry-auth-token
-40061,rey5137/material
 40062,rflex/screcorder
 40063,rfordatascience/tidytuesday
 40064,rfyiamcool/share_ppt
@@ -39976,7 +39805,6 @@ idx,repository
 40193,robot-will/stino
 40194,robotframework/robotframework
 40195,roboticcam/machine-learning-notes
-40196,robotiumtech/robotium
 40197,robotmedia/rmstore
 40198,robovm/apple-ios-samples
 40199,robovm/robovm
@@ -40007,9 +39835,6 @@ idx,repository
 40225,rollup/rollup-pluginutils
 40226,rollup/rollup
 40227,rom-rb/rom
-40228,romainguy/viewserver
-40229,romainpiel/shimmer-android
-40230,romainpiel/titanic
 40231,roman01la/html-to-react-components
 40232,romandanylyk/pageindicatorview
 40233,romannurik/androidassetstudio
@@ -40048,8 +39873,6 @@ idx,repository
 40268,roundcube/roundcubemail
 40269,router5/router5
 40270,rovo89/xposed
-40271,rovo89/xposedbridge
-40272,rovo89/xposedinstaller
 40273,rowanmanning/joblint
 40274,rowanwins/vue-dropzone
 40275,royeo/awesome-programming-books
@@ -40270,7 +40093,6 @@ idx,repository
 40493,salesforce/tough-cookie
 40494,salesforce/transmogrifai
 40495,sallar/github-contributions-chart
-40496,salomonbrys/anr-watchdog
 40497,salomonelli/best-resume-ever
 40498,saltstack/salt
 40499,samaaron/sonic-pi
@@ -40341,9 +40163,7 @@ idx,repository
 40565,satwikkansal/wtfpython
 40566,saucelabs/node-saucelabs
 40567,sauliusgrigaitis/swifton
-40568,saulmm/android-material-examples
 40569,saulmm/coordinatorbehaviorexample
-40570,saulmm/material-movies
 40571,saulpw/visidata
 40572,savonrb/savon
 40573,saysky/forestblog
@@ -40460,7 +40280,6 @@ idx,repository
 40684,seanmon/reqwest.tar
 40685,seanmon/warp.tar
 40686,seanpowell/email-boilerplate
-40687,searchbox-io/jest
 40688,searchkit/searchkit
 40689,seaswalker/spring-analysis
 40690,seata/seata
@@ -40560,7 +40379,6 @@ idx,repository
 40784,sentialx/multrin
 40785,sentsin/layer
 40786,sentsin/layui
-40787,sephiroth74/imageviewzoom
 40788,sephiroth87/odrefreshcontrol
 40789,sequelize/cli
 40790,sequelize/express-example
@@ -40597,7 +40415,6 @@ idx,repository
 40821,servo/webrender
 40822,session-replay-tools/tcpcopy
 40823,seven1m/30-days-of-elixir
-40824,seven332/ehviewer
 40825,seyhunak/twitter-bootstrap-rails
 40826,sfackler/rust-postgres
 40827,sferik/rails_admin
@@ -40749,7 +40566,6 @@ idx,repository
 40973,shyamseshadri/angularjs-book
 40974,shzlw/poli
 40975,shzlw/zeu
-40976,siacs/conversations
 40977,sickchill/sickchill
 40978,sickill/rainbow
 40979,sickrage/sickrage
@@ -40784,7 +40600,6 @@ idx,repository
 41009,simonepri/pidtree
 41010,simongog/sdsl-lite
 41011,simoninithomas/deep_reinforcement_learning_course
-41012,simonvt/android-menudrawer
 41013,simonw/datasette
 41014,simonwep/pickr
 41015,simov/grant
@@ -41101,7 +40916,6 @@ idx,repository
 41329,skykai521/ectranslation
 41330,skykai521/stickercamera
 41331,skyline75489/what-happens-when-zh_cn
-41332,skylot/jadx
 41333,skyming/ios-performance-optimization
 41334,skynetservices/skynet-archive
 41335,skypjack/entt
@@ -41178,7 +40992,6 @@ idx,repository
 41406,soabase/exhibitor
 41407,soapyigu/leetcode-swift
 41408,soapyigu/swift-30-projects
-41409,soarcn/bottomsheet
 41410,sobolevn/awesome-cryptography
 41411,sobolevn/git-secret
 41412,sobotka/filmic-blender
@@ -41238,7 +41051,6 @@ idx,repository
 41466,solus-project/budgie-desktop
 41467,somerandomdude/iconic
 41468,sonarr/sonarr
-41469,sonarsource/sonarqube
 41470,sonata-project/sonataadminbundle
 41471,sony/nnabla
 41472,sonywws/atf
@@ -41309,7 +41121,6 @@ idx,repository
 41537,spdy-http2/node-spdy
 41538,speakeasyjs/speakeasy
 41539,specflowoss/specflow
-41540,specialcyci/androidresidemenu
 41541,specta/expecta
 41542,specta/specta
 41543,spectolabs/hoverfly
@@ -41458,7 +41269,6 @@ idx,repository
 41714,standard/eslint-plugin-standard
 41715,standard/standard
 41716,standardnotes/web
-41717,stanfordnlp/corenlp
 41718,stanfordnlp/glove
 41719,stanfordnlp/stanfordnlp
 41720,stanzhai/be-a-professional-programmer
@@ -41536,7 +41346,6 @@ idx,repository
 41793,stonesam92/chitchat
 41794,stoneweb/elm-react-native
 41795,stormstone/deeplearning.ai
-41796,stormzhang/9gag
 41797,stormzhang/android-interview-questions-cn
 41798,storybookjs/storybook
 41799,strapi/strapi
@@ -42155,7 +41964,6 @@ idx,repository
 42413,thedaviddias/front-end-design-checklist
 42414,thedaviddias/front-end-performance-checklist
 42415,thedaviddias/resources-front-end-beginner
-42416,thedazzler/droidicon
 42417,thedevs-network/kutt
 42418,thedjpetersen/subway
 42419,thednp/kute.js
@@ -42287,7 +42095,6 @@ idx,repository
 42547,tianzhi0549/fcos
 42548,tianzhijiexian/android-best-practices
 42549,tianzhuo112/vtmagic
-42550,tibolte/elasticdownload
 42551,tictail/bounce.js
 42552,tid-kijyun/kanna
 42553,tidusjar/ombi
@@ -42379,7 +42186,6 @@ idx,repository
 42641,tj/terminal-table
 42642,tjanczuk/edge
 42643,tjanczuk/iisnode
-42644,tjerkw/android-slideexpandablelistview
 42645,tjmehta/101
 42646,tjunnone/npm-check-updates
 42647,tkarras/progressive_growing_of_gans
@@ -42421,7 +42227,6 @@ idx,repository
 42683,tobytailor/gordon
 42684,tock/tock
 42685,todc/todc-bootstrap
-42686,todd-davies/progresswheel
 42687,toddmotto/angularjs-styleguide
 42688,toddmotto/echo
 42689,toddmotto/fireshell
@@ -42458,7 +42263,6 @@ idx,repository
 42722,tonerdo/coverlet
 42723,toniblyx/my-arsenal-of-aws-security-tools
 42724,toniblyx/prowler
-42725,tonicartos/superslim
 42726,tonnyl/awesome_apis
 42727,tonsky/anybar
 42728,tonsky/datascript
@@ -42476,7 +42280,6 @@ idx,repository
 42740,toorshia/justgage
 42741,tootallnate/ansi.js
 42742,tootallnate/file-uri-to-path
-42743,tootallnate/java-websocket
 42744,tootallnate/node-agent-base
 42745,tootallnate/node-bindings
 42746,tootallnate/node-data-uri-to-buffer
@@ -42518,7 +42321,6 @@ idx,repository
 42782,toutiaoio/weekly.manong.io
 42783,tower/tower
 42784,toxblh/mtmr
-42785,toxicbakery/viewpagertransforms
 42786,toyodadoubi/doubi
 42787,tpn/pdfs
 42788,tpolecat/doobie
@@ -42539,9 +42341,6 @@ idx,repository
 42803,tqdm/tqdm
 42804,traccar/traccar
 42805,trackableentities/trackable-entities
-42806,traex/calendarlistview
-42807,traex/expandablelayout
-42808,traex/rippleeffect
 42809,trailblazer/cells
 42810,trailblazer/reform
 42811,trailblazer/roar
@@ -42587,8 +42386,6 @@ idx,repository
 42851,trimstray/test-your-sysadmin-skills
 42852,trimstray/the-book-of-secret-knowledge
 42853,trimstray/the-practical-linux-hardening-guide
-42854,trinea/android-auto-scroll-view-pager
-42855,trinea/android-common
 42856,trinea/android-open-project
 42857,trinitycore/trinitycore
 42858,triple-t/gradle-play-publisher
@@ -42662,7 +42459,6 @@ idx,repository
 42927,tuupola/lazyload
 42928,tuvtran/project-based-learning
 42929,tuxsudo/is-in-browser
-42930,tvbarthel/blurdialogfragment
 42931,tvcutsem/harmony-reflect
 42932,tvheadend/tvheadend
 42933,tvillarete/apple-music-js
@@ -42676,7 +42472,6 @@ idx,repository
 42941,tweepy/tweepy
 42942,twhite96/js-dev-reads
 42943,twicketapp/twicketsegmentedcontrol
-42944,twidereproject/twidere-android
 42945,twigjs/twig.js
 42946,twigphp/twig
 42947,twilio/stashboard
@@ -42830,7 +42625,6 @@ idx,repository
 43095,ultimaker/cura
 43096,ultralight-ux/ultralight
 43097,ultralytics/yolov3
-43098,umano/androidslidinguppanel
 43099,umbraco/umbraco-cms
 43100,umdjs/umd
 43101,umijs/qiankun
@@ -42974,7 +42768,6 @@ idx,repository
 43240,vasanthk/react-bits
 43241,vasanthv/jsonbox
 43242,vasile-peste/typefont
-43243,vaughnvernon/iddd_samples
 43244,vavr-io/vavr
 43245,vay-keen/machine-learning-learning-notes
 43246,vcmi/vcmi
@@ -43066,7 +42859,6 @@ idx,repository
 43333,vimagick/dockerfiles
 43334,vimeo/psalm
 43335,vimwiki/vimwiki
-43336,vinc3m1/roundedimageview
 43337,vinceg/bootstrap-admin-theme
 43338,vincentgarreau/particles.js
 43339,vincentriemer/react-native-dom
@@ -43250,7 +43042,6 @@ idx,repository
 43519,wangchenyan/ponymusic
 43520,wangdahoo/vonic
 43521,wangdahoo/vue-scroller
-43522,wangdan/aisenweibo
 43523,wangdoc/javascript-tutorial
 43524,wangfupeng1988/wangeditor
 43525,wangmchn/wmpagecontroller
@@ -43319,7 +43110,6 @@ idx,repository
 43591,webcomponents/webcomponentsjs
 43592,webdevstudios/custom-metaboxes-and-fields-for-wordpress
 43593,webdriverio/webdriverio
-43594,webgoat/webgoat
 43595,webhintio/hint
 43596,webiny/webiny-js
 43597,webkit/webkit
@@ -43467,7 +43257,6 @@ idx,repository
 43739,whatsapp/stickers
 43740,whatwg/html
 43741,wheybags/freeablo
-43742,white-cat/thinkandroid
 43743,whitehouse/api-standards
 43744,whiteoctober/pagerfanta
 43745,whitequark/ipaddr.js
@@ -43540,7 +43329,6 @@ idx,repository
 43814,wix/react-native-notifications
 43815,wix/react-native-ui-lib
 43816,wix/react-templates
-43817,wizcorp/phonegap-facebook-plugin
 43818,wizteam/wizqtclient
 43819,wizzercn/nutzwk
 43820,wjakob/instant-meshes
@@ -43667,7 +43455,6 @@ idx,repository
 43941,xcc3641/seeweather
 43942,xceedsoftware/wpftoolkit
 43943,xchaoinfo/fuck-login
-43944,xcltapestry/xcl-charts
 43945,xcode-snippets/objective-c
 43946,xcodeghostsource/xcodeghost
 43947,xcpretty/xcode-install
@@ -43824,10 +43611,8 @@ idx,repository
 44099,yaireo/fancyinput
 44100,yajra/laravel-datatables
 44101,yakyak/yakyak
-44102,yalantis/context-menu.android
 44103,yalantis/context-menu.ios
 44104,yalantis/displayswitcher
-44105,yalantis/euclid
 44106,yalantis/flipviewpager.draco
 44107,yalantis/foldingtabbar.ios
 44108,yalantis/guillotinemenu-android
@@ -43840,11 +43625,9 @@ idx,repository
 44115,yalantis/pulltomakesoup
 44116,yalantis/searchfilter
 44117,yalantis/segmentio
-44118,yalantis/side-menu.android
 44119,yalantis/side-menu.ios
 44120,yalantis/wars.android.tar
 44121,yalantis/wars.ios.tar
-44122,yalantis/taurus
 44123,yalantis/todolist
 44124,yalantis/ucrop
 44125,yaml/pyyaml
@@ -43857,7 +43640,6 @@ idx,repository
 44132,yangchaojiang/yjplay
 44133,yangchong211/lifehelper
 44134,yangchong211/ycblogs
-44136,yangfuhai/asimplecache
 44137,yangshun1029/aria2gui
 44138,yangshun/front-end-interview-handbook
 44139,yangshun/tech-interview-handbook
@@ -43959,7 +43741,6 @@ idx,repository
 44236,yipianfengye/android-addialog
 44237,yipianfengye/android-zxinglibrary
 44238,yipianfengye/androidproject
-44239,yixia/vitamiobundle
 44240,yixiangboy/iosanimationdemo
 44241,yixiaohan/codeparkshare
 44242,yixiaohan/show-me-the-code
@@ -43996,7 +43777,6 @@ idx,repository
 44273,yourls/yourls
 44274,yourtion/30daymakeos
 44275,youth5201314/banner
-44276,youtube/api-samples
 44277,youtube/doorman
 44278,youtube/spfjs
 44279,youxianming/animations
@@ -44006,7 +43786,6 @@ idx,repository
 44283,youzan/vant
 44284,youzan/zent
 44285,yoyoyo-yo/gasyori100knock
-44286,yqritc/recyclerview-flexibledivider
 44287,yrutschle/sslh
 44288,ysc/questionansweringsystem
 44289,yscoder/hexo-theme-indigo
@@ -44086,7 +43865,6 @@ idx,repository
 44364,zce/weapp-demo
 44365,zcreativelabs/react-simple-maps
 44366,zcweng/switchbutton
-44367,zcweng/togglebutton
 44368,zdennis/activerecord-import
 44369,zdhxiong/mdui
 44370,zealdocs/zeal
