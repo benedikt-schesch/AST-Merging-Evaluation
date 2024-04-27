@@ -51,8 +51,6 @@ jobs:
       with:
         java-version: 17
         maven-version: ${{ matrix.maven }}
-    - name: Run gradle in merging
-      run: cd src/scripts/merge_tools/merging && ./gradlew shadowJar
     - name: Clean caches & workspace
       run: make clean
     - name: Install killall
