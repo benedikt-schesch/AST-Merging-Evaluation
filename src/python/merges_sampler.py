@@ -26,6 +26,7 @@ from rich.progress import (
     TimeRemainingColumn,
     TextColumn,
 )
+from loguru import logger
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -41,6 +42,7 @@ if __name__ == "__main__":
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     missing_merges_repos = 0
     total_valid_repos = 0
+    logger.info("merges_sampler: Start sampling merges...")
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -52,6 +54,7 @@ if __name__ == "__main__":
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
             repo_slug = repository_data["repository"]
+            logger.info(f"Processing {repo_slug}")
             merge_list_file = Path(os.path.join(args.merges_path, repo_slug + ".csv"))
             output_file = Path(os.path.join(args.output_dir, repo_slug + ".csv"))
             if not merge_list_file.exists():
@@ -83,6 +86,7 @@ if __name__ == "__main__":
             sample = merges.sample(frac=1.0, random_state=42)
             sample = sample[:n_merges]
             sample.sort_index(inplace=True)
+            logger.info(f"Sampled {n_merges} merges from {repo_slug} in {output_file}")
             sample.to_csv(output_file)
 
     print(

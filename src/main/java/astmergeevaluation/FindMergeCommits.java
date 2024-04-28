@@ -152,7 +152,7 @@ public class FindMergeCommits {
     } else {
       System.err.println(
           "FindMergeCommits: "
-              + "need ~/.gitHubPersonalAccessToken file or GITHUB_TOKEN environment variable.");
+              + "need .github-personal-access-token file or GITHUB_TOKEN environment variable.");
       System.exit(3);
       throw new Error("unreachable"); // needed due to javac definite assignment check
     }
