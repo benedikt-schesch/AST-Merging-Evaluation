@@ -53,11 +53,21 @@ compress-cache:
 	if [ -f cache.tar ]; then rm -f cache.tar; fi
 	tar --exclude="lock" -czf cache.tar cache
 
+compress-small-cache:
+	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
+	if [ -f cache-small.tar ]; then rm -f cache-small.tar; fi
+	tar --exclude="lock" -czf cache-small.tar cache-small
+
 # Decompresses the cache.
 decompress-cache:
 	if [ ! -f cache.tar ]; then echo "cache.tar does not exist"; exit 1; fi
 	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
 	tar -xzf cache.tar
+
+decompress-small-cache:
+	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 1; fi
+	if [ -d cache-small ]; then echo "cache-small already exists"; exit 1; fi
+	tar -xzf cache-small.tar
 
 # Copy tables and plots to the paper.
 copy-paper:
@@ -74,6 +84,7 @@ update-cache-results:
 small-test:
 	${MAKE} clean-test-cache clean
 	./run_small.sh --include_trivial_merges --no_timing
+	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
 	rm -rf results/small
 	./run_small.sh --include_trivial_merges --no_timing

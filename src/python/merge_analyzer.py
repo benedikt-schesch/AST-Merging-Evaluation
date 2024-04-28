@@ -130,7 +130,12 @@ def diff_merge_analyzer(
         base_left_files = get_diff_files(
             repo, base_sha, left_sha, Path(cache_data["diff_logs"]["base_left"])
         )
-    except RuntimeError:
+    except RuntimeError as e:
+        logger.error(
+            "merge_analyzer: Error while computing diff "
+            + f"for {repo_slug} {left_sha} {right_sha}: {e}"
+        )
+        cache_data["explanation"] = str(e)
         set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
         return cache_data
 

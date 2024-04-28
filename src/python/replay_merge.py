@@ -83,12 +83,6 @@ def merge_replay(
                 timeout=TIMEOUT_TESTING_MERGE,
                 use_cache=False,
             )
-            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
-                raise Exception(
-                    f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
-                    + f" {merge_fingerprint} but found "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
-                )
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -112,6 +106,12 @@ def merge_replay(
                 log_path,
                 repo.local_repo_path,
             ]
+            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
+                raise Exception(
+                    f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
+                    + f" {merge_fingerprint} but expected "
+                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+                )
 
             if merge_result not in (
                 MERGE_STATE.Merge_failed,
@@ -169,13 +169,13 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results-small/result.csv",
+        default="results/small/result.csv",
     )
     parser.add_argument(
         "--idx",
         help="Index of the merge to replay",
-        type=int,
-        default=0,
+        type=str,
+        default="1-7",
     )
     parser.add_argument(
         "-test",
