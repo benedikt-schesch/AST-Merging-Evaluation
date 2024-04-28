@@ -4,7 +4,6 @@ channels:
 dependencies:
   - bzip2
   - ca-certificates
-  - ld_impl_linux-64
   - libffi
   - libuuid
   - lxml
