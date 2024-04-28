@@ -65,17 +65,17 @@ make small-test
 ```
 
 This runs the entire code on two small repos.
-The output data appears in `results-small/`.
+The output data appears in `results/small/`.
 
-* `results-small/result.csv`: the final result
+* `results/small/result.csv`: the final result
 
-* `results-small/merges/` contains all the merges.
+* `results/small/merges/` contains all the merges.
 
-* `results-small/merges_compared/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
+* `results/small/merges_compared/` contains all merges and indicates whether the merge results are different and thus need to be analyzed.
 
-* `results-small/merges_tested/` contains all merges that have been tested.
+* `results/small/merges_tested/` contains all merges that have been tested.
 
-* `results-small/result.csv` contains the final result.
+* `results/small/result.csv` contains the final result.
 
 ### Perform full analysis
 
@@ -207,6 +207,6 @@ To run style checking run `make style`.
 
 * results/ -> Contains all the results for the full analysis.
 
-* results-small/ -> Contains all the results for the small analysis.
+* results/small/ -> Contains all the results for the small analysis.
 
 * jars/ -> Location for the IntelliMerge and Spork jars.

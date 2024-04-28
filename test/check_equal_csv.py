@@ -21,7 +21,7 @@ if __name__ == "__main__":
         "--actual_folder",
         type=str,
         help="Path to actual folder",
-        default="results-small",
+        default="results/small",
     )
     parser.add_argument(
         "--goal_folder",
