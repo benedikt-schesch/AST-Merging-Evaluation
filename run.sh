@@ -126,14 +126,26 @@ java -cp build/libs/astmergeevaluation-all.jar \
     "$OUT_DIR/repos_head_passes.csv" \
     "$OUT_DIR/merges"
 
-# Sample 5*<n_merges> merges
-read -ra merge_comparator_flags <<<"${comparator_flags}"
-python3 src/python/merges_sampler.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_sampled/" \
-    --n_merges "$((5 * "$N_MERGES"))" \
-    "${merge_comparator_flags[@]}"
+# Calculate the number of merges
+total_merges=$((5 * N_MERGES))
+
+# Ensure comparator_flags is set, but default to an empty array if not
+if [[ -n "${comparator_flags}" ]]; then
+    read -ra merge_comparator_flags <<< "${comparator_flags}"
+    python3 src/python/merges_sampler.py \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --merges_path "$OUT_DIR/merges/" \
+        --output_dir "$OUT_DIR/merges_sampled/" \
+        --n_merges "$total_merges" \
+        "${merge_comparator_flags[@]}"
+else
+    echo "Warning: 'comparator_flags' is empty, continuing without additional flags."
+    python3 src/python/merges_sampler.py \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --merges_path "$OUT_DIR/merges/" \
+        --output_dir "$OUT_DIR/merges_sampled/" \
+        --n_merges "$total_merges"
+fi
 
 python3 src/python/split_repos.py \
     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
@@ -154,9 +166,6 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
-# Define an array for additional arguments
-extra_args=()
-
 if [ "$no_timing" = false ]; then
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
@@ -165,7 +174,17 @@ if [ "$no_timing" = false ]; then
         --n_sampled_timing 1 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
-    extra_args+=(--timed_merges_path "$OUT_DIR/merges_timed/")
+
+    python3 src/python/latex_output.py \
+        --run_name "$RUN_NAME" \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
+        --timed_merges_path "$OUT_DIR/merges_timed/" \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
 fi
 
 python3 src/python/latex_output.py \
@@ -173,7 +192,6 @@ python3 src/python/latex_output.py \
     --merges_path "$OUT_DIR/merges/" \
     --tested_merges_path "$OUT_DIR/merges_tested/" \
     --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-    "${extra_args[@]}" \
     --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
     --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --n_merges "$N_MERGES" \
