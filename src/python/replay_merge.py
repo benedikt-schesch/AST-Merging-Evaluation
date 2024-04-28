@@ -3,8 +3,6 @@
 """Replay merges and their test results"""
 import argparse
 import os
-import sys
-import tarfile
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -134,7 +132,6 @@ def merge_replay(
                 timeout=TIMEOUT_TESTING_MERGE,
                 use_cache=False,
             )
-            assert repo.local_repo_path.exists()
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -160,41 +157,11 @@ def merge_replay(
                 repo.local_repo_path,
                 merge_fingerprint,
             ]
-            assert repo.local_repo_path.exists()
-
-            if (  # pylint: disable=too-many-boolean-expressions
-                merge_result
-                not in (
-                    MERGE_STATE.Git_checkout_failed,
-                    TEST_STATE.Git_checkout_failed,
-                )
-                and (
-                    merge_data[f"{merge_tool.name}_merge_fingerprint"]
-                    != merge_fingerprint
-                    and not dont_check_fingerprints
-                )
-                and (merge_tool != MERGE_TOOL.spork)
-                and (
-                    merge_tool != MERGE_TOOL.gitmerge_resolve
-                    or merge_result != MERGE_STATE.Merge_failed
-                )
-            ):
-                assert repo.local_repo_path.exists()
-                if create_artifacts:
-                    store_artifacts(result_df)
-                if delete_workdir:
-                    delete_workdirs(result_df)
-                print("=====================================\n")
-                with open(log_path, "r", encoding="utf-8") as f:
-                    print(f.read())
-                print("=====================================\n")
+            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']} at log path {log_path}"
-                    + f" and repo path {repo.local_repo_path}",
-                    merge_result,
-                    f"idx {merge_idx}",
+                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
                 )
 
             if merge_result not in (
@@ -259,57 +226,34 @@ if __name__ == "__main__":
         "--idx",
         help="Index of the merge to replay",
         type=str,
-        default="0-1",
+        default="1-7",
     )
     parser.add_argument(
         "-test",
         help="Test the replay of a merge",
         action="store_true",
     )
-    parser.add_argument(
-        "-delete_workdir",
-        help="Delete the workdir after replaying the merge",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-dont_check_fingerprints",
-        help="Don't check the fingerprint of a merge",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-create_artifacts",
-        help="Create artifacts",
-        action="store_true",
-    )
-    args = parser.parse_args()
+    arguments = parser.parse_args()
 
-    os.environ["PATH"] += os.pathsep + os.path.join(
-        os.getcwd(), "src/scripts/merge_tools"
+    # Setup for imports
+    os.system(
+        "./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar"
     )
-    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
+    os.environ["PATH"] = (
+        os.environ["PATH"]
+        + os.getcwd()
+        + "/src/scripts/merge_tools/merging/src/main/sh/"
+    )
 
-    logger.info(f"Replaying merge with index {args.idx}")
-    if args.delete_workdir:
-        logger.info("Deleting workdir after replaying the merge")
-    if args.dont_check_fingerprints:
-        logger.info("Not checking the fingerprint of a merge")
-    if args.test:
-        logger.info("Testing the replay of a merge")
-    if args.create_artifacts:
-        logger.info("Creating artifacts after replaying the merges")
+    df = pd.read_csv(arguments.merges_csv, index_col="idx")
 
-    df = pd.read_csv(args.merges_csv, index_col="idx")
-
-    repo_slug = df.loc[args.idx, "repository"]
-    merge_data = df.loc[args.idx]
-    results_df = merge_replay(
-        args.idx,
+    repo_slug = df.loc[arguments.idx, "repository"]
+    merge_data = df.loc[arguments.idx]
+    repo = Repository(  # To clone the repo
         str(repo_slug),
-        merge_data,
-        args.test,
-        args.delete_workdir,
-        args.create_artifacts,
-        args.dont_check_fingerprints,
+        cache_directory=Path("no_cache/"),
+        workdir_id="todelete",
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")
