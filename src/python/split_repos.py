@@ -13,6 +13,7 @@ import argparse
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from loguru import logger
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -28,4 +29,6 @@ if __name__ == "__main__":
     df.sort_index(inplace=True)
 
     df.to_csv(args.output_file, index_label="idx")
-    print("Number of local repos in", args.repos_csv, "=", len(df))
+    logger.success(
+        "Number of local repos in " + str(args.repos_csv) + " = " + str(len(df))
+    )

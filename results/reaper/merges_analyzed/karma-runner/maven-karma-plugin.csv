@@ -1,0 +1,5 @@
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
+5,refs/heads/master,4736c733067d7fed287c9d1552cb0f3d3ed17ce1,d84efacfa2869c6c6937828d4c68744c0d11b7cb,401e8b1d1a3cdacf04848697f16ef0d948ebf7f8,,False,False,False
+11,refs/heads/master,8651695a8ead965510fb45b03ea160079c45385d,60b5cad3ef4c55f8ba291d0a51119d03f6af5333,ec52d2b4726e813950d5ac7049d84b15269aa2e2,,False,False,False
+12,refs/heads/master,f34a8cd71c1d90743bc1565cf7f1047ac9610b90,e0d5c5795fc67409ce6fc532c630f1a07768d2be,b872e75e8e70b2ab8f6f56efefb47a8324e047d8,,False,False,False
+13,refs/remotes/origin/pull/31,622677811a87f52b1de87a548d7e8b73562d2f77,3913240d0c98e9056d1adfb269775269c8b44ece,422b7f49692ef613029207c346264693e93d3764,,False,False,False

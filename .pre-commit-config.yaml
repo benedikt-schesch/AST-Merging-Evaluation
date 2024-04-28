@@ -3,7 +3,7 @@ repos:
     rev: v4.5.0
     hooks:
     -   id: check-added-large-files
-        args: ['--maxkb=10000']
+        args: ['--maxkb=20000']
     -   id: check-ast
     -   id: check-byte-order-marker
     -   id: check-builtin-literals
@@ -26,7 +26,6 @@ repos:
     -   id: fix-byte-order-marker
     -   id: fix-encoding-pragma
     -   id: forbid-new-submodules
-    -   id: forbid-submodules
     -   id: mixed-line-ending
     -   id: name-tests-test
     -   id: no-commit-to-branch

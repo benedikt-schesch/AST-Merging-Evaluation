@@ -8,7 +8,6 @@ There will be 4 caches in total which are stored on disk after running the run.s
 2) cache/test_cache: A cache that maps a sha256 to test results.
 3) cache/merge_results: A cache that maps a merge to the result
         of the merge (sha256, run time, and MERGE_STATE).
-4) cache/merge_diffs: A cache that stores the diff between merge tools.
 """
 
 from pathlib import Path
@@ -16,6 +15,7 @@ import json
 from typing import Union, Tuple
 import time
 import fasteners
+from loguru import logger
 
 CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
 TIMEOUT = 90 * 60  # 90 minutes, in seconds
@@ -36,10 +36,12 @@ def set_in_cache(
         repo_slug (str): The slug of the repository, which is "owner/reponame".
         cache_directory (Path): The path to the cache directory.
     """
+    logger.debug(
+        f"set_in_cache: {cache_key} {cache_value} {repo_slug} {cache_directory}"
+    )
     lock = get_cache_lock(repo_slug, cache_directory)
     if acquire_lock:
         lock.acquire()
-    # print("set_in_cache", cache_directory, cache_key, cache_value)
     cache = load_cache(repo_slug, cache_directory)
     cache[cache_key] = cache_value
     write_cache(cache, repo_slug, cache_directory)
@@ -84,6 +86,7 @@ def lookup_in_cache(
         lock.release()
         return cache_data
     if set_run:
+        logger.debug(f"lookup_in_cache: Setting {cache_key} to None")
         set_in_cache(cache_key, None, repo_slug, cache_directory, acquire_lock=False)
     lock.release()
     return None
@@ -166,7 +169,7 @@ def write_cache(
     """
     cache_path = get_cache_path(repo_slug, cache_directory)
     cache_path.parent.mkdir(parents=True, exist_ok=True)
-    output = json.dumps(cache, indent=4)
+    output = json.dumps(cache, indent=4, sort_keys=True)
     with open(cache_path, "w", encoding="utf-8") as f:
         f.write(output)
         f.flush()

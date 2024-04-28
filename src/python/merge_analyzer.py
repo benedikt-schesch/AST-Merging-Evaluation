@@ -15,20 +15,24 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-from functools import partialmethod
 from typing import Tuple, Dict, Union, Any
 import random
 import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
-from tqdm import tqdm
 from cache_utils import set_in_cache, lookup_in_cache
 from test_repo_heads import num_processes
 from variables import TIMEOUT_TESTING_PARENT, N_TESTS
 import matplotlib.pyplot as plt
-
-if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
+from loguru import logger
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
 
 def is_test_passed(test_state: str) -> bool:
@@ -156,7 +160,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
 
-    print("merge_analyzer: Analyzing", repo_slug, left_sha, right_sha)
+    logger.info(f"merge_analyzer: Analyzing {repo_slug} {left_sha} {right_sha}")
 
     # Compute diff size in lines between left and right
     cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
@@ -164,7 +168,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
     if cache_data["diff contains java file"] in (False, None):
         merge_data["test merge"] = False
         merge_data["diff contains java file"] = False
-        print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
+        logger.info(f"merge_analyzer: Analyzed {repo_slug} {left_sha} {right_sha}")
         return merge_data
 
     # Checkout left parent
@@ -206,7 +210,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
         merge_data["parents pass"] and merge_data["diff contains java file"] is True
     )
 
-    print("merge_analyzer: Analyzed", repo_slug, left_sha, right_sha)
+    logger.info(f"merge_analyzer: Analyzed {repo_slug} {left_sha} {right_sha}")
 
     return merge_data
 
@@ -266,7 +270,7 @@ def plot_vertical_histogram(data, title, ax):
 
 
 if __name__ == "__main__":
-    print("merge_analyzer: Start")
+    logger.info("merge_analyzer: Start")
     parser = argparse.ArgumentParser()
     parser.add_argument("--repos_head_passes_csv", type=Path)
     parser.add_argument("--merges_path", type=Path)
@@ -279,44 +283,68 @@ if __name__ == "__main__":
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
 
-    print("merge_analyzer: Constructing Inputs")
+    logger.info("merge_analyzer: Constructing Inputs")
     merger_arguments = []
-    for _, repository_data in tqdm(repos.iterrows(), total=len(repos)):
-        repo_slug = repository_data["repository"]
-        merger_arguments += build_merge_analyzer_arguments(args, repo_slug)
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
+        task = progress.add_task("[green]Constructing Input...", total=len(repos))
+        for _, repository_data in repos.iterrows():
+            repo_slug = repository_data["repository"]
+            merger_arguments += build_merge_analyzer_arguments(args, repo_slug)
+            progress.update(task, advance=1)
 
     # Shuffle input to reduce cache contention
     random.seed(42)
     random.shuffle(merger_arguments)
 
-    print("merge_analyzer: Finished Constructing Inputs")
+    logger.info("merge_analyzer: Finished Constructing Inputs")
     # New merges are merges whose analysis does not appear in the output folder.
-    print("merge_analyzer: Number of new merges:", len(merger_arguments))
+    logger.info("merge_analyzer: Number of new merges: " + str(len(merger_arguments)))
 
-    print("merge_analyzer: Started Merging")
+    logger.info("merge_analyzer: Started Merging")
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        merger_results = list(
-            tqdm(
-                pool.imap(merge_analyzer, merger_arguments), total=len(merger_arguments)
-            )
-        )
-    print("merge_analyzer: Finished Merging")
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
+            task = progress.add_task("[green]Analyzing...", total=len(merger_arguments))
+            merger_results = []
+            for result in pool.imap(merge_analyzer, merger_arguments):
+                merger_results.append(result)
+                progress.update(task, advance=1)
+    logger.info("merge_analyzer: Finished Merging")
 
     repo_result = {repo_slug: [] for repo_slug in repos["repository"]}
-    print("merge_analyzer: Constructing Output")
+    logger.info("merge_analyzer: Constructing Output")
     n_new_analyzed = 0
     n_new_candidates_to_test = 0
     n_new_passing_parents = 0
-    for i in tqdm(range(len(merger_arguments))):
-        repo_slug = merger_arguments[i][0]
-        results_data = merger_results[i]
-
-        repo_result[repo_slug].append(merger_results[i])
-        n_new_analyzed += 1
-        if "test merge" in results_data and results_data["test merge"]:
-            n_new_candidates_to_test += 1
-        if "parents pass" in results_data and results_data["parents pass"]:
-            n_new_passing_parents += 1
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+    ) as progress:
+        task = progress.add_task("[green]Processing...", total=len(merger_arguments))
+        for idx, merge_data in enumerate(merger_arguments):
+            repo_slug = merge_data[0]
+            results_data = merger_results[idx]
+            repo_result[repo_slug].append(merger_results[idx])
+            n_new_analyzed += 1
+            if "test merge" in results_data and results_data["test merge"]:
+                n_new_candidates_to_test += 1
+            if "parents pass" in results_data and results_data["parents pass"]:
+                n_new_passing_parents += 1
+            progress.update(task, advance=1)
 
     # Initialize counters
     n_total_analyzed = 0
@@ -365,24 +393,24 @@ if __name__ == "__main__":
         n_sampled_for_testing += df["sampled for testing"].sum()
 
     # Print summaries
-    print(
-        "merge_analyzer: Total number of merges that have been compared:",
-        n_total_analyzed,
+    logger.success(
+        "merge_analyzer: Total number of merges that have been compared: "
+        + str(n_total_analyzed)
     )
-    print(
-        "merge_analyzer: Total number of merges that have been compared and have a java diff:",
-        n_java_contains_diff,
+    logger.success(
+        "merge_analyzer: Total number of merges that have been compared and have a java diff: "
+        + str(n_java_contains_diff)
     )
-    print(
+    logger.success(
         "merge_analyzer: Total number of merges that have been "
-        "compared and are testable (Has Java Diff + Parents Pass)",
-        n_candidates_to_test,
+        "compared and are testable (Has Java Diff + Parents Pass) "
+        + str(n_candidates_to_test)
     )
-    print(
-        "merge_analyzer: Total number of merges that are testable which have been sampled",
-        n_sampled_for_testing,
+    logger.success(
+        "merge_analyzer: Total number of merges that are testable which have been sampled "
+        + str(n_sampled_for_testing)
     )
-    print("merge_analyzer: Finished Constructing Output")
+    logger.info("merge_analyzer: Finished Constructing Output")
 
     # Creating the plots
     repo_slugs, totals, candidates, passings, sampled = zip(*repo_data)
@@ -417,4 +445,4 @@ if __name__ == "__main__":
 
     parent_output_dir = args.output_dir.parent
     plt.savefig(parent_output_dir / "merges_analyzer_histograms.pdf")
-    print("merge_analyzer: Done")
+    logger.success("merge_analyzer: Done")

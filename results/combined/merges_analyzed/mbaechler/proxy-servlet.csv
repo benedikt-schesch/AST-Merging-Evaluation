@@ -1,0 +1,5 @@
+idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
+3,refs/remotes/origin/guice,5feca579d08b1f64c0eb7e005eb50f509801c096,024695153a73b4add8930e42c7fba9d72115edf3,30d599f34757bfb6653f8e28e485af36ac79d66b,,,,,,,False,False,False
+4,refs/remotes/origin/guice,024695153a73b4add8930e42c7fba9d72115edf3,cd2c7677e6ae5a773a93f9ff70148694d437a641,d4f84b20b7e9c5d1bb0e4379aab6afc328a847fb,,,,,,,False,False,False
+6,refs/remotes/origin/pull/4,30988d4e752f603ba6a9da52d5fea5731cd40051,5c8796f05bf2362d30957a184c76843ba2497b66,ec935a18604de63d1a13700657cc609e53467af2,,,,,,,False,False,False
+7,refs/remotes/origin/pull/6,456846e2b56eb09964f65677180bd70ee107d33e,db267681433444c8f171d2cc31286f5b9da437bf,a03279659c46dda30accad5f0b06b8eda491ccc4,,29056de4ed7e265465fdc8ca4787a81ff7d451d69d853241b2b7f2696b47a1f8,Tests_passed,df6c2a427c019fb49bbe937666286a792eb7afa7fca0ddc3e7fbffe823036358,Tests_passed,True,True,True,True

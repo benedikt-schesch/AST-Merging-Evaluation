@@ -15,18 +15,25 @@ Output: the rows of the input for which the commit at head hash passes tests.
 import multiprocessing
 import os
 import argparse
+import sys
 from pathlib import Path
 import shutil
-from functools import partialmethod
 from typing import Tuple
 from repo import Repository, TEST_STATE
 from variables import TIMEOUT_TESTING_PARENT
-from tqdm import tqdm
 import pandas as pd
+from loguru import logger
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TextColumn,
+)
 
-
-if os.getenv("TERM", "dumb") == "dumb":
-    tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
+logger.add(sys.stderr, colorize=True, backtrace=True, diagnose=True)
+logger.add("run.log", colorize=False, backtrace=True, diagnose=True)
 
 
 def num_processes(percentage: float = 0.7) -> int:
@@ -49,16 +56,17 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
         TEST_STATE: The result of the test.
     """
     repo_info, cache = args
+    logger.info(f"head_passes_tests: Started {repo_info['repository']}")
     repo_slug = repo_info["repository"]
     if "/" not in repo_slug:
         repo_info["head test result"] = "Wrong format"
-        return repo_info
+        logger.error(f"head_passes_tests: Wrong format {repo_info['repository']}")
+        raise ValueError(f"Wrong format {repo_info['repository']}")
 
     if len(repo_info["head hash"]) != 40:
         repo_info["head test result"] = "No valid head hash"
-        return repo_info
-
-    print("test_repo_heads:", repo_slug, ": head_passes_tests : started")
+        logger.error(f"head_passes_tests: No valid head hash {repo_info['repository']}")
+        raise ValueError(f"No valid head hash {repo_info['repository']}")
 
     # Load repo
     try:
@@ -69,21 +77,36 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
             lazy_clone=True,
         )
     except Exception as e:
-        print("test_repo_heads:", repo_slug, ": exception head_passes_tests :", e)
         repo_info["head test result"] = TEST_STATE.Git_checkout_failed.name
         repo_info["head tree fingerprint"] = None
+        logger.success(
+            f"head_passes_tests: Git checkout failed {repo_info['repository']} {e}"
+        )
         return repo_info
 
     # Test repo
     test_state, _, repo_info["head tree fingerprint"] = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
     )
+    if test_state == TEST_STATE.Tests_passed:
+        # Make sure the repo is cloned and exists
+        repo.clone_repo()
+        if not repo.repo_path.exists():
+            logger.error(
+                f"head_passes_tests: Repo {repo_slug} does not exist after passing tests."
+            )
+            raise Exception(
+                f"Repo {repo_slug} does not exist after passing tests. \
+                    (Either clone the repo or remove the cache entry)"
+            )
+    else:
+        shutil.rmtree(repo.repo_path, ignore_errors=True)
+
     repo_info["head test result"] = test_state.name
 
-    if test_state != TEST_STATE.Tests_passed:
-        shutil.rmtree(repo.path, ignore_errors=True)
-
-    print("test_repo_heads:", repo_slug, ": head_passes_tests : returning", test_state)
+    logger.success(
+        f"head_passes_tests: Finished {repo_info['repository']} {test_state}"
+    )
     return repo_info
 
 
@@ -98,27 +121,35 @@ if __name__ == "__main__":
 
     df = pd.read_csv(arguments.repos_csv_with_hashes, index_col="idx")
 
-    print("test_repo_heads: Started Testing")
+    logger.info("test_repo_heads: Started Testing")
     head_passes_tests_arguments = [(v, arguments.cache_dir) for _, v in df.iterrows()]
     with multiprocessing.Pool(processes=num_processes()) as pool:
-        head_passes_tests_results = list(
-            tqdm(
-                pool.imap(head_passes_tests, head_passes_tests_arguments),
-                total=len(head_passes_tests_arguments),
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
+            task = progress.add_task(
+                "Testing repos...", total=len(head_passes_tests_arguments)
             )
-        )
-    print("test_repo_heads: Finished Testing")
+            head_passes_tests_results = []
+            for result in pool.imap(head_passes_tests, head_passes_tests_arguments):
+                head_passes_tests_results.append(result)
+                progress.update(task, advance=1)
+    logger.info("test_repo_heads: Finished Testing")
 
-    print("test_repo_heads: Started Building Output")
+    logger.info("test_repo_heads: Started Building Output")
     df = pd.DataFrame(head_passes_tests_results)
     filtered_df = df[df["head test result"] == TEST_STATE.Tests_passed.name]
-    print("test_repo_heads: Finished Building Output")
+    logger.info("test_repo_heads: Finished Building Output")
 
-    print(
-        "test_repo_heads: Number of repos whose head passes tests:",
-        len(filtered_df),
-        "out of",
-        len(df),
+    logger.success(
+        "test_repo_heads: Number of repos whose head passes tests:"
+        + str(len(filtered_df))
+        + "out of"
+        + str(len(df))
     )
     if len(filtered_df) == 0:
         raise Exception("No repos found whose head passes tests")
@@ -127,4 +158,4 @@ if __name__ == "__main__":
         arguments.output_path.parent / "all_repos_head_test_results.csv",
         index_label="idx",
     )
-    print("test_repo_heads: Done")
+    logger.success("test_repo_heads: Done")
