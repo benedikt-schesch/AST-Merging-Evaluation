@@ -56,8 +56,6 @@ PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
 export PATH
 
-./src/scripts/merge_tools/merging/gradlew shadowJar
-
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
@@ -71,6 +69,9 @@ if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; 
 
 if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
+
+export JAVA_HOME=$JAVA17_HOME
+./src/scripts/merge_tools/merging/gradlew shadowJar
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
