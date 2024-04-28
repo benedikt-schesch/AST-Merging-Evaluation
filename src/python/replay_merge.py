@@ -169,7 +169,7 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results-small/result.csv",
+        default="results/small/result.csv",
     )
     parser.add_argument(
         "--idx",
