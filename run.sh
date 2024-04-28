@@ -59,6 +59,13 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+# Check if src/scripts/merge_tools/merging is present
+if [ ! -d src/scripts/merge_tools/merging ]; then
+    echo "Error: src/scripts/merge_tools/merging is missing. This is a submodule that is required for the script to run."
+    echo "Please run 'git submodule update --init' to fetch the submodule."
+    exit 1
+fi
+
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
 export PATH
