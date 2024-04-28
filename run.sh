@@ -81,6 +81,7 @@ export JAVA_HOME=$JAVA17_HOME
 if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
     git submodule update --init --recursive
 fi
+git submodule update --recursive --remote
 (cd ./src/scripts/merge_tools/merging && ./gradlew shadowJar)
 
 echo "Machine ID: $machine_id"
