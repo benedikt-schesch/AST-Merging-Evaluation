@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Replay merges and their test results"""
 import argparse
+import os
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -83,12 +84,6 @@ def merge_replay(
                 timeout=TIMEOUT_TESTING_MERGE,
                 use_cache=False,
             )
-            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
-                raise Exception(
-                    f"fingerprints differ: after merge of {workdir} with {merge_tool}, expected"
-                    + f" {merge_fingerprint} but found "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
-                )
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -112,6 +107,12 @@ def merge_replay(
                 log_path,
                 repo.local_repo_path,
             ]
+            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
+                raise Exception(
+                    f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
+                    + f" {merge_fingerprint} but expected "
+                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+                )
 
             if merge_result not in (
                 MERGE_STATE.Merge_failed,
@@ -175,7 +176,7 @@ if __name__ == "__main__":
         "--idx",
         help="Index of the merge to replay",
         type=str,
-        default="0-1",
+        default="1-7",
     )
     parser.add_argument(
         "-test",
@@ -183,6 +184,17 @@ if __name__ == "__main__":
         action="store_true",
     )
     arguments = parser.parse_args()
+
+    # Setup for imports
+    os.system(
+        "./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar"
+    )
+    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
+    os.environ["PATH"] = (
+        os.environ["PATH"]
+        + os.getcwd()
+        + "/src/scripts/merge_tools/merging/src/main/sh/"
+    )
 
     df = pd.read_csv(arguments.merges_csv, index_col="idx")
 
