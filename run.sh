@@ -23,6 +23,13 @@ OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
+# Check if it's run on MacOS, if yes raise an error
+backend=$(uname -s)
+if [ "$backend" = "Darwin" ]; then
+    echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
+    exit 1
+fi
+
 comparator_flags=""
 no_timing=false
 only_plotting=false
@@ -71,7 +78,7 @@ if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
 export JAVA_HOME=$JAVA17_HOME
-./src/scripts/merge_tools/merging/gradlew shadowJar
+./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
