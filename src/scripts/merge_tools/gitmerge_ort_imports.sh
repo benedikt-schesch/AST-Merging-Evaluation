@@ -2,7 +2,6 @@
 
 # usage: ./gitmerge_ort_imports.sh <clone_dir> <branch-1> <branch-2>
 
-MERGE_SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 clone_dir=$1
 branch1=$2
 branch2=$3
@@ -19,7 +18,7 @@ echo "*.java merge=merge-java" >> "$attributes_file"
 git config --local merge.merge-java.name "Merge Java files"
 git config --local merge.merge-java.driver 'java-merge-driver.sh "%A" "%O" "%B"'
 
-git merge --no-edit $strategy "$branch2"
+git merge --no-edit "$strategy" "$branch2"
 retVal=$?
 
 # report conflicts
