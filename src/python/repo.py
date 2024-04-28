@@ -195,6 +195,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             cache_directory (Path): The prefix of the cache.
         """
         self.repo_slug = repo_slug.lower()
+        self.owner, self.name = self.repo_slug.split("/")
         self.repo_path = REPOS_PATH / repo_slug
         self.workdir = WORKDIR_DIRECTORY / workdir_id
         self.local_repo_path = self.workdir / self.repo_path.name
@@ -541,6 +542,17 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         if use_cache:
             cache_entry["sha"] = sha
             cache_entry["merge status"] = merge_status.name
+            output = f"command: {' '.join(command)}\n stdout: {p.stdout}\n stderr: {p.stderr}"
+            output_file = (
+                self.sha_cache_directory
+                / self.owner
+                / "logs"
+                / f"{cache_entry_name}.log"
+            )
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            cache_entry["merge_logs"] = str(output_file)
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(output)
             set_in_cache(
                 cache_entry_name,
                 cache_entry,
