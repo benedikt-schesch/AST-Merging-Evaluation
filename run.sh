@@ -23,7 +23,7 @@ OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
-# Check if it's run on MacOS, if yes raise an error
+# Do not run this script on MacOS.
 backend=$(uname -s)
 if [ "$backend" = "Darwin" ]; then
     echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
@@ -59,8 +59,8 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-PATH=$(pwd)/src/scripts/merge_tools/:$PATH
-PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
+PATH=$(pwd)/src/scripts/merge_tools:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
 export PATH
 
 # Check if cache.tar exists and cache is missing
@@ -78,7 +78,10 @@ if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
 export JAVA_HOME=$JAVA17_HOME
-./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar
+if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
+    git submodule update --init --recursive
+fi
+(cd ./src/scripts/merge_tools/merging && ./gradlew shadowJar)
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
@@ -101,6 +104,7 @@ if [ "$only_plotting" = true ]; then
     exit 0
 fi
 
+export JAVA_HOME=$JAVA11_HOME
 ./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
