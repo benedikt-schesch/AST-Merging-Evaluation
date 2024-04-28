@@ -5,7 +5,7 @@
 clone_dir=$1
 branch1=$2
 branch2=$3
-strategy="-s ort -Xignore-space-change"
+strategy="-Xignore-space-change"
 
 export JAVA_HOME="$JAVA17_HOME"
 
