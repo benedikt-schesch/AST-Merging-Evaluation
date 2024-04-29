@@ -56,12 +56,12 @@ PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
 echo "Checking for custom merge drivers in global configuration..."
-merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$' 2>/dev/null)
-if [ -z "$merge_drivers" ]; then
-    # No merge drivers found, proceed normally
-    echo "No custom merge drivers set in global configuration. Proceeding..."
+merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$' || echo "No merge drivers set")
+
+if [ "$merge_drivers" == "No merge drivers set" ]; then
+    echo "No custom merge drivers found in global configuration. Proceeding with the evaluation."
+    # Include other commands to continue the script here
 else
-    # Merge drivers found, raise an error
     echo "Error: Custom merge drivers are set in global configuration."
     echo "Please unset them before running the evaluation."
     echo "Merge driver found: $merge_drivers"
