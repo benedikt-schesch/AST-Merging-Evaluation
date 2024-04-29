@@ -38,6 +38,7 @@ clean-cache:
 # This target deletes files in the test cache.
 clean-test-cache:
 	rm -rf cache-small
+	rm -f cache-small.tar
 
 # This target deletes files that are committed to version control.
 clean-stored-hashes:
