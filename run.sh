@@ -55,6 +55,14 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
+merge_drivers=$(git config --local --get-regexp '^merge\..*\.driver$')
+if [ ! -z "$merge_drivers" ]; then
+    echo "Error: Custom merge drivers are set in global configuration."
+    echo "Please unset them before running the evaluation."
+    echo "$merge_drivers"
+    exit 1
+fi
+
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
