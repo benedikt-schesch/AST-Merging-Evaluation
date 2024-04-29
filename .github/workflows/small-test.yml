@@ -52,8 +52,6 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
-    - name: Build Java programs
-      run: ./gradlew build
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
