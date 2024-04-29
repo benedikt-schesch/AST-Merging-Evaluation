@@ -75,8 +75,8 @@ if [ "$only_plotting" = true ]; then
     exit 0
 fi
 
-PATH=$(pwd)/src/scripts/merge_tools/:$PATH
-PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
+PATH=$(pwd)/src/scripts/merge_tools:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
 export PATH
 
 # Clone all submodules
@@ -101,7 +101,11 @@ if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
 export JAVA_HOME=$JAVA17_HOME
-./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar
+if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
+    git submodule update --init --recursive
+fi
+git submodule update --recursive --remote
+(cd ./src/scripts/merge_tools/merging && ./gradlew shadowJar)
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
