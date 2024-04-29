@@ -59,7 +59,7 @@ merge_drivers=$(git config --local --get-regexp '^merge\..*\.driver$')
 if [ ! -z "$merge_drivers" ]; then
     echo "Error: Custom merge drivers are set in global configuration."
     echo "Please unset them before running the evaluation."
-    echo "$merge_drivers"
+    echo "Merge driver found: $merge_drivers"
     exit 1
 fi
 
