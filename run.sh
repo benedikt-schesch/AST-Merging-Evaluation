@@ -57,12 +57,14 @@ export PATH
 
 echo "Checking for custom merge drivers in global configuration..."
 merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$')
+echo "Merge drivers found: $merge_drivers"
 if [ -n "$merge_drivers" ]; then
     echo "Error: Custom merge drivers are set in global configuration."
     echo "Please unset them before running the evaluation."
     echo "Merge driver found: $merge_drivers"
     exit 1
 fi
+echo "No custom merge drivers found in global configuration."
 
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
