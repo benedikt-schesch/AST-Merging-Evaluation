@@ -93,6 +93,34 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
         ) from None
 
 
+def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
+    """Clones a repository, or runs `git fetch` if the repository is already cloned.
+    Args:
+        repo_slug (str): The slug of the repository, which is "owner/reponame".
+    """
+    repo_dir = Path(path) / Path(repo_slug)
+    if repo_dir.exists():
+        repo = git.repo.Repo(repo_dir)
+    else:
+        repo_dir.parent.mkdir(parents=True, exist_ok=True)
+        os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        print(repo_slug, " : Cloning repo")
+        # ":@" in URL ensures that we are not prompted for login details
+        # for the repos that are now private.
+        github_url = "https://:@github.com/" + repo_slug + ".git"
+        print(repo_slug, " : Finished cloning")
+        try:
+            repo = git.repo.Repo.clone_from(github_url, repo_dir)
+            print(repo_slug, " : Finished cloning")
+            repo.remote().fetch()
+            repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
+            repo.submodule_update()
+        except Exception as e:
+            print(repo_slug, "Exception during cloning:\n", e)
+            raise
+    return repo
+
+
 TEST_STATE = Enum(
     "TEST_STATE",
     [
