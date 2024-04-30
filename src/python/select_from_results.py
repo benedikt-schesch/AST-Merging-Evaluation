@@ -1,48 +1,73 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Output a subset of the results that match a hard-coded condition, to a hard-coded file.
+"""Output a subset of the results, to standard out.
+The arguments are a query and a list of columns.
+The query is executed (to select rows), then columns are output that include:
+ * idx
+ * all the columns that appear in the query
+ * any additional columns specified on the command line.
 
-To change the condition or file, edit this script.
+The query is an expression using dataframe variables.
+Here are examples:
+  (gitmerge_ort == "Merge_failed") and (spork != "Merge_failed")
+  (gitmerge_ort == "Merge_failed") and (spork == "Merge_failed")
 """
 
+import argparse
+from os import system
 import pandas as pd
-
-df = pd.read_csv("../../results/combined/result.csv", index_col="idx")
-
-# print(df.iloc[3])
-# print(df.iloc[3].gitmerge_ort_imports_ignorespace)
-# print(df.iloc[3].gitmerge_ort_ignorespace)
-# print(
-#     df.iloc[3].gitmerge_ort_imports_ignorespace == df.iloc[3].gitmerge_ort_ignorespace
-# )
+import re
+import tempfile
 
 
-def is_success(val):
-    """Returns true if the given result is a success result."""
-    return val == "Tests_passed"
+def columns_in_query(query):
+    """Returns all the identifiers used in the query."""
+    result = re.findall(r"""(?<!['"])\b[A-Za-z][A-Za-z_]*\b(?!['"])""", query)
+    if "and" in result:
+        result.remove("and")
+    if "or" in result:
+        result.remove("or")
+    return result
 
 
-def merge_failed(val):
-    """Returns true if the given result indicates that the merge succeeded."""
-    return val == "Merge_failed"
+# Testing:
+# columns_in_query('(gitmerge_ort == "Merge_failed") && (spork != "Merge_failed")')
+# columns_in_query('(gitmerge_ort == "Merge_failed") != (spork == "Merge_failed")')
 
 
-def merge_succeeded(val):
-    """Returns true if the given result indicates that the merge succeeded."""
-    return val != "Merge_failed"
+def main():
+    parser = argparse.ArgumentParser(
+        prog="select_from_results.py",
+        description="Outputs a subset of the results, to standard out",
+    )
+    parser.add_argument("query")
+    parser.add_argument(
+        "--input", action="store", default="../../results/combined/result.csv"
+    )
+    # Todo: Also parse arguments from the query.
+    parser.add_argument("columns", nargs=argparse.REMAINDER)
+    args = parser.parse_args()
+
+    df = pd.read_csv(args.input)
+
+    # Select some rows.
+    df = df.query(args.query)
+
+    # Select some columns
+    columns_to_select = (
+        ["idx", "repo-idx", "merge-idx", "branch_name", "merge", "left", "right"]
+        + columns_in_query(args.query)
+        + args.columns
+    )
+    df = df[columns_to_select]
+
+    # Gross way to produce output to standard out
+    tmpfile = tempfile.NamedTemporaryFile()
+    df.to_csv(tmpfile)
+    print(tmpfile.name)
+    system("cat " + tmpfile.name)
 
 
-# Retain rows where gitmerge_ort_imports_ignorespace and gitmerge_ort_ignorespace differ.
-# df = df[
-#     merge_failed(df.gitmerge_ort_imports_ignorespace)
-#     != merge_failed(df.gitmerge_ort_ignorespace)
-# ]
-# df.to_csv("../../results/combined/imports-differs-from-ort.csv", index_label="idx")
-
-# Select some rows.
-df = df[merge_failed(df.gitmerge_ort) != merge_failed(df.spork)]
-# Select some columns (is it OK to omit "idx"??)
-df = df[["gitmerge_ort", "spork"]]
-
-df.to_csv("../../results/combined/spork-differs-from-ort.csv", index_label="idx")
+if __name__ == "__main__":
+    main()
