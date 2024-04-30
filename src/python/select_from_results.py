@@ -9,9 +9,10 @@ The query is executed (to select rows), then columns are output that include:
  * any additional columns specified on the command line.
 
 The query is an expression using dataframe variables.
-Here are examples:
-  (gitmerge_ort == "Merge_failed") and (spork != "Merge_failed")
-  (gitmerge_ort == "Merge_failed") and (spork == "Merge_failed")
+
+Here are example invocations:
+  select_from_results.py '(gitmerge_ort == "Merge_failed") and (spork != "Merge_failed")'
+  select_from_results.py '(gitmerge_ort == "Merge_failed") != (spork == "Merge_failed")'
 """
 
 import argparse
