@@ -17,9 +17,9 @@ Here are example invocations:
 
 import argparse
 from os import system
-import pandas as pd
 import re
 import tempfile
+import pandas as pd
 
 
 def columns_in_query(query):
@@ -38,6 +38,7 @@ def columns_in_query(query):
 
 
 def main():
+    "Selects rows and columns from results."
     parser = argparse.ArgumentParser(
         prog="select_from_results.py",
         description="Outputs a subset of the results, to standard out",
@@ -64,10 +65,10 @@ def main():
     df = df[columns_to_select]
 
     # Gross way to produce output to standard out
-    tmpfile = tempfile.NamedTemporaryFile()
-    df.to_csv(tmpfile)
-    print(tmpfile.name)
-    system("cat " + tmpfile.name)
+    with tempfile.TemporaryFile() as tmpfile:
+        df.to_csv(tmpfile)
+        print(tmpfile.name)
+        system("cat " + tmpfile.name)
 
 
 if __name__ == "__main__":
