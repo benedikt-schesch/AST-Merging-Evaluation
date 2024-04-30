@@ -25,7 +25,7 @@ check-python-style:
 
 # This target deletes files that are not committed to version control.
 clean:
-	rm -rf .workdir
+	${MAKE} clean-workdir
 	rm -rf repos
 	rm -rf scratch
 	rm -rf results/small
@@ -91,12 +91,19 @@ small-test:
 	./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
+small-test-without-cleaning:
+	${MAKE} clean-test-cache
+	./run_small.sh --include_trivial_merges --no_timing
+	${MAKE} small-test-diff
+
 update-figures:
 	./run_combined.sh -op
 	./run_greatest_hits.sh -op
 	./run_reaper.sh -op
 
 run-all:
+	${MAKE} clean-workdir
+	${MAKE} small-test-without-cleaning
 	./run_combined.sh
 	./run_greatest_hits.sh
 	./run_reaper.sh
@@ -108,8 +115,13 @@ small-test-diff:
 gradle-assemble:
 	./gradlew -q assemble -g ../.gradle/
 
+clean-workdir:
+	if [ -d .workdir ]; then chmod -R u+w .workdir; fi
+	rm -rf .workdir
+
 clean-local:
-	rm -rf repos .workdir
+	${MAKE} clean-workdir
+	rm -rf repos
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
