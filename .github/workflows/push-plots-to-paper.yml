@@ -1,0 +1,41 @@
+name: Update Overleaf with Plots
+
+on:
+  push:
+    branches:
+      - main  # Set this to match the branch name you use
+      - automatic_plot_upload
+
+jobs:
+  update-overleaf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Git Config
+        run: |
+          git config --global user.email "github-cicd-bot@example.com"
+          git config --global user.name "GitHub CI/CD Bot"
+
+      - name: Clone Overleaf Repository
+        env:
+          OVERLEAF_GIT_REPO: ${{ secrets.OVERLEAF_REPO_URL }}
+          OVERLEAF_TOKEN: ${{ secrets.OVERLEAF_TOKEN }}
+        run: |
+          echo "machine git.overleaf.com login $OVERLEAF_TOKEN password" > ~/.netrc
+          git clone $OVERLEAF_GIT_REPO ../AST-Merging-Evaluation-Paper
+
+      - name: Copy plots to Overleaf repository
+        run: |
+          mkdir -p ../AST-Merging-Evaluation-Paper/plots
+          cp path/to/plots/* ../AST-Merging-Evaluation-Paper/plots/
+
+      - name: Commit and Push to Overleaf
+        run: |
+          cd ../AST-Merging-Evaluation-Paper
+          git add .
+          git commit -m "Automated plot updates by GitHub CI/CD Bot"
+          git push
+
