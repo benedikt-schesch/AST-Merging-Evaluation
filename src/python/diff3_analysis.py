@@ -1,5 +1,6 @@
 """
 Recreates a merge and outputs the diff files for two algorithms for comparison on a given conflict.
+See src/python/README.md for details on usage.
 """
 
 import sys
