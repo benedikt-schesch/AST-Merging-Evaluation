@@ -93,6 +93,8 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
         ) from None
 
 
+# Alternative clone repo method that returns git repo object for diff3 scripts
+@timeout(10 * 60)
 def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
