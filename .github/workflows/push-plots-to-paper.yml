@@ -3,8 +3,7 @@ name: Update Overleaf with Plots
 on:
   push:
     branches:
-      - main  # Set this to match the branch name you use
-      - automatic_plot_upload
+      - main
 
 jobs:
   update-overleaf:
@@ -32,7 +31,6 @@ jobs:
       - name: Run make command to copy plots
         run: make copy-paper
 
-      # Commit and push the changes to Overleaf if needed
       - name: Commit and Push to Overleaf
         run: |
           cd ../AST-Merging-Evaluation-Paper
