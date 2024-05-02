@@ -39,7 +39,7 @@ This directory contains Python scripts designed to facilitate the analysis of me
 
 
 
-To analyze a conflicts comparing two merge tools:
+To analyze a conflicts comparing two merge tools inside src/Python run:
 
 
 python3 diff3_analysis.py <merge_tool1> <merge_tool2> <results_index> <output_directory>
