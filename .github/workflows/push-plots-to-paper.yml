@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Set this to match the branch name you use
+      - automatic_plot_upload
 
 jobs:
   update-overleaf:
