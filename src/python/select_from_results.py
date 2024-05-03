@@ -16,6 +16,7 @@ Here are example invocations:
 """
 
 import argparse
+import os
 from os import system
 import re
 import tempfile
@@ -44,8 +45,11 @@ def main():
         description="Outputs a subset of the results, to standard out",
     )
     parser.add_argument("query")
+    scriptdir = os.path.dirname(os.path.realpath(__file__))
     parser.add_argument(
-        "--input", action="store", default="../../results/combined/result.csv"
+        "--input",
+        action="store",
+        default=scriptdir + "/" + "../../results/combined/result.csv",
     )
     # Todo: Also parse arguments from the query.
     parser.add_argument("columns", nargs=argparse.REMAINDER)
@@ -65,8 +69,9 @@ def main():
     df = df[columns_to_select]
 
     # Gross way to produce output to standard out
-    with tempfile.TemporaryFile() as tmpfile:
+    with tempfile.NamedTemporaryFile() as tmpfile:
         df.to_csv(tmpfile)
+        print("tmpfile:")
         print(tmpfile.name)
         system("cat " + tmpfile.name)
 
