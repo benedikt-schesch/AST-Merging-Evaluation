@@ -26,9 +26,9 @@ import pandas as pd
 def columns_in_query(query):
     """Returns all the identifiers used in the query."""
     result = re.findall(r"""(?<!['"])\b[A-Za-z][A-Za-z_]*\b(?!['"])""", query)
-    if "and" in result:
+    while "and" in result:
         result.remove("and")
-    if "or" in result:
+    while "or" in result:
         result.remove("or")
     return result
 
@@ -71,8 +71,6 @@ def main():
     # Gross way to produce output to standard out
     with tempfile.NamedTemporaryFile() as tmpfile:
         df.to_csv(tmpfile)
-        print("tmpfile:")
-        print(tmpfile.name)
         system("cat " + tmpfile.name)
 
 
