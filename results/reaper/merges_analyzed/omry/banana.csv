@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,diff contains java file,test merge,sampled for testing
-5,refs/heads/master,c7f05dd2551bf1ae0919d9a841ecb9cce0c7d0e6,6242d6e7978c37171c3903efd20e7f003bee7337,e6231972b26c85f016b0074bbf12418ae5afc321,,,,,,,False,False,False
-6,refs/heads/master,6242d6e7978c37171c3903efd20e7f003bee7337,00f4c45d35b34340d188d92a214c81ac50cf39c4,8050cbdefee9408f83688b7bdf571d3dfdb625f9,,,,,,,False,False,False
-7,refs/heads/master,00f4c45d35b34340d188d92a214c81ac50cf39c4,785b5ecb4c23bf59532c52c48118f1c24b971719,923eb90918ac696482f94f4fa10888198684e305,,,Git_checkout_failed,,Git_checkout_failed,False,True,False,False
-8,refs/heads/master,f59e6067480b69a47bd0cac7ce906047af2f8f8a,c9a6af9bc4fdfa6b9191166ed7ddd3119da02113,80676c68cdef59f22baf4f2b7ef4fff2858fdfcb,,,,,,,False,False,False
-9,refs/heads/master,c9a6af9bc4fdfa6b9191166ed7ddd3119da02113,20713db7a35ccb89324cb4bfa6feb6489554d01a,217052136d71ba81dce3a7a9fc29918522570f33,,,,,,,False,False,False
+idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
+5,refs/heads/master,c7f05dd2551bf1ae0919d9a841ecb9cce0c7d0e6,6242d6e7978c37171c3903efd20e7f003bee7337,e6231972b26c85f016b0074bbf12418ae5afc321,,False,False,,,,,,False
+6,refs/heads/master,6242d6e7978c37171c3903efd20e7f003bee7337,00f4c45d35b34340d188d92a214c81ac50cf39c4,8050cbdefee9408f83688b7bdf571d3dfdb625f9,,False,False,,,,,,False
+7,refs/heads/master,00f4c45d35b34340d188d92a214c81ac50cf39c4,785b5ecb4c23bf59532c52c48118f1c24b971719,923eb90918ac696482f94f4fa10888198684e305,,False,True,,Git_checkout_failed,,Git_checkout_failed,False,False
+8,refs/heads/master,f59e6067480b69a47bd0cac7ce906047af2f8f8a,c9a6af9bc4fdfa6b9191166ed7ddd3119da02113,80676c68cdef59f22baf4f2b7ef4fff2858fdfcb,,False,False,,,,,,False
+9,refs/heads/master,c9a6af9bc4fdfa6b9191166ed7ddd3119da02113,20713db7a35ccb89324cb4bfa6feb6489554d01a,217052136d71ba81dce3a7a9fc29918522570f33,,False,False,,,,,,False
