@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Replay merges and their test results"""
 import argparse
+import os
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -183,6 +184,17 @@ if __name__ == "__main__":
         action="store_true",
     )
     arguments = parser.parse_args()
+
+    # Setup for imports
+    os.system(
+        "./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar"
+    )
+    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
+    os.environ["PATH"] = (
+        os.environ["PATH"]
+        + os.getcwd()
+        + "/src/scripts/merge_tools/merging/src/main/sh/"
+    )
 
     df = pd.read_csv(arguments.merges_csv, index_col="idx")
 
