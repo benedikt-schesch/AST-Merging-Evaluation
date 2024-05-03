@@ -27,9 +27,10 @@ jobs:
         distribution: 'zulu'
         java-version: 17
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools" >> $GITHUB_PATH
     - run: java -version
     - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
     - name: Set up Python 3.8
       uses: actions/setup-python@v5
       with:
@@ -51,8 +52,6 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
-    - name: Build Java programs
-      run: ./gradlew build
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
