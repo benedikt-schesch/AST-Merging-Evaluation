@@ -65,6 +65,7 @@ def main():
         ["idx", "repo-idx", "merge-idx", "branch_name", "merge", "left", "right"]
         + columns_in_query(args.query)
         + args.columns
+        + ["repository"]
     )
     df = df[columns_to_select]
 
