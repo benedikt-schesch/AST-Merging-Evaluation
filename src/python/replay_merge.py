@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
     # Setup for imports
     os.system(
-        "./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar"
+        "./src/scripts/merge_tools/merging/gradlew -q -p src/scripts/merge_tools/merging shadowJar"
     )
     os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
     os.environ["PATH"] = (
