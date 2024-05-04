@@ -6,6 +6,11 @@ SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-di
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 PYTHON_FILES = $(shell find .  -name '*.py' ! -path './repos/*' -not -path "./.workdir/*" -not -path "./cache*/*" | grep -v '/__pycache__/' | grep -v '/.git/' | grep -v gradlew)
 
+CSV_RESULTS_COMBINED = results/combined/result.csv
+CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result.csv
+CSV_RESULTS_REAPER = results/reaper/result.csv
+CSV_RESULTS = $(CSV_RESULTS_COMBINED)
+
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	checkbashisms ${SH_SCRIPTS}
@@ -105,8 +110,12 @@ run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning
 	./run_combined.sh
+	${MAKE} check-merges-reproducibility
 	./run_greatest_hits.sh
+	${MAKE} RESULT_CSV=results/greatest_hits/result.csv check-merges-reproducibility
 	./run_reaper.sh
+	${MAKE} RESULT_CSV=results/reaper/result.csv check-merges-reproducibility
+
 
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
@@ -122,6 +131,10 @@ clean-workdir:
 clean-local:
 	${MAKE} clean-workdir
 	rm -rf repos
+
+check-merges-reproducibility:
+	@echo "Running replay_merge for each idx in parallel..."
+	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel -u --halt now,fail=1 -j 0 'python3 src/python/replay_merge.py -delete_workdir -skip_build --idx {}'
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
