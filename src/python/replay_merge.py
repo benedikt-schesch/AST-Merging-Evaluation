@@ -90,11 +90,8 @@ def merge_replay(
 
             if (WORKDIR_DIRECTORY / workdir).exists():
                 # Ask the user if they want to delete the workdir
-                logger.info(
-                    f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
-                )
                 answer = input(
-                    f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
+                    f"workdir {workdir} exists. Delete it (n=reuse it)? (y/n)"
                 )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
@@ -157,7 +154,10 @@ def merge_replay(
                 repo.local_repo_path,
                 merge_fingerprint,
             ]
-            if merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint:
+            if (
+                merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
+                and not arguments.dont_check_fingerprints
+            ):
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
@@ -220,7 +220,7 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results/small/result.csv",
+        default="results/combined/result.csv",
     )
     parser.add_argument(
         "--idx",
@@ -231,6 +231,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "-test",
         help="Test the replay of a merge",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--dont_check_fingerprints",
+        help="Don't check the fingerprint of a merge",
+        default=False,
         action="store_true",
     )
     arguments = parser.parse_args()
