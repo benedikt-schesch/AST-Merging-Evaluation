@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        maven: [ '3.9.2']
+        maven: [ '3.9.2' ]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -52,6 +52,7 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
+    - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"

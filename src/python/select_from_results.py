@@ -13,6 +13,10 @@ The query is an expression using dataframe variables.
 Here are example invocations:
   select_from_results.py '(gitmerge_ort == "Merge_failed") and (spork != "Merge_failed")'
   select_from_results.py '(gitmerge_ort == "Merge_failed") != (spork == "Merge_failed")'
+
+The resulting .csv is useful for manual examination but cannot be passed to
+`replay_merge.py` because that requires a .csv file with all tools and all
+fingerprints.
 """
 
 import argparse
@@ -62,9 +66,20 @@ def main():
 
     # Select some columns
     columns_to_select = (
-        ["idx", "repo-idx", "merge-idx", "branch_name", "merge", "left", "right"]
+        [
+            "idx",
+            "repo-idx",
+            "merge-idx",
+            "branch_name",
+            "merge",
+            "left",
+            "left_tree_fingerprint",
+            "right",
+            "right_tree_fingerprint",
+        ]
         + columns_in_query(args.query)
         + args.columns
+        + ["repository"]
     )
     df = df[columns_to_select]
 
