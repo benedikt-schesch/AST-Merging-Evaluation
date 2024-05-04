@@ -1,5 +1,6 @@
 """
 Recreates a merge and outputs the diff files for two algorithms for comparison on a given conflict.
+Displays base, conflicting branches, and programmer merge.
 See src/python/README.md for details on usage.
 """
 
