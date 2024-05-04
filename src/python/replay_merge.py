@@ -21,33 +21,6 @@ from loguru import logger
 logger.add("replay_merge.log", mode="a")
 
 
-def store_artifacts(result_df: pd.DataFrame) -> None:
-    """Store artifacts in a tarball directly fro."""
-    tarball_path = "replay_merge_artifacts.tar.gz"
-
-    # Create the tarball and add files, ensuring no path modification
-    with tarfile.open(tarball_path, "w:gz") as tar:
-        for idx in result_df.index:
-            repo_path = result_df.loc[idx, "repo path"]
-            log_path = result_df.loc[idx, "merge log path"]
-
-            # Add repository directories or files to the tarball with absolute paths
-            tar.add(repo_path, arcname=repo_path)
-
-            # Add log files to the tarball with absolute paths
-            tar.add(log_path, arcname=log_path)
-
-    logger.info("Artifacts created")
-
-
-def delete_workdirs(results_df: pd.DataFrame) -> None:
-    """Delete the workdirs after replaying the merges."""
-    for idx in results_df.index:
-        os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
-        shutil.rmtree(results_df.loc[idx, "repo path"])
-    logger.info("Workdirs deleted")
-
-
 # pylint: disable=too-many-arguments, too-many-locals
 def merge_replay(
     merge_idx: str,
@@ -55,7 +28,6 @@ def merge_replay(
     merge_data: pd.Series,
     test_merge: bool = False,
     delete_workdir: bool = True,
-    create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
@@ -90,8 +62,11 @@ def merge_replay(
 
             if (WORKDIR_DIRECTORY / workdir).exists():
                 # Ask the user if they want to delete the workdir
+                logger.info(
+                    f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
+                )
                 answer = input(
-                    f"workdir {workdir} exists. Delete it (n=reuse it)? (y/n)"
+                    f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
                 )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
@@ -100,21 +75,13 @@ def merge_replay(
                         f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping"
                     )
                     continue
-            try:
-                repo = Repository(
-                    repo_slug,
-                    cache_directory=Path("no_cache/"),
-                    workdir_id=workdir,
-                    delete_workdir=False,
-                    lazy_clone=False,
-                )
-            except Exception as e:
-                logger.error(
-                    f"Git clone failed for {repo_slug} {merge_data['left']}"
-                    + f"{merge_data['right']} {e}"
-                )
-                # Exit with 0 for CI/CD to not cause problems in case a repo is no longer available
-                sys.exit(0)
+
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=delete_workdir,
+            )
             (
                 merge_result,
                 merge_fingerprint,
@@ -156,7 +123,7 @@ def merge_replay(
             ]
             if (
                 merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
-                and not arguments.dont_check_fingerprints
+                and not dont_check_fingerprints
             ):
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
@@ -234,17 +201,39 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
-        "--dont_check_fingerprints",
-        help="Don't check the fingerprint of a merge",
-        default=False,
+        "-delete_workdir",
+        help="Delete the workdir after replaying the merge",
         action="store_true",
     )
-    arguments = parser.parse_args()
-
-    # Setup for imports
-    os.system(
-        "./src/scripts/merge_tools/merging/gradlew -q -p src/scripts/merge_tools/merging shadowJar"
+    parser.add_argument(
+        "-dont_check_fingerprints",
+        help="Don't check the fingerprint of a merge",
+        action="store_true",
     )
+    parser.add_argument(
+        "-skip_build",
+        help="Build the merge tool",
+        action="store_false",
+    )
+    parser.add_argument(
+        "-create_artifacts",
+        help="Create artifacts",
+        action="store_true",
+    )
+    args = parser.parse_args()
+
+    logger.info(f"Replaying merge with index {args.idx}")
+    if args.delete_workdir:
+        logger.info("Deleting workdir after replaying the merge")
+    if args.dont_check_fingerprints:
+        logger.info("Not checking the fingerprint of a merge")
+    if args.test:
+        logger.info("Testing the replay of a merge")
+    if args.create_artifacts:
+        logger.info("Creating artifacts after replaying the merges")
+    if args.skip_build:
+        logger.info("Building merge tool")
+        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
     os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
     os.environ["PATH"] = (
         os.environ["PATH"]
@@ -252,14 +241,17 @@ if __name__ == "__main__":
         + "/src/scripts/merge_tools/merging/src/main/sh/"
     )
 
-    df = pd.read_csv(arguments.merges_csv, index_col="idx")
+    df = pd.read_csv(args.merges_csv, index_col="idx")
 
-    repo_slug = df.loc[arguments.idx, "repository"]
-    merge_data = df.loc[arguments.idx]
-    repo = Repository(  # To clone the repo
+    repo_slug = df.loc[args.idx, "repository"]
+    merge_data = df.loc[args.idx]
+    results_df = merge_replay(
+        args.idx,
         str(repo_slug),
-        cache_directory=Path("no_cache/"),
-        workdir_id="todelete",
+        merge_data,
+        args.test,
+        args.delete_workdir and not args.create_artifacts,
+        args.dont_check_fingerprints,
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")
@@ -277,6 +269,16 @@ if __name__ == "__main__":
 
     # Create artifacts which means creating a tarball of all the relevant workdirs
     if args.create_artifacts:
-        store_artifacts(results_df)
-    if args.delete_workdir:
-        delete_workdirs(results_df)
+        logger.info("Creating artifacts")
+        os.system(
+            "tar -czf replay_merge_artifacts.tar.gz "
+            + " ".join(
+                [str(results_df.loc[idx, "repo path"]) for idx in results_df.index]
+            )
+        )
+        logger.info("Artifacts created")
+        if args.delete_workdir:
+            for idx in results_df.index:
+                os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
+                shutil.rmtree(results_df.loc[idx, "repo path"])
+            logger.info("Workdirs deleted")
