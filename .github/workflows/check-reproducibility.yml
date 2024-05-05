@@ -40,7 +40,7 @@ jobs:
     - name: Clean caches & workspace
       run: make clean
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
-    - name: Run small test
+    - name: make check-merges-reproducibility
       run: |
         git config --global user.email "example@example.com"
         git config --global user.name "Example Example"
