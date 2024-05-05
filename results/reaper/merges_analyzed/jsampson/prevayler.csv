@@ -8,10 +8,7 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 16,refs/heads/master,d0106d3e3d6de8905633133a6686fe8b1a83f280,9b60a5b84f818554a6a8e6c776608b0c3ec3ae4a,03db4c92ba5a86578172ce2428e38553aa54f18a,,False,False,,,,,,False
 19,refs/heads/master,89393dd7f2fe8110527df3f4a41f0ba7570f7345,a00a4f66f630f053c9bf8dc6719b411d24ab97e5,729191569a05dd5c65917070df84560e44a50ed5,,False,False,,,,,,False
 20,refs/heads/master,a00a4f66f630f053c9bf8dc6719b411d24ab97e5,7a1f95eb93f15b7f4052b2bc2ab2c63c42abe6d7,888c5178e0614993dca5e586ff9fbccb35ed4889,,False,False,,,,,,False
-21,refs/heads/master,729191569a05dd5c65917070df84560e44a50ed5,7a1f95eb93f15b7f4052b2bc2ab2c63c42abe6d7,888c5178e0614993dca5e586ff9fbccb35ed4889,,False,False,,,,,,False
-22,refs/heads/master,7a1f95eb93f15b7f4052b2bc2ab2c63c42abe6d7,5159823fd13f53918b968b58ba20bccab3929141,e91ec1c83f731254906c44943acaf3cf5dfef6b7,,False,False,,,,,,False
 23,refs/heads/master,888c5178e0614993dca5e586ff9fbccb35ed4889,5159823fd13f53918b968b58ba20bccab3929141,e91ec1c83f731254906c44943acaf3cf5dfef6b7,,False,False,,,,,,False
-24,refs/heads/master,5159823fd13f53918b968b58ba20bccab3929141,3744d8f5ad3c4117aba4b40d6ad20bc90c0b9a10,3a449fb847db9adffb138004c2c89fbee4bbe85d,,False,False,,,,,,False
 25,refs/heads/master,e91ec1c83f731254906c44943acaf3cf5dfef6b7,3744d8f5ad3c4117aba4b40d6ad20bc90c0b9a10,3a449fb847db9adffb138004c2c89fbee4bbe85d,,False,False,,,,,,False
 26,refs/heads/master,bced020d8ffe3c094310dc589123d9961c0025e3,58606fe62ec67b706eadffe99d778167ce073dd7,1509d89f1038a8abf9e01e34f0f02caa57d77ac8,,False,True,20e7763ec78e61fd7cd51c1855e8a12f4ad8ab338b87833dac48c0f42064d535,Tests_failed,71840da0a2dfc8a67415b042cfdbdd05dec153cdc607b7c4e0fbc466396b0d33,Tests_failed,False,False
 28,refs/remotes/origin/pull/17,3c801161a8e5bd66b51e07f68a7353c4ac6d3549,0202524f2f829f7264ad1694539f619d8d162efa,cf1dd805458b787a61b8162f00ab8367dd2cc36b,,False,False,,,,,,False
