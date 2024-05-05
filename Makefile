@@ -117,6 +117,7 @@ run-all:
 	${MAKE} RESULT_CSV=results/reaper/result.csv check-merges-reproducibility
 
 
+
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo

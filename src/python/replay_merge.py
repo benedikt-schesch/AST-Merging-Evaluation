@@ -239,6 +239,12 @@ if __name__ == "__main__":
         + os.getcwd()
         + "/src/scripts/merge_tools/merging/src/main/sh/"
     )
+    parser.add_argument(
+        "-create_artifacts",
+        help="Create artifacts",
+        action="store_true",
+    )
+    args = parser.parse_args()
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 

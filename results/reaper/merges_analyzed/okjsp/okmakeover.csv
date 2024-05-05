@@ -21,7 +21,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 23,refs/heads/master,81cfcc5267470d57f72046719e6bfed45a6bcd60,1fb512698d1c8268c74dda0e565f3d85f4bec71c,044e8842b286939ab355c1f821970e352087ab30,,False,False,,,,,,False
 24,refs/heads/master,fde02924008b46eca831efd0a4f75181001f5df7,c71cfd8ec33620f3b50c9d40f68a9bb4fef771de,00082c86b9bb4285d6f0cf880d3f6fed11340cbd,,False,False,,,,,,False
 25,refs/heads/master,770b317bd96b92a50118232bc786aae90ad7d74b,47e1861a92155b4b6c41a3a54db79437c23c46a9,a4b5b9db23678c3f563eb76fbbf127bf736fad43,,False,False,,,,,,False
-26,refs/heads/master,47e1861a92155b4b6c41a3a54db79437c23c46a9,7ed51f6817cd56fb0af93e14bea20a7226f0c5ee,86381bf1ae24661ac214d00a948224966a11344c,,False,False,,,,,,False
 27,refs/heads/master,a4b5b9db23678c3f563eb76fbbf127bf736fad43,86381bf1ae24661ac214d00a948224966a11344c,7ed51f6817cd56fb0af93e14bea20a7226f0c5ee,,False,False,,,,,,False
 28,refs/remotes/origin/pull/47,7ae4c46789661f9402b65cc8cdd6ffc93b441c69,70c3898b1b9b93217b34688870568f49efb3eec4,245c3e894155a0e31445f71c877138ab695f0381,,False,False,,,,,,False
 29,refs/remotes/origin/pull/47,245c3e894155a0e31445f71c877138ab695f0381,5d29f517982c377da534172f1e28059d1ce9ed84,1c7bb0533109e518687397e305e1246e3ae70e21,,False,False,,,,,,False
