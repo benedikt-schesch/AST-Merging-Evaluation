@@ -23,6 +23,7 @@ from cache_utils import (
     set_in_cache,
     lookup_in_cache,
 )
+import fasteners
 import git.repo
 from variables import (
     REPOS_PATH,
@@ -209,21 +210,16 @@ class Repository:  # pylint: disable=too-many-instance-attributes
 
     def clone_repo(self) -> None:
         """Clones the repository."""
-        if self.repo_path.exists():
-            return
-        print(
-            "Cloning",
-            self.repo_slug,
-            "to",
-            self.repo_path,
-            "because:",
-            self.repo_path.exists(),
-        )
-        try:
-            clone_repo(self.repo_slug, self.repo_path)
-        except Exception as e:
-            logger.error("Exception during cloning:\n", e)
-            raise
+        lock_path = REPOS_PATH / "locks" / self.repo_slug
+        lock = fasteners.InterProcessLock(lock_path)
+        with lock:
+            if self.repo_path.exists():
+                return
+            try:
+                clone_repo(self.repo_slug, self.repo_path)
+            except Exception as e:
+                logger.error("Exception during cloning:\n", e)
+                raise
         if not self.repo_path.exists():
             logger.error(
                 f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"

@@ -108,9 +108,8 @@ fi
 mkdir -p "$OUT_DIR"
 
 # Delete all locks in cache
-if [ -d "$CACHE_DIR" ]; then
-    find "$CACHE_DIR" -name "*.lock" -delete
-fi
+find "$CACHE_DIR" -name "*.lock" -delete
+find "repos" -name "*.lock" -delete
 
 # Delete .workdir
 rm -rf .workdir
