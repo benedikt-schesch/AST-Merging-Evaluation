@@ -191,7 +191,11 @@ def merge_replay(
                 merge_fingerprint,
             ]
             assert repo.local_repo_path.exists()
-            if (
+            if merge_result not in (
+                MERGE_STATE.Merge_failed,
+                MERGE_STATE.Git_checkout_failed,
+                TEST_STATE.Git_checkout_failed,
+            ) and (
                 merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
                 and not dont_check_fingerprints
             ):
