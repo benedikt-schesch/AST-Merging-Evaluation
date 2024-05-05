@@ -79,5 +79,4 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 98,refs/remotes/origin/pull/494,69e9e87fca1b7eb09688f823a21b3d9a7c9eb5cf,51549f3a2701423a7a605465150743c541efe29f,50ff2df2e62644260d519e2d875a4db7d87d6746,,False,True,0fc4ea2f8901816c8a9b30869e3c8bd5803320936120f68f896c9dce5927d418,Tests_failed,5de29a61d1de9ff9d17f93e123c3a57657afa8ff4787a6285d7c7cf0529d8f0b,Tests_passed,False,False
 99,refs/remotes/origin/pull/8,c8a2c602e4bb7a17d9d17e6f39dac09de8c85c4d,57303ae1d5ce6ef0cd73f4029f63d8cf9e3a522d,476589828356d8805b617acabb2b781ae4f96c48,,False,False,,,,,,False
 100,refs/remotes/origin/pull/8,4f8b24a3e6d085cf256d2a414996b35f9def1299,69285675707e6efde48e564d7f77a6b21ce63385,3b0df60568fdbf8ebe7f26469c3aaa7588a9cac3,,False,False,,,,,,False
-101,refs/remotes/origin/pull/8,69285675707e6efde48e564d7f77a6b21ce63385,e9ff82c479578317dca82270ea032db39db38b28,ccb975c7903b2aafa7f9b6aa8404892ca9f8dbdb,,False,False,,,,,,False
 102,refs/remotes/origin/pull/8,e8565231a1c4c9967741a94b023c7f04fe4d6a85,e9ff82c479578317dca82270ea032db39db38b28,ccb975c7903b2aafa7f9b6aa8404892ca9f8dbdb,,False,False,,,,,,False

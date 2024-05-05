@@ -77,7 +77,6 @@ idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test re
 110,refs/heads/develop,14b96b885b8f61c363e913b39ae8352cb9bc6eee,33481c417f316452c6f4fffa8d7a37529d60495e,41c65bd740e3c61962f50bd4b4e70ecfb9b98b8c,,,,,,,False,False,False
 111,refs/heads/develop,ae6474b8d9e4423506392e46ea45e1f4f2386ed8,b1aadb14b88eb65569e6a504e54c1c74e68617c8,fddf6fe3225dd53e8ed5652c4d37db51aa403dbc,,e8b675a30fd0debb33b59ceffaaa5cc2065e49df1807f6ce192629618e2cae5f,Tests_failed,1f151e157fd49f33c581808bae424fc222a17319d5ebd062cdef707c6b69c238,Tests_failed,False,True,False,False
 112,refs/heads/develop,78cf45d1a111be3282423f2013098a3549f6017e,700394806488a1cb9404cabca49351709d36a621,9a337acb83170d86d72261bc9f2fc1c8f25fac56,,,,,,,False,False,False
-113,refs/remotes/origin/ase2013-tutorial,ec9eb7eeec93739cab6bba4bc89dcd545cacfd44,731bb38dd00a6e1827114724c1f4025cfc1af3c2,698f00b42fb3e083df2ea598654a992df5f22bae,,,,,,,False,False,False
 114,refs/remotes/origin/pull/74,5b4f29b271afe5613f90d18440f20fcda407dfec,5fe7822d5eeaa70dc5b764a033396f7c5cc17a76,9f78eb34b9ecd98c151d4843cefe128febcc13bd,,,,,,,False,False,False
 115,refs/remotes/origin/pull/91,db3dbb951d3eb595bd08f816bea476dc9a51b968,8235738ea40e2ba6231e492974722421b5506a2f,c88a065c351c62b30db1956110ef9b176097c944,,,,,,,False,False,False
 116,refs/remotes/origin/pull/91,9f0de5c0c0008adae352f4e39846726641a0dca7,05158dab82b824a0a90a46c62bc6e88deb0349f4,e5243edf0d200fb82307ca26992099e1ac81f850,,,,,,,False,False,False

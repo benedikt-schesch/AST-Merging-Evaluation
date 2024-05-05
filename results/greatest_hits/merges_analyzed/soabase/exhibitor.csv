@@ -16,7 +16,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 41,refs/heads/master,da8987c7290fae942b68f0b7aada2ab6b9dd0836,67dabb53a90956709152a09a64bea60259fc4633,b1eca3f4387a50f12ff6ed56395ad4af121b1f39,,False,False,,,,,,False
 43,refs/heads/master,7d9eda8422500e84647820382ee7f0233d8adade,43797af6146aef750c807afe738d88c3cfe04ceb,40a02452dc3133fe37bf4ecf076bda99c29ab6ec,,False,False,,,,,,False
 44,refs/heads/master,43797af6146aef750c807afe738d88c3cfe04ceb,ac6574f0f6ca041f1a4d14db40f8bd408a38341d,af261f365cfb609bdf8066d9c06a8311ae998ec2,,False,False,,,,,,False
-45,refs/heads/master,8e1dc78c21e1204266cedf79df43c1d1f2e927b1,ac6574f0f6ca041f1a4d14db40f8bd408a38341d,af261f365cfb609bdf8066d9c06a8311ae998ec2,,False,False,,,,,,False
 46,refs/heads/master,35ddb005d73c7fec2447355e850630f33f6e254d,528696796dfe2bf756b0b6e3aaa13b871d382698,65a3e23245dbe43b481a4d104cc507a11d02e6a7,,False,False,,,,,,False
 49,refs/heads/master,dbac08c0dc43d8b922a07b1b1bb57f8be1c25da6,6968d8878a0f73add1fa514a2f39889a339cdbb2,35eccb430f7a39a60a88c34a4e1f212302ec07b3,,False,False,,,,,,False
 51,refs/heads/master,e0a7542e219ce047038c68d3bb7dbd805d839e24,f5b55fa5fcf8fd67090ff316e0caae3d95c899c0,b0585dae4cfe7108fd8bd80d7c4b890f95e42119,two initial commits,False,False,,,,,,False
