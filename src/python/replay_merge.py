@@ -212,7 +212,9 @@ def merge_replay(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
                     + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']} at log path {log_path}"
-                    + f" and repo path {repo.local_repo_path}"
+                    + f" and repo path {repo.local_repo_path}",
+                    merge_result,
+                    f"idx {merge_idx}",
                 )
 
             if merge_result not in (
