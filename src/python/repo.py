@@ -93,33 +93,50 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
         ) from None
 
 
-# Alternative clone repo method that returns git repo object for diff3 scripts
 @timeout(10 * 60)
-def clone_repo_to_path(repo_slug: str, path: str) -> git.repo.Repo:
-    """Clones a repository, or runs `git fetch` if the repository is already cloned.
+def clone_repo_to_path(repo_name: str, path: str) -> git.repo.Repo:
+    """Clones a repository to a specified path.
+
     Args:
-        repo_slug (str): The slug of the repository, which is "owner/reponame".
+        repo_name (str): The name of the repository in the format "owner/reponame".
+        path (str): The path to the folder where the repository will be cloned.
+
+    Returns:
+        git.repo.Repo: The Git repository object.
+
+    Raises:
+        Exception: If there's an error during cloning or submodule update.
+
     """
-    repo_dir = Path(path) / Path(repo_slug)
+    # Define the path for the repository directory
+    repo_dir = Path(path) / Path(repo_name)
+
+    # Check if the repository directory already exists
     if repo_dir.exists():
+        # If the repository exists, open it as a Git repository
         repo = git.repo.Repo(repo_dir)
     else:
+        # If the repository doesn't exist, clone it from GitHub
         repo_dir.parent.mkdir(parents=True, exist_ok=True)
         os.environ["GIT_TERMINAL_PROMPT"] = "0"
-        print(repo_slug, " : Cloning repo")
+        print(repo_name, " : Cloning repo")
         # ":@" in URL ensures that we are not prompted for login details
         # for the repos that are now private.
-        github_url = "https://:@github.com/" + repo_slug + ".git"
-        print(repo_slug, " : Finished cloning")
+        github_url = "https://:@github.com/" + repo_name + ".git"
+        print(repo_name, " : Finished cloning")
         try:
+            # Clone the repository from the GitHub URL
             repo = git.repo.Repo.clone_from(github_url, repo_dir)
-            print(repo_slug, " : Finished cloning")
+            print(repo_name, " : Finished cloning")
+            # Fetch remote branches
             repo.remote().fetch()
             repo.remote().fetch("refs/pull/*/head:refs/remotes/origin/pull/*")
+            # Update submodules if present
             repo.submodule_update()
         except Exception as e:
-            print(repo_slug, "Exception during cloning:\n", e)
+            print(repo_name, "Exception during cloning:\n", e)
             raise
+
     return repo
 
 
