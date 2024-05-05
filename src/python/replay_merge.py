@@ -20,6 +20,7 @@ from rich.progress import (
 from loguru import logger
 
 logger.add("replay_merge.log", mode="a")
+logger.add(sys.stdout, colorize=True)
 
 
 # pylint: disable=too-many-arguments, too-many-locals
