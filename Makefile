@@ -131,7 +131,7 @@ clean-local:
 
 check-merges-reproducibility:
 	@echo "Running replay_merge for each idx in parallel..."
-	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel -u --halt now,fail=1 -j 0 'python3 src/python/replay_merge.py -delete_workdir --idx {}'
+	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --progress --bar -u --halt now,fail=1 -j 0 'python3 src/python/replay_merge.py -delete_workdir --idx {}'
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
