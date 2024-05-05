@@ -135,7 +135,7 @@ check-merges-reproducibility:
 	@echo "Running replay_merge for each idx in parallel..."
 	@set -e; \
 	tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | while read idx; do \
-		python3 src/python/replay_merge.py --merges_csv $$(CSV_RESULTS) --delete_workdir --idx $$idx; \
+		python3 src/python/replay_merge.py --merges_csv $(CSV_RESULTS) -delete_workdir --idx $$idx; \
 	done
 
 protect-repos:
