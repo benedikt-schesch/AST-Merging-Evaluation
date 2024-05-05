@@ -3,6 +3,7 @@
 """Replay merges and their test results"""
 import argparse
 import os
+import sys
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -75,13 +76,21 @@ def merge_replay(
                         f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping"
                     )
                     continue
-
-            repo = Repository(
-                repo_slug,
-                cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
-                delete_workdir=delete_workdir,
-            )
+            try:
+                repo = Repository(
+                    repo_slug,
+                    cache_directory=Path("no_cache/"),
+                    workdir_id=workdir,
+                    delete_workdir=delete_workdir,
+                    lazy_clone=False,
+                )
+            except Exception as e:
+                logger.error(
+                    f"Git clone failed for {repo_slug} {merge_data['left']}"
+                    + f"{merge_data['right']} {e}"
+                )
+                # Exit with 0 for CI/CD to not cause problems in case a repo is no longer available
+                sys.exit(0)
             (
                 merge_result,
                 merge_fingerprint,
