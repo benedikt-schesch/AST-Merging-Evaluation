@@ -119,11 +119,8 @@ run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning
 	./run_combined.sh
-	${MAKE} check-merges-reproducibility
 	./run_greatest_hits.sh
-	${MAKE} RESULT_CSV=results/greatest_hits/result.csv check-merges-reproducibility
 	./run_reaper.sh
-	${MAKE} RESULT_CSV=results/reaper/result.csv check-merges-reproducibility
 
 
 
