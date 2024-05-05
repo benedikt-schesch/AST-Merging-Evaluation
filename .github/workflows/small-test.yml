@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        maven: [ '3.9.2']
+        maven: [ '3.9.2' ]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,15 +29,18 @@ jobs:
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: java -version
     - uses: actions/checkout@v4
-    - name: Set up Python 3.8
+      with:
+        submodules: 'true'
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.12'
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.3
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: 3.8
+        python-version: 3.12
         auto-update-conda: true
+        mamba-version: "*"
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
@@ -50,8 +53,7 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
-    - name: Build Java programs
-      run: ./gradlew build
+    - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"

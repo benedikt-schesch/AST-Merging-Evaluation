@@ -239,7 +239,12 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         if self.local_repo_path.exists():
             return
         self.workdir.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.repo_path, self.local_repo_path)
+        shutil.copytree(
+            self.repo_path,
+            self.local_repo_path,
+            symlinks=True,
+            ignore_dangling_symlinks=True,
+        )
         os.system("chmod -R 777 " + str(self.local_repo_path))
         self.repo = Repo(self.local_repo_path)
 

@@ -16,6 +16,7 @@ cache*.tar
 cache.tar
 output.txt
 replay_logs/
+my.secrets
 
 output/
 merge_repo/
@@ -35,7 +36,6 @@ cache-machines/
 test/tmp1.txt
 test/tmp2.txt
 test/small-goal-files/result-without-times.txt
-results-small/result-without-times.txt
 
 # Compiled class file
 *.class

@@ -84,6 +84,14 @@ if __name__ == "__main__":
             total_valid_repos += 1
             n_merges = min(merges.shape[0], args.n_merges)
             sample = merges.sample(frac=1.0, random_state=42)
+
+            # Remove merges with the same parents
+            sorted_parents = sample.apply(
+                lambda x: tuple(sorted([str(x["parent_1"]), str(x["parent_2"])])),
+                axis=1,
+            )
+            unique_indices = sorted_parents.drop_duplicates().index
+            sample = sample.loc[unique_indices]
             sample = sample[:n_merges]
             sample.sort_index(inplace=True)
             logger.info(f"Sampled {n_merges} merges from {repo_slug} in {output_file}")
