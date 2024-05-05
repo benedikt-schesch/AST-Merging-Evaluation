@@ -23,6 +23,63 @@ logger.add("replay_merge.log", mode="a")
 logger.add(sys.stdout, colorize=True)
 
 
+def store_artifacts(result_df: pd.DataFrame) -> None:
+    """Store artifacts in a tarball with specific directory."""
+    # Create temporary directories for the structured archive
+    base_dir = "archive"
+    if not os.path.exists(os.path.join(base_dir, "merge_replays")):
+        os.makedirs(os.path.join(base_dir, "merge_replays"))
+    if not os.path.exists(os.path.join(base_dir, "logs")):
+        os.makedirs(os.path.join(base_dir, "logs"))
+
+    # Copy files to the new directory structure
+    for idx in result_df.index:
+        repo_path = result_df.loc[idx, "repo path"]
+        log_path = result_df.loc[idx, "merge log path"]
+
+        # Extract one level higher than the basename
+        repo_subdir = os.path.join(
+            *str(repo_path).split(os.sep)[-2:]
+        )  # Last two components of the path
+        log_subdir = os.path.basename(log_path)  # Just the file name
+
+        # Full new path creation
+        new_repo_path = os.path.join(base_dir, "merge_replays", repo_subdir)
+        new_log_path = os.path.join(base_dir, "logs", log_subdir)
+
+        # Ensure directories exist
+        os.makedirs(os.path.dirname(new_repo_path), exist_ok=True)
+
+        # Copy repository directories or files
+        if os.path.isdir(repo_path):
+            shutil.copytree(repo_path, new_repo_path)
+        else:
+            shutil.copy(repo_path, new_repo_path)
+
+        # Copy log files
+        shutil.copy(log_path, new_log_path)
+
+    # Create the tarball from the new directory structure
+    os.chdir(
+        base_dir
+    )  # Change directory to avoid including the 'archive/' prefix in the tarball
+    os.system("tar -czf ../replay_merge_artifacts.tar.gz merge_replays logs")
+    os.chdir("..")  # Change back to the original directory
+
+    # Clean up the temporary directory
+    shutil.rmtree(base_dir)
+
+    logger.info("Artifacts created")
+
+
+def delete_workdirs(results_df: pd.DataFrame) -> None:
+    """Delete the workdirs after replaying the merges."""
+    for idx in results_df.index:
+        os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
+        shutil.rmtree(results_df.loc[idx, "repo path"])
+    logger.info("Workdirs deleted")
+
+
 # pylint: disable=too-many-arguments, too-many-locals
 def merge_replay(
     merge_idx: str,
@@ -30,6 +87,7 @@ def merge_replay(
     merge_data: pd.Series,
     test_merge: bool = False,
     delete_workdir: bool = True,
+    create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
@@ -82,7 +140,7 @@ def merge_replay(
                     repo_slug,
                     cache_directory=Path("no_cache/"),
                     workdir_id=workdir,
-                    delete_workdir=delete_workdir,
+                    delete_workdir=False,
                     lazy_clone=False,
                 )
             except Exception as e:
@@ -106,6 +164,7 @@ def merge_replay(
                 timeout=TIMEOUT_TESTING_MERGE,
                 use_cache=False,
             )
+            assert repo.local_repo_path.exists()
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -121,6 +180,7 @@ def merge_replay(
             log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(log_path, "w", encoding="utf-8") as f:
                 f.write(explanation)
+            assert repo.local_repo_path.exists()
             result_df.loc[
                 merge_tool.name,
                 ["merge result", "merge log path", "repo path", "merge fingerprint"],
@@ -130,16 +190,20 @@ def merge_replay(
                 repo.local_repo_path,
                 merge_fingerprint,
             ]
+            assert repo.local_repo_path.exists()
             if (
                 merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
                 and not dont_check_fingerprints
             ):
-                # Print the merge log file
-                print("=====================================")
+                assert repo.local_repo_path.exists()
+                if create_artifacts:
+                    store_artifacts(result_df)
+                if delete_workdir:
+                    delete_workdirs(result_df)
+                print("=====================================\n")
                 with open(log_path, "r", encoding="utf-8") as f:
                     print(f.read())
-                print("=====================================")
-
+                print("=====================================\n")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
@@ -256,7 +320,8 @@ if __name__ == "__main__":
         str(repo_slug),
         merge_data,
         args.test,
-        args.delete_workdir and not args.create_artifacts,
+        args.delete_workdir,
+        args.create_artifacts,
         args.dont_check_fingerprints,
     )
     for idx, row in results_df.iterrows():
@@ -275,16 +340,6 @@ if __name__ == "__main__":
 
     # Create artifacts which means creating a tarball of all the relevant workdirs
     if args.create_artifacts:
-        logger.info("Creating artifacts")
-        os.system(
-            "tar -czf replay_merge_artifacts.tar.gz "
-            + " ".join(
-                [str(results_df.loc[idx, "repo path"]) for idx in results_df.index]
-            )
-        )
-        logger.info("Artifacts created")
-        if args.delete_workdir:
-            for idx in results_df.index:
-                os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
-                shutil.rmtree(results_df.loc[idx, "repo path"])
-            logger.info("Workdirs deleted")
+        store_artifacts(results_df)
+    if args.delete_workdir:
+        delete_workdirs(results_df)
