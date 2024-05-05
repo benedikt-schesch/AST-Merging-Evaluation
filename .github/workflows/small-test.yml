@@ -47,7 +47,7 @@ jobs:
     - name: Install PdfLaTeX
       run: sudo apt update && sudo apt install texlive-latex-extra -y
     - name: Install maven
-      uses: s4u/setup-maven-action@v1.8.0
+      uses: s4u/setup-maven-action@v1.12.0
       with:
         java-version: 17
         maven-version: ${{ matrix.maven }}
