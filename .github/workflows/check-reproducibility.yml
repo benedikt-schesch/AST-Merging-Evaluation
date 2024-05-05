@@ -1,10 +1,10 @@
-name: Run Small test
+name: Run Reproducibility Check
 on: [push, pull_request]
 jobs:
   test:
     strategy:
       matrix:
-        maven: [ '3.9.2']
+        maven: [ '3.9.2' ]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -13,36 +13,23 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
-        java-version: 8
-    - run: echo "JAVA8_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: 11
-    - run: echo "JAVA11_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
         java-version: 17
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: java -version
     - uses: actions/checkout@v4
-    - name: Set up Python 3.8
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.12'
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.3
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: 3.8
+        python-version: 3.12
         auto-update-conda: true
+        mamba-version: "*"
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
-    - name: Install PdfLaTeX
-      run: sudo apt update && sudo apt install texlive-latex-extra -y
     - name: Install maven
       uses: s4u/setup-maven-action@v1.8.0
       with:
@@ -50,12 +37,12 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
-    - name: Build Java programs
-      run: ./gradlew build
+    - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Run small test
       run: |
         git config --global user.email "example@example.com"
         git config --global user.name "Example Example"
-        make small-test
+        head -n 101 results/combined/result.csv > results/combined/result_trimmed.csv
+        make check-merges-reproducibility
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}

@@ -63,6 +63,9 @@ PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
 export PATH
 
+# Clone all submodules
+git submodule update --init --recursive
+
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
