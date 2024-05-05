@@ -134,6 +134,12 @@ def merge_replay(
                 merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
                 and not dont_check_fingerprints
             ):
+                # Print the merge log file
+                print("=====================================")
+                with open(log_path, "r", encoding="utf-8") as f:
+                    print(f.read())
+                print("=====================================")
+
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
