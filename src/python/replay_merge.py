@@ -233,6 +233,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # Add 'src/scripts/merge_tools' to the path
+    sys.path.append("src/scripts/merge_tools")
+
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
         logger.info("Deleting workdir after replaying the merge")
