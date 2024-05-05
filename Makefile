@@ -11,6 +11,8 @@ CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result.csv
 CSV_RESULTS_REAPER = results/reaper/result.csv
 CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
+NUM_PROCESSES = 0
+
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	checkbashisms ${SH_SCRIPTS}
@@ -131,7 +133,7 @@ clean-local:
 
 check-merges-reproducibility:
 	@echo "Running replay_merge for each idx in parallel..."
-	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --progress --bar -u --halt now,fail=1 -j 2 'python3 src/python/replay_merge.py --merges_csv $(CSV_RESULTS) -delete_workdir --idx {}'
+	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --progress --bar -u --halt now,fail=1 -j $(NUM_PROCESSES) 'python3 src/python/replay_merge.py --merges_csv $(CSV_RESULTS) -delete_workdir --idx {}'
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
