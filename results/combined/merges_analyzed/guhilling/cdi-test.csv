@@ -136,7 +136,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 418,refs/heads/main,f8f4b93e598a646aeefc1d6393a9763ffd148f04,016beda8db3fad72cca6cfdee87e8f9c8aa96dc7,252016aab5dc15a17cf23d50ac7222911907a09f,,False,False,,,,,,False
 419,refs/heads/main,016beda8db3fad72cca6cfdee87e8f9c8aa96dc7,ac3dc20849a5ef89e31e06a2d49d783fa8623de1,3f951739811fbe57561d07a55830768530b791bb,,False,False,,,,,,False
 420,refs/heads/main,ac3dc20849a5ef89e31e06a2d49d783fa8623de1,b47fde84b9511984cbea6cf05e0de1bea61e36ae,b791ffe410b4b2c01b128c20cdd750c91da1c4ec,,False,False,,,,,,False
-421,refs/heads/main,3f951739811fbe57561d07a55830768530b791bb,b791ffe410b4b2c01b128c20cdd750c91da1c4ec,477ec5cd172a583a703232fb50c914e2dd917450,,False,False,,,,,,False
 422,refs/heads/main,252016aab5dc15a17cf23d50ac7222911907a09f,477ec5cd172a583a703232fb50c914e2dd917450,b791ffe410b4b2c01b128c20cdd750c91da1c4ec,,False,False,,,,,,False
 424,refs/heads/main,4925d343a2c47a8e7dcc47e184d0d4c928c5d6a3,d4630bac4a60d581c03811b220abce9c39868f02,2bf06a20afb43d7105c4a57411ed4d2631d30621,,False,False,,,,,,False
 425,refs/heads/main,d4630bac4a60d581c03811b220abce9c39868f02,28882b36533901226920d860c8d0194b14373b8c,ba1eb2ae1374dd978e927c39116d0d19c4b88e41,,False,False,,,,,,False
@@ -145,7 +144,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 430,refs/heads/main,6f998c2680bc20183019e5b640a4141f76199a08,180ad7b495de63b781cffb6b270f4ee531eb9937,19b9ac4009d96e4ff1a168d89347b11e3e5f8cd2,,False,False,,,,,,False
 432,refs/heads/main,1c64bb1ce93147930b540d8141e337f1ef178467,3c0a9b8473af32a0b4984a0d9ce3b6abb6e1b4a9,9ce67574b010df4fc0ee467300baca0083d7b0db,,False,False,,,,,,False
 433,refs/heads/main,948abb155da8a19093f7c162685b95804675406c,3a0adaeeed040a1f5c2395ee3c23a54ed562b334,f1c43e9c3528b627e585af87951773fd8c858eaa,,False,False,,,,,,False
-434,refs/heads/main,9ce67574b010df4fc0ee467300baca0083d7b0db,3a0adaeeed040a1f5c2395ee3c23a54ed562b334,f1c43e9c3528b627e585af87951773fd8c858eaa,,False,False,,,,,,False
 435,refs/heads/main,3a0adaeeed040a1f5c2395ee3c23a54ed562b334,d6f76a822fb014c6355ce6caa53bc33b125a09b1,6dc914debe65a6ada4f1cb4adc63f9e2fc976b39,,False,False,,,,,,False
 438,refs/heads/main,0ce9e964343faa7a68c52afba29dc379afad3cf6,8a62536cc6629b6c3e9420f0914522bfc95f1eca,be60cafc9352592167070f5c2b477b7895580189,,False,False,,,,,,False
 439,refs/remotes/origin/336-use-slf4j-in-cdi-test-classes,64098053a5738cb7d781ec47e97e1827dbef05b4,c83fc6ff11bbd1e7162f02d1ba1e8e87fe03b04f,8a498c394b0706d3577fbb98cb4c8e5db7530c96,,False,False,,,,,,False

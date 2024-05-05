@@ -33,7 +33,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 66,refs/heads/master,f85678b7ffc64d4399b36c246c8eabfb7d43f571,b3eeef5570f63acaa08231f4758c6a09e7e4cb07,75c7cc3f966bf1095a237850389b3f78e518ba71,,False,False,,,,,,False
 72,refs/heads/master,6fdcb83e784aa25c3dc256e45efeb25abd9f1f57,8786c232318b68e5bd70dfb2dd3db00e089eb873,b348809a4600ee3863823d5b3993341bcb2e24b6,,False,False,,,,,,False
 73,refs/heads/master,b348809a4600ee3863823d5b3993341bcb2e24b6,791e5b7e8c4ed5bb9d255907eb033f1494b6fc38,aa858ea66a093f5e52e788e9a96b00cedc5e121a,,False,False,,,,,,False
-74,refs/heads/master,8786c232318b68e5bd70dfb2dd3db00e089eb873,aa858ea66a093f5e52e788e9a96b00cedc5e121a,791e5b7e8c4ed5bb9d255907eb033f1494b6fc38,,False,False,,,,,,False
 76,refs/heads/master,86b2879ee54832c4837e72a26e03780313cc9509,79283598a459f97d8bf33dbd5c8e023973c9881c,9f1c3e0bad1e619c154f5157991a4f6b39c9152b,,False,False,,,,,,False
 78,refs/heads/master,bbe344f00954e10229e6205c1debad0892912d00,9e6a0642990d37517cd8845ed2ad9cd5f32925a3,aca1ff8536137d41f2d99a28311c6b5225ec45af,,False,False,,,,,,False
 80,refs/heads/master,a5230560b09ab43d282ca96ad064c42970b370c6,39a8c9ee1e35d136f97ff2236c889341b43616c5,d7ba800def65f55933ef1c7cb44f78825e77d0ca,,False,False,,,,,,False
