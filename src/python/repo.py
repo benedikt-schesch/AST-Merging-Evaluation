@@ -95,7 +95,7 @@ def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
 
 @timeout(10 * 60)
 def clone_repo_to_path(repo_name: str, path: str) -> git.repo.Repo:
-    """Clones a repository to a specified path. Alternative to the clone_repo 
+    """Clones a repository to a specified path. Alternative to the clone_repo
     method since it takes a string path and returns a git repo Repo obj.
 
     Args:
