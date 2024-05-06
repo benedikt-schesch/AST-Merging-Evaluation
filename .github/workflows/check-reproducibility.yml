@@ -44,7 +44,7 @@ jobs:
       run: |
         git config --global user.email "example@example.com"
         git config --global user.name "Example Example"
-        head -n 101 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
+        head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
         make NUM_PROCESSES=1 check-merges-reproducibility
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
