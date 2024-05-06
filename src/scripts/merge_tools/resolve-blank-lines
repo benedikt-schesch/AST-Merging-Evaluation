@@ -24,7 +24,7 @@
 # no option for ignoring blank lines.  This script addresses that shortcoming.
 
 if [ "$#" -eq 0 ] ; then
-  readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
+  files=($(grep -l -r '^<<<<<<< HEAD' .))
 else
   files=("$@")
 fi

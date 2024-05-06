@@ -21,7 +21,7 @@
 # in files, as the default git mergetool does.
 
 if [ "$#" -eq 0 ] ; then
-  readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
+  files=($(grep -l -r '^<<<<<<< HEAD' .))
 else
   files=("$@")
 fi
