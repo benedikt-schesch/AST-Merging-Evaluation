@@ -55,8 +55,13 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
-echo "Checking for custom merge drivers in global configuration..."
-merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$' || echo "No merge drivers set")
+export GIT_CONFIG_GLOBAL=$(pwd)/blanck_git_config.config
+if git config --list --show-origin | grep 'file:'"$GIT_CONFIG_GLOBAL" > /dev/null; then
+    echo "Error: Global config is not empty"
+    exit 1
+else
+    echo "Global config is empty"
+fi
 
 if [ "$merge_drivers" == "No merge drivers set" ]; then
     echo "No custom merge drivers found in global configuration. Proceeding with the evaluation."
