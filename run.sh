@@ -63,16 +63,6 @@ else
     echo "Global config is empty"
 fi
 
-if [ "$merge_drivers" == "No merge drivers set" ]; then
-    echo "No custom merge drivers found in global configuration. Proceeding with the evaluation."
-    # Include other commands to continue the script here
-else
-    echo "Error: Custom merge drivers are set in global configuration."
-    echo "Please unset them before running the evaluation."
-    echo "Merge driver found: $merge_drivers"
-    exit 1
-fi
-
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
