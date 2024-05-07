@@ -55,7 +55,8 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
-export GIT_CONFIG_GLOBAL=$(pwd)/blanck_git_config.config
+GIT_CONFIG_GLOBAL=$(pwd)/blanck_git_config.config
+export GIT_CONFIG_GLOBAL
 if git config --list --show-origin | grep 'file:'"$GIT_CONFIG_GLOBAL" > /dev/null; then
     echo "Error: Global config is not empty"
     exit 1
