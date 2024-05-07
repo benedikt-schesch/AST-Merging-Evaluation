@@ -4,6 +4,7 @@
 import argparse
 import os
 import sys
+import tarfile
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -24,50 +25,20 @@ logger.add(sys.stdout, colorize=True)
 
 
 def store_artifacts(result_df: pd.DataFrame) -> None:
-    """Store artifacts in a tarball with specific directory."""
-    # Create temporary directories for the structured archive
-    base_dir = "archive"
-    if not os.path.exists(os.path.join(base_dir, "merge_replays")):
-        os.makedirs(os.path.join(base_dir, "merge_replays"))
-    if not os.path.exists(os.path.join(base_dir, "logs")):
-        os.makedirs(os.path.join(base_dir, "logs"))
+    """Store artifacts in a tarball directly fro."""
+    tarball_path = "replay_merge_artifacts.tar.gz"
 
-    # Copy files to the new directory structure
-    for idx in result_df.index:
-        repo_path = result_df.loc[idx, "repo path"]
-        log_path = result_df.loc[idx, "merge log path"]
+    # Create the tarball and add files, ensuring no path modification
+    with tarfile.open(tarball_path, "w:gz") as tar:
+        for idx in result_df.index:
+            repo_path = result_df.loc[idx, "repo path"]
+            log_path = result_df.loc[idx, "merge log path"]
 
-        # Extract one level higher than the basename
-        repo_subdir = os.path.join(
-            *str(repo_path).split(os.sep)[-2:]
-        )  # Last two components of the path
-        log_subdir = os.path.basename(log_path)  # Just the file name
+            # Add repository directories or files to the tarball with absolute paths
+            tar.add(repo_path, arcname=repo_path)
 
-        # Full new path creation
-        new_repo_path = os.path.join(base_dir, "merge_replays", repo_subdir)
-        new_log_path = os.path.join(base_dir, "logs", log_subdir)
-
-        # Ensure directories exist
-        os.makedirs(os.path.dirname(new_repo_path), exist_ok=True)
-
-        # Copy repository directories or files
-        if os.path.isdir(repo_path):
-            shutil.copytree(repo_path, new_repo_path)
-        else:
-            shutil.copy(repo_path, new_repo_path)
-
-        # Copy log files
-        shutil.copy(log_path, new_log_path)
-
-    # Create the tarball from the new directory structure
-    os.chdir(
-        base_dir
-    )  # Change directory to avoid including the 'archive/' prefix in the tarball
-    os.system("tar -czf ../replay_merge_artifacts.tar.gz merge_replays logs")
-    os.chdir("..")  # Change back to the original directory
-
-    # Clean up the temporary directory
-    shutil.rmtree(base_dir)
+            # Add log files to the tarball with absolute paths
+            tar.add(log_path, arcname=log_path)
 
     logger.info("Artifacts created")
 
