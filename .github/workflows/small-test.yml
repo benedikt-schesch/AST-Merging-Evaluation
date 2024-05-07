@@ -53,6 +53,8 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
+    - name: Install killall
+      run: sudo apt update && sudo apt install psmisc -y
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Run small test
       run: |
