@@ -13,7 +13,7 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: 17
+        java-version: 17.0.7
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: java -version
     - uses: actions/checkout@v4
