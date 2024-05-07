@@ -18,6 +18,7 @@ from merge_tester import MERGE_STATE
 
 # pylint: disable-msg=too-many-locals
 # pylint: disable-msg=too-many-arguments
+# pylint: disable-msg=too-many-statements
 
 
 def setup_environment():
@@ -47,7 +48,13 @@ def clone_and_checkout(repo_name, branch_sha, clone_dir):
 
 
 def process_diff(
-    tool_name, base_path, attempt_path, merge_path, output_dir, index, filename
+    tool_name,
+    base_path,
+    attempt_path,
+    merge_path,
+    output_dir,
+    idx: str,
+    filename,
 ):
     """
     Process the diff between files and save the output to a designated file.
@@ -58,7 +65,7 @@ def process_diff(
         attempt_path (str): Path to the merge attempt file.
         merge_path (str): Path to the manually merged file.
         output_dir (str): Directory where results will be saved.
-        index (int): Index of the repository in the results list.
+        idx (str): Invariant repo-idx - merge-idx of the commit.
         filename (str): Base name for the output file.
     """
     # Run diff3 or fall back to diff if files are missing
@@ -75,7 +82,7 @@ def process_diff(
 
     # Prepare the output filename
     diff_filename = os.path.join(
-        output_dir, str(index), tool_name, f"diff_{filename}.txt"
+        output_dir, str(idx), tool_name, f"diff_{filename}.txt"
     )
     os.makedirs(
         os.path.dirname(diff_filename), exist_ok=True
@@ -87,17 +94,15 @@ def process_diff(
     print(f"Diff results saved to {diff_filename}")
 
 
-def diff3_analysis(
-    merge_tool1: str, merge_tool2: str, results_index: int, repo_output_dir
-):
+def diff3_analysis(merge_tool1: str, merge_tool2: str, idx: str, repo_output_dir):
     """
     Analyzes merge conflicts using the diff3 tool and opens the results in the default text viewer.
     Args:
         merge_tool1 (str): The merge tool that Merge_failed (tool name as written in spreadsheet)
         merge_tool2 (str): The merge tool that Failed_tests or Passed_tests
-        results_index (int): The index of the repository in the results spreadsheet.
+        idx (str): Invariant 'repo-idx - merge-idx' Benedikt added to the spreadsheet for
+                    to identify commits across different results.
         repo_output_dir (path): The path of where we want to store the results from the analysis
-
 
     Returns:
         None
@@ -109,6 +114,11 @@ def diff3_analysis(
 
     # Retrieve left and right branch from hash in repo
     df = pd.read_csv("../../results/combined/result.csv")
+
+    # Find rows where 'repo-idx' and 'merge-idx' match the specified values
+    results_index = df[(df["idx"] == idx)].index[0]
+    print(results_index)
+
     repo_name = df.iloc[results_index]["repository"]
 
     script = "../scripts/merge_tools/" + merge_tool1 + ".sh"
@@ -203,13 +213,13 @@ def diff3_analysis(
             conflict_path_merge_attempt1,
             conflict_path_programmer_merge,
             repo_output_dir,
-            results_index,
+            idx,
             conflict_file_base,
         )
 
         """
-       BREAK
-       """
+        BREAK
+        """
 
         # Paths for the second merge attempt
         conflict_path_merge_attempt2 = os.path.join(
@@ -223,7 +233,7 @@ def diff3_analysis(
             conflict_path_merge_attempt2,
             conflict_path_programmer_merge,
             repo_output_dir,
-            results_index,
+            idx,
             conflict_file_base,
         )
 
@@ -238,8 +248,8 @@ def main():
     parser.add_argument("merge_tool1", type=str, help="The first merge tool to use")
     parser.add_argument("merge_tool2", type=str, help="The second merge tool to use")
     parser.add_argument(
-        "results_index",
-        type=int,
+        "idx",
+        type=str,
         help="The index of the repository in the results spreadsheet",
     )
     parser.add_argument(
@@ -251,7 +261,7 @@ def main():
     diff3_analysis(
         merge_tool1=args.merge_tool1,
         merge_tool2=args.merge_tool2,
-        results_index=args.results_index,
+        idx=args.idx,
         repo_output_dir=args.repo_output_dir,
     )
 

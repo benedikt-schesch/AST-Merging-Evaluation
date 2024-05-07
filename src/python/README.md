@@ -44,10 +44,10 @@ This directory contains Python scripts designed to facilitate the analysis of me
 To analyze a conflicts comparing two merge tools inside src/python run:
 
 
-python3 diff3_analysis.py <merge_tool1> <merge_tool2> <results_index> <output_directory>
+python3 diff3_analysis.py <merge_tool1> <merge_tool2> <idx> <output_directory>
 
 
 
 Ex:
 
-python3 diff3_analysis.py "gitmerge_ort" "spork" 32 "./mixed_results_spork"
+python3 diff3_analysis.py "gitmerge_ort" "spork" 11034-72 "./mixed_results_spork"
