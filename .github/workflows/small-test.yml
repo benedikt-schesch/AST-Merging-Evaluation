@@ -56,8 +56,6 @@ jobs:
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Run small test
       run: |
-        git config --global user.email "example@example.com"
-        git config --global user.name "Example Example"
         git config --global merge.customMerge.name "Always incorrect custom merge driver"
         git config --global merge.customMerge.driver 'fake-merge-driver %O %A %B %L %P'
         make small-test

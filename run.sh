@@ -57,12 +57,6 @@ export PATH
 
 GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
 export GIT_CONFIG_GLOBAL
-if git config --list --show-origin | grep 'file:'"$GIT_CONFIG_GLOBAL" > /dev/null; then
-    echo "Error: Global config is not empty"
-    exit 1
-else
-    echo "Global config is empty"
-fi
 
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then

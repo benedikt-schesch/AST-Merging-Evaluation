@@ -27,9 +27,9 @@ branch1=$2
 branch2=$3
 
 # set up spork driver
-(echo "[merge \"spork\"]";
-    echo "    name = spork";
-    echo "    driver = java -jar $spork_absolutepath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
+git config --local merge.spork.name "spork"
+git config --local merge.spork.driver "java -jar $spork_absolutepath --git-mode %A %O %B -o %A"
+
 echo "*.java merge=spork" >> "$clone_dir/.gitattributes"
 
 # perform merge
