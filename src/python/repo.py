@@ -242,6 +242,20 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             ignore_dangling_symlinks=True,
         )
         os.system("chmod -R 777 " + str(self.local_repo_path))
+        # Check if chmod worked
+        # Retrieve the mode (permissions) of the file/directory
+        mode = os.stat(str(self.local_repo_path)).st_mode
+
+        # Mask out the permission bits with 0o777 (octal for 777)
+        if mode & 0o777 == 0o777:
+            logger.error(
+                f"The permissions for {str(self.local_repo_path)} are set to 777."
+            )
+        else:
+            logger.error(
+                f"The permissions for {str(self.local_repo_path)} are not set to 777."
+                + f" Current permissions: {oct(mode & 0o777)}"
+            )
         self.repo = Repo(self.local_repo_path)
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
