@@ -55,6 +55,10 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
+# Print current git global config
+echo "Current global git config:"
+git config --list --show-origin
+
 GIT_CONFIG_GLOBAL=$(pwd)/blanck_git_config.config
 export GIT_CONFIG_GLOBAL
 if git config --list --show-origin | grep 'file:'"$GIT_CONFIG_GLOBAL" > /dev/null; then

@@ -44,6 +44,7 @@ jobs:
       run: |
         git config --global user.email "example@example.com"
         git config --global user.name "Example Example"
+        python3 src/python/replay_merge.py --idx 522-15 -delete_workdir
         head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
         make NUM_PROCESSES=1 check-merges-reproducibility
       env:
