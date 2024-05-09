@@ -1,4 +1,4 @@
-name: Small test
+name: Reproducibility Check
 on: [push, pull_request]
 jobs:
   test:
@@ -13,19 +13,7 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: 8
-    - run: echo "JAVA8_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: 11
-    - run: echo "JAVA11_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: 17
+        java-version: 17.0.7
     - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - run: java -version
     - uses: actions/checkout@v4
@@ -44,8 +32,6 @@ jobs:
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
-    - name: Install PdfLaTeX
-      run: sudo apt update && sudo apt install texlive-latex-extra -y
     - name: Install maven
       uses: s4u/setup-maven-action@v1.12.0
       with:
@@ -53,13 +39,12 @@ jobs:
         maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
-    - name: Install killall
-      run: sudo apt update && sudo apt install psmisc -y
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
-    - name: Run small test
+    - name: make check-merges-reproducibility
       run: |
-        git config --global merge.customMerge.name "Always incorrect custom merge driver"
-        git config --global merge.customMerge.driver 'fake-merge-driver %O %A %B %L %P'
-        make small-test
+        git config --global user.email "example@example.com"
+        git config --global user.name "Example Example"
+        head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
+        make check-merges-reproducibility
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
