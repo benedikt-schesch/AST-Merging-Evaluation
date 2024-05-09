@@ -55,18 +55,8 @@ done
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 export PATH
 
-echo "Checking for custom merge drivers in global configuration..."
-merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$' || echo "No merge drivers set")
-
-if [ "$merge_drivers" == "No merge drivers set" ]; then
-    echo "No custom merge drivers found in global configuration. Proceeding with the evaluation."
-    # Include other commands to continue the script here
-else
-    echo "Error: Custom merge drivers are set in global configuration."
-    echo "Please unset them before running the evaluation."
-    echo "Merge driver found: $merge_drivers"
-    exit 1
-fi
+GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
+export GIT_CONFIG_GLOBAL
 
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
@@ -107,9 +97,12 @@ fi
 
 mkdir -p "$OUT_DIR"
 
-# Delete all locks in cache
+# Delete all locks
 if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
+fi
+if [ -d "repos" ]; then
+    find "repos/locks" -name "*.lock" -delete
 fi
 
 # Delete .workdir
