@@ -66,6 +66,10 @@ export PATH
 # Clone all submodules
 git submodule update --init --recursive
 
+# Empty config file
+GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
+export GIT_CONFIG_GLOBAL
+
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
     echo "Decompressing cache.tar"
@@ -108,9 +112,12 @@ fi
 
 mkdir -p "$OUT_DIR"
 
-# Delete all locks in cache
+# Delete all locks
 if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
+fi
+if [ -d "repos" ]; then
+    find "repos/locks" -name "*.lock" -delete
 fi
 
 # Delete .workdir

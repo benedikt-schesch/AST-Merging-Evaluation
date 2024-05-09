@@ -26,14 +26,19 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 
+cd "$clone_dir" || exit
+
 # set up spork driver
-(echo "[merge \"spork\"]";
-    echo "    name = spork";
-    echo "    driver = java -jar $spork_absolutepath --git-mode %A %O %B -o %A") >> "$clone_dir/.git/config"
-echo "*.java merge=spork" >> "$clone_dir/.gitattributes"
+git config --local merge.spork.name "spork"
+git config --local merge.spork.driver "java -jar $spork_absolutepath --git-mode %A %O %B -o %A"
+
+# print git config
+echo "*.java merge=spork" >> .gitattributes
 
 # perform merge
-cd "$clone_dir" || exit
+echo "Current git config:"
+git config --list
+
 git checkout "$branch1" --force
 git merge --no-edit "$branch2"
 retVal=$?
