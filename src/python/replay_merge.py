@@ -21,7 +21,6 @@ from rich.progress import (
 from loguru import logger
 
 logger.add("replay_merge.log", mode="a")
-logger.add(sys.stdout, colorize=True)
 
 
 def store_artifacts(result_df: pd.DataFrame) -> None:
