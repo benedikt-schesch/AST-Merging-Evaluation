@@ -253,13 +253,13 @@ if __name__ == "__main__":
         "--merges_csv",
         help="CSV file with merges that have been tested",
         type=str,
-        default="results/small/result.csv",
+        default="results/combined/result.csv",
     )
     parser.add_argument(
         "--idx",
         help="Index of the merge to replay",
         type=str,
-        default="0-1",
+        default="1-7",
     )
     parser.add_argument(
         "-test",
@@ -275,6 +275,11 @@ if __name__ == "__main__":
         "-dont_check_fingerprints",
         help="Don't check the fingerprint of a merge",
         action="store_true",
+    )
+    parser.add_argument(
+        "-skip_build",
+        help="Build the merge tool",
+        action="store_false",
     )
     parser.add_argument(
         "-create_artifacts",
@@ -297,6 +302,15 @@ if __name__ == "__main__":
         logger.info("Testing the replay of a merge")
     if args.create_artifacts:
         logger.info("Creating artifacts after replaying the merges")
+    if args.skip_build:
+        logger.info("Building merge tool")
+        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
+    os.environ["PATH"] = (
+        os.environ["PATH"]
+        + os.getcwd()
+        + "/src/scripts/merge_tools/merging/src/main/sh/"
+    )
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
