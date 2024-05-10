@@ -288,12 +288,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    os.environ["PATH"] += os.pathsep + os.path.join(
-        os.getcwd(), "src/scripts/merge_tools"
-    )
-    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
-    os.system("git submodule update --init")
-
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
         logger.info("Deleting workdir after replaying the merge")
@@ -305,13 +299,16 @@ if __name__ == "__main__":
         logger.info("Creating artifacts after replaying the merges")
     if args.skip_build:
         logger.info("Building merge tool")
-        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
-    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
-    os.environ["PATH"] = (
-        os.environ["PATH"]
-        + os.getcwd()
-        + "/src/scripts/merge_tools/merging/src/main/sh/"
+
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
     )
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools"
+    )
+    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+    os.system("git submodule update --init")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
