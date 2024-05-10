@@ -241,7 +241,8 @@ if __name__ == "__main__":
         os.getcwd(), "src/scripts/merge_tools"
     )
     os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
-    os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+    if not args.skip_build:
+        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
     os.system("git submodule update --init")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
