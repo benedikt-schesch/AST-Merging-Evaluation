@@ -222,6 +222,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools"
+    )
+    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    os.system("git submodule update --init")
+
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
         logger.info("Deleting workdir after replaying the merge")
