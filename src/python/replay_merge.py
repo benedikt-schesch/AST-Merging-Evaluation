@@ -21,7 +21,34 @@ from loguru import logger
 logger.add("replay_merge.log", mode="a")
 
 
-# pylint: disable=too-many-arguments, too-many-locals
+def store_artifacts(result_df: pd.DataFrame) -> None:
+    """Store artifacts in a tarball directly fro."""
+    tarball_path = "replay_merge_artifacts.tar.gz"
+
+    # Create the tarball and add files, ensuring no path modification
+    with tarfile.open(tarball_path, "w:gz") as tar:
+        for idx in result_df.index:
+            repo_path = result_df.loc[idx, "repo path"]
+            log_path = result_df.loc[idx, "merge log path"]
+
+            # Add repository directories or files to the tarball with absolute paths
+            tar.add(repo_path, arcname=repo_path)
+
+            # Add log files to the tarball with absolute paths
+            tar.add(log_path, arcname=log_path)
+
+    logger.info("Artifacts created")
+
+
+def delete_workdirs(results_df: pd.DataFrame) -> None:
+    """Delete the workdirs after replaying the merges."""
+    for idx in results_df.index:
+        os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
+        shutil.rmtree(results_df.loc[idx, "repo path"])
+    logger.info("Workdirs deleted")
+
+
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
 def merge_replay(
     merge_idx: str,
     repo_slug: str,
