@@ -216,4 +216,4 @@ To run style checking run `make style`.
 
 To investigate differences between two mergers:
  * run `src/python/select_from_results.py` to produce a CSV file containing only the differences you are interested in.  See its [documentation (at top of file)](src/python/select_from_results.py) for how to run it.
- * run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
+ * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
