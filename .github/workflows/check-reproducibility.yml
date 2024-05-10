@@ -36,9 +36,7 @@ jobs:
       run: make clean
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Build
-      run: |
-        git submodule update --init --recursive
-        cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar
+      run: cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar
     - name: make check-merges-reproducibility
       run: |
         head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
