@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Replay merges and their test results"""
+"""Replay merges and their test results.
+
+Typical usage:
+  replay_merge.py --idx INDEX
+where INDEX is, for example, 38-192 .
+"""
 import argparse
 import os
 import sys
