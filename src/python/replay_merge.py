@@ -95,9 +95,12 @@ def merge_replay(
                 logger.info(
                     f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
                 )
-                answer = input(
-                    f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
-                )
+                if delete_workdir:
+                    answer = "y"
+                else:
+                    answer = input(
+                        f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
+                    )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
                 else:
