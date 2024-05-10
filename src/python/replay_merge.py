@@ -50,7 +50,7 @@ def delete_workdirs(results_df: pd.DataFrame) -> None:
     logger.info("Workdirs deleted")
 
 
-# pylint: disable=too-many-arguments, too-many-locals
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
 def merge_replay(
     merge_idx: str,
     repo_slug: str,
