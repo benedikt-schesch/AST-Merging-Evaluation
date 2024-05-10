@@ -44,6 +44,7 @@ jobs:
       run: cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar
     - name: make check-merges-reproducibility
       run: |
+        python3 src/python/replay_merge.py --merges_csv results/combined/result.csv -delete_workdir --idx 38-192
         head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
         make check-merges-reproducibility
       env:
