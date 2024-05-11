@@ -13,7 +13,7 @@ fi
 
 cd "$clone_dir" || exit 1
 if ! "$MERGE_SCRIPTS_DIR"/resolve-adjacent-conflicts; then
-  echo "Conflict"
+  echo "gitmerge_ort_adjacent.sh: Conflict"
   exit 1
 fi
 
