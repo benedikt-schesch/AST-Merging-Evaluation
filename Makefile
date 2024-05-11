@@ -114,7 +114,6 @@ run-all:
 	./run_reaper.sh
 
 
-
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo
