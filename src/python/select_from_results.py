@@ -55,7 +55,6 @@ def main():
         action="store",
         default=scriptdir + "/" + "../../results/combined/result.csv",
     )
-    # Todo: Also parse arguments from the query.
     parser.add_argument("columns", nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
