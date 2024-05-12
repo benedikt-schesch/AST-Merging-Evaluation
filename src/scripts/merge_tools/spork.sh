@@ -45,7 +45,7 @@ retVal=$?
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
-    echo "Conflict"
+    echo "spork.sh: Conflict"
 fi
 
 exit $retVal
