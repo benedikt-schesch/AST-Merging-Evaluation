@@ -23,7 +23,7 @@ OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
-# Do not run this script on MacOS.
+# Check if it's run on MacOS, if yes raise an error
 backend=$(uname -s)
 if [ "$backend" = "Darwin" ]; then
     echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
@@ -59,16 +59,16 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-# Check if src/scripts/merge_tools/merging is present
-if [ ! -d src/scripts/merge_tools/merging ]; then
-    echo "Error: src/scripts/merge_tools/merging is missing. This is a submodule that is required for the script to run."
-    echo "Please run 'git submodule update --init' to fetch the submodule."
-    exit 1
-fi
-
-PATH=$(pwd)/src/scripts/merge_tools:$PATH
-PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
 export PATH
+
+# Clone all submodules
+git submodule update --init --recursive
+
+# Empty config file
+GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
+export GIT_CONFIG_GLOBAL
 
 # Check if cache.tar exists and cache is missing
 if [ -f cache.tar ] && [ ! -d cache ]; then
@@ -85,11 +85,7 @@ if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
 export JAVA_HOME=$JAVA17_HOME
-if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
-    git submodule update --init --recursive
-fi
-
-(cd ./src/scripts/merge_tools/merging && ./gradlew shadowJar)
+./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
