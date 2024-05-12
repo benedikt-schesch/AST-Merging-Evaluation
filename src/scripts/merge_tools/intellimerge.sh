@@ -53,6 +53,7 @@ rm -rf $temp_dir
 # report conflicts
 conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
 if [ "$conflict_markers" -ne "$initial_conflict_markers" ]; then
+    echo "intellimerge.sh"
     echo "Conflict markers changed"
     echo "Initial conflict markers: $initial_conflict_markers"
     echo "Final conflict markers: $conflict_markers"

@@ -22,7 +22,7 @@ retVal=$?
 
 # report conflicts
 if [ "$retVal" -ne 0 ]; then
-    echo "Conflict"
+    echo "gitmerge_ort_imports.sh: Conflict"
 fi
 
 exit "$retVal"
