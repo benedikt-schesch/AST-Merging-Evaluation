@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Replay merges and their test results"""
+"""Replay merges and their test results.
+
+Typical usage:
+  replay_merge.py --idx INDEX
+where INDEX is, for example, 38-192 .
+"""
 import argparse
 import os
 import sys
@@ -50,7 +55,7 @@ def delete_workdirs(results_df: pd.DataFrame) -> None:
     logger.info("Workdirs deleted")
 
 
-# pylint: disable=too-many-arguments, too-many-locals
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
 def merge_replay(
     merge_idx: str,
     repo_slug: str,
@@ -95,9 +100,12 @@ def merge_replay(
                 logger.info(
                     f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
                 )
-                answer = input(
-                    f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
-                )
+                if delete_workdir:
+                    answer = "y"
+                else:
+                    answer = input(
+                        f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
+                    )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
                 else:
@@ -288,11 +296,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    os.environ["PATH"] += os.pathsep + os.path.join(
-        os.getcwd(), "src/scripts/merge_tools"
-    )
-    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
-
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
         logger.info("Deleting workdir after replaying the merge")
@@ -304,13 +307,17 @@ if __name__ == "__main__":
         logger.info("Creating artifacts after replaying the merges")
     if args.skip_build:
         logger.info("Building merge tool")
-        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
-    os.environ["PATH"] = os.environ["PATH"] + os.getcwd() + "/src/scripts/merge_tools/:"
-    os.environ["PATH"] = (
-        os.environ["PATH"]
-        + os.getcwd()
-        + "/src/scripts/merge_tools/merging/src/main/sh/"
+
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
     )
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools"
+    )
+    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    if not args.skip_build:
+        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+    os.system("git submodule update --init")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
