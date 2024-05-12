@@ -32,18 +32,14 @@ jobs:
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
-    - name: Install maven
-      uses: s4u/setup-maven-action@v1.12.0
-      with:
-        java-version: 17
-        maven-version: ${{ matrix.maven }}
     - name: Clean caches & workspace
       run: make clean
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
+    - name: Build
+      run: cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar
     - name: make check-merges-reproducibility
       run: |
-        git config --global user.email "example@example.com"
-        git config --global user.name "Example Example"
+        python3 src/python/replay_merge.py --merges_csv results/combined/result.csv -delete_workdir --idx 38-192
         head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
         make check-merges-reproducibility
       env:
