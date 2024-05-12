@@ -7,6 +7,7 @@ branch1=$2
 branch2=$3
 strategy="-Xignore-space-change"
 
+# shellcheck disable=SC2153 # "JAVA17_HOME is not a misspelling of "JAVA_HOME"
 export JAVA_HOME="$JAVA17_HOME"
 
 cd "$clone_dir" || exit 1
@@ -23,7 +24,7 @@ retVal=$?
 
 # report conflicts
 if [ "$retVal" -ne 0 ]; then
-    echo "Conflict"
+    echo "gitmerge_ort_imports_ingorespace.sh: Conflict"
 fi
 
 exit "$retVal"
