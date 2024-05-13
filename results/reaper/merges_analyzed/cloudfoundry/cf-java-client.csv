@@ -472,7 +472,6 @@ idx,branch_name,merge,left,right,notes,left_tree_fingerprint,left parent test re
 1779,refs/heads/main,69fa99c39c0e948137fc84c36e3b13dfcf100c34,f22dfbfc5da657a8d86846cab5272c772ed1c05e,e1a4cc42bdd1b031a7e1c3c60bd28e285e8db904,,,,,,,False,False,False
 1780,refs/heads/main,f22dfbfc5da657a8d86846cab5272c772ed1c05e,f3c5be4005364db2c9137548495b55a8d5756915,354d32b757299b5d51b77b6cd73bfcb1467c588c,,,,,,,False,False,False
 1781,refs/heads/main,f3c5be4005364db2c9137548495b55a8d5756915,5db12592a86bfe4184594757f5a0ffe0ccbfbe96,6f9ffaec01c944c7a03b2ce47e7d430f7567a9ce,,,,,,,False,False,False
-1782,refs/remotes/origin/pull/1064,8183b065278e2994dc9dbc34344b249e815b007e,6a14b7a3e76328a758b5e02fa2c5b6457d7f6a34,d13e4e2b3eb5d3f860380d766b33ed85a3f0160e,,,,,,,False,False,False
 1783,refs/remotes/origin/pull/1173,99d93183551da707a7fa732dc2da57ce71dc5705,8f511513baadead5c50ce020d338d7ac3cba9687,434ac050419d7c4e8c11e16b9818a0be3c451daf,,58f7648373d6c1e1ac00fdfa916c8678966e7ea144e6ab4ff7dd4ff94ea006f6,Tests_passed,879524e7f749cdaf8c193f5f776449a3f372c34a7a2f834dd749482bd8b8d0f4,Tests_passed,True,True,True,True
 1784,refs/remotes/origin/pull/1202,38ef08f6a27f9f6619ae1422261c4216cbca3bb0,40ba8efeb1ca04daeeea0d4feed5f203acba2268,aab4d3512a0a19960da21321f12f8bb8021f9a28,,,,,,,False,False,False
 1785,refs/remotes/origin/pull/1202,aab4d3512a0a19960da21321f12f8bb8021f9a28,1f8b04e09478d1d43d804e09f458b7e92e794c7d,04205c4b9d72b166de01ca0089d5e31bdf48ab1d,,,,,,,False,False,False
