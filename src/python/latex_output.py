@@ -388,8 +388,13 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         # Cost plot
         max_cost_intersection = 0
         for idx, merge_tool in enumerate(merge_tools):
+            if incorrect[idx] == 0:
+                continue
             max_cost_intersection = max(
-                max_cost_intersection, unhandled[idx] * 1 / incorrect[idx]
+                max_cost_intersection,
+                ((unhandled[idx] + incorrect[idx] + correct[idx]) - unhandled[idx])
+                * 1.0
+                / incorrect[idx],
             )
 
         _, ax = plt.subplots()
