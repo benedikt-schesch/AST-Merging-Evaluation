@@ -6,6 +6,9 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 
+# Print the current PATH
+echo "PATH: $PATH"
+
 cd "$clone_dir" || exit 1
 
 git checkout "$branch1" --force

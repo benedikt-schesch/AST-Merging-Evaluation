@@ -13,11 +13,9 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 15,refs/heads/master,916627bfade97cd4a30699cb06654f2fda00008c,de9b7a29d09698e90a22c3715be864c520b7ce5e,36ed3e6b3879c847fc5d593d638d43250ce8b44c,,False,False,,,,,,False
 16,refs/heads/master,dc3d1167b3cd7025c0d50635f52b54ebe58ac22f,9ba35cbf0cceddfded8b4049d857ad4d83a2b607,df8551328a675934acacf22fbe288b05588d9198,,False,False,,,,,,False
 17,refs/heads/master,ae7db5069d3c6c70ccdf8498fc6de5f7b21df83d,5ffbb348b9659b5de403f9c6c1b7b7750950875e,0dc1442665ba9425a0a83745ab7d14d925e161db,,False,False,,,,,,False
-18,refs/heads/master,5ffbb348b9659b5de403f9c6c1b7b7750950875e,f06dc48c3edd6509d337a2661e1ebd0a97afc6c7,3e5012b61d5700f23c6e5b02abcad462f411390b,,False,False,,,,,,False
 19,refs/heads/master,0dc1442665ba9425a0a83745ab7d14d925e161db,3e5012b61d5700f23c6e5b02abcad462f411390b,f06dc48c3edd6509d337a2661e1ebd0a97afc6c7,,False,False,,,,,,False
 20,refs/heads/master,0ddcb8eb1f250f03ccaae6e220819fb0688756d5,ee71c05217b3f022999b91474abe9779c73461f6,c4f6a71a086cd8022971e509b32c89f9c4a9a4cb,,False,False,,,,,,False
 21,refs/heads/master,ddf74b9046d9a409cc568996a4d65f42b2d20d43,783d34eced584d3ac4827eb7e23754b47d76ae2c,fe3c0e2b4a6b034680d521bb6d684d50b0382104,,False,False,,,,,,False
-22,refs/heads/master,783d34eced584d3ac4827eb7e23754b47d76ae2c,7899cdca99b343a488096ef5609ded97bb3680a5,14a4f4cc6295ddf03beaf1e590f7748bcfbbfad1,,False,False,,,,,,False
 23,refs/heads/master,fe3c0e2b4a6b034680d521bb6d684d50b0382104,14a4f4cc6295ddf03beaf1e590f7748bcfbbfad1,7899cdca99b343a488096ef5609ded97bb3680a5,,False,False,,,,,,False
 24,refs/heads/master,5c1c02050ab9686e23d7e0a1b0cb312bc5cc6062,8dfb727004283579b31955b219a1d0f36f943a1e,23f391be43b71c319a1bab38d71fc680ded44657,,False,False,,,,,,False
 25,refs/heads/master,42c5999fd3ca8d5e97ad43eb7431ad6932ed4bfe,ed4286ad062c89ecc8d09843f77545eb74547bba,04756884f79ec681a8eb3f80209bb2bbe66f37a3,,False,False,,,,,,False
@@ -26,8 +24,6 @@ idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_t
 29,refs/heads/master,3f8b25442eb3c1058d90c4338129eb759c0c31ed,fef6bab956d542be9800e93f271f8fccad1b91d4,133b6b542646f59d306e8769fb6d3ce83bdee199,,False,True,bb6ed8ceab58aa94741e8535f8fb7bb233246c4cd505ef1ea8889758c7fc0b79,Tests_failed,8ab4c238332bc1c7647602100733cb9c2f028ed901222048359101d4743e94d7,Tests_failed,False,False
 30,refs/heads/master,d2add6705c6755432bb5dfad221f75d365027fab,dd6c9fa99ba3d5920ef6671ab79362f448435cfc,7bd0cacb0410760128e460b7139dd83f2342e672,,False,False,,,,,,False
 31,refs/heads/master,dd6c9fa99ba3d5920ef6671ab79362f448435cfc,e6bd209c2751dbf8569e6a93fadd28fd75be521f,90287f12038dcfa28c11af561b0bf2500f7dad01,,False,False,,,,,,False
-32,refs/heads/master,7bd0cacb0410760128e460b7139dd83f2342e672,90287f12038dcfa28c11af561b0bf2500f7dad01,e6bd209c2751dbf8569e6a93fadd28fd75be521f,,False,False,,,,,,False
-33,refs/heads/master,90287f12038dcfa28c11af561b0bf2500f7dad01,37b03e6a2cf90285c4b41ce101d6df7e5d780a08,7de37a9ce928cf58affb35790ae5f90e19dc9e62,,False,False,,,,,,False
 34,refs/heads/master,e6bd209c2751dbf8569e6a93fadd28fd75be521f,7de37a9ce928cf58affb35790ae5f90e19dc9e62,37b03e6a2cf90285c4b41ce101d6df7e5d780a08,,False,False,,,,,,False
 35,refs/heads/master,9b33cd0c73664109a811b6fd6dafb173212ef93c,432bccf5e7bac21a800d2eeef3e2b721db7842b9,a5668ed3a486b753867a145e9cbaec83a997c17a,,False,False,,,,,,False
 36,refs/heads/master,f8a77bb9bb5e3cbd0b8cffccb53b82335fd1d32e,59f40e3b8dab0f561c57a57348a67cb8a0b7eb1f,32accdc35cd535b083856cb97520476ee553674d,,False,False,,,,,,False

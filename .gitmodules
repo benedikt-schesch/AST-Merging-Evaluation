@@ -1,0 +1,4 @@
+[submodule "src/scripts/merge_tools/merging"]
+	path = src/scripts/merge_tools/merging
+	url = https://github.com/plume-lib/merging.git
+	ignore = dirty

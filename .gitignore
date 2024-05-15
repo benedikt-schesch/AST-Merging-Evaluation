@@ -16,6 +16,7 @@ cache*.tar
 cache.tar
 output.txt
 replay_logs/
+my.secrets
 
 output/
 merge_repo/

@@ -23,6 +23,7 @@ from cache_utils import (
     set_in_cache,
     lookup_in_cache,
 )
+import fasteners
 import git.repo
 from variables import (
     REPOS_PATH,
@@ -257,21 +258,16 @@ class Repository:  # pylint: disable=too-many-instance-attributes
 
     def clone_repo(self) -> None:
         """Clones the repository."""
-        if self.repo_path.exists():
-            return
-        print(
-            "Cloning",
-            self.repo_slug,
-            "to",
-            self.repo_path,
-            "because:",
-            self.repo_path.exists(),
-        )
-        try:
-            clone_repo(self.repo_slug, self.repo_path)
-        except Exception as e:
-            logger.error("Exception during cloning:\n", e)
-            raise
+        lock_path = REPOS_PATH / "locks" / self.repo_slug
+        lock = fasteners.InterProcessLock(lock_path)
+        with lock:
+            if self.repo_path.exists():
+                return
+            try:
+                clone_repo(self.repo_slug, self.repo_path)
+            except Exception as e:
+                logger.error("Exception during cloning:\n", e)
+                raise
         if not self.repo_path.exists():
             logger.error(
                 f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"
@@ -287,8 +283,14 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         if self.local_repo_path.exists():
             return
         self.workdir.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.repo_path, self.local_repo_path)
+        shutil.copytree(
+            self.repo_path,
+            self.local_repo_path,
+            symlinks=True,
+            ignore_dangling_symlinks=True,
+        )
         os.system("chmod -R 777 " + str(self.local_repo_path))
+
         self.repo = Repo(self.local_repo_path)
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:

@@ -9,15 +9,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: psf/black@stable
-    - name: Set up Python 3.8
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.12'
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.3
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: 3.8
+        python-version: 3.12
         auto-update-conda: true
+        mamba-version: "*"
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
