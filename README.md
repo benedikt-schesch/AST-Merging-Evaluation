@@ -85,7 +85,7 @@ To run the stack on all repos:
 ./run_full.sh
 ```
 
-To run the stack on all repos and also diff the merges outputs:
+To run the stack on all repos and also diff the merges' outputs:
 
 ```bash
 ./run_full.sh -d
