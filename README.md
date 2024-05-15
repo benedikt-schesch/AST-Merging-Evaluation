@@ -8,14 +8,7 @@
 
 ### Python
 
-To install all the python requirements create a conda environment:
-
-With mamba (faster https://github.com/mamba-org/mamba):
-
-```bash
-mamba env create -f environment.yml
-mamba activate AST
-```
+To install all the Python requirements, create a conda or mamba environment:
 
 With conda:
 
@@ -24,9 +17,16 @@ conda env create -f environment.yml
 conda activate AST
 ```
 
+With mamba (faster https://github.com/mamba-org/mamba):
+
+```bash
+mamba env create -f environment.yml
+mamba activate AST
+```
+
 ### Maven
 
-Make sure you use maven version 3.9.*.
+You must use Maven version 3.9.*.
 
 ### Ubuntu
 
@@ -50,7 +50,7 @@ brew install gh
 
 ### Java
 
-Make sure you install Java 8, 11 and 17. You need to set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
+You must install Java 8, 11 and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
 
 ---
 
