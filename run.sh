@@ -24,11 +24,11 @@ N_MERGES=$3
 CACHE_DIR="${4}"
 
 # Check if it's run on MacOS, if yes raise an error
-backend=$(uname -s)
-if [ "$backend" = "Darwin" ]; then
-    echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
-    exit 1
-fi
+# backend=$(uname -s)
+# if [ "$backend" = "Darwin" ]; then
+#     echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
+#     exit 1
+# fi
 
 comparator_flags=""
 no_timing=false
@@ -58,6 +58,22 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+# Add a _with_hashes to the $REPOS_CSV
+REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
+
+if [ "$only_plotting" = true ]; then
+    python3 src/python/latex_output.py \
+        --run_name "$RUN_NAME" \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
+    exit 0
+fi
 
 PATH=$(pwd)/src/scripts/merge_tools/:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
@@ -91,22 +107,6 @@ echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
-
-# Add a _with_hashes to the $REPOS_CSV
-REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
-
-if [ "$only_plotting" = true ]; then
-    python3 src/python/latex_output.py \
-        --run_name "$RUN_NAME" \
-        --merges_path "$OUT_DIR/merges/" \
-        --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
-    exit 0
-fi
 
 ./gradlew -q assemble -g ../.gradle/
 
