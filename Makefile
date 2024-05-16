@@ -1,6 +1,6 @@
 all: style gradle-assemble
 
-style: shell-script-style python-style java-style
+style: shell-script-style python-style java-style markdown-style
 
 SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
@@ -29,6 +29,9 @@ python-style:
 check-python-style:
 	black ${PYTHON_FILES} --check
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
+
+markdown-style:
+	markdownlint "*.md" --disable MD013
 
 # This target deletes files that are not committed to version control.
 clean:
