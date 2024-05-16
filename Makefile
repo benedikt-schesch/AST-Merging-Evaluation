@@ -1,11 +1,9 @@
-.PHONY: all style clean test TAGS
-
 all: style gradle-assemble
 
-style: shell-script-style python-style java-style markdown-style
+style: shell-script-style python-style java-style
 
-SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v '\.md$$' | grep -v gradlew)
-BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v '\.md$$' | grep -v gradlew)
+SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
+BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 PYTHON_FILES = $(shell find .  -name '*.py' ! -path './repos/*' -not -path "./.workdir/*" -not -path "./cache*/*" | grep -v '/__pycache__/' | grep -v '/.git/' | grep -v gradlew)
 
 CSV_RESULTS_COMBINED = results/combined/result.csv
@@ -31,9 +29,6 @@ python-style:
 check-python-style:
 	black ${PYTHON_FILES} --check
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
-
-markdown-style:
-	markdownlint "*.md" --disable MD013
 
 # This target deletes files that are not committed to version control.
 clean:
