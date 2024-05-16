@@ -31,7 +31,7 @@ check-python-style:
 	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
 
 markdown-style:
-	markdownlint "*.md" --disable MD013
+	markdownlint "*.md" --disable MD013 --no-recursive
 
 # This target deletes files that are not committed to version control.
 clean:
