@@ -215,14 +215,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         with lock:
             if self.repo_path.exists():
                 return
-            print(
-                "Cloning",
-                self.repo_slug,
-                "to",
-                self.repo_path,
-                "because:",
-                self.repo_path.exists(),
-            )
             try:
                 clone_repo(self.repo_slug, self.repo_path)
             except Exception as e:
@@ -250,6 +242,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             ignore_dangling_symlinks=True,
         )
         os.system("chmod -R 777 " + str(self.local_repo_path))
+
         self.repo = Repo(self.local_repo_path)
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:
