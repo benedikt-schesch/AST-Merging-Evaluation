@@ -23,7 +23,9 @@ jobs:
         activate-environment: AST
         environment-file: environment.yml
     - name: Install markdownlint
-      run: npm install markdownlint --save-dev
+      run: |
+        npm install markdownlint --save-dev
+        markdownlint --version
     - name: Install shellcheck and checkbashisms
       run: sudo apt update && sudo apt install shellcheck devscripts
     - name: Check style
