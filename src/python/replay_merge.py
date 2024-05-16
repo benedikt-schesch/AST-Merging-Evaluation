@@ -88,9 +88,7 @@ def merge_replay(
 
         # Get base, left, right, and programmer merge.
 
-        workdir = Path(
-            f"{repo_slug}-merge-left"
-        )
+        workdir = Path(f"{repo_slug}-merge-left")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -99,11 +97,9 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data['left'])
+            repo.checkout(merge_data["left"])
 
-        workdir = Path(
-            f"{repo_slug}-merge-right"
-        )
+        workdir = Path(f"{repo_slug}-merge-right")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -112,11 +108,9 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data['right'])
+            repo.checkout(merge_data["right"])
 
-        workdir = Path(
-            f"{repo_slug}-merge-base"
-        )
+        workdir = Path(f"{repo_slug}-merge-base")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -125,12 +119,13 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            base_commit = subprocess.run(['git', 'merge-base', merge_data['left'], merge_data['right']], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            base_commit = subprocess.run(
+                ["git", "merge-base", merge_data["left"], merge_data["right"]],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
             repo.checkout(base_commit)
 
-        workdir = Path(
-            f"{repo_slug}-merge-programmer"
-        )
+        workdir = Path(f"{repo_slug}-merge-programmer")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -139,8 +134,7 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data['merge'])
-
+            repo.checkout(merge_data["merge"])
 
         for merge_tool in MERGE_TOOL:
             progress.update(task, advance=1)
