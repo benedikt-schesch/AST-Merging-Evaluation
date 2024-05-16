@@ -242,7 +242,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             ignore_dangling_symlinks=True,
         )
         os.system("chmod -R 777 " + str(self.local_repo_path))
-
         self.repo = Repo(self.local_repo_path)
 
     def checkout(self, commit: str, use_cache: bool = True) -> Tuple[bool, str]:

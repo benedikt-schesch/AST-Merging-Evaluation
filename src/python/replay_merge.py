@@ -12,6 +12,7 @@ import sys
 import tarfile
 from pathlib import Path
 import shutil
+import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
@@ -90,6 +91,57 @@ def merge_replay(
             f"Replaying {repo_slug} {merge_data['left']} {merge_data['right']}",
             total=len(MERGE_TOOL),
         )
+
+        # Get base, left, right, and programmer merge.
+
+        workdir = Path(f"{repo_slug}-merge-input-left")
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data["left"])
+
+        workdir = Path(f"{repo_slug}-merge-input-right")
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data["right"])
+
+        workdir = Path(f"{repo_slug}-merge-input-base")
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            base_commit = subprocess.run(
+                ["git", "merge-base", merge_data["left"], merge_data["right"]],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
+            repo.checkout(base_commit)
+
+        workdir = Path(f"{repo_slug}-merge-input-programmer")
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data["merge"])
+
         for merge_tool in MERGE_TOOL:
             progress.update(task, advance=1)
             workdir = Path(
@@ -104,19 +156,19 @@ def merge_replay(
             if (WORKDIR_DIRECTORY / workdir).exists():
                 # Ask the user if they want to delete the workdir
                 logger.info(
-                    f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
+                    f"Workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
                 )
                 if delete_workdir:
                     answer = "y"
                 else:
                     answer = input(
-                        f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
+                        f"Workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
                     )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
                 else:
                     logger.info(
-                        f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping"
+                        f"Workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping."
                     )
                     continue
             try:
