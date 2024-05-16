@@ -88,7 +88,7 @@ def merge_replay(
 
         # Get base, left, right, and programmer merge.
 
-        workdir = Path(f"{repo_slug}-merge-left")
+        workdir = Path(f"{repo_slug}-merge-input-left")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -99,7 +99,7 @@ def merge_replay(
             )
             repo.checkout(merge_data["left"])
 
-        workdir = Path(f"{repo_slug}-merge-right")
+        workdir = Path(f"{repo_slug}-merge-input-right")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -110,7 +110,7 @@ def merge_replay(
             )
             repo.checkout(merge_data["right"])
 
-        workdir = Path(f"{repo_slug}-merge-base")
+        workdir = Path(f"{repo_slug}-merge-input-base")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -125,7 +125,7 @@ def merge_replay(
             ).stdout.decode("utf-8")
             repo.checkout(base_commit)
 
-        workdir = Path(f"{repo_slug}-merge-programmer")
+        workdir = Path(f"{repo_slug}-merge-input-programmer")
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
