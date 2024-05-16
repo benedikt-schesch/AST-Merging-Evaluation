@@ -67,8 +67,14 @@ def merge_replay(
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
-        args (Tuple[str,pd.Series]): A tuple containing the repository slug,
-                    the repository info, and the cache path.
+        merge_idx (str): The index of the merge.
+        repo_slug (str): The repository slug.
+        merge_data (pd.Series): The data of the merge.
+        test_merge (bool, optional): Whether to test the merge. Defaults to False.
+        delete_workdir (bool, optional): Whether to delete the workdir. Defaults to True.
+        create_artifacts (bool, optional): Whether to create artifacts. Defaults to False.
+        dont_check_fingerprints (bool, optional): Whether to check the fingerprints.
+            Defaults to False.
     Returns:
         pd.Series: The result of the test.
     """
