@@ -10,6 +10,7 @@
 
 To install all the Python requirements, create a conda or mamba environment:
 
+
 With conda:
 
 ```bash
@@ -211,10 +212,10 @@ To run style checking run `make style`.
 
 * jars/ -> Location for the IntelliMerge and Spork jars.
 
-
 ## Comparing merge algorithms
 
 To investigate differences between two mergers:
- * edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
- * run `src/python/select_from_results.py` to create a .csv database containing only the differences.
- * run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
+
+* edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
+* run `src/python/select_from_results.py` to create a .csv database containing only the differences.
+* run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
