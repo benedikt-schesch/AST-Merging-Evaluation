@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+    - name: Install markdownlint
+      run: |
+        npm install markdownlint --save-dev -g
+        markdownlint --version
     - uses: psf/black@stable
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
@@ -22,10 +27,6 @@ jobs:
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
-    - name: Install markdownlint
-      run: |
-        npm install markdownlint --save-dev
-        markdownlint --version
     - name: Install shellcheck and checkbashisms
       run: sudo apt update && sudo apt install shellcheck devscripts
     - name: Check style
