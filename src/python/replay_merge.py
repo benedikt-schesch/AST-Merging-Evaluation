@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Replay merges and their test results"""
+"""Replay merges and their test results.
+
+Typical usage:
+  replay_merge.py --idx INDEX
+where INDEX is, for example, 38-192 .
+"""
 import argparse
 import os
+import sys
+import tarfile
 from pathlib import Path
 import shutil
+import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
@@ -21,13 +29,41 @@ from loguru import logger
 logger.add("replay_merge.log", mode="a")
 
 
-# pylint: disable=too-many-arguments, too-many-locals
+def store_artifacts(result_df: pd.DataFrame) -> None:
+    """Store artifacts in a tarball directly fro."""
+    tarball_path = "replay_merge_artifacts.tar.gz"
+
+    # Create the tarball and add files, ensuring no path modification
+    with tarfile.open(tarball_path, "w:gz") as tar:
+        for idx in result_df.index:
+            repo_path = result_df.loc[idx, "repo path"]
+            log_path = result_df.loc[idx, "merge log path"]
+
+            # Add repository directories or files to the tarball with absolute paths
+            tar.add(repo_path, arcname=repo_path)
+
+            # Add log files to the tarball with absolute paths
+            tar.add(log_path, arcname=log_path)
+
+    logger.info("Artifacts created")
+
+
+def delete_workdirs(results_df: pd.DataFrame) -> None:
+    """Delete the workdirs after replaying the merges."""
+    for idx in results_df.index:
+        os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
+        shutil.rmtree(results_df.loc[idx, "repo path"])
+    logger.info("Workdirs deleted")
+
+
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
 def merge_replay(
     merge_idx: str,
     repo_slug: str,
     merge_data: pd.Series,
     test_merge: bool = False,
     delete_workdir: bool = True,
+    create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
@@ -49,6 +85,63 @@ def merge_replay(
             f"Replaying {repo_slug} {merge_data['left']} {merge_data['right']}",
             total=len(MERGE_TOOL),
         )
+
+        # Get base, left, right, and programmer merge.
+
+        workdir = Path(
+            f"{repo_slug}-merge-left"
+        )
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data['left'])
+
+        workdir = Path(
+            f"{repo_slug}-merge-right"
+        )
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data['right'])
+
+        workdir = Path(
+            f"{repo_slug}-merge-base"
+        )
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            base_commit = subprocess.run(['git', 'merge-base', merge_data['left'], merge_data['right']], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            repo.checkout(base_commit)
+
+        workdir = Path(
+            f"{repo_slug}-merge-programmer"
+        )
+        if not (WORKDIR_DIRECTORY / workdir).exists():
+            repo = Repository(
+                repo_slug,
+                cache_directory=Path("no_cache/"),
+                workdir_id=workdir,
+                delete_workdir=False,
+                lazy_clone=False,
+            )
+            repo.checkout(merge_data['merge'])
+
+
         for merge_tool in MERGE_TOOL:
             progress.update(task, advance=1)
             workdir = Path(
@@ -63,25 +156,36 @@ def merge_replay(
             if (WORKDIR_DIRECTORY / workdir).exists():
                 # Ask the user if they want to delete the workdir
                 logger.info(
-                    f"workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
+                    f"Workdir {WORKDIR_DIRECTORY / workdir} already exists for idx: {merge_idx}"
                 )
-                answer = input(
-                    f"workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
-                )
+                if delete_workdir:
+                    answer = "y"
+                else:
+                    answer = input(
+                        f"Workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
+                    )
                 if answer == "y":
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
                 else:
                     logger.info(
-                        f"workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping"
+                        f"Workdir {WORKDIR_DIRECTORY/workdir} already exists. Skipping."
                     )
                     continue
-
-            repo = Repository(
-                repo_slug,
-                cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
-                delete_workdir=delete_workdir,
-            )
+            try:
+                repo = Repository(
+                    repo_slug,
+                    cache_directory=Path("no_cache/"),
+                    workdir_id=workdir,
+                    delete_workdir=False,
+                    lazy_clone=False,
+                )
+            except Exception as e:
+                logger.error(
+                    f"Git clone failed for {repo_slug} {merge_data['left']}"
+                    + f"{merge_data['right']} {e}"
+                )
+                # Exit with 0 for CI/CD to not cause problems in case a repo is no longer available
+                sys.exit(0)
             (
                 merge_result,
                 merge_fingerprint,
@@ -96,6 +200,7 @@ def merge_replay(
                 timeout=TIMEOUT_TESTING_MERGE,
                 use_cache=False,
             )
+            assert repo.local_repo_path.exists()
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -111,6 +216,7 @@ def merge_replay(
             log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(log_path, "w", encoding="utf-8") as f:
                 f.write(explanation)
+            assert repo.local_repo_path.exists()
             result_df.loc[
                 merge_tool.name,
                 ["merge result", "merge log path", "repo path", "merge fingerprint"],
@@ -120,14 +226,41 @@ def merge_replay(
                 repo.local_repo_path,
                 merge_fingerprint,
             ]
-            if (
-                merge_data[f"{merge_tool.name}_merge_fingerprint"] != merge_fingerprint
-                and not dont_check_fingerprints
+            assert repo.local_repo_path.exists()
+
+            if (  # pylint: disable=too-many-boolean-expressions
+                merge_result
+                not in (
+                    MERGE_STATE.Git_checkout_failed,
+                    TEST_STATE.Git_checkout_failed,
+                )
+                and (
+                    merge_data[f"{merge_tool.name}_merge_fingerprint"]
+                    != merge_fingerprint
+                    and not dont_check_fingerprints
+                )
+                and (merge_tool != MERGE_TOOL.spork)
+                and (
+                    merge_tool != MERGE_TOOL.gitmerge_resolve
+                    or merge_result != MERGE_STATE.Merge_failed
+                )
             ):
+                assert repo.local_repo_path.exists()
+                if create_artifacts:
+                    store_artifacts(result_df)
+                if delete_workdir:
+                    delete_workdirs(result_df)
+                print("=====================================\n")
+                with open(log_path, "r", encoding="utf-8") as f:
+                    print(f.read())
+                print("=====================================\n")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']}"
+                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']} at log path {log_path}"
+                    + f" and repo path {repo.local_repo_path}",
+                    merge_result,
+                    f"idx {merge_idx}",
                 )
 
             if merge_result not in (
@@ -210,6 +343,11 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
+        "-skip_build",
+        help="Build the merge tool",
+        action="store_false",
+    )
+    parser.add_argument(
         "-create_artifacts",
         help="Create artifacts",
         action="store_true",
@@ -225,6 +363,19 @@ if __name__ == "__main__":
         logger.info("Testing the replay of a merge")
     if args.create_artifacts:
         logger.info("Creating artifacts after replaying the merges")
+    if args.skip_build:
+        logger.info("Building merge tool")
+
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
+    )
+    os.environ["PATH"] += os.pathsep + os.path.join(
+        os.getcwd(), "src/scripts/merge_tools"
+    )
+    os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    if not args.skip_build:
+        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+    os.system("git submodule update --init")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
@@ -235,7 +386,8 @@ if __name__ == "__main__":
         str(repo_slug),
         merge_data,
         args.test,
-        args.delete_workdir and not args.create_artifacts,
+        args.delete_workdir,
+        args.create_artifacts,
         args.dont_check_fingerprints,
     )
     for idx, row in results_df.iterrows():
@@ -254,16 +406,6 @@ if __name__ == "__main__":
 
     # Create artifacts which means creating a tarball of all the relevant workdirs
     if args.create_artifacts:
-        logger.info("Creating artifacts")
-        os.system(
-            "tar -czf replay_merge_artifacts.tar.gz "
-            + " ".join(
-                [str(results_df.loc[idx, "repo path"]) for idx in results_df.index]
-            )
-        )
-        logger.info("Artifacts created")
-        if args.delete_workdir:
-            for idx in results_df.index:
-                os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
-                shutil.rmtree(results_df.loc[idx, "repo path"])
-            logger.info("Workdirs deleted")
+        store_artifacts(results_df)
+    if args.delete_workdir:
+        delete_workdirs(results_df)
