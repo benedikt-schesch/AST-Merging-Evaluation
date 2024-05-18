@@ -818,9 +818,9 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         run_name_camel_case + "MainBranchMergesPercent",
         round(len(main) * 100 / len(result_df)),
     )
-    output += latex_def(run_name_camel_case + "OtherBranceshMerges", len(feature))
+    output += latex_def(run_name_camel_case + "OtherBranchMerges", len(feature))
     output += latex_def(
-        run_name_camel_case + "OtherBranchesMergesPercent",
+        run_name_camel_case + "OtherBranchMergesPercent",
         round(len(feature) * 100 / len(result_df)),
     )
     output += latex_def(
