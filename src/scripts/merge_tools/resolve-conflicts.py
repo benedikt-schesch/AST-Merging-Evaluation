@@ -296,7 +296,7 @@ def merge_base_is_prefix_or_suffix(
     """
     base_len = len(base)
     parent1_len = len(parent1)
-    parent2_len = len(parent2)
+    parent2_len = len(parent2)  # noqa: F841
     if base_len < parent1_len:
         if parent1[:base_len] == base:
             debug_print("startswith", parent1, base)
