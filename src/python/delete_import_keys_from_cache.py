@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Delete the keys containing 'imports' in the JSON files in the given directory. """
+"""Delete the keys containing 'imports' in the JSON files in the given directory."""
+
 import os
 import json
 

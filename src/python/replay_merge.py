@@ -6,6 +6,7 @@ Typical usage:
   replay_merge.py --idx INDEX
 where INDEX is, for example, 38-192 .
 """
+
 import argparse
 import os
 import sys
@@ -56,7 +57,6 @@ def delete_workdirs(results_df: pd.DataFrame) -> None:
     logger.info("Workdirs deleted")
 
 
-# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
 def merge_replay(
     merge_idx: str,
     repo_slug: str,
@@ -228,7 +228,7 @@ def merge_replay(
             ]
             assert repo.local_repo_path.exists()
 
-            if (  # pylint: disable=too-many-boolean-expressions
+            if (
                 merge_result
                 not in (
                     MERGE_STATE.Git_checkout_failed,

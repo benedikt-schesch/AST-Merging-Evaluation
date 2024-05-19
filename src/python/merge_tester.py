@@ -140,7 +140,7 @@ def build_arguments(
     ]
 
 
-def main():  # pylint: disable=too-many-locals,too-many-statements
+def main():
     """Main function"""
     logger.info("merge_tester: Start")
     parser = argparse.ArgumentParser()

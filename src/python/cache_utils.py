@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Contains all the functions related to the caches. The functions to interact with each
+"""Contains all the functions related to the caches. The functions to interact with each
 of the caches are in this file. Each cache is interacted with through the functions
 of this file. The caches are all JSON files and are stored in the cache directory.
 There will be 4 caches in total which are stored on disk after running the run.sh script:

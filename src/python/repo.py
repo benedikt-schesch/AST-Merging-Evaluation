@@ -164,7 +164,7 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
         str(wcopy_dir),
     ]
     try:
-        p = subprocess.run(  # pylint: disable=consider-using-with
+        p = subprocess.run(
             command,
             capture_output=True,
             timeout=timeout,
@@ -179,10 +179,10 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     return TEST_STATE.Tests_failed, explanation
 
 
-class Repository:  # pylint: disable=too-many-instance-attributes
+class Repository:
     """A class that represents a repository."""
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
         repo_slug: str,
         cache_directory: Path = Path(""),
@@ -294,7 +294,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
         return True, explanation
 
-    def _merge_and_test(  # pylint: disable=too-many-arguments
+    def _merge_and_test(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
@@ -348,7 +348,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             test_coverage,
         )
 
-    def merge_and_test(  # pylint: disable=too-many-arguments
+    def merge_and_test(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
@@ -438,7 +438,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.repo.git.checkout("-b", branch_name, force=True)
         return tree_fingerprint, explanation
 
-    def merge(  # pylint: disable=too-many-locals,too-many-arguments
+    def merge(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
@@ -509,7 +509,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             RIGHT_BRANCH_NAME,
         ]
         try:
-            p = subprocess.run(  # pylint: disable=consider-using-with
+            p = subprocess.run(
                 command,
                 capture_output=True,
                 timeout=timeout if timeout > 0 else None,
