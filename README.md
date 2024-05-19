@@ -1,15 +1,14 @@
 # Evaluation of VCS merging algorithms
 
 ![small-test](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
-
 ![check-style](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
+![check-reproducibility](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-reproducibility.yml/badge.svg)
 
 ## Requirements
 
 ### Python
 
 To install all the Python requirements, create a conda or mamba environment:
-
 
 With conda:
 

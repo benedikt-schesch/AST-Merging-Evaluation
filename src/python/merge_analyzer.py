@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Analyze the merges i.e. check if the parents pass tests and statistics between merges.
+"""Analyze the merges i.e. check if the parents pass tests and statistics between merges.
 usage: python3 merge_analyzer.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
@@ -149,8 +149,8 @@ def diff_merge_analyzer(
     return cache_data
 
 
-def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
-    args: Tuple[str, pd.Series, Path]
+def merge_analyzer(
+    args: Tuple[str, pd.Series, Path],
 ) -> pd.Series:
     """
     Merges two branches and returns the result.

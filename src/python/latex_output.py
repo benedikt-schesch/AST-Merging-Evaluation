@@ -20,7 +20,6 @@ following input files:
 - output_dir: path to the directory where the LaTeX files will be saved
 """
 
-
 import os
 import argparse
 from pathlib import Path
@@ -186,9 +185,7 @@ def build_table1(
     return table
 
 
-def build_table2(  # pylint: disable=too-many-locals
-    main: pd.DataFrame, merge_tools: List[str], feature
-) -> str:
+def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
     """Build a table with the results of the merge tools.
     Args:
         main: DataFrame containing the results of the merge tools for the main branch
@@ -261,7 +258,7 @@ def build_table2(  # pylint: disable=too-many-locals
     return table2
 
 
-def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
+def main():
     """Main function"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_name", type=str, default="combined")
@@ -485,7 +482,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             results = []
             for cost_factor in np.linspace(1, max_cost_intersection, 1000):
                 score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
-                score = score / ((unhandled[idx] + incorrect[idx] + correct[idx]))
+                score = score / (unhandled[idx] + incorrect[idx] + correct[idx])
                 score = 1 - score
                 results.append(score)
             line_style = [(idx, (1, 1)), "--", "-."][idx % 3]
@@ -524,7 +521,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         results = []
         for cost_factor in np.linspace(1, max_cost_intersection, 1000):
             score = unhandled[-1] * 1 + incorrect[-1] * cost_factor
-            score = score / ((unhandled[-1] + incorrect[-1] + correct[-1]))
+            score = score / (unhandled[-1] + incorrect[-1] + correct[-1])
             score = 1 - score
             results.append(score)
         # print(results)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Samples n_merges for each repository.
+"""Samples n_merges for each repository.
 usage: python3 merges_sampler.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
