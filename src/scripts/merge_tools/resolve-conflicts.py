@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python  # pylint: skip-file
 # -*- coding: utf-8 -*-
 
 # This is a helper script for `resolve-adjacent-conflicts` and
@@ -39,7 +39,7 @@ T = TypeVar("T")  # Type variable for use in type hints
 debug = False
 
 
-def main():
+def main():  # pylint: disable=too-many-locals
     """The main entry point."""
     arg_parser = ArgumentParser()
     arg_parser.add_argument("filename")
@@ -114,7 +114,7 @@ def main():
         sys.exit(0)
 
 
-def looking_at_conflict(
+def looking_at_conflict(  # pylint: disable=too-many-return-statements
     filename: str, start_index: int, lines: List[str]
 ) -> Union[None, Tuple[List[str], List[str], List[str], int]]:
     """Tests whether the following text starts a conflict.
@@ -185,7 +185,7 @@ def looking_at_conflict(
     return (base, parent1, parent2, index - start_index)
 
 
-def merge(
+def merge(  # pylint: disable=too-many-arguments
     base: List[str],
     parent1: List[str],
     parent2: List[str],
@@ -296,6 +296,7 @@ def merge_base_is_prefix_or_suffix(
     """
     base_len = len(base)
     parent1_len = len(parent1)
+    parent2_len = len(parent2)
     if base_len < parent1_len:
         if parent1[:base_len] == base:
             debug_print("startswith", parent1, base)
