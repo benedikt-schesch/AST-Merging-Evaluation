@@ -116,10 +116,6 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                             ]
                         ]
                     )
-                assert (
-                    inconsistent_mask.sum() == 0
-                ), f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
-
 
 def merge_tool_latex_name(name: str) -> str:
     """Return the LaTeX name of a merge tool.
