@@ -166,7 +166,7 @@ python3 src/python/split_repos.py \
     --machine_id "$machine_id" \
     --num_machines "$num_machines" \
     --output_file "$OUT_DIR/local_repos.csv"
-exit 0
+
 python3 src/python/merge_analyzer.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
