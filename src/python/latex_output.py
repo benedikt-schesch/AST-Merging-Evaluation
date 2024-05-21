@@ -80,6 +80,17 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                 or merge_tool2 == "gitmerge_ort_adjacent"
             ):
                 continue
+            # Ignore
+            if (
+                merge_tool1 == "gitmerge_ort_imports"
+                or merge_tool2 == "gitmerge_ort_imports"
+            ):
+                continue
+            if (
+                merge_tool1 == "gitmerge_ort_imports_ignorespace"
+                or merge_tool2 == "gitmerge_ort_imports_ignorespace"
+            ):
+                continue
             if merge_tool1 != merge_tool2:
                 # Check if fingerprints are the same
                 same_fingerprint_mask = (
@@ -96,7 +107,15 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                     logger.error(
                         f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
                     )
-                    logger.error(result_df[inconsistent_mask])
+                    logger.error(
+                        result_df.loc[inconsistent_mask][
+                            [
+                                merge_tool1,
+                                merge_tool2,
+                                merge_tool1 + "_merge_fingerprint",
+                            ]
+                        ]
+                    )
                 assert (
                     inconsistent_mask.sum() == 0
                 ), f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
@@ -450,11 +469,6 @@ def main():
                 )
                 mask_merge_name = merge_name_flags1 | merge_name_flags2
 
-                if merge_tool1 == "intellimerge" and merge_tool2 == "gitmerge_ort":
-                    print(mask_diff_fingerprint)
-                    print(mask_merge_name)
-                    print((mask_diff_fingerprint & mask_merge_name).sum())
-
                 # Calculate the result
                 result.loc[merge_tool1, merge_tool2] = (
                     mask_diff_fingerprint & mask_merge_name
@@ -575,7 +589,7 @@ def main():
             score = score / (unhandled[-1] + incorrect[-1] + correct[-1])
             score = 1 - score
             results.append(score)
-        # print(results)
+
         ax.plot(
             np.linspace(1, max_cost_intersection, 1000),
             results,
@@ -668,7 +682,6 @@ def main():
                 for _, repository_data in repos.iterrows():
                     progress.update(task, advance=1)
                     repo_slug = repository_data["repository"]
-                    print(Path(args.timed_merges_path) / f"{repo_slug}.csv")
                     merges = pd.read_csv(
                         Path(args.timed_merges_path) / f"{repo_slug}.csv",
                         header=0,

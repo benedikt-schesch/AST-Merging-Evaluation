@@ -32,14 +32,6 @@ def check_fingerprint_consistency(
 
     for merge_tool1 in merge_tools:
         for merge_tool2 in merge_tools:
-            if merge_tool1 == "gitmerge_resolve" or merge_tool2 == "gitmerge_resolve":
-                continue
-            # ignore adjacent
-            if (
-                merge_tool1 == "gitmerge_ort_adjacent"
-                or merge_tool2 == "gitmerge_ort_adjacent"
-            ):
-                continue
             if merge_tool1 != merge_tool2:
                 # Check if fingerprints are the same
                 same_fingerprint_mask = (
