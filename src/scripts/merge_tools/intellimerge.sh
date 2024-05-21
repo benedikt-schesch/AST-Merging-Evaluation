@@ -37,8 +37,6 @@ java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" 
 cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
 
-initial_conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "./" | wc -l)
-
 git merge --no-edit "$branch2"
 cd - || exit 1
 
