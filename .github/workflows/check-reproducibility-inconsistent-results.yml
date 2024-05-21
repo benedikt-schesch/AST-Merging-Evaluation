@@ -1,4 +1,4 @@
-name: Reproducibility Check
+name: Reproducibility Check Inconsistent Results
 on: [push, pull_request]
 jobs:
   test:
