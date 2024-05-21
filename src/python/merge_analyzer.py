@@ -17,7 +17,6 @@ import argparse
 from pathlib import Path
 from typing import Tuple, Dict, Union, Any
 import random
-import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
 from cache_utils import set_in_cache, lookup_in_cache
@@ -253,7 +252,7 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     )
     merges["left"] = merges["left"].astype(str)
     merges["right"] = merges["right"].astype(str)
-    merges["notes"].replace(np.nan, "", inplace=True)
+    merges["notes"] = merges["notes"].fillna("")
 
     arguments = [
         (repo_slug, merge_data, Path(args.cache_dir))

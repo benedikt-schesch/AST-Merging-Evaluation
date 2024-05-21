@@ -48,6 +48,7 @@ find $temp_dir -type f | while read -r f; do
 done
 rm -rf $temp_dir
 
+cd "$clone_dir" || exit 1
 # Detect conflicts using Git commands
 conflict_files=$(git diff --name-only --diff-filter=U)
 
@@ -57,5 +58,5 @@ if [ -n "$conflict_files" ]; then
     exit 1
 fi
 
-echo "No conflicts detected."
+echo "No conflicts detected. $conflict_files"
 exit 0

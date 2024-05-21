@@ -12,7 +12,6 @@ This script splits the repos list for each machine and stores the local repos li
 import argparse
 from pathlib import Path
 import pandas as pd
-import numpy as np
 from loguru import logger
 
 if __name__ == "__main__":
@@ -25,7 +24,8 @@ if __name__ == "__main__":
     df: pd.DataFrame = pd.read_csv(args.repos_csv, index_col="idx")
     # Shuffle the dataframe so the ordering of the list doesn't bias the output.
     df = df.sample(frac=1, random_state=42)
-    df = np.array_split(df, args.num_machines)[args.machine_id]
+    df["split"] = df.index % args.num_machines
+    df = df[df["split"] == args.machine_id].drop(columns=["split"])
     df.sort_index(inplace=True)
 
     df.to_csv(args.output_file, index_label="idx")
