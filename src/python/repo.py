@@ -543,7 +543,6 @@ class Repository:
         if use_cache:
             cache_entry["sha"] = sha
             cache_entry["merge status"] = merge_status.name
-            output = f"command: {' '.join(command)}\n stdout: {p.stdout}\n stderr: {p.stderr}"
             output_file = (
                 self.sha_cache_directory
                 / self.owner
@@ -553,7 +552,7 @@ class Repository:
             output_file.parent.mkdir(parents=True, exist_ok=True)
             cache_entry["merge_logs"] = str(output_file)
             with open(output_file, "w", encoding="utf-8") as f:
-                f.write(output)
+                f.write(explanation)
             set_in_cache(
                 cache_entry_name,
                 cache_entry,
