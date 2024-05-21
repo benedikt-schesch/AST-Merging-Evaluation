@@ -37,8 +37,6 @@ java -jar "$intellimerge_absolutepath" -r "$clone_dir" -b "$branch1" "$branch2" 
 cd "$clone_dir" || exit 1
 git checkout "$branch1" --force
 
-initial_conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "./" | wc -l)
-
 git merge --no-edit "$branch2"
 cd - || exit 1
 
@@ -50,13 +48,15 @@ find $temp_dir -type f | while read -r f; do
 done
 rm -rf $temp_dir
 
-# report conflicts
-conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
-if [ "$conflict_markers" -ne "$initial_conflict_markers" ]; then
-    echo "Conflict markers changed"
-    echo "Initial conflict markers: $initial_conflict_markers"
-    echo "Final conflict markers: $conflict_markers"
-    echo "Conflict detected"
+cd "$clone_dir" || exit 1
+# Detect conflicts using Git commands
+conflict_files=$(git diff --name-only --diff-filter=U)
+
+if [ -n "$conflict_files" ]; then
+    echo "Conflict detected in the following files:"
+    echo "$conflict_files"
     exit 1
 fi
+
+echo "No conflicts detected. $conflict_files"
 exit 0

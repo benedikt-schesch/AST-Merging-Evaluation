@@ -103,7 +103,7 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data["left"])
+            repo.checkout(merge_data["left"], use_cache=False)
 
         workdir = Path(f"{repo_slug}-merge-input-right")
         if not (WORKDIR_DIRECTORY / workdir).exists():
@@ -114,7 +114,7 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data["right"])
+            repo.checkout(merge_data["right"], use_cache=False)
 
         workdir = Path(f"{repo_slug}-merge-input-base")
         if not (WORKDIR_DIRECTORY / workdir).exists():
@@ -129,7 +129,7 @@ def merge_replay(
                 ["git", "merge-base", merge_data["left"], merge_data["right"]],
                 stdout=subprocess.PIPE,
             ).stdout.decode("utf-8")
-            repo.checkout(base_commit)
+            repo.checkout(base_commit, use_cache=False)
 
         workdir = Path(f"{repo_slug}-merge-input-programmer")
         if not (WORKDIR_DIRECTORY / workdir).exists():
@@ -140,7 +140,7 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            repo.checkout(merge_data["merge"])
+            repo.checkout(merge_data["merge"], use_cache=False)
 
         for merge_tool in MERGE_TOOL:
             progress.update(task, advance=1)
@@ -201,6 +201,7 @@ def merge_replay(
                 use_cache=False,
             )
             assert repo.local_repo_path.exists()
+
             root_dir = Path("replay_logs")
             log_path = root_dir / Path(
                 "merges/"
@@ -217,6 +218,18 @@ def merge_replay(
             with open(log_path, "w", encoding="utf-8") as f:
                 f.write(explanation)
             assert repo.local_repo_path.exists()
+            if merge_result in (MERGE_STATE.Merge_failed, MERGE_STATE.Merge_success):
+                # Run 'git diff --name-only --diff-filter=U' to get the files with conflicts
+                conflict_files = subprocess.run(
+                    ["git", "diff", "--name-only", "--diff-filter=U"],
+                    cwd=repo.local_repo_path,
+                    stdout=subprocess.PIPE,
+                ).stdout.decode("utf-8")
+                is_conflict = len(conflict_files) > 0
+                assert (
+                    is_conflict == (merge_result == MERGE_STATE.Merge_failed)
+                ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match conflict_files {conflict_files} at path {repo.local_repo_path}"
+
             result_df.loc[
                 merge_tool.name,
                 ["merge result", "merge log path", "repo path", "merge fingerprint"],

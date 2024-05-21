@@ -63,6 +63,64 @@ MERGE_TOOL_RENAME = {
 }
 
 
+def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str]):
+    """Check if the fingerprints are consistent.
+
+    Args:
+        result_df: DataFrame containing the results of the merge tools
+        merge_tools: list of merge tools
+    """
+    for merge_tool1 in merge_tools:
+        for merge_tool2 in merge_tools:
+            if merge_tool1 == "gitmerge_resolve" or merge_tool2 == "gitmerge_resolve":
+                continue
+            # ignore adajcent
+            if (
+                merge_tool1 == "gitmerge_ort_adjacent"
+                or merge_tool2 == "gitmerge_ort_adjacent"
+            ):
+                continue
+            # Ignore
+            if (
+                merge_tool1 == "gitmerge_ort_imports"
+                or merge_tool2 == "gitmerge_ort_imports"
+            ):
+                continue
+            if (
+                merge_tool1 == "gitmerge_ort_imports_ignorespace"
+                or merge_tool2 == "gitmerge_ort_imports_ignorespace"
+            ):
+                continue
+            if merge_tool1 != merge_tool2:
+                # Check if fingerprints are the same
+                same_fingerprint_mask = (
+                    result_df[merge_tool1 + "_merge_fingerprint"]
+                    == result_df[merge_tool2 + "_merge_fingerprint"]
+                )
+
+                # Check if results are the same
+                same_result_mask = result_df[merge_tool1] == result_df[merge_tool2]
+
+                # Check if the fingerprints are the same but the results are different
+                inconsistent_mask = same_fingerprint_mask & ~same_result_mask
+                if inconsistent_mask.sum() > 0:
+                    logger.error(
+                        f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
+                    )
+                    logger.error(
+                        result_df.loc[inconsistent_mask][
+                            [
+                                merge_tool1,
+                                merge_tool2,
+                                merge_tool1 + "_merge_fingerprint",
+                            ]
+                        ]
+                    )
+                assert (
+                    inconsistent_mask.sum() == 0
+                ), f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
+
+
 def merge_tool_latex_name(name: str) -> str:
     """Return the LaTeX name of a merge tool.
     Args:
@@ -385,44 +443,51 @@ def main():
         Path(plots_output_path).mkdir(parents=True, exist_ok=True)
         Path(tables_output_path).mkdir(parents=True, exist_ok=True)
 
+        check_fingerprint_consistency(result_df, merge_tools)
+
         # Figure Heat map diffing
-        result = np.zeros((len(merge_tools), len(merge_tools)))
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(),
-        ) as progress:
-            task = progress.add_task("Processing merges...", total=len(result_df))
-            for _, row in result_df.iterrows():
-                progress.update(task, advance=1)
-                for idx, merge_tool1 in enumerate(merge_tools):
-                    for idx2, merge_tool2 in enumerate(merge_tools[(idx + 1) :]):
-                        if (
-                            row[merge_tool1] in MERGE_CORRECT_NAMES
-                            or row[merge_tool2] in MERGE_CORRECT_NAMES
-                        ):
-                            if (
-                                row[merge_tool1 + "_merge_fingerprint"]
-                                != row[merge_tool2 + "_merge_fingerprint"]
-                            ):
-                                result[idx][idx2 + idx + 1] += 1
-                                result[idx2 + idx + 1][idx] += 1
+        result = pd.DataFrame(
+            {
+                merge_tool: {merge_tool: 0 for merge_tool in merge_tools}
+                for merge_tool in merge_tools
+            }
+        )
+        for merge_tool1 in merge_tools:
+            for merge_tool2 in merge_tools:
+                # Mask for different fingerprints
+                mask_diff_fingerprint = (
+                    result_df[merge_tool1 + "_merge_fingerprint"]
+                    != result_df[merge_tool2 + "_merge_fingerprint"]
+                )
+
+                # Mask if one of the results is in correct or incorrect names
+                merge_name_flags1 = result_df[merge_tool1].isin(
+                    MERGE_CORRECT_NAMES + MERGE_INCORRECT_NAMES
+                )
+                merge_name_flags2 = result_df[merge_tool2].isin(
+                    MERGE_CORRECT_NAMES + MERGE_INCORRECT_NAMES
+                )
+                mask_merge_name = merge_name_flags1 | merge_name_flags2
+
+                # Calculate the result
+                result.loc[merge_tool1, merge_tool2] = (
+                    mask_diff_fingerprint & mask_merge_name
+                ).sum()
+
+        # Transform the result into a numpy array
         _, ax = plt.subplots(figsize=(8, 6))
-        result = np.tril(result)
+        result_array = np.tril(result.to_numpy())
         latex_merge_tool = [
-            "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
+            "\\mbox{" + merge_tool_latex_name(i) + "}" for i in result.columns
         ]
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             heatmap = sns.heatmap(
-                result / len(result_df),
+                result_array,
                 annot=True,
                 ax=ax,
                 xticklabels=latex_merge_tool,  # type: ignore
                 yticklabels=latex_merge_tool,  # type: ignore
-                fmt=".3f",
                 mask=np.triu(np.ones_like(result, dtype=bool), k=1),
                 cmap="Blues",
                 annot_kws={"size": 6},
@@ -524,7 +589,7 @@ def main():
             score = score / (unhandled[-1] + incorrect[-1] + correct[-1])
             score = 1 - score
             results.append(score)
-        # print(results)
+
         ax.plot(
             np.linspace(1, max_cost_intersection, 1000),
             results,
@@ -617,7 +682,6 @@ def main():
                 for _, repository_data in repos.iterrows():
                     progress.update(task, advance=1)
                     repo_slug = repository_data["repository"]
-                    print(Path(args.timed_merges_path) / f"{repo_slug}.csv")
                     merges = pd.read_csv(
                         Path(args.timed_merges_path) / f"{repo_slug}.csv",
                         header=0,

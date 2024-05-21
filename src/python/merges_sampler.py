@@ -17,7 +17,6 @@ import os
 import argparse
 from pathlib import Path
 import pandas as pd
-import numpy as np
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -76,7 +75,7 @@ if __name__ == "__main__":
                 pd.DataFrame(columns=["idx"]).to_csv(output_file)
                 continue
 
-            merges["notes"].replace(np.nan, "", inplace=True)
+            merges["notes"] = merges["notes"].fillna("")
             if args.only_trivial_merges:
                 merges = merges[merges["notes"].str.contains("a parent is the base")]
             elif not args.include_trivial_merges:
@@ -97,7 +96,7 @@ if __name__ == "__main__":
             logger.info(f"Sampled {n_merges} merges from {repo_slug} in {output_file}")
             sample.to_csv(output_file)
 
-    print(
+    logger.info(
         f"merges_sampler: {missing_merges_repos} files were "
         f"missing and {total_valid_repos} repos were valid."
     )
