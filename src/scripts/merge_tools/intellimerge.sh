@@ -75,10 +75,10 @@ find $temp_out_dir -type f | while read -r f; do
         echo "File $f does not exist. Skipping."
         continue
     fi
-    echo "Moving $f to $clone_dir_absolutepath"
+    echo "Moving $f to $clone_dir_absolutepath/$suffix"
     cp "$f" "$clone_dir_absolutepath/$suffix"
 done
-# rm -rf $temp_out_dir $temp_intellimerge_dir
+rm -rf $temp_out_dir $temp_intellimerge_dir
 
 git add .
 git commit -m "IntelliMerge: Merge $branch2 into $branch1"
