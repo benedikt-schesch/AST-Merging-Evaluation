@@ -23,12 +23,12 @@ showvars:
 	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
 python-style:
-	black ${PYTHON_FILES}
-	pylint -f parseable --disable=W,invalid-name,c-extension-no-member,duplicate-code ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES}
+	ruff check ${PYTHON_FILES} --fix
 
 check-python-style:
-	black ${PYTHON_FILES} --check
-	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES} --check
+	ruff check ${PYTHON_FILES}
 
 # This target deletes files that are not committed to version control.
 clean:

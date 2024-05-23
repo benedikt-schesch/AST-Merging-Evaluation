@@ -12,9 +12,16 @@ if "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$strateg
 fi
 
 cd "$clone_dir" || exit 1
-if ! "$MERGE_SCRIPTS_DIR"/resolve-import-conflicts; then
-  echo "Conflict"
-  exit 1
+"$MERGE_SCRIPTS_DIR"/resolve-import-conflicts;
+
+# Detect conflicts using Git commands
+conflict_files=$(git diff --name-only --diff-filter=U)
+
+if [ -n "$conflict_files" ]; then
+    echo "Conflict detected in the following files:"
+    echo "$conflict_files"
+    exit 1
 fi
 
+echo "No conflicts detected."
 exit 0

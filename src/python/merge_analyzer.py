@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Analyze the merges i.e. check if the parents pass tests and statistics between merges.
+"""Analyze the merges i.e. check if the parents pass tests and statistics between merges.
 usage: python3 merge_analyzer.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
@@ -17,7 +17,6 @@ import argparse
 from pathlib import Path
 from typing import Tuple, Dict, Union, Any
 import random
-import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
 from cache_utils import set_in_cache, lookup_in_cache
@@ -149,8 +148,8 @@ def diff_merge_analyzer(
     return cache_data
 
 
-def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
-    args: Tuple[str, pd.Series, Path]
+def merge_analyzer(
+    args: Tuple[str, pd.Series, Path],
 ) -> pd.Series:
     """
     Merges two branches and returns the result.
@@ -253,7 +252,7 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     )
     merges["left"] = merges["left"].astype(str)
     merges["right"] = merges["right"].astype(str)
-    merges["notes"].replace(np.nan, "", inplace=True)
+    merges["notes"] = merges["notes"].fillna("")
 
     arguments = [
         (repo_slug, merge_data, Path(args.cache_dir))

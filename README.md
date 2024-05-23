@@ -1,21 +1,14 @@
 # Evaluation of VCS merging algorithms
 
 ![small-test](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/small-test.yml/badge.svg)
-
 ![check-style](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
+![check-reproducibility](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-reproducibility.yml/badge.svg)
 
 ## Requirements
 
 ### Python
 
-To install all the python requirements create a conda environment:
-
-With mamba (faster https://github.com/mamba-org/mamba):
-
-```bash
-mamba env create -f environment.yml
-mamba activate AST
-```
+To install all the Python requirements, create a conda or mamba environment:
 
 With conda:
 
@@ -24,9 +17,16 @@ conda env create -f environment.yml
 conda activate AST
 ```
 
+With mamba (faster https://github.com/mamba-org/mamba):
+
+```bash
+mamba env create -f environment.yml
+mamba activate AST
+```
+
 ### Maven
 
-Make sure you use maven version 3.9.*.
+You must use Maven version 3.9.*.
 
 ### Ubuntu
 
@@ -50,7 +50,7 @@ brew install gh
 
 ### Java
 
-Make sure you install Java 8, 11 and 17. You need to set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
+You must install Java 8, 11 and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
 
 ---
 
@@ -211,10 +211,10 @@ To run style checking run `make style`.
 
 * jars/ -> Location for the IntelliMerge and Spork jars.
 
-
 ## Comparing merge algorithms
 
 To investigate differences between two mergers:
- * edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
- * run `src/python/select_from_results.py` to create a .csv database containing only the differences.
- * run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
+
+* edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
+* run `src/python/select_from_results.py` to create a .csv database containing only the differences.
+* run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.

@@ -28,7 +28,7 @@ from rich.progress import (
 )
 
 
-def main():  # pylint: disable=too-many-locals,too-many-statements
+def main():
     """Main function"""
     logger.info("merge_timer: Start")
     parser = argparse.ArgumentParser()

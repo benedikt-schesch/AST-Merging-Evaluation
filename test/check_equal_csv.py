@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     raise ValueError(
                         f'goal_df.columns contains "run_time": {goal_df.columns}'
                     )
-                if not col in actual_df:
+                if col not in actual_df:
                     print(f"Column {col} is not in actual_df")
                     print(goal_df[col])
                     different_columns.append(col)

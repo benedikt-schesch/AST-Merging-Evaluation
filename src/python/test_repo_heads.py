@@ -12,6 +12,7 @@ contain a column "head hash" which contains a commit hash that will be tested.
 Cache_dir is the directory where the cache will be stored.
 Output: the rows of the input for which the commit at head hash passes tests.
 """
+
 import multiprocessing
 import os
 import argparse

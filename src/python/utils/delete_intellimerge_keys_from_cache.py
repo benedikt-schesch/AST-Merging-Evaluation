@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Delete the keys containing 'imports' in the JSON files in the given directory. """
+"""Delete the keys containing 'imports' in the JSON files in the given directory."""
+
 import os
 import json
 
@@ -15,7 +16,7 @@ def count_import_keys(directory):
                 data = json.load(file)
 
             # Count keys containing 'adjacent'
-            keys_to_delete = [key for key in data if "adjacent" in key]
+            keys_to_delete = [key for key in data if "intellimerge" in key]
             count += len(keys_to_delete)
     return count
 
@@ -31,7 +32,7 @@ def delete_import_keys(directory):
                 data = json.load(file)
 
             # Record keys to delete
-            keys_to_delete = [key for key in data.keys() if "adjacent" in key]
+            keys_to_delete = [key for key in data.keys() if "intellimerge" in key]
             if keys_to_delete:
                 for key in keys_to_delete:
                     del data[key]
