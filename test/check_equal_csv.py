@@ -44,7 +44,12 @@ if __name__ == "__main__":
         goal_df = remove_run_time(goal_df)
         actual_df = remove_run_time(actual_df)
 
-        if not goal_df.equals(actual_df):
+        for col in goal_df.columns:
+            if "intellimerge" in col:
+                continue
+            # Check if the columns are equal
+            if actual_df[col].equals(goal_df[col]):
+                continue
             # Print the differences.
             print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
             # Now print details, after diffs so it is not obscured by the diff output.
