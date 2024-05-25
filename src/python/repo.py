@@ -31,6 +31,8 @@ from variables import (
     LEFT_BRANCH_NAME,
     RIGHT_BRANCH_NAME,
     DELETE_WORKDIRS,
+    N_TESTS,
+    TIMEOUT_MERGING,
 )
 from loguru import logger
 
@@ -299,8 +301,9 @@ class Repository:
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,  # in seconds
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -314,7 +317,8 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -330,7 +334,7 @@ class Repository:
             right_fingerprint,
             _,
             _,
-        ) = self.merge(tool, left_commit, right_commit, -1)
+        ) = self.merge(tool, left_commit, right_commit, timeout_merge)
         if merge_status != MERGE_STATE.Merge_success:
             return (
                 merge_status,
@@ -339,7 +343,7 @@ class Repository:
                 right_fingerprint,
                 -1,
             )
-        test_result, test_coverage = self.test(timeout, n_tests)
+        test_result, test_coverage = self.test(timeout_test, n_tests)
         return (
             test_result,
             merge_fingerprint,
@@ -353,8 +357,9 @@ class Repository:
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -368,7 +373,8 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -382,7 +388,12 @@ class Repository:
         )
         if sha_cache_entry is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
         if merge_result != MERGE_STATE.Merge_success:
@@ -396,7 +407,12 @@ class Repository:
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         return (
             result,

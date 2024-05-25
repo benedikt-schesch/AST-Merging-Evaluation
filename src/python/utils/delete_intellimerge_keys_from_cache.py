@@ -2,7 +2,10 @@
 """Delete the keys containing 'imports' in the JSON files in the given directory."""
 
 import os
+import sys
 import json
+from pathlib import Path
+from argparse import ArgumentParser
 
 
 def count_import_keys(directory):
@@ -47,15 +50,32 @@ def delete_import_keys(directory):
 
 def main():
     """Main function."""
-    directory = "cache"
-    potential_deletions = count_import_keys(directory)
-    print(f"Potential deletions: {potential_deletions}")
-    confirm = input("Do you want to proceed with deleting these keys? (yes/no): ")
-    if confirm.lower() == "yes":
-        total_deleted = delete_import_keys(directory)
-        print(f"Total keys deleted: {total_deleted}")
-    else:
-        print("Operation cancelled.")
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--cache",
+        type=str,
+        default="cache_small",
+        help="The cache directory to delete keys from.",
+    )
+    parser.add_argument(
+        "-y", "--yes", action="store_true", help="Skip the confirmation prompt."
+    )
+    args = parser.parse_args()
+    cache_dir = Path(args.cache)
+    if not cache_dir.exists():
+        print(f"Directory '{cache_dir}' does not exist.")
+        return
+
+    if not args.yes:
+        potential_deletions = count_import_keys(args.cache)
+        print(f"Potential deletions: {potential_deletions}")
+        confirm = input("Do you want to proceed with deleting these keys? (yes/no): ")
+        if confirm.lower() != "yes":
+            print("Operation cancelled.")
+            sys.exit(0)
+
+    total_deleted = delete_import_keys(args.cache)
+    print(f"Total keys deleted: {total_deleted}")
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from repo import Repository, MERGE_TOOL
 from cache_utils import lookup_in_cache, set_in_cache
 import numpy as np
 from loguru import logger
+from variables import TIMEOUT_MERGING
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -101,7 +102,7 @@ def main():
                                 tool=merge_tool,
                                 left_commit=left_hash,
                                 right_commit=right_hash,
-                                timeout=0,
+                                timeout=TIMEOUT_MERGING,
                                 use_cache=False,
                             )
                             del repo
