@@ -63,6 +63,7 @@ if [ "$conflicts_resolved" = false ]; then
     echo "Conflict detected. Aborting the merge. Please resolve the conflicts."
     echo "All conflicting files:"
     echo "$conflict_files"
+    rm -rf $temp_out_dir $temp_intellimerge_dir
     exit 1
 fi
 
