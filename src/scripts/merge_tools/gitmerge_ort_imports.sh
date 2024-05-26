@@ -14,8 +14,11 @@ git checkout "$branch1" --force
 
 attributes_file=".git/info/attributes"
 echo "*.java merge=merge-java" >> "$attributes_file"
+git config --local merge.conflictstyle diff3
 git config --local merge.merge-java.name "Merge Java files"
-git config --local merge.merge-java.driver 'java-merge-driver.sh "%A" "%O" "%B"'
+git config --local merge.merge-java.driver 'java-merge-driver.sh %A %O %B'
+git config --local merge.merge-adjacent.name "Merge Imports"
+git config --local merge.merge-adjacent.driver 'java-merge-driver.sh %A %O %B'
 
 git merge --no-edit "$branch2"
 retVal=$?
