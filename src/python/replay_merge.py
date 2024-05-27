@@ -16,7 +16,7 @@ import shutil
 import subprocess
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
-from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY
+from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY, TIMEOUT_MERGING
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -65,6 +65,7 @@ def merge_replay(
     delete_workdir: bool = True,
     create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
+    testing: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
@@ -76,6 +77,7 @@ def merge_replay(
         create_artifacts (bool, optional): Whether to create artifacts. Defaults to False.
         dont_check_fingerprints (bool, optional): Whether to check the fingerprints.
             Defaults to False.
+        testing (bool, optional): Whether to check for reproducibility. Defaults to False.
     Returns:
         pd.Series: The result of the test.
     """
@@ -143,6 +145,11 @@ def merge_replay(
             repo.checkout(merge_data["merge"], use_cache=False)
 
         for merge_tool in MERGE_TOOL:
+            if testing:
+                if merge_tool == MERGE_TOOL.spork:
+                    continue
+                if merge_tool == MERGE_TOOL.intellimerge:
+                    continue
             progress.update(task, advance=1)
             workdir = Path(
                 f"{repo_slug}-merge-replay-{merge_tool.name}-"
@@ -197,7 +204,7 @@ def merge_replay(
                 tool=merge_tool,
                 left_commit=merge_data["left"],
                 right_commit=merge_data["right"],
-                timeout=TIMEOUT_TESTING_MERGE,
+                timeout=TIMEOUT_MERGING,
                 use_cache=False,
             )
             assert repo.local_repo_path.exists()
@@ -253,6 +260,7 @@ def merge_replay(
                     and not dont_check_fingerprints
                 )
                 and (merge_tool != MERGE_TOOL.spork)
+                and (merge_tool != MERGE_TOOL.intellimerge)
                 and (
                     merge_tool != MERGE_TOOL.gitmerge_resolve
                     or merge_result != MERGE_STATE.Merge_failed
@@ -365,6 +373,11 @@ if __name__ == "__main__":
         help="Create artifacts",
         action="store_true",
     )
+    parser.add_argument(
+        "--testing",
+        help="Run the script to only check for reproducibility",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     logger.info(f"Replaying merge with index {args.idx}")
@@ -378,6 +391,8 @@ if __name__ == "__main__":
         logger.info("Creating artifacts after replaying the merges")
     if args.skip_build:
         logger.info("Building merge tool")
+    if args.testing:
+        logger.info("Checking for reproducibility")
 
     os.environ["PATH"] += os.pathsep + os.path.join(
         os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
@@ -402,6 +417,7 @@ if __name__ == "__main__":
         args.delete_workdir,
         args.create_artifacts,
         args.dont_check_fingerprints,
+        args.testing,
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")

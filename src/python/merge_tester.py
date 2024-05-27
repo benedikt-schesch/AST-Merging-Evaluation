@@ -46,9 +46,9 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
     logger.info(
         f"merge_tester: Started {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
-    while psutil.cpu_percent() > 90:
+    while psutil.cpu_percent() > 90 or psutil.virtual_memory().percent > 85:
         logger.trace(
-            "merge_tester: Waiting for CPU load to come down"
+            "merge_tester: Waiting for CPU or memory to be available."
             + repo_slug
             + merge_data["left"]
             + merge_data["right"]

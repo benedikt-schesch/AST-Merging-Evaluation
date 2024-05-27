@@ -108,6 +108,13 @@ update-figures:
 	./run_greatest_hits.sh -op
 	./run_reaper.sh -op
 
+run-all-without-timing:
+	${MAKE} clean-workdir
+	${MAKE} small-test-without-cleaning
+	./run_combined.sh --no_timing
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
+
 run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning

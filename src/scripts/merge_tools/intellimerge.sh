@@ -22,7 +22,7 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 temp_out_dir="/tmp/intelli_temp_out_$$/"
-temp_intellimerge_dir="/tmp/intelli_temp_$$/"
+temp_intellimerge_dir="/scratch/scheschb/intellimerge/intelli_temp_$$/"
 mkdir $temp_out_dir
 
 echo "IntelliMerge: $intellimerge_absolutepath"

@@ -55,7 +55,7 @@ def main():
         TimeElapsedColumn(),
         TimeRemainingColumn(),
     ) as progress:
-        task = progress.add_task("Collecting merges...", total=len(repos))
+        task = progress.add_task("Timing merges...", total=len(repos))
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
             repo_slug = repository_data["repository"]

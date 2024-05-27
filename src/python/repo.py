@@ -162,21 +162,19 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """
     explanation = ""
     command = [
-        "src/scripts/run_repo_tests.sh",
-        str(wcopy_dir),
+        "src/scripts/run_with_timeout.sh",
+        str(timeout),
+        f"src/scripts/run_repo_tests.sh {wcopy_dir}",
     ]
-    try:
-        p = subprocess.run(
-            command,
-            capture_output=True,
-            timeout=timeout,
-        )
-    except subprocess.TimeoutExpired as e:
-        explanation = stdout_and_stderr(command, e)
+    p = subprocess.run(
+        command,
+        capture_output=True,
+    )
+    if p.returncode == 124:  # Timeout
+        explanation = stdout_and_stderr(command, p)
         return TEST_STATE.Tests_timedout, explanation
-    rc = p.returncode
     explanation = stdout_and_stderr(command, p)
-    if rc == 0:  # Success
+    if p.returncode == 0:  # Success
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
 
@@ -519,20 +517,17 @@ class Repository:
         )
         start_time = time.time()
         command = [
-            "src/scripts/merge_tools/" + tool.name + ".sh",
-            str(self.local_repo_path),
-            LEFT_BRANCH_NAME,
-            RIGHT_BRANCH_NAME,
+            "src/scripts/run_with_timeout.sh",
+            str(timeout),
+            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
-        try:
-            p = subprocess.run(
-                command,
-                capture_output=True,
-                timeout=timeout if timeout > 0 else None,
-                check=False,
-            )
-        except subprocess.TimeoutExpired as e:
-            explanation = explanation + "\n" + stdout_and_stderr(command, e)
+        p = subprocess.run(
+            command,
+            capture_output=True,
+            check=False,
+        )
+        if p.returncode == 124:  # Timeout
+            explanation = explanation + "\n" + stdout_and_stderr(command, p)
             if use_cache:
                 cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
                 cache_entry["explanation"] = explanation
@@ -807,8 +802,7 @@ class Repository:
             command,
             shell=True,
             cwd=self.local_repo_path,  # Ensure the command runs in the repository directory
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             text=True,
         )
         if process.returncode != 0:
