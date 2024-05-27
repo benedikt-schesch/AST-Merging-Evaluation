@@ -125,6 +125,7 @@ if [ -d "repos" ]; then
 fi
 
 # Delete .workdir
+chmod -R +w .workdir
 rm -rf .workdir
 
 python3 src/python/delete_cache_placeholders.py \

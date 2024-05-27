@@ -160,12 +160,17 @@ PLOTS = {
     "tools": [
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
-        "gitmerge_ort_adjacent",
-        "gitmerge_ort_imports",
-        "gitmerge_ort_imports_ignorespace",
         "git_hires_merge",
         "spork",
         "intellimerge",
+        "plumelib_ort",
+        "plumelib_ort_ignorespace",
+        "plumelib_ort_adjacent",
+        "plumelib_ort_adjacent_ignorespace",
+        "plumelib_ort_imports",
+        "plumelib_ort_imports_ignorespace",
+        "plumelib_ort_version_number",
+        "plumelib_ort_version_number_ignorespace",
     ],
 }
 
