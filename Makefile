@@ -108,6 +108,13 @@ update-figures:
 	./run_greatest_hits.sh -op
 	./run_reaper.sh -op
 
+run-all-without-timing:
+	${MAKE} clean-workdir
+	${MAKE} small-test-without-cleaning
+	./run_combined.sh --no_timing
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
+
 run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning
@@ -134,7 +141,7 @@ clean-local:
 check-merges-reproducibility:
 	@echo "Running replay_merge for each idx in parallel using GNU Parallel..."
 	@set -e; \
-	tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --halt now,fail=1 -j 50% python3 src/python/replay_merge.py --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx {}
+	tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --halt now,fail=1 -j 50% python3 src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx {}
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
