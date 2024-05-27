@@ -21,7 +21,7 @@ git config --local merge.tool merge-plumelib
 git config --local mergetool.merge-plumelib.cmd 'java-merge-tool.sh '"$merge_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
-git merge --no-edit "$strategy" "$branch2"
+git merge --no-edit "$git_strategy" "$branch2"
 retVal=$?
 
 # report conflicts
