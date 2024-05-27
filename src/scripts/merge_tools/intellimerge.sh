@@ -58,14 +58,12 @@ for file in $conflict_files; do
     fi
 done
 
-# report conflicts
-conflict_markers=$(grep -rE '^(<<<<<<<|=======|>>>>>>>$)' "$clone_dir" | wc -l)
-if [ "$conflict_markers" -ne "$initial_conflict_markers" ]; then
-    echo "intellimerge.sh"
-    echo "Conflict markers changed"
-    echo "Initial conflict markers: $initial_conflict_markers"
-    echo "Final conflict markers: $conflict_markers"
-    echo "Conflict detected"
+# If conflicts_resolved is false, there are unresolved conflicts
+if [ "$conflicts_resolved" = false ]; then
+    echo "Conflict detected. Aborting the merge. Please resolve the conflicts."
+    echo "All conflicting files:"
+    echo "$conflict_files"
+    rm -rf $temp_out_dir $temp_intellimerge_dir
     exit 1
 fi
 
