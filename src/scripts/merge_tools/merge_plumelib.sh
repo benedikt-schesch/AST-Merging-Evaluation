@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 
-# usage: ./gitmerge_ort_imports_ignorespace.sh <clone_dir> <branch-1> <branch-2>
+# usage: ./gitmerge_ort_imports_ignorespace.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <merge_strategy>
 
 clone_dir=$1
 branch1=$2
 branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 merge_strategy=$5 #"--only-adjacent"
+
+echo "git_merge_plumelib: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
 # shellcheck disable=SC2153 # "JAVA17_HOME is not a misspelling of "JAVA_HOME"
 export JAVA_HOME="$JAVA17_HOME"
@@ -22,7 +24,8 @@ git config --local merge.tool merge-plumelib
 git config --local mergetool.merge-plumelib.cmd 'java-merge-tool.sh '"$merge_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
-git merge --no-edit "$git_strategy" "$branch2"
+# shellcheck disable=SC2086
+git merge --no-edit $git_strategy "$branch2"
 retVal=$?
 
 # report conflicts
