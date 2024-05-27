@@ -15,9 +15,9 @@ This directory contains Python scripts designed to facilitate the analysis of me
 
 - `diff3_analysis.py`: This script analyzes merge conflicts for two merge tools on a given conflict.
 
-- It is different than the src/python/replay_merge, as it performs a 3 way diff between the base, conflicting branches, and the programmer merge.
-
-- Outputs the differences between a pair of merge algorithms in a .txt file.
+- Performs a 3 way diff between the base, conflicting branches, and the programmer merge.
+- Also, it automatically outputs the differences (as given by diff3) between a pair of merge algorithms in a .txt file.
+- From the diff, 1: represents the base, 2: represents the conflicting file, 3: represents the programmer's merge.
 
 
 
@@ -27,7 +27,9 @@ This directory contains Python scripts designed to facilitate the analysis of me
 
 
 
-- Necessary Python packages installed inside conda or mamba environment(`pandas`, `GitPython`).
+- Necessary Python packages installed inside conda or mamba environment(`pandas`, `GitPython`):
+pip install pandas
+pip install GitPython
 
 
 
