@@ -172,6 +172,7 @@ def merge_replay(
                         f"Workdir {workdir} exists for idx: {merge_idx}. Delete it? (y/n)"
                     )
                 if answer == "y":
+                    os.system("chmod -R 777 " + str(WORKDIR_DIRECTORY / workdir))
                     shutil.rmtree(WORKDIR_DIRECTORY / workdir)
                 else:
                     logger.info(
