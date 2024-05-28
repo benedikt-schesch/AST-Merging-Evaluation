@@ -27,10 +27,10 @@ git config --local mergetool.merge-plumelib.trustExitCode true
 # shellcheck disable=SC2086
 git merge --no-edit $git_strategy "$branch2"
 
-if [[ "$merge_strategy" == *"--no-imports"* ]] || \
-   [[ "$merge_strategy" == *"--only-adjacent"* ]] || \
-   [[ "$merge_strategy" == *"--only-annotations"* ]] || \
-   [[ "$merge_strategy" == *"--only-version-numbers"* ]]; then
+if [ "$merge_strategy" = *"--no-imports"* ] || \
+   [ "$merge_strategy" = *"--only-adjacent"* ] || \
+   [ "$merge_strategy" = *"--only-annotations"* ] || \
+   [ "$merge_strategy" = *"--only-version-numbers"* ]; then
     yes | git mergetool --tool=merge-plumelib
 else
     git-mergetool-on-all.sh
