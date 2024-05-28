@@ -44,5 +44,5 @@ if [ -z "$diffs" ]; then
     exit 0
 fi
 
-echo "git_merge_plumelib: Conflicts still exist after running mergetool."
+echo "git_merge_plumelib: Conflict"
 exit 1
