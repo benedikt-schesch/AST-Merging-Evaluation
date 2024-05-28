@@ -29,18 +29,15 @@ git merge --no-edit $git_strategy "$branch2"
 retVal=$?
 
 # report conflicts
-if [ "$retVal" -ne 0 ]; then
-    echo "git_merge_ort: Conflict raised now running mergetool to resolve conflicts."
-    yes | git mergetool --tool=merge-plumelib
-    # Check if there are still conflicts
-    diffs=$(git diff --name-only --diff-filter=U)
-    if [ -z "$diffs" ]; then
-        git commit -m "Resolved conflicts"
-        exit 0
-    else
-        echo "git_merge_plumelib: Conflicts still exist after running mergetool."
-        exit 1
-    fi
+yes | git mergetool --tool=merge-plumelib
+
+# Check if there are still conflicts
+diffs=$(git diff --name-only --diff-filter=U)
+if [ -z "$diffs" ]; then
+    git add .
+    git commit -m "Resolved conflicts"
+    exit 0
 fi
 
-exit "$retVal"
+echo "git_merge_plumelib: Conflicts still exist after running mergetool."
+exit 1
