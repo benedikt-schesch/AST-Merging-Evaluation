@@ -2,10 +2,13 @@
 """Delete the keys containing 'imports' in the JSON files in the given directory."""
 
 import os
+import sys
 import json
+from pathlib import Path
+from argparse import ArgumentParser
 
 
-def count_import_keys(directory):
+def count_import_keys(directory: Path) -> int:
     """Count the number of keys containing 'imports' in the JSON files in the given directory."""
     count = 0
     for root, _, files in os.walk(directory):
@@ -21,7 +24,7 @@ def count_import_keys(directory):
     return count
 
 
-def delete_import_keys(directory):
+def delete_import_keys(directory: Path) -> int:
     """Delete the keys containing 'imports' in the JSON files in the given directory."""
     total_deleted = 0
     for root, _, files in os.walk(directory):
