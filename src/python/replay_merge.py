@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Replay merges and their test results.
+The output appears in the .workdirs/ directory.
 
 Typical usage:
   replay_merge.py --idx INDEX
@@ -234,8 +235,8 @@ def merge_replay(
                     stdout=subprocess.PIPE,
                 ).stdout.decode("utf-8")
                 is_conflict = len(conflict_files) > 0
-                assert (
-                    is_conflict == (merge_result == MERGE_STATE.Merge_failed)
+                assert is_conflict == (
+                    merge_result == MERGE_STATE.Merge_failed
                 ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match conflict_files {conflict_files} at path {repo.local_repo_path}"
 
             result_df.loc[
