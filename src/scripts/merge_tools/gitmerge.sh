@@ -32,7 +32,7 @@ retVal=$?
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
-    echo "gitmerge.sh: Conflict"
+    echo "gitmerge.sh: Conflict after running: git merge --no-edit $strategy $branch2"
 fi
 
 exit $retVal

@@ -21,11 +21,11 @@ run_command_with_timeout() {
 
     # Check if the command timed out
     if [ $STATUS -eq 124 ]; then
-        echo "The command timed out after ${TIMEOUT} seconds."
+        echo "run_with_timeout.sh: The command timed out after ${TIMEOUT} seconds."
     elif [ $STATUS -ne 0 ]; then
-        echo "The command failed with status $STATUS."
+        echo "run_with_timeout.sh: The command failed with status $STATUS."
     else
-        echo "The command completed successfully."
+        echo "run_with_timeout.sh: The command completed successfully."
     fi
 
     return $STATUS
