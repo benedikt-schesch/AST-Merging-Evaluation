@@ -30,13 +30,15 @@ git merge --no-edit $git_strategy "$branch2"
 case "$merge_strategy" in
     *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
-        git-mergetool.sh --tool=merge-plumelib
+        all_arg=""
         ;;
     *)
         # The "imports" merger is being used, so use the "--all" command-line option.
-        git-mergetool.sh --all --tool=merge-plumelib
+        all_arg="--all"
         ;;
 esac
+
+git-mergetool.sh $all_arg --tool=merge-plumelib
 
 # Check if there are still conflicts
 diffs=$(git diff --name-only --diff-filter=U)
@@ -46,5 +48,7 @@ if [ -z "$diffs" ]; then
     exit 0
 fi
 
-echo "$0: Conflict"
+echo "$0: Conflict after running in $(pwd):"
+echo "  git merge --no-edit $git_strategy $branch2"
+echo "  git-mergetool.sh $all_arg --tool=merge-plumelib"
 exit 1
