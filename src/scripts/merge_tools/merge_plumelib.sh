@@ -8,7 +8,7 @@ branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 merge_strategy=$5 #"--only-adjacent"
 
-echo "git_merge_plumelib: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
+echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
 # shellcheck disable=SC2153 # "JAVA17_HOME is not a misspelling of "JAVA_HOME"
 export JAVA_HOME="$JAVA17_HOME"
@@ -46,5 +46,5 @@ if [ -z "$diffs" ]; then
     exit 0
 fi
 
-echo "git_merge_plumelib: Conflict"
+echo "$0: Conflict"
 exit 1
