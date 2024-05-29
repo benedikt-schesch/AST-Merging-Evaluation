@@ -29,12 +29,12 @@ git merge --no-edit $git_strategy "$branch2"
 
 case "$merge_strategy" in
     *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
-        # If any key substrings are found, use the specified merge tool with confirmation
-        yes | git mergetool --tool=merge-plumelib
+        # The "imports" merger is not being used, so don't use the "--all" command-line option.
+        git-mergetool.sh --tool=merge-plumelib
         ;;
     *)
-        # Otherwise, run the general merge tool script
-        git-mergetool-on-all.sh
+        # The "imports" merger is being used, so use the "--all" command-line option.
+        git-mergetool.sh --all --tool=merge-plumelib
         ;;
 esac
 
