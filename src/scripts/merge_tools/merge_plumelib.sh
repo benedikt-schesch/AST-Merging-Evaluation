@@ -42,12 +42,12 @@ git-mergetool.sh $all_arg --tool=merge-plumelib
 
 # Check if there are still conflicts
 diffs=$(git diff --name-only --diff-filter=U)
+echo "$0: diffs=$diffs"
 if [ -z "$diffs" ]; then
     git add .
     git commit -m "Resolved conflicts"
     exit 0
 fi
-
 echo "$0: Conflict after running in $(pwd):"
 echo "  git merge --no-edit $git_strategy $branch2"
 echo "  git-mergetool.sh $all_arg --tool=merge-plumelib"
