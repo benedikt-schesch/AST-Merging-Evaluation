@@ -51,7 +51,7 @@ def main():
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
+        BarColumn(pulse_style="blue"),
         TimeElapsedColumn(),
         TimeRemainingColumn(),
     ) as progress:

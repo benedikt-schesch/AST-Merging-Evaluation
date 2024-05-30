@@ -47,7 +47,7 @@ def delete_import_keys(directory):
 
 def main():
     """Main function."""
-    directory = "cache"
+    directory = "cache/merge_timing_results"
     potential_deletions = count_import_keys(directory)
     print(f"Potential deletions: {potential_deletions}")
     confirm = input("Do you want to proceed with deleting these keys? (yes/no): ")
