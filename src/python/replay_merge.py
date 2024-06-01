@@ -386,7 +386,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-skip_build",
-        help="Build the merge tool",
+        help="Don't build the merge tool",
         action="store_false",
     )
     parser.add_argument(
@@ -410,7 +410,7 @@ if __name__ == "__main__":
         logger.info("Testing the replay of a merge")
     if args.create_artifacts:
         logger.info("Creating artifacts after replaying the merges")
-    if args.skip_build:
+    if not args.skip_build:
         logger.info("Building merge tool")
     if args.testing:
         logger.info("Checking for reproducibility")
@@ -422,9 +422,10 @@ if __name__ == "__main__":
         os.getcwd(), "src/scripts/merge_tools"
     )
     os.environ["GIT_CONFIG_GLOBAL"] = os.getcwd() + "/.gitconfig"
+    os.system("git submodule update --init")
+    logger.info("finished git submodule update --init")
     if not args.skip_build:
         os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
-    os.system("git submodule update --init")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
