@@ -25,7 +25,7 @@ git config --local mergetool.merge-plumelib.trustExitCode true
 git merge --no-edit $git_strategy "$branch2"
 
 case "$merge_strategy" in
-    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
+    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"* | "")
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
         all_arg=""
         ;;
@@ -39,7 +39,6 @@ git-mergetool.sh $all_arg --tool=merge-plumelib
 
 # Check if there are still conflicts
 diffs=$(git diff --name-only --diff-filter=U)
-echo "$0: diffs=$diffs"
 if [ -z "$diffs" ]; then
     git add .
     git commit -m "Resolved conflicts by calling: git-mergetool.sh $all_arg --tool=merge-plumelib"
