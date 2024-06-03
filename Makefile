@@ -139,9 +139,11 @@ clean-local:
 	rm -rf repos
 
 check-merges-reproducibility:
-	@echo "Running replay_merge for each idx in parallel using GNU Parallel..."
+	@echo "Running replay_merge sequentially for each idx..."
 	@set -e; \
-	tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel --halt now,fail=1 -j 50% src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx {}
+	for idx in $(shell tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}'); do \
+		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx; \
+	done
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
