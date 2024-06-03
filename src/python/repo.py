@@ -31,6 +31,8 @@ from variables import (
     LEFT_BRANCH_NAME,
     RIGHT_BRANCH_NAME,
     DELETE_WORKDIRS,
+    N_TESTS,
+    TIMEOUT_MERGING,
 )
 from loguru import logger
 
@@ -208,21 +210,19 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """
     explanation = ""
     command = [
-        "src/scripts/run_repo_tests.sh",
-        str(wcopy_dir),
+        "src/scripts/run_with_timeout.sh",
+        str(timeout),
+        f"src/scripts/run_repo_tests.sh {wcopy_dir}",
     ]
-    try:
-        p = subprocess.run(
-            command,
-            capture_output=True,
-            timeout=timeout,
-        )
-    except subprocess.TimeoutExpired as e:
-        explanation = stdout_and_stderr(command, e)
+    p = subprocess.run(
+        command,
+        capture_output=True,
+    )
+    if p.returncode == 124:  # Timeout
+        explanation = stdout_and_stderr(command, p)
         return TEST_STATE.Tests_timedout, explanation
-    rc = p.returncode
     explanation = stdout_and_stderr(command, p)
-    if rc == 0:  # Success
+    if p.returncode == 0:  # Success
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
 
@@ -347,8 +347,9 @@ class Repository:
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,  # in seconds
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -362,7 +363,8 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -378,7 +380,7 @@ class Repository:
             right_fingerprint,
             _,
             _,
-        ) = self.merge(tool, left_commit, right_commit, -1)
+        ) = self.merge(tool, left_commit, right_commit, timeout_merge)
         if merge_status != MERGE_STATE.Merge_success:
             return (
                 merge_status,
@@ -387,7 +389,7 @@ class Repository:
                 right_fingerprint,
                 -1,
             )
-        test_result, test_coverage = self.test(timeout, n_tests)
+        test_result, test_coverage = self.test(timeout_test, n_tests)
         return (
             test_result,
             merge_fingerprint,
@@ -401,8 +403,9 @@ class Repository:
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -416,7 +419,8 @@ class Repository:
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -430,7 +434,12 @@ class Repository:
         )
         if sha_cache_entry is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
         if merge_result != MERGE_STATE.Merge_success:
@@ -444,7 +453,12 @@ class Repository:
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         return (
             result,
@@ -551,20 +565,17 @@ class Repository:
         )
         start_time = time.time()
         command = [
-            "src/scripts/merge_tools/" + tool.name + ".sh",
-            str(self.local_repo_path),
-            LEFT_BRANCH_NAME,
-            RIGHT_BRANCH_NAME,
+            "src/scripts/run_with_timeout.sh",
+            str(timeout),
+            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
-        try:
-            p = subprocess.run(
-                command,
-                capture_output=True,
-                timeout=timeout if timeout > 0 else None,
-                check=False,
-            )
-        except subprocess.TimeoutExpired as e:
-            explanation = explanation + "\n" + stdout_and_stderr(command, e)
+        p = subprocess.run(
+            command,
+            capture_output=True,
+            check=False,
+        )
+        if p.returncode == 124:  # Timeout
+            explanation = explanation + "\n" + stdout_and_stderr(command, p)
             if use_cache:
                 cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
                 cache_entry["explanation"] = explanation
@@ -591,7 +602,6 @@ class Repository:
         if use_cache:
             cache_entry["sha"] = sha
             cache_entry["merge status"] = merge_status.name
-            output = f"command: {' '.join(command)}\n stdout: {p.stdout}\n stderr: {p.stderr}"
             output_file = (
                 self.sha_cache_directory
                 / self.owner
@@ -601,7 +611,7 @@ class Repository:
             output_file.parent.mkdir(parents=True, exist_ok=True)
             cache_entry["merge_logs"] = str(output_file)
             with open(output_file, "w", encoding="utf-8") as f:
-                f.write(output)
+                f.write(explanation)
             set_in_cache(
                 cache_entry_name,
                 cache_entry,
@@ -840,8 +850,7 @@ class Repository:
             command,
             shell=True,
             cwd=self.local_repo_path,  # Ensure the command runs in the repository directory
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             text=True,
         )
         if process.returncode != 0:
