@@ -261,12 +261,12 @@ def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
             \\multicolumn{4}{c|}{Unhandled Merges} &
             \\multicolumn{4}{c}{Incorrect Merges} \\\\
             &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c}{Other Branches} \\\\
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c|}{Other} &
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c|}{Other} &
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c}{Other} \\\\
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\
             \\hline\n"""
 
