@@ -10,9 +10,6 @@ merge_strategy=$5 #"--only-adjacent"
 
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
-# shellcheck disable=SC2153 # "JAVA17_HOME is not a misspelling of "JAVA_HOME"
-export JAVA_HOME="$JAVA17_HOME"
-
 cd "$clone_dir" || exit 1
 
 git checkout "$branch1" --force
@@ -28,7 +25,7 @@ git config --local mergetool.merge-plumelib.trustExitCode true
 git merge --no-edit $git_strategy "$branch2"
 
 case "$merge_strategy" in
-    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"* | "")
+    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
         all_arg=""
         ;;
