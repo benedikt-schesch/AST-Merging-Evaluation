@@ -265,8 +265,8 @@ def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
             \\multicolumn{2}{c|}{Other Branches} &
             \\multicolumn{2}{c}{Main Branch} &
             \\multicolumn{2}{c}{Other Branches} \\\\
-            \\hline
-            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
+            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\
+            \\hline\n"""
 
     for _, merge_tool in enumerate(merge_tools):
         merge_main = main[merge_tool]
