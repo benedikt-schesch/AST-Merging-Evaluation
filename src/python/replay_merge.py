@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """Replay merges and their test results.
 The output appears in the .workdirs/ directory.
+Command-line arguments are listed just after the line:
+  if __name__ == "__main__":
 
 Typical usage:
   replay_merge.py --idx INDEX
@@ -97,7 +99,10 @@ def merge_replay(
 
         # Get base, left, right, and programmer merge.
 
-        workdir = Path(f"{repo_slug}-merge-input-left")
+        workdir = Path(
+            f"{repo_slug}-merge-input-left-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -108,7 +113,10 @@ def merge_replay(
             )
             repo.checkout(merge_data["left"], use_cache=False)
 
-        workdir = Path(f"{repo_slug}-merge-input-right")
+        workdir = Path(
+            f"{repo_slug}-merge-input-right-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -119,7 +127,10 @@ def merge_replay(
             )
             repo.checkout(merge_data["right"], use_cache=False)
 
-        workdir = Path(f"{repo_slug}-merge-input-base")
+        workdir = Path(
+            f"{repo_slug}-merge-input-base-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
@@ -128,13 +139,21 @@ def merge_replay(
                 delete_workdir=False,
                 lazy_clone=False,
             )
-            base_commit = subprocess.run(
-                ["git", "merge-base", merge_data["left"], merge_data["right"]],
-                stdout=subprocess.PIPE,
-            ).stdout.decode("utf-8")
+            base_commit = (
+                subprocess.run(
+                    ["git", "merge-base", merge_data["left"], merge_data["right"]],
+                    cwd=repo.local_repo_path,
+                    stdout=subprocess.PIPE,
+                )
+                .stdout.decode("utf-8")
+                .strip()
+            )
             repo.checkout(base_commit, use_cache=False)
 
-        workdir = Path(f"{repo_slug}-merge-input-programmer")
+        workdir = Path(
+            f"{repo_slug}-merge-input-programmer-"
+            + f'{merge_data["left"]}-{merge_data["right"]}'
+        )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
                 repo_slug,
