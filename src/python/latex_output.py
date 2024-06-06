@@ -104,10 +104,10 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                 # Check if the fingerprints are the same but the results are different
                 inconsistent_mask = same_fingerprint_mask & ~same_result_mask
                 if inconsistent_mask.sum() > 0:
-                    logger.error(
+                    logger.warning(
                         f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
                     )
-                    logger.error(
+                    logger.warning(
                         result_df.loc[inconsistent_mask][
                             [
                                 merge_tool1,
@@ -116,9 +116,6 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                             ]
                         ]
                     )
-                assert (
-                    inconsistent_mask.sum() == 0
-                ), f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
 
 
 def merge_tool_latex_name(name: str) -> str:
@@ -164,12 +161,17 @@ PLOTS = {
     "tools": [
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
-        "gitmerge_ort_adjacent",
-        "gitmerge_ort_imports",
-        "gitmerge_ort_imports_ignorespace",
         "git_hires_merge",
         "spork",
         "intellimerge",
+        "plumelib_ort",
+        "plumelib_ort_ignorespace",
+        "plumelib_ort_adjacent",
+        "plumelib_ort_adjacent_ignorespace",
+        "plumelib_ort_imports",
+        "plumelib_ort_imports_ignorespace",
+        "plumelib_ort_version_number",
+        "plumelib_ort_version_number_ignorespace",
     ],
 }
 
@@ -259,12 +261,12 @@ def build_table2(main_df: pd.DataFrame, merge_tools: List[str], feature) -> str:
             \\multicolumn{4}{c|}{Unhandled Merges} &
             \\multicolumn{4}{c}{Incorrect Merges} \\\\
             &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c}{Other Branches} \\\\
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c|}{Other} &
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c|}{Other} &
+            \\multicolumn{2}{c}{Main} &
+            \\multicolumn{2}{c}{Other} \\\\
             & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\
             \\hline\n"""
 

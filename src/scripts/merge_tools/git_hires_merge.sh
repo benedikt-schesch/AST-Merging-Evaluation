@@ -27,7 +27,7 @@ retVal=$?
 
 # report conflicts
 if [ "$retVal" -ne 0 ]; then
-    echo "Conflict"
+    echo "git_hires_merge: Conflict"
 fi
 
 exit "$retVal"

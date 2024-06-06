@@ -85,7 +85,7 @@ To run the stack on all repos:
 ./run_full.sh
 ```
 
-To run the stack on all repos and also diff the merges outputs:
+To run the stack on all repos and also diff the merges' outputs:
 
 ```bash
 ./run_full.sh -d
@@ -217,4 +217,4 @@ To investigate differences between two mergers:
 
 * edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
 * run `src/python/select_from_results.py` to create a .csv database containing only the differences.
-* run `src/python/replay_merge.py --merges_csv CSV_FILE --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
+* run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.

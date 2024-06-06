@@ -37,7 +37,7 @@ logger.add(sys.stderr, colorize=True, backtrace=True, diagnose=True)
 logger.add("run.log", colorize=False, backtrace=True, diagnose=True)
 
 
-def num_processes(percentage: float = 0.5) -> int:
+def num_processes(percentage: float = 0.7) -> int:
     """Compute the number of CPUs to be used
     Args:
         percentage (float, optional): Percentage of CPUs to be used. Defaults to 0.7.

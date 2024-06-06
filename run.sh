@@ -75,8 +75,8 @@ if [ "$only_plotting" = true ]; then
     exit 0
 fi
 
-PATH=$(pwd)/src/scripts/merge_tools/:$PATH
-PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh/:$PATH
+PATH=$(pwd)/src/scripts/merge_tools:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
 export PATH
 
 # Clone all submodules
@@ -100,8 +100,11 @@ if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; 
 if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
-export JAVA_HOME=$JAVA17_HOME
-./src/scripts/merge_tools/merging/gradlew -p src/scripts/merge_tools/merging shadowJar
+if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
+    git submodule update --init --recursive
+fi
+
+(cd ./src/scripts/merge_tools/merging && JAVA_HOME=$JAVA17_HOME ./gradlew shadowJar)
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
@@ -120,8 +123,11 @@ if [ -d "repos" ]; then
     find "repos/locks" -name "*.lock" -delete
 fi
 
-# Delete .workdir
-rm -rf .workdir
+# Check if .workdir exists and delete it
+if [ -d .workdir ]; then
+    chmod -R +w .workdir
+    rm -rf .workdir
+fi
 
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
