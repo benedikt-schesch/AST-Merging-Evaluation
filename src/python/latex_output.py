@@ -243,7 +243,7 @@ def build_table1(
     return table
 
 
-def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
+def build_table2(main_df: pd.DataFrame, merge_tools: List[str], feature) -> str:
     """Build a table with the results of the merge tools.
     Args:
         main: DataFrame containing the results of the merge tools for the main branch
@@ -269,12 +269,12 @@ def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
             \\hline\n"""
 
     for _, merge_tool in enumerate(merge_tools):
-        merge_main = main[merge_tool]
+        merge_main = main_df[merge_tool]
         merge_feature = feature[merge_tool]
 
         correct_main = sum(val in MERGE_CORRECT_NAMES for val in merge_main)
         correct_main_percentage = (
-            100 * correct_main / len(main) if len(main) != 0 else 0
+            100 * correct_main / len(main_df) if len(main_df) != 0 else 0
         )
         correct_feature = sum(val in MERGE_CORRECT_NAMES for val in merge_feature)
         correct_feature_percentage = (
@@ -283,7 +283,7 @@ def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
 
         incorrect_main = sum(val in MERGE_INCORRECT_NAMES for val in merge_main)
         incorrect_main_percentage = (
-            100 * incorrect_main / len(main) if len(main) != 0 else 0
+            100 * incorrect_main / len(main_df) if len(main_df) != 0 else 0
         )
         incorrect_feature = sum(val in MERGE_INCORRECT_NAMES for val in merge_feature)
         incorrect_feature_percentage = (
@@ -292,7 +292,7 @@ def build_table2(main: pd.DataFrame, merge_tools: List[str], feature) -> str:
 
         unhandled_main = sum(val in MERGE_UNHANDLED_NAMES for val in merge_main)
         unhandled_main_percentage = (
-            100 * unhandled_main / len(main) if len(main) != 0 else 0
+            100 * unhandled_main / len(main_df) if len(main_df) != 0 else 0
         )
         unhandled_feature = sum(val in MERGE_UNHANDLED_NAMES for val in merge_feature)
         unhandled_feature_percentage = (
@@ -365,7 +365,7 @@ def main():
             repo_slug = repository_data["repository"]
             merge_list_file = args.tested_merges_path / (repo_slug + ".csv")
             if not merge_list_file.exists():
-                raise Exception(
+                raise ValueError(
                     "latex_ouput.py:",
                     repo_slug,
                     "does not have a list of merges. Missing file: ",
@@ -406,35 +406,9 @@ def main():
     for merge_tool in MERGE_TOOL:
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
 
-    def merge_two_states(
-        merge_result1: TEST_STATE, merge_result2: TEST_STATE
-    ) -> TEST_STATE:
-        """Merge two states"""
-        if TEST_STATE.Tests_passed.name in (merge_result1, merge_result2):
-            return TEST_STATE.Tests_passed.name
-        if MERGE_STATE.Merge_failed.name in (merge_result1, merge_result2):
-            return MERGE_STATE.Merge_failed.name
-        if TEST_STATE.Tests_failed.name in (merge_result1, merge_result2):
-            return TEST_STATE.Tests_failed.name
-        if (
-            merge_result1 == TEST_STATE.Tests_timedout.name
-            and merge_result2 == TEST_STATE.Tests_timedout.name
-        ):
-            return TEST_STATE.Tests_timedout.name
-        raise Exception("Invalid case")
-
-    result_df["Oracle tool"] = TEST_STATE.Tests_failed.name
-    for merge_tool in MERGE_TOOL:
-        result_df["Oracle tool"] = result_df.apply(
-            lambda row, merge_tool=merge_tool: merge_two_states(
-                row["Oracle tool"], row[merge_tool.name]
-            ),
-            axis=1,
-        )
-
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
-    main = result_df[result_df["branch_name"].isin(main_branch_names)]
+    main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     for plot_category, merge_tools in PLOTS.items():
@@ -515,7 +489,7 @@ def main():
         incorrect = []
         correct = []
         unhandled = []
-        for merge_tool in merge_tools + ["Oracle tool"]:
+        for merge_tool in merge_tools:
             merge_tool_status = result_df[merge_tool]
             correct.append(sum(val in MERGE_CORRECT_NAMES for val in merge_tool_status))
             incorrect.append(
@@ -550,19 +524,29 @@ def main():
                 score = score / (unhandled[idx] + incorrect[idx] + correct[idx])
                 score = 1 - score
                 results.append(score)
-            line_style = [(idx, (1, 1)), "--", "-."][idx % 3]
+            line_styles = [
+                "-",
+                ":",
+                "--",
+                "-.",
+                (0, (1, 1)),
+                (0, (5, 10)),
+                (0, (5, 5)),
+                (0, (3, 5, 1, 5)),
+            ]
+            line_style = line_styles[idx % len(line_styles)]
             ax.plot(
                 np.linspace(1, max_cost_intersection, 1000),
                 results,
                 label=merge_tool_latex_name(merge_tool),
                 linestyle=line_style,
-                linewidth=3,
+                linewidth=2,
                 alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
         plt.ylabel("\\mbox{Effort Reduction}")
-        plt.xlim(0, max_cost_intersection)
-        plt.ylim(-0.02, 0.6)
+        plt.xlim(0, 12.5)
+        plt.ylim(0.2, 0.5)
         plt.legend()
         plt.tight_layout()
         plt.savefig(plots_output_path / "cost_without_manual.pgf")
@@ -582,50 +566,12 @@ def main():
         plt.savefig(plots_output_path / "cost_with_manual.pgf")
         plt.savefig(plots_output_path / "cost_with_manual.pdf")
 
-        # Cost plot with Oracle merges
-        results = []
-        for cost_factor in np.linspace(1, max_cost_intersection, 1000):
-            score = unhandled[-1] * 1 + incorrect[-1] * cost_factor
-            score = score / (unhandled[-1] + incorrect[-1] + correct[-1])
-            score = 1 - score
-            results.append(score)
-
-        ax.plot(
-            np.linspace(1, max_cost_intersection, 1000),
-            results,
-            label="Oracle",
-            linestyle="-",
-            linewidth=3,
-            alpha=0.8,
-        )
-        plt.xlim(0, max_cost_intersection)
-        plt.ylim(-0.02, 0.6)
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(plots_output_path / "cost_with_oracle.pgf")
-        plt.savefig(plots_output_path / "cost_with_oracle.pdf")
-        plt.close()
-
         # Table results
         with open(
             tables_output_path / "table_summary.tex", "w", encoding="utf-8"
         ) as file:
             file.write(
                 build_table1(result_df, merge_tools, correct, unhandled, incorrect)
-            )
-
-        # Table results with Oracle
-        with open(
-            tables_output_path / "table_summary_with_oracle.tex", "w", encoding="utf-8"
-        ) as file:
-            file.write(
-                build_table1(
-                    result_df,
-                    merge_tools + ["Oracle tool"],
-                    correct,
-                    unhandled,
-                    incorrect,
-                )
             )
 
         # Printed Table
@@ -636,7 +582,7 @@ def main():
             "Incorrect Merges",
             "Unhandled Merges",
         ]
-        for merge_tool_idx, merge_tool in enumerate(merge_tools + ["Oracle tool"]):
+        for merge_tool_idx, merge_tool in enumerate(merge_tools):
             my_table.add_row(
                 [
                     merge_tool_latex_name(merge_tool),
@@ -654,14 +600,7 @@ def main():
             "w",
             encoding="utf-8",
         ) as file:
-            file.write(build_table2(main, merge_tools, feature))
-
-        with open(
-            tables_output_path / "table_main_feature_summary_oracle.tex",
-            "w",
-            encoding="utf-8",
-        ) as file:
-            file.write(build_table2(feature, merge_tools + ["Oracle tool"], main))
+            file.write(build_table2(main_df, merge_tools, feature))
 
         # Table run time
         if args.timed_merges_path:
@@ -874,10 +813,10 @@ def main():
         run_name_camel_case + "SporkOverOrtIncorrect", spork_incorrect - ort_incorrect
     )
 
-    output += latex_def(run_name_camel_case + "MainBranchMerges", len(main))
+    output += latex_def(run_name_camel_case + "MainBranchMerges", len(main_df))
     output += latex_def(
         run_name_camel_case + "MainBranchMergesPercent",
-        round(len(main) * 100 / len(result_df)),
+        round(len(main_df) * 100 / len(result_df)),
     )
     output += latex_def(run_name_camel_case + "OtherBranchMerges", len(feature))
     output += latex_def(
