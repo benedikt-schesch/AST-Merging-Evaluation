@@ -44,7 +44,7 @@ def main():
             sha_cache = Path("cache/sha_cache_entry/" + repo_name + ".json")
             with open(sha_cache, "r", encoding="utf-8") as file:
                 data = json.load(file)
-            sha_to_del = []
+            sha_to_del = set()
             for merge_tool in MERGE_TOOL:
                 if merge_tool == MERGE_TOOL.intellimerge:
                     continue
@@ -55,16 +55,20 @@ def main():
                     cache_entry = (
                         row["left"] + "_" + row["right"] + "_" + merge_tool.name
                     )
-                    # assert data[row["right"]+"_"+row["left"]+"_"+merge_tool.name]["sha"] == row[merge_tool.name+"_merge_fingerprint"]
-                    sha_to_del.append(data[cache_entry]["sha"])
+                    assert (
+                        data[cache_entry]["sha"]
+                        == row[merge_tool.name + "_merge_fingerprint"]
+                    )
+                    sha_to_del.add(data[cache_entry]["sha"])
             test_cache = Path("cache/test_cache/" + repo_name + ".json")
             with open(test_cache, "r", encoding="utf-8") as file:
                 data = json.load(file)
             for sha in sha_to_del:
-                del data[sha]
+                if sha in data:
+                    del data[sha]
                 entries_deleted += 1
-            # with open(test_cache, "w", encoding="utf-8") as file:
-            #     json.dump(data, file, indent=4)
+            with open(test_cache, "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=4)
             print(f"Deleting {sha_to_del} from {sha_cache}")
     print(f"Rows affected: {rows_affected}")
     print(f"Entries deleted: {entries_deleted}")
