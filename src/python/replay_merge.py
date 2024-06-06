@@ -11,6 +11,7 @@ where INDEX is, for example, 38-192 .
 """
 
 import argparse
+import git
 import os
 import sys
 import tarfile
@@ -84,6 +85,13 @@ def merge_replay(
     Returns:
         pd.Series: The result of the test.
     """
+
+    ast_merging_evaluation_repo = git.Repo(".", search_parent_directories=True)
+    plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
+        "src/scripts/merge_tools/merging"
+    )
+    subprocess.run(["./gradlew", "-q", "shadowJar"], cwd=plumelib_merging_dir)
+
     result_df = pd.DataFrame()
     with Progress(
         SpinnerColumn(),
