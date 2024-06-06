@@ -104,10 +104,10 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                 # Check if the fingerprints are the same but the results are different
                 inconsistent_mask = same_fingerprint_mask & ~same_result_mask
                 if inconsistent_mask.sum() > 0:
-                    logger.error(
+                    logger.warning(
                         f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
                     )
-                    logger.error(
+                    logger.warning(
                         result_df.loc[inconsistent_mask][
                             [
                                 merge_tool1,
@@ -116,6 +116,7 @@ def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str
                             ]
                         ]
                     )
+
 
 def merge_tool_latex_name(name: str) -> str:
     """Return the LaTeX name of a merge tool.
