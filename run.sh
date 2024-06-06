@@ -67,6 +67,7 @@ if [ "$only_plotting" = true ]; then
         --run_name "$RUN_NAME" \
         --merges_path "$OUT_DIR/merges/" \
         --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --timed_merges_path "$OUT_DIR/merges_timed/" \
         --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
         --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
