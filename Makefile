@@ -105,8 +105,8 @@ small-test-without-cleaning:
 
 update-figures:
 	./run_combined.sh -op
-	./run_greatest_hits.sh -op
-	./run_reaper.sh -op
+	./run_greatest_hits.sh -op --no_timing
+	./run_reaper.sh -op --no_timing
 
 run-all-without-timing:
 	${MAKE} clean-workdir
@@ -119,8 +119,8 @@ run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning
 	./run_combined.sh
-	./run_greatest_hits.sh
-	./run_reaper.sh
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
 
 
 small-test-diff:
