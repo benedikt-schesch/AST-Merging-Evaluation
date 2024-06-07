@@ -188,6 +188,7 @@ MERGE_UNHANDLED_NAMES = [
 UNDESIRABLE_STATES = [
     TEST_STATE.Git_checkout_failed.name,
     TEST_STATE.Not_tested.name,
+    TEST_STATE.Tests_timedout.name,
     MERGE_STATE.Git_checkout_failed.name,
     MERGE_STATE.Merge_timedout.name,
 ]
@@ -376,11 +377,6 @@ def main():
                     raise pd.errors.EmptyDataError
             except pd.errors.EmptyDataError:
                 continue
-            merges = merges[merges["parents pass"]]
-            if len(merges) > args.n_merges:
-                merges = merges.sample(args.n_merges, random_state=42)
-                merges.sort_index(inplace=True)
-            merges["repository"] = repo_slug
             merges["repo-idx"] = repository_data.name
             merges["merge-idx"] = merges.index
             result_df_list.append(merges)
@@ -400,16 +396,6 @@ def main():
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
 
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
-    # Filter out any merges that have a test timeout for any tool
-    print("Filtering out timed out merges before: ", len(result_df))
-    for merge_tool in MERGE_TOOL:
-        result_df = result_df[
-            ~result_df[merge_tool.name].isin([TEST_STATE.Tests_timedout.name])
-        ]
-    print("Filtering out timed out merges after: ", len(result_df))
-    import sys
-
-    sys.exit(0)
 
     main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
