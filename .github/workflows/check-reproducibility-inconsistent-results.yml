@@ -37,6 +37,8 @@ jobs:
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
     - name: Build
       run: cd src/scripts/merge_tools/merging && ./gradlew shadowJar
+    - name: Free Disk Space
+      uses: jlumbroso/free-disk-space@main
     - name: make check-merges-reproducibility
       run: |
         python3 src/python/utils/build_inconsistent_merges.py
