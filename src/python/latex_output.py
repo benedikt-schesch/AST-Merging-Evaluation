@@ -377,6 +377,11 @@ def main():
                     raise pd.errors.EmptyDataError
             except pd.errors.EmptyDataError:
                 continue
+            merges = merges[merges["parents pass"]]
+            if len(merges) > args.n_merges:
+                merges = merges.sample(args.n_merges, random_state=42)
+                merges.sort_index(inplace=True)
+            merges["repository"] = repo_slug
             merges["repo-idx"] = repository_data.name
             merges["merge-idx"] = merges.index
             result_df_list.append(merges)
