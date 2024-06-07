@@ -178,7 +178,6 @@ MERGE_CORRECT_NAMES = [
 
 MERGE_INCORRECT_NAMES = [
     TEST_STATE.Tests_failed.name,
-    TEST_STATE.Tests_timedout.name,
 ]
 
 MERGE_UNHANDLED_NAMES = [
@@ -189,6 +188,7 @@ MERGE_UNHANDLED_NAMES = [
 UNDESIRABLE_STATES = [
     TEST_STATE.Git_checkout_failed.name,
     TEST_STATE.Not_tested.name,
+    TEST_STATE.Tests_timedout.name,
     MERGE_STATE.Git_checkout_failed.name,
     MERGE_STATE.Merge_timedout.name,
 ]
@@ -376,17 +376,7 @@ def main():
                 if len(merges) == 0:
                     raise pd.errors.EmptyDataError
             except pd.errors.EmptyDataError:
-                logger.info(
-                    "latex_output: Skipping "
-                    + repo_slug
-                    + " because it does not contain any merges."
-                )
                 continue
-            merges = merges[merges["parents pass"]]
-            if len(merges) > args.n_merges:
-                merges = merges.sample(args.n_merges, random_state=42)
-                merges.sort_index(inplace=True)
-            merges["repository"] = repo_slug
             merges["repo-idx"] = repository_data.name
             merges["merge-idx"] = merges.index
             result_df_list.append(merges)
