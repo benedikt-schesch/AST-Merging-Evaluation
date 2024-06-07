@@ -262,7 +262,7 @@ def merge_replay(
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-                if process.stderr.decode("utf-8") == 0:
+                if len(process.stderr.decode("utf-8")) == 0:
                     conflict_files = process.stdout.decode("utf-8")
                     is_conflict = len(conflict_files) > 0
                     assert (
@@ -363,6 +363,8 @@ def merge_replay(
                         log_path,
                     ]
                     assert merge_data[f"{merge_tool.name}"] == test_result.name
+        if testing:
+            repo.delete_workdir()
     return result_df
 
 
