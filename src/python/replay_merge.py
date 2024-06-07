@@ -116,7 +116,7 @@ def merge_replay(
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
-                delete_workdir=False,
+                delete_workdir=True if delete_workdir else False,
                 lazy_clone=False,
             )
             repo.checkout(merge_data["left"], use_cache=False)
@@ -363,8 +363,8 @@ def merge_replay(
                         log_path,
                     ]
                     assert merge_data[f"{merge_tool.name}"] == test_result.name
-        if testing:
-            repo.delete_workdir()
+        if delete_workdir:
+            del repo
     return result_df
 
 
