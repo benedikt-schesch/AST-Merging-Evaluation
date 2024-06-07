@@ -62,6 +62,7 @@ done
 # Add a _with_hashes to the $REPOS_CSV
 REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
+# shellcheck disable=SC2086
 run_latex_output() {
     local timing_option="$1"
     python3 src/python/latex_output.py \
