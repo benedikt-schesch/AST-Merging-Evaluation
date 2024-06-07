@@ -178,7 +178,6 @@ MERGE_CORRECT_NAMES = [
 
 MERGE_INCORRECT_NAMES = [
     TEST_STATE.Tests_failed.name,
-    TEST_STATE.Tests_timedout.name,
 ]
 
 MERGE_UNHANDLED_NAMES = [
@@ -376,11 +375,6 @@ def main():
                 if len(merges) == 0:
                     raise pd.errors.EmptyDataError
             except pd.errors.EmptyDataError:
-                logger.info(
-                    "latex_output: Skipping "
-                    + repo_slug
-                    + " because it does not contain any merges."
-                )
                 continue
             merges = merges[merges["parents pass"]]
             if len(merges) > args.n_merges:
@@ -406,6 +400,16 @@ def main():
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
 
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
+    # Filter out any merges that have a test timeout for any tool
+    print("Filtering out timed out merges before: ", len(result_df))
+    for merge_tool in MERGE_TOOL:
+        result_df = result_df[
+            ~result_df[merge_tool.name].isin([TEST_STATE.Tests_timedout.name])
+        ]
+    print("Filtering out timed out merges after: ", len(result_df))
+    import sys
+
+    sys.exit(0)
 
     main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
