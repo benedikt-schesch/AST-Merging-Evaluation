@@ -62,17 +62,26 @@ done
 # Add a _with_hashes to the $REPOS_CSV
 REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
-if [ "$only_plotting" = true ]; then
+run_latex_output() {
+    local timing_option="$1"
     python3 src/python/latex_output.py \
         --run_name "$RUN_NAME" \
         --merges_path "$OUT_DIR/merges/" \
         --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --timed_merges_path "$OUT_DIR/merges_timed/" \
         --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
+        $timing_option \
         --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
         --n_merges "$N_MERGES" \
         --output_dir "$OUT_DIR"
+}
+
+if [ "$only_plotting" = true ]; then
+    if [ "$no_timing" = true ]; then
+        run_latex_output ""
+    else
+        run_latex_output "--timed_merges_path $OUT_DIR/merges_timed/"
+    fi
     exit 0
 fi
 
@@ -196,24 +205,9 @@ if [ "$no_timing" = false ]; then
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
 
-    python3 src/python/latex_output.py \
-        --run_name "$RUN_NAME" \
-        --merges_path "$OUT_DIR/merges/" \
-        --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-        --timed_merges_path "$OUT_DIR/merges_timed/" \
-        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
+    run_latex_output "--timed_merges_path $OUT_DIR/merges_timed/"
+else
+    run_latex_output ""
 fi
 
-python3 src/python/latex_output.py \
-    --run_name "$RUN_NAME" \
-    --merges_path "$OUT_DIR/merges/" \
-    --tested_merges_path "$OUT_DIR/merges_tested/" \
-    --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-    --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --n_merges "$N_MERGES" \
-    --output_dir "$OUT_DIR"
+run_latex_output ""
