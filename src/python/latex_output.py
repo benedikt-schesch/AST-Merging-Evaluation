@@ -187,7 +187,6 @@ UNDESIRABLE_STATES = [
     TEST_STATE.Not_tested.name,
     TEST_STATE.Tests_timedout.name,
     MERGE_STATE.Git_checkout_failed.name,
-    MERGE_STATE.Merge_timedout.name,
 ]
 
 
@@ -368,13 +367,10 @@ def main():
             try:
                 merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
                 if len(merges) == 0:
-                    raise pd.errors.EmptyDataError
+                    continue
             except pd.errors.EmptyDataError:
                 continue
             merges = merges[merges["parents pass"]]
-            if len(merges) > args.n_merges:
-                merges = merges.sample(args.n_merges, random_state=42)
-                merges.sort_index(inplace=True)
             merges["repository"] = repo_slug
             merges["repo-idx"] = repository_data.name
             merges["merge-idx"] = merges.index
