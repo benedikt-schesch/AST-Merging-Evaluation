@@ -142,9 +142,6 @@ check-merges-reproducibility:
 	@set -e; \
 	for idx in $(shell tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}'); do \
 		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx; \
-		df -h; \
-		du -sh repos; \
-		du -sh *; \
 	done
 
 protect-repos:
