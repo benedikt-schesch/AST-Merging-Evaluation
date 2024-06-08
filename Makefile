@@ -58,8 +58,8 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # Compresses the cache.
 compress-cache:
 	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
-	if [ -f cache.tar ]; then rm -f cache.tar; fi
-	tar --exclude="lock" -czf cache.tar cache
+	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
+	tar --exclude="lock" -czf cache.tar.gz cache
 
 compress-small-cache:
 	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
@@ -68,9 +68,9 @@ compress-small-cache:
 
 # Decompresses the cache.
 decompress-cache:
-	if [ ! -f cache.tar ]; then echo "cache.tar does not exist"; exit 1; fi
+	if [ ! -f cache.tar.gz ]; then echo "cache.tar.gz does not exist"; exit 1; fi
 	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
-	tar -xzf cache.tar
+	tar -xzf cache.tar.gz
 
 decompress-small-cache:
 	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 1; fi
@@ -121,7 +121,6 @@ run-all:
 	./run_combined.sh
 	./run_greatest_hits.sh --no_timing
 	./run_reaper.sh --no_timing
-
 
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/

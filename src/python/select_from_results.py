@@ -20,7 +20,6 @@ fingerprints.
 """
 
 import argparse
-import os
 from os import system
 import re
 import tempfile
@@ -49,11 +48,10 @@ def main():
         description="Outputs a subset of the results, to standard out",
     )
     parser.add_argument("query")
-    scriptdir = os.path.dirname(os.path.realpath(__file__))
     parser.add_argument(
         "--input",
         action="store",
-        default=scriptdir + "/" + "../../results/combined/result.csv",
+        default="results/combined/result.csv",
     )
     parser.add_argument("columns", nargs=argparse.REMAINDER)
     args = parser.parse_args()

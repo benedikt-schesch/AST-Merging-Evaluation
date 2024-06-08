@@ -42,7 +42,7 @@ jobs:
     - name: make check-merges-reproducibility
       run: |
         python3 src/python/utils/build_inconsistent_merges.py
-        head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
+        head -n 11 results/combined/inconsistent_results.csv > temp.csv && mv temp.csv results/combined/inconsistent_results.csv
         make CSV_RESULTS=results/combined/inconsistent_results.csv check-merges-reproducibility
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
