@@ -99,7 +99,7 @@ export GIT_CONFIG_GLOBAL
 
 # Check if cache.tar.gz exists and cache is missing
 if [ -f cache.tar.gz ] && [ ! -d cache ]; then
-    read -p "cache.tar.gz found and cache directory missing. Do you want to decompress? (y/n) " answer
+    read -r -p "cache.tar.gz found and cache directory missing. Do you want to decompress? (y/n) " answer
     if [ "$answer" = "y" ]; then
         echo "Decompressing cache.tar.gz"
         make decompress-cache
@@ -108,9 +108,9 @@ if [ -f cache.tar.gz ] && [ ! -d cache ]; then
     fi
 fi
 
-# Check if cache_without_logs.tar.gz.tar.gz exists and cache is missing
+# Check if cache_without_logs.tar.gz exists and cache is missing
 if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
-    read -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
+    read -r -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
     if [ "$answer" = "y" ]; then
         echo "Decompressing cache_without_logs.tar.gz"
         make decompress-cache-without-logs
@@ -118,6 +118,7 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
         echo "Decompression aborted."
     fi
 fi
+
 
 
 # Check if cache_
