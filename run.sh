@@ -97,10 +97,26 @@ git submodule update --init --recursive
 GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
 export GIT_CONFIG_GLOBAL
 
-# Check if cache.tar exists and cache is missing
-if [ -f cache.tar ] && [ ! -d cache ]; then
-    echo "Decompressing cache.tar"
-    # make decompress-cache
+# Check if cache.tar.gz exists and cache is missing
+if [ -f cache.tar.gz ] && [ ! -d cache ]; then
+    read -r -p "cache.tar.gz found and cache directory missing. Do you want to decompress? (y/n) " answer
+    if [ "$answer" = "y" ]; then
+        echo "Decompressing cache.tar.gz"
+        make decompress-cache
+    else
+        echo "Decompression aborted."
+    fi
+fi
+
+# Check if cache_without_logs.tar.gz exists and cache is missing
+if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
+    read -r -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
+    if [ "$answer" = "y" ]; then
+        echo "Decompressing cache_without_logs.tar.gz"
+        make decompress-cache-without-logs
+    else
+        echo "Decompression aborted."
+    fi
 fi
 
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
