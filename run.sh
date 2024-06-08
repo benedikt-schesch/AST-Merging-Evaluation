@@ -119,10 +119,6 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
     fi
 fi
 
-
-
-# Check if cache_
-
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
