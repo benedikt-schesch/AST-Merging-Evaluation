@@ -61,6 +61,12 @@ compress-cache:
 	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
 	tar --exclude="lock" -czf cache.tar.gz cache
 
+# Compresses the cache without logs.
+compress-cache-without-logs:
+	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
+	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
+	tar --exclude="lock" --exclude="lock" -czf cache_without_logs.tar.gz cache
+
 compress-small-cache:
 	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
 	if [ -f cache-small.tar ]; then rm -f cache-small.tar; fi
@@ -71,6 +77,12 @@ decompress-cache:
 	if [ ! -f cache.tar.gz ]; then echo "cache.tar.gz does not exist"; exit 1; fi
 	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
 	tar -xzf cache.tar.gz
+
+# Decompresses the cache without logs.
+decompress-cache-without-logs:
+	if [ ! -f cache_without_logs.tar.gz ]; then echo "cache_without_logs.tar.gz does not exist"; exit 1; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
+	tar -xzf cache_without_logs.tar.gz
 
 decompress-small-cache:
 	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 1; fi
