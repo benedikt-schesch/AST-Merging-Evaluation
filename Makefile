@@ -64,8 +64,8 @@ compress-cache:
 # Compresses the cache without logs.
 compress-cache-without-logs:
 	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
-	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
-	tar --exclude="lock" --exclude="lock" -czf cache_without_logs.tar.gz cache
+	if [ -f cache_without_logs.tar.gz ]; then rm -f cache_without_logs.tar.gz; fi
+	tar --exclude="lock" --exclude="logs" -czf cache_without_logs.tar.gz cache
 
 compress-small-cache:
 	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
