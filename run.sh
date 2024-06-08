@@ -121,7 +121,7 @@ fi
 
 # Check if cache_without_logs.tar.gz.tar.gz exists and cache is missing
 if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
-    read -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
+    read -r -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
     if [ "$answer" = "y" ]; then
         echo "Decompressing cache_without_logs.tar.gz"
         make decompress-cache-without-logs
@@ -129,6 +129,7 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
         echo "Decompression aborted."
     fi
 fi
+
 
 
 # Check if cache_
