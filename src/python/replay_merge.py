@@ -116,7 +116,7 @@ def merge_replay(
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
-                delete_workdir=False,
+                delete_workdir=True if delete_workdir else False,
                 lazy_clone=False,
             )
             repo.checkout(merge_data["left"], use_cache=False)
@@ -256,15 +256,18 @@ def merge_replay(
             assert repo.local_repo_path.exists()
             if merge_result in (MERGE_STATE.Merge_failed, MERGE_STATE.Merge_success):
                 # Run 'git diff --name-only --diff-filter=U' to get the files with conflicts
-                conflict_files = subprocess.run(
+                process = subprocess.run(
                     ["git", "diff", "--name-only", "--diff-filter=U"],
                     cwd=repo.local_repo_path,
                     stdout=subprocess.PIPE,
-                ).stdout.decode("utf-8")
-                is_conflict = len(conflict_files) > 0
-                assert (
-                    is_conflict == (merge_result == MERGE_STATE.Merge_failed)
-                ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match conflict_files {conflict_files} at path {repo.local_repo_path}"
+                    stderr=subprocess.PIPE,
+                )
+                if len(process.stderr.decode("utf-8")) == 0:
+                    conflict_files = process.stdout.decode("utf-8")
+                    is_conflict = len(conflict_files) > 0
+                    assert is_conflict == (
+                        merge_result == MERGE_STATE.Merge_failed
+                    ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match conflict_files {conflict_files} at path {repo.local_repo_path}"
 
             result_df.loc[
                 merge_tool.name,
@@ -360,6 +363,8 @@ def merge_replay(
                         log_path,
                     ]
                     assert merge_data[f"{merge_tool.name}"] == test_result.name
+        if delete_workdir:
+            del repo
     return result_df
 
 
