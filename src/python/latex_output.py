@@ -127,9 +127,7 @@ def merge_tool_latex_name(name: str) -> str:
     """
     if name in MERGE_TOOL_RENAME:
         return MERGE_TOOL_RENAME[name]
-    name = name.capitalize()
-    name = name.replace("_", "-")
-    return name.capitalize()
+    return name.replace("_", "-").replace("plumelib", "P").capitalize()
 
 
 def latex_def(name, value) -> str:
