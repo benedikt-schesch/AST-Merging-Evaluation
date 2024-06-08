@@ -452,7 +452,7 @@ def main():
                 yticklabels=latex_merge_tool,  # type: ignore
                 mask=np.triu(np.ones_like(result, dtype=bool), k=1),
                 cmap="Blues",
-                annot_kws={"size": 6},
+                annot_kws={"size": 8},
             )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
         heatmap.set_xticklabels(
