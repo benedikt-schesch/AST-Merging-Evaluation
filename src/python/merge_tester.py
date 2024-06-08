@@ -101,6 +101,8 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
+        if result == TEST_STATE.Tests_timedout:
+            break
     logger.info(
         f"merge_tester: Finished {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
