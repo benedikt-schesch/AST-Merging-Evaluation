@@ -119,6 +119,20 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
     fi
 fi
 
+# Check if cache_without_logs.tar.gz.tar.gz exists and cache is missing
+if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
+    read -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
+    if [ "$answer" = "y" ]; then
+        echo "Decompressing cache_without_logs.tar.gz"
+        make decompress-cache-without-logs
+    else
+        echo "Decompression aborted."
+    fi
+fi
+
+
+# Check if cache_
+
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
