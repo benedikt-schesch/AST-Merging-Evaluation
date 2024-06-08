@@ -166,12 +166,3 @@ tags:
 
 run:
 	nice -n 5 sh run_full.sh | tee output.txt
-
-# Create a tarball of the artifacts for the paper.
-# Keep this target last in the file.
-create-artifacts:
-	rm -rf artifacts
-	git clone https://github.com/benedikt-schesch/AST-Merging-Evaluation.git artifacts
-	rm -rf artifacts/.git
-	sed -i '' 's/benedikt-schesch/anonymous-github-user/g' artifacts/README.md artifacts/Makefile
-	tar -czf artifacts.tar.gz artifacts
