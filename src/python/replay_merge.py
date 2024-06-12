@@ -113,6 +113,7 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
+                merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
@@ -127,6 +128,7 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
+                merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
@@ -141,6 +143,7 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
+                merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
@@ -164,6 +167,7 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
+                merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
                 workdir_id=workdir,
@@ -209,6 +213,7 @@ def merge_replay(
                     continue
             try:
                 repo = Repository(
+                    merge_idx,
                     repo_slug,
                     cache_directory=Path("no_cache/"),
                     workdir_id=workdir,

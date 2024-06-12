@@ -43,12 +43,14 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
         pd.Series: The result of the test.
     """
     repo_slug, merge_data, cache_directory = args
+    merge_idx = merge_data["idx"]
     logger.info(
-        f"merge_tester: Started {repo_slug} {merge_data['left']} {merge_data['right']}"
+        f"merge_tester: Started {merge_idx} {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
     while psutil.cpu_percent() > 90 or psutil.virtual_memory().percent > 85:
         logger.trace(
             "merge_tester: Waiting for CPU or memory to be available."
+            + merge_idx
             + repo_slug
             + merge_data["left"]
             + merge_data["right"]
@@ -57,6 +59,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
     for merge_tool in MERGE_TOOL:
         repo = Repository(
+            merge_idx,
             repo_slug,
             cache_directory=cache_directory,
             workdir_id=repo_slug

@@ -66,6 +66,7 @@ def get_diff_files(
 
 
 def diff_merge_analyzer(
+    merge_idx: str,
     repo_slug: str,
     left_sha: str,
     right_sha: str,
@@ -75,6 +76,7 @@ def diff_merge_analyzer(
     Computes the diff between two branches using git diff.
     Args:
         repo (Repository): The repository object.
+        merge_idx (str): The merge index, such as 42-123.
         repo_slug (str): The repository slug.
         left_sha (str): The left sha.
         right_sha (str): The right sha.
@@ -91,6 +93,7 @@ def diff_merge_analyzer(
         return cache_data
 
     repo = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_dir,
         workdir_id=repo_slug + "/diff-" + left_sha + "-" + right_sha,
@@ -161,13 +164,16 @@ def merge_analyzer(
     """
     repo_slug, merge_data, cache_directory = args
 
+    merge_idx = merge_data["idx"]
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
 
     logger.info(f"merge_analyzer: Analyzing {repo_slug} {left_sha} {right_sha}")
 
     # Compute diff size in lines between left and right
-    cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
+    cache_data = diff_merge_analyzer(
+        merge_idx, repo_slug, left_sha, right_sha, cache_directory
+    )
 
     if cache_data["diff contains java file"] in (False, None):
         merge_data["test merge"] = False
@@ -177,6 +183,7 @@ def merge_analyzer(
 
     # Checkout left parent
     repo_left = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
@@ -185,6 +192,7 @@ def merge_analyzer(
 
     # Checkout right parent
     repo_right = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
