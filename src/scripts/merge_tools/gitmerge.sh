@@ -20,7 +20,7 @@ branch2=$3
 strategy=$4
 
 # perform merge
-cd "$clone_dir" || exit 1
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
 git config merge.conflictstyle zdiff3
