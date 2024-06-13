@@ -86,7 +86,7 @@ def lookup_in_cache(
         lock.release()
         return cache_data
     if set_run:
-        logger.debug(f"lookup_in_cache: Setting {cache_key} to None")
+        logger.debug(f"lookup_in_cache: Setting {cache_key} to None for {repo_slug}")
         set_in_cache(cache_key, None, repo_slug, cache_directory, acquire_lock=False)
     lock.release()
     return None
