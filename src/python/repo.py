@@ -182,10 +182,13 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
 
 
 class Repository:
-    """A class that represents a repository."""
+    """A class that represents a repository.
+    merge_idx is purely for diagnostic purposes.
+    """
 
     def __init__(
         self,
+        merge_idx: str,
         repo_slug: str,
         cache_directory: Path = Path(""),
         workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
@@ -197,6 +200,7 @@ class Repository:
             repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_directory (Path): The prefix of the cache.
         """
+        self.merge_idx = merge_idx
         self.repo_slug = repo_slug.lower()
         self.owner, self.name = self.repo_slug.split("/")
         self.repo_path = REPOS_PATH / repo_slug

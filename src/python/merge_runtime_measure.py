@@ -63,7 +63,7 @@ def main():
             merges = merges.sample(frac=1, random_state=42)
             if len(merges) > args.n_sampled_timing:
                 merges = merges.iloc[: args.n_sampled_timing]
-            for idx, merge_data in merges.iterrows():
+            for merge_idx, merge_data in merges.iterrows():
                 for merge_tool in MERGE_TOOL:
                     left_hash, right_hash = (
                         merge_data["left"],
@@ -75,7 +75,7 @@ def main():
                     )
 
                     if cache_entry is not None:
-                        merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                        merges.at[merge_idx, f"{merge_tool.name}_run_time"] = np.median(
                             cache_entry["run_time"]  # type: ignore
                         )
                     else:
@@ -86,6 +86,7 @@ def main():
                         run_times = []
                         for _ in range(args.n_timings):
                             repo = Repository(
+                                merge_idx,
                                 repo_slug,
                                 workdir_id=repo_slug
                                 + f"/merge-tester-{merge_tool.name}-"
@@ -118,7 +119,7 @@ def main():
                             acquire_lock=False,
                         )
 
-                    merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                    merges.at[merge_idx, f"{merge_tool.name}_run_time"] = np.median(
                         cache_entry["run_time"]  # type: ignore
                     )
             out_file = args.output_dir / f"{repo_slug}.csv"
