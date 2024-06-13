@@ -34,16 +34,18 @@ from rich.progress import (
 )
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
+def merge_tester(args: Tuple[str, str, pd.Series, Path]) -> pd.Series:
     """Tests a merge with each merge tool.
     Args:
-        args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
-                    the repository info, and the cache path.
+        args (Tuple[str,str,pd.Series,Path]): A tuple containing the merge index,
+                    the repository slug, the repository info, and the cache path.
     Returns:
         pd.Series: The result of the test.
     """
-    repo_slug, merge_data, cache_directory = args
-    merge_idx = merge_data["idx"]
+    merge_idx, repo_slug, merge_data, cache_directory = args
+    print(
+        f"merge_tester: Started {merge_idx} {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
     logger.info(
         f"merge_tester: Started {merge_idx} {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
@@ -141,8 +143,8 @@ def build_arguments(
         return []
     merges = merges[merges["sampled for testing"]]
     return [
-        (repo_slug, merge_data, Path(args.cache_dir))
-        for _, merge_data in merges.iterrows()
+        (merge_idx, repo_slug, merge_data, Path(args.cache_dir))
+        for merge_idx, merge_data in merges.iterrows()
     ]
 
 
@@ -217,7 +219,7 @@ def main():
         )
         for idx, merge_results in enumerate(merge_tester_arguments):
             progress.update(task, advance=1)
-            repo_slug = merge_results[0]
+            repo_slug = merge_results[1]
             repo_result[repo_slug].append(merge_tester_results[idx])
 
     n_total_merges = 0
