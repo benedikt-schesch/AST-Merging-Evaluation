@@ -10,7 +10,7 @@ merge_strategy=$5 #"--only-adjacent"
 
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
-cd "$clone_dir" || exit 1
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
 
