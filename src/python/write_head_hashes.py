@@ -48,6 +48,7 @@ def get_latest_hash(args):
     try:
         logger.info("write_head_hashes " + repo_slug + " : Cloning repo")
         repo = Repository(
+            "HEAD",
             repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
             lazy_clone=False,
