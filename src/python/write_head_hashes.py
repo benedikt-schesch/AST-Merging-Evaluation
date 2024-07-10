@@ -77,17 +77,13 @@ if __name__ == "__main__":
 
     # If file exists ignore this step
     if os.path.isfile(arguments.output_path):
-        logger.info(
-            f"write_head_hashes: File already exists, skipping {arguments.output_path}"
-        )
+        logger.info("write_head_hashes: File already exists, skipping")
         sys.exit(0)
 
     df = pd.read_csv(arguments.repos_csv, index_col="idx")
     df["repository"] = df["repository"].str.lower()
 
-    logger.info(
-        "write_head_hashes: Started cloning repos and collecting head hashes for {arguments.output_path}"
-    )
+    logger.info("write_head_hashes: Started cloning repos and collecting head hashes")
     with multiprocessing.Pool(processes=num_processes()) as pool:
         with Progress(
             SpinnerColumn(),

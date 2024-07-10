@@ -51,10 +51,7 @@ if __name__ == "__main__":
             if actual_df[col].equals(goal_df[col]):
                 continue
             # Print the differences.
-            diff_exit_code = os.waitstatus_to_exitcode(
-                os.system(f"diff {goal_folder/goal_file} {actual_file}")
-            )
-            print(f"diff exit code: {diff_exit_code}")
+            print(os.system(f"diff {goal_folder/goal_file} {actual_file}"))
             # Now print details, after diffs so it is not obscured by the diff output.
             different_columns = []
             for col in goal_df.columns:

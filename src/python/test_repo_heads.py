@@ -136,9 +136,9 @@ if __name__ == "__main__":
     logger.info("test_repo_heads: Finished Building Output")
 
     logger.success(
-        "test_repo_heads: Number of repos whose head passes tests: "
+        "test_repo_heads: Number of repos whose head passes tests:"
         + str(len(filtered_df))
-        + " out of "
+        + "out of"
         + str(len(df))
     )
     if len(filtered_df) == 0:

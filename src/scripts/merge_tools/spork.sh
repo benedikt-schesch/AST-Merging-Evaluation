@@ -26,7 +26,7 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
+cd "$clone_dir" || exit
 
 # set up spork driver
 git config --local merge.spork.name "spork"

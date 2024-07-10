@@ -103,13 +103,6 @@ To execute `run_full.sh` on multiple machines in parallel create a machine addre
 ./run_multiple_machine.sh main machines.txt <project_path_on_machine>
 ```
 
-#### If `make small-test` fails
-
-If `make small-test` fails in a branch that you wish to merge into the main
-branch, run `make small-test` in the main branch (which should succeed) and also
-in your branch, and investigate the differences.
-
-
 ### Load the stored cache
 
 To decompress the cache run `make decompress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.

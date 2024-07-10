@@ -138,7 +138,7 @@ echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
 
-JAVA_HOME="$JAVA11_HOME" ./gradlew -q assemble -g ../.gradle/
+./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
 
@@ -168,7 +168,7 @@ python3 src/python/test_repo_heads.py \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
-JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeevaluation-all.jar \
+java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \
     "$OUT_DIR/merges"
