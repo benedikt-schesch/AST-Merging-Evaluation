@@ -82,7 +82,7 @@ done
 rm -rf $temp_out_dir $temp_intellimerge_dir
 
 git add .
-git commit -m "IntelliMerge: Merge $branch2 into $branch1"
+git commit -m "intellimerge.sh: Merge $branch2 into $branch1"
 
 rm -rf ours_refactorings.csv theirs_refactorings.csv
 

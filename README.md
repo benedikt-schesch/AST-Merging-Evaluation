@@ -50,7 +50,8 @@ brew install gh
 
 ### Java
 
-You must install Java 8, 11 and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
+You must install Java 8, 11, and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
+JAVA_HOME must be set to Java 8, 11, or 17 (not JDK 21).
 
 ---
 

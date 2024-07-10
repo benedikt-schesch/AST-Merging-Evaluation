@@ -9,10 +9,22 @@ git_strategy=$4 #"-Xignore-space-change"
 merge_strategy=$5 #"--only-adjacent"
 
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
+echo "HEAD = $(git rev-parse HEAD)"
+git branch --list -a -v --no-color
+echo "----"
+git show-branch
+echo "----"
+git show-ref
+echo "----"
+git tag --list --color=never
+echo "----"
+git fetch --dry-run
+echo "----"
 
 cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
+echo "$branch1 = $(git rev-list -n 1 "$branch1")"
 
 git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
@@ -41,7 +53,7 @@ git-mergetool.sh $all_arg --tool=merge-plumelib
 diffs=$(git diff --name-only --diff-filter=U)
 if [ -z "$diffs" ]; then
     git add .
-    git commit -m "Resolved conflicts by calling: git-mergetool.sh $all_arg --tool=merge-plumelib"
+    git commit -m "merge_plumelib.sh: Resolved conflicts by calling: git-mergetool.sh $all_arg --tool=merge-plumelib"
     exit 0
 fi
 echo "$0: diffs=$diffs"
