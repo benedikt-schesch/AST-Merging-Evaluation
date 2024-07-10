@@ -18,6 +18,7 @@ from repo import Repository, MERGE_TOOL
 from cache_utils import lookup_in_cache, set_in_cache
 import numpy as np
 from loguru import logger
+from variables import TIMEOUT_MERGING
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -28,7 +29,7 @@ from rich.progress import (
 )
 
 
-def main():  # pylint: disable=too-many-locals,too-many-statements
+def main():
     """Main function"""
     logger.info("merge_timer: Start")
     parser = argparse.ArgumentParser()
@@ -50,11 +51,11 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
+        BarColumn(pulse_style="blue"),
         TimeElapsedColumn(),
         TimeRemainingColumn(),
     ) as progress:
-        task = progress.add_task("Collecting merges...", total=len(repos))
+        task = progress.add_task("Timing merges...", total=len(repos))
         for _, repository_data in repos.iterrows():
             progress.update(task, advance=1)
             repo_slug = repository_data["repository"]
@@ -62,7 +63,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
             merges = merges.sample(frac=1, random_state=42)
             if len(merges) > args.n_sampled_timing:
                 merges = merges.iloc[: args.n_sampled_timing]
-            for idx, merge_data in merges.iterrows():
+            for merge_idx, merge_data in merges.iterrows():
                 for merge_tool in MERGE_TOOL:
                     left_hash, right_hash = (
                         merge_data["left"],
@@ -74,17 +75,18 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                     )
 
                     if cache_entry is not None:
-                        merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                        merges.at[merge_idx, f"{merge_tool.name}_run_time"] = np.median(
                             cache_entry["run_time"]  # type: ignore
                         )
                     else:
                         logger.info(
                             f"merge_timer: Running {merge_tool.name} "
-                            f"on {repo_slug} {left_hash} {right_hash}"
+                            f"on {idx} {repo_slug} {left_hash} {right_hash}"
                         )
                         run_times = []
                         for _ in range(args.n_timings):
                             repo = Repository(
+                                merge_idx,
                                 repo_slug,
                                 workdir_id=repo_slug
                                 + f"/merge-tester-{merge_tool.name}-"
@@ -101,7 +103,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                                 tool=merge_tool,
                                 left_commit=left_hash,
                                 right_commit=right_hash,
-                                timeout=0,
+                                timeout=TIMEOUT_MERGING,
                                 use_cache=False,
                             )
                             del repo
@@ -117,7 +119,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
                             acquire_lock=False,
                         )
 
-                    merges.at[idx, f"{merge_tool.name}_run_time"] = np.median(
+                    merges.at[merge_idx, f"{merge_tool.name}_run_time"] = np.median(
                         cache_entry["run_time"]  # type: ignore
                     )
             out_file = args.output_dir / f"{repo_slug}.csv"

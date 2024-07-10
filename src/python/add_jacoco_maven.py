@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Adds Jacoco plugin configuration to a Maven pom.xml file. """
+"""Adds Jacoco plugin configuration to a Maven pom.xml file."""
 
 from typing import Any
 import argparse

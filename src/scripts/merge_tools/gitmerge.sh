@@ -20,7 +20,7 @@ branch2=$3
 strategy=$4
 
 # perform merge
-cd "$clone_dir" || exit 1
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
 git config merge.conflictstyle zdiff3
@@ -32,7 +32,7 @@ retVal=$?
 
 # report conflicts
 if [ $retVal -ne 0 ]; then
-    echo "Conflict"
+    echo "gitmerge.sh: Conflict after running: git merge --no-edit $strategy $branch2"
 fi
 
 exit $retVal

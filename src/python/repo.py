@@ -23,6 +23,7 @@ from cache_utils import (
     set_in_cache,
     lookup_in_cache,
 )
+import fasteners
 import git.repo
 from variables import (
     REPOS_PATH,
@@ -30,6 +31,8 @@ from variables import (
     LEFT_BRANCH_NAME,
     RIGHT_BRANCH_NAME,
     DELETE_WORKDIRS,
+    N_TESTS,
+    TIMEOUT_MERGING,
 )
 from loguru import logger
 
@@ -114,12 +117,14 @@ MERGE_TOOL = Enum(
         "gitmerge_recursive_myers",
         "gitmerge_recursive_patience",
         "gitmerge_resolve",
-        "gitmerge_ort_adjacent",
-        "gitmerge_ort_imports",
-        "gitmerge_ort_imports_ignorespace",
         "git_hires_merge",
         "spork",
         "intellimerge",
+        "plumelib_ort",
+        "plumelib_ort_ignorespace",
+        "plumelib_ort_adjacent",
+        "plumelib_ort_imports",
+        "plumelib_ort_version_number",
     ],
 )
 MERGE_STATE = Enum(
@@ -159,30 +164,31 @@ def repo_test(wcopy_dir: Path, timeout: int) -> Tuple[TEST_STATE, str]:
     """
     explanation = ""
     command = [
-        "src/scripts/run_repo_tests.sh",
-        str(wcopy_dir),
+        "src/scripts/run_with_timeout.sh",
+        str(timeout),
+        f"src/scripts/run_repo_tests.sh {wcopy_dir}",
     ]
-    try:
-        p = subprocess.run(  # pylint: disable=consider-using-with
-            command,
-            capture_output=True,
-            timeout=timeout,
-        )
-    except subprocess.TimeoutExpired as e:
-        explanation = stdout_and_stderr(command, e)
+    p = subprocess.run(
+        command,
+        capture_output=True,
+    )
+    if p.returncode == 124:  # Timeout
+        explanation = stdout_and_stderr(command, p)
         return TEST_STATE.Tests_timedout, explanation
-    rc = p.returncode
     explanation = stdout_and_stderr(command, p)
-    if rc == 0:  # Success
+    if p.returncode == 0:  # Success
         return TEST_STATE.Tests_passed, explanation
     return TEST_STATE.Tests_failed, explanation
 
 
-class Repository:  # pylint: disable=too-many-instance-attributes
-    """A class that represents a repository."""
+class Repository:
+    """A class that represents a repository.
+    merge_idx is purely for diagnostic purposes.
+    """
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
+        merge_idx: str,
         repo_slug: str,
         cache_directory: Path = Path(""),
         workdir_id: str = uuid.uuid4().hex,  # uuid4 is a random UID
@@ -194,6 +200,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             repo_slug (str): The slug of the repository, which is "owner/reponame".
             cache_directory (Path): The prefix of the cache.
         """
+        self.merge_idx = merge_idx
         self.repo_slug = repo_slug.lower()
         self.owner, self.name = self.repo_slug.split("/")
         self.repo_path = REPOS_PATH / repo_slug
@@ -209,21 +216,16 @@ class Repository:  # pylint: disable=too-many-instance-attributes
 
     def clone_repo(self) -> None:
         """Clones the repository."""
-        if self.repo_path.exists():
-            return
-        print(
-            "Cloning",
-            self.repo_slug,
-            "to",
-            self.repo_path,
-            "because:",
-            self.repo_path.exists(),
-        )
-        try:
-            clone_repo(self.repo_slug, self.repo_path)
-        except Exception as e:
-            logger.error("Exception during cloning:\n", e)
-            raise
+        lock_path = REPOS_PATH / "locks" / self.repo_slug
+        lock = fasteners.InterProcessLock(lock_path)
+        with lock:
+            if self.repo_path.exists():
+                return
+            try:
+                clone_repo(self.repo_slug, self.repo_path)
+            except Exception as e:
+                logger.error("Exception during cloning:\n", e)
+                raise
         if not self.repo_path.exists():
             logger.error(
                 f"Repo {self.repo_slug} does not exist after cloning {self.repo_path}"
@@ -298,13 +300,14 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             set_in_cache(commit, cache_entry, self.repo_slug, self.sha_cache_directory)
         return True, explanation
 
-    def _merge_and_test(  # pylint: disable=too-many-arguments
+    def _merge_and_test(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,  # in seconds
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -318,7 +321,8 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -334,7 +338,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             right_fingerprint,
             _,
             _,
-        ) = self.merge(tool, left_commit, right_commit, -1)
+        ) = self.merge(tool, left_commit, right_commit, timeout_merge)
         if merge_status != MERGE_STATE.Merge_success:
             return (
                 merge_status,
@@ -343,7 +347,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
                 right_fingerprint,
                 -1,
             )
-        test_result, test_coverage = self.test(timeout, n_tests)
+        test_result, test_coverage = self.test(timeout_test, n_tests)
         return (
             test_result,
             merge_fingerprint,
@@ -352,13 +356,14 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             test_coverage,
         )
 
-    def merge_and_test(  # pylint: disable=too-many-arguments
+    def merge_and_test(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
         right_commit: str,
-        timeout: int,
-        n_tests: int,
+        timeout_test: int,
+        timeout_merge: int = TIMEOUT_MERGING,
+        n_tests: int = N_TESTS,
     ) -> Tuple[
         Union[TEST_STATE, MERGE_STATE],
         Union[str, None],
@@ -372,7 +377,8 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             tool (MERGE_TOOL): The tool to use.
             left_commit (str): The left commit to merge.
             right_commit (str): The right commit to merge.
-            timeout (int): The timeout limit, in seconds.
+            timeout_test (int): The timeout limit for the test, in seconds.
+            timeout_merge (int): The timeout limit for the merge, in seconds.
             n_tests (int): The number of times to run the test.
         Returns:
             TEST_STATE: The result of the test.
@@ -386,7 +392,12 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         )
         if sha_cache_entry is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         merge_result = MERGE_STATE[sha_cache_entry["merge status"]]
         if merge_result != MERGE_STATE.Merge_success:
@@ -400,7 +411,12 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         result, test_coverage = self.get_test_cache_entry(sha_cache_entry["sha"])
         if result is None:
             return self._merge_and_test(
-                tool, left_commit, right_commit, timeout, n_tests
+                tool=tool,
+                left_commit=left_commit,
+                right_commit=right_commit,
+                timeout_test=timeout_test,
+                timeout_merge=timeout_merge,
+                n_tests=n_tests,
             )
         return (
             result,
@@ -442,7 +458,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         self.repo.git.checkout("-b", branch_name, force=True)
         return tree_fingerprint, explanation
 
-    def merge(  # pylint: disable=too-many-locals,too-many-arguments
+    def merge(
         self,
         tool: MERGE_TOOL,
         left_commit: str,
@@ -507,20 +523,17 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         )
         start_time = time.time()
         command = [
-            "src/scripts/merge_tools/" + tool.name + ".sh",
-            str(self.local_repo_path),
-            LEFT_BRANCH_NAME,
-            RIGHT_BRANCH_NAME,
+            "src/scripts/run_with_timeout.sh",
+            str(timeout),
+            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
-        try:
-            p = subprocess.run(  # pylint: disable=consider-using-with
-                command,
-                capture_output=True,
-                timeout=timeout if timeout > 0 else None,
-                check=False,
-            )
-        except subprocess.TimeoutExpired as e:
-            explanation = explanation + "\n" + stdout_and_stderr(command, e)
+        p = subprocess.run(
+            command,
+            capture_output=True,
+            check=False,
+        )
+        if p.returncode == 124:  # Timeout
+            explanation = explanation + "\n" + stdout_and_stderr(command, p)
             if use_cache:
                 cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
                 cache_entry["explanation"] = explanation
@@ -547,7 +560,6 @@ class Repository:  # pylint: disable=too-many-instance-attributes
         if use_cache:
             cache_entry["sha"] = sha
             cache_entry["merge status"] = merge_status.name
-            output = f"command: {' '.join(command)}\n stdout: {p.stdout}\n stderr: {p.stderr}"
             output_file = (
                 self.sha_cache_directory
                 / self.owner
@@ -557,7 +569,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             output_file.parent.mkdir(parents=True, exist_ok=True)
             cache_entry["merge_logs"] = str(output_file)
             with open(output_file, "w", encoding="utf-8") as f:
-                f.write(output)
+                f.write(explanation)
             set_in_cache(
                 cache_entry_name,
                 cache_entry,
@@ -796,8 +808,7 @@ class Repository:  # pylint: disable=too-many-instance-attributes
             command,
             shell=True,
             cwd=self.local_repo_path,  # Ensure the command runs in the repository directory
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             text=True,
         )
         if process.returncode != 0:

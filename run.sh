@@ -23,6 +23,13 @@ OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
+# Check if it's run on MacOS, if yes raise an error
+# backend=$(uname -s)
+# if [ "$backend" = "Darwin" ]; then
+#     echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
+#     exit 1
+# fi
+
 comparator_flags=""
 no_timing=false
 only_plotting=false
@@ -52,26 +59,64 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-PATH=$(pwd)/src/scripts/merge_tools/:$PATH
-export PATH
+# Add a _with_hashes to the $REPOS_CSV
+REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
-echo "Checking for custom merge drivers in global configuration..."
-merge_drivers=$(git config --global --get-regexp '^merge\..*\.driver$' || echo "No merge drivers set")
+# shellcheck disable=SC2086
+run_latex_output() {
+    local timing_option="$1"
+    python3 src/python/latex_output.py \
+        --run_name "$RUN_NAME" \
+        --merges_path "$OUT_DIR/merges/" \
+        --tested_merges_path "$OUT_DIR/merges_tested/" \
+        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
+        $timing_option \
+        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --n_merges "$N_MERGES" \
+        --output_dir "$OUT_DIR"
+}
 
-if [ "$merge_drivers" == "No merge drivers set" ]; then
-    echo "No custom merge drivers found in global configuration. Proceeding with the evaluation."
-    # Include other commands to continue the script here
-else
-    echo "Error: Custom merge drivers are set in global configuration."
-    echo "Please unset them before running the evaluation."
-    echo "Merge driver found: $merge_drivers"
-    exit 1
+if [ "$only_plotting" = true ]; then
+    if [ "$no_timing" = true ]; then
+        run_latex_output ""
+    else
+        run_latex_output "--timed_merges_path $OUT_DIR/merges_timed/"
+    fi
+    exit 0
 fi
 
-# Check if cache.tar exists and cache is missing
-if [ -f cache.tar ] && [ ! -d cache ]; then
-    echo "Decompressing cache.tar"
-    # make decompress-cache
+PATH=$(pwd)/src/scripts/merge_tools:$PATH
+PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
+export PATH
+
+# Clone all submodules
+git submodule update --init --recursive
+
+# Empty config file
+GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
+export GIT_CONFIG_GLOBAL
+
+# Check if cache.tar.gz exists and cache is missing
+if [ -f cache.tar.gz ] && [ ! -d cache ]; then
+    read -r -p "cache.tar.gz found and cache directory missing. Do you want to decompress? (y/n) " answer
+    if [ "$answer" = "y" ]; then
+        echo "Decompressing cache.tar.gz"
+        make decompress-cache
+    else
+        echo "Decompression aborted."
+    fi
+fi
+
+# Check if cache_without_logs.tar.gz exists and cache is missing
+if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
+    read -r -p "cache_without_logs.tar.gz found and cache_without_logs directory missing. Do you want to decompress? (y/n) " answer
+    if [ "$answer" = "y" ]; then
+        echo "Decompressing cache_without_logs.tar.gz"
+        make decompress-cache-without-logs
+    else
+        echo "Decompression aborted."
+    fi
 fi
 
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
@@ -82,38 +127,34 @@ if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; 
 if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
+if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
+    git submodule update --init --recursive
+fi
+
+(cd ./src/scripts/merge_tools/merging && JAVA_HOME=$JAVA17_HOME ./gradlew shadowJar)
+
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
 echo "Output directory: $OUT_DIR"
 echo "Options: $comparator_flags"
 
-# Add a _with_hashes to the $REPOS_CSV
-REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
-
-if [ "$only_plotting" = true ]; then
-    python3 src/python/latex_output.py \
-        --run_name "$RUN_NAME" \
-        --merges_path "$OUT_DIR/merges/" \
-        --tested_merges_path "$OUT_DIR/merges_tested/" \
-        --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-        --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
-    exit 0
-fi
-
-./gradlew -q assemble -g ../.gradle/
+JAVA_HOME="$JAVA11_HOME" ./gradlew -q assemble -g ../.gradle/
 
 mkdir -p "$OUT_DIR"
 
-# Delete all locks in cache
+# Delete all locks
 if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
 fi
+if [ -d "repos" ]; then
+    find "repos/locks" -name "*.lock" -delete
+fi
 
-# Delete .workdir
-rm -rf .workdir
+# Check if .workdir exists and delete it
+if [ -d .workdir ]; then
+    chmod -R +w .workdir
+    rm -rf .workdir
+fi
 
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
@@ -127,19 +168,31 @@ python3 src/python/test_repo_heads.py \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
-java -cp build/libs/astmergeevaluation-all.jar \
+JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \
     "$OUT_DIR/merges"
 
-# Sample 5*<n_merges> merges
-read -ra merge_comparator_flags <<<"${comparator_flags}"
-python3 src/python/merges_sampler.py \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --merges_path "$OUT_DIR/merges/" \
-    --output_dir "$OUT_DIR/merges_sampled/" \
-    --n_merges "$((5 * "$N_MERGES"))" \
-    "${merge_comparator_flags[@]}"
+# Calculate the number of merges
+total_merges=$((5 * N_MERGES))
+
+# Ensure comparator_flags is set, but default to an empty array if not
+if [[ -n "${comparator_flags}" ]]; then
+    read -ra merge_comparator_flags <<< "${comparator_flags}"
+    python3 src/python/merges_sampler.py \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --merges_path "$OUT_DIR/merges/" \
+        --output_dir "$OUT_DIR/merges_sampled/" \
+        --n_merges "$total_merges" \
+        "${merge_comparator_flags[@]}"
+else
+    echo "Warning: 'comparator_flags' is empty, continuing without additional flags."
+    python3 src/python/merges_sampler.py \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+        --merges_path "$OUT_DIR/merges/" \
+        --output_dir "$OUT_DIR/merges_sampled/" \
+        --n_merges "$total_merges"
+fi
 
 python3 src/python/split_repos.py \
     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
@@ -160,9 +213,6 @@ python3 src/python/merge_tester.py \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
 
-# Define an array for additional arguments
-extra_args=()
-
 if [ "$no_timing" = false ]; then
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
@@ -171,16 +221,10 @@ if [ "$no_timing" = false ]; then
         --n_sampled_timing 1 \
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
-    extra_args+=(--timed_merges_path "$OUT_DIR/merges_timed/")
+
+    run_latex_output "--timed_merges_path $OUT_DIR/merges_timed/"
+else
+    run_latex_output ""
 fi
 
-python3 src/python/latex_output.py \
-    --run_name "$RUN_NAME" \
-    --merges_path "$OUT_DIR/merges/" \
-    --tested_merges_path "$OUT_DIR/merges_tested/" \
-    --analyzed_merges_path "$OUT_DIR/merges_analyzed/" \
-    "${extra_args[@]}" \
-    --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
-    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-    --n_merges "$N_MERGES" \
-    --output_dir "$OUT_DIR"
+run_latex_output ""

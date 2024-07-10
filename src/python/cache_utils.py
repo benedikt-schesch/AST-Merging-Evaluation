@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Contains all the functions related to the caches. The functions to interact with each
+"""Contains all the functions related to the caches. The functions to interact with each
 of the caches are in this file. Each cache is interacted with through the functions
 of this file. The caches are all JSON files and are stored in the cache directory.
 There will be 4 caches in total which are stored on disk after running the run.sh script:
@@ -86,7 +86,7 @@ def lookup_in_cache(
         lock.release()
         return cache_data
     if set_run:
-        logger.debug(f"lookup_in_cache: Setting {cache_key} to None")
+        logger.debug(f"lookup_in_cache: Setting {cache_key} to None for {repo_slug}")
         set_in_cache(cache_key, None, repo_slug, cache_directory, acquire_lock=False)
     lock.release()
     return None

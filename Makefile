@@ -11,6 +11,8 @@ CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result.csv
 CSV_RESULTS_REAPER = results/reaper/result.csv
 CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
+NUM_PROCESSES = 0
+
 shell-script-style:
 	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	checkbashisms ${SH_SCRIPTS}
@@ -21,12 +23,12 @@ showvars:
 	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
 python-style:
-	black ${PYTHON_FILES}
-	pylint -f parseable --disable=W,invalid-name,c-extension-no-member,duplicate-code ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES}
+	ruff check ${PYTHON_FILES} --fix
 
 check-python-style:
-	black ${PYTHON_FILES} --check
-	pylint -f parseable --disable=W,invalid-name --disable=W,duplicate-code ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES} --check
+	ruff check ${PYTHON_FILES}
 
 # This target deletes files that are not committed to version control.
 clean:
@@ -56,8 +58,14 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 # Compresses the cache.
 compress-cache:
 	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
-	if [ -f cache.tar ]; then rm -f cache.tar; fi
-	tar --exclude="lock" -czf cache.tar cache
+	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
+	tar --exclude="lock" -czf cache.tar.gz cache
+
+# Compresses the cache without logs.
+compress-cache-without-logs:
+	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
+	if [ -f cache_without_logs.tar.gz ]; then rm -f cache_without_logs.tar.gz; fi
+	tar --exclude="lock" --exclude="logs" -czf cache_without_logs.tar.gz cache
 
 compress-small-cache:
 	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
@@ -66,9 +74,15 @@ compress-small-cache:
 
 # Decompresses the cache.
 decompress-cache:
-	if [ ! -f cache.tar ]; then echo "cache.tar does not exist"; exit 1; fi
+	if [ ! -f cache.tar.gz ]; then echo "cache.tar.gz does not exist"; exit 1; fi
 	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
-	tar -xzf cache.tar
+	tar -xzf cache.tar.gz
+
+# Decompresses the cache without logs.
+decompress-cache-without-logs:
+	if [ ! -f cache_without_logs.tar.gz ]; then echo "cache_without_logs.tar.gz does not exist"; exit 1; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
+	tar -xzf cache_without_logs.tar.gz
 
 decompress-small-cache:
 	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 1; fi
@@ -103,16 +117,22 @@ small-test-without-cleaning:
 
 update-figures:
 	./run_combined.sh -op
-	./run_greatest_hits.sh -op
-	./run_reaper.sh -op
+	./run_greatest_hits.sh -op --no_timing
+	./run_reaper.sh -op --no_timing
+
+run-all-without-timing:
+	${MAKE} clean-workdir
+	${MAKE} small-test-without-cleaning
+	./run_combined.sh --no_timing
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
 
 run-all:
 	${MAKE} clean-workdir
 	${MAKE} small-test-without-cleaning
 	./run_combined.sh
-	./run_greatest_hits.sh
-	./run_reaper.sh
-
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
 
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
@@ -130,8 +150,11 @@ clean-local:
 	rm -rf repos
 
 check-merges-reproducibility:
-	@echo "Running replay_merge for each idx in parallel..."
-	@tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}' | parallel -u --halt now,fail=1 -j 0 'python3 src/python/replay_merge.py -delete_workdir --idx {}'
+	@echo "Running replay_merge sequentially for each idx..."
+	@set -e; \
+	for idx in $(shell tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}'); do \
+		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx; \
+	done
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
@@ -155,12 +178,3 @@ tags:
 
 run:
 	nice -n 5 sh run_full.sh | tee output.txt
-
-# Create a tarball of the artifacts for the paper.
-# Keep this target last in the file.
-create-artifacts:
-	rm -rf artifacts
-	git clone https://github.com/benedikt-schesch/AST-Merging-Evaluation.git artifacts
-	rm -rf artifacts/.git
-	sed -i '' 's/benedikt-schesch/anonymous-github-user/g' artifacts/README.md artifacts/Makefile
-	tar -czf artifacts.tar.gz artifacts

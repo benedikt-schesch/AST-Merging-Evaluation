@@ -22,7 +22,7 @@ import psutil
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from test_repo_heads import num_processes
-from variables import TIMEOUT_TESTING_MERGE, N_TESTS
+from variables import TIMEOUT_TESTING_MERGE, TIMEOUT_MERGING, N_TESTS
 from loguru import logger
 from rich.progress import (
     Progress,
@@ -34,21 +34,25 @@ from rich.progress import (
 )
 
 
-def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
+def merge_tester(args: Tuple[str, str, pd.Series, Path]) -> pd.Series:
     """Tests a merge with each merge tool.
     Args:
-        args (Tuple[str,pd.Series,Path]): A tuple containing the repository slug,
-                    the repository info, and the cache path.
+        args (Tuple[str,str,pd.Series,Path]): A tuple containing the merge index,
+                    the repository slug, the repository info, and the cache path.
     Returns:
         pd.Series: The result of the test.
     """
-    repo_slug, merge_data, cache_directory = args
-    logger.info(
-        f"merge_tester: Started {repo_slug} {merge_data['left']} {merge_data['right']}"
+    merge_idx, repo_slug, merge_data, cache_directory = args
+    print(
+        f"merge_tester: Started {merge_idx} {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
-    while psutil.cpu_percent() > 90:
+    logger.info(
+        f"merge_tester: Started {merge_idx} {repo_slug} {merge_data['left']} {merge_data['right']}"
+    )
+    while psutil.cpu_percent() > 90 or psutil.virtual_memory().percent > 85:
         logger.trace(
-            "merge_tester: Waiting for CPU load to come down"
+            "merge_tester: Waiting for CPU or memory to be available."
+            + merge_idx
             + repo_slug
             + merge_data["left"]
             + merge_data["right"]
@@ -57,6 +61,7 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
     for merge_tool in MERGE_TOOL:
         repo = Repository(
+            merge_idx,
             repo_slug,
             cache_directory=cache_directory,
             workdir_id=repo_slug
@@ -74,7 +79,8 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
             tool=merge_tool,
             left_commit=merge_data["left"],
             right_commit=merge_data["right"],
-            timeout=TIMEOUT_TESTING_MERGE,
+            timeout_test=TIMEOUT_TESTING_MERGE,
+            timeout_merge=TIMEOUT_MERGING,
             n_tests=N_TESTS,
         )
         if result not in (
@@ -100,6 +106,8 @@ def merge_tester(args: Tuple[str, pd.Series, Path]) -> pd.Series:
 
         merge_data[merge_tool.name] = result.name
         merge_data[f"{merge_tool.name}_merge_fingerprint"] = merge_fingerprint
+        if result == TEST_STATE.Tests_timedout:
+            break
     logger.info(
         f"merge_tester: Finished {repo_slug} {merge_data['left']} {merge_data['right']}"
     )
@@ -135,12 +143,12 @@ def build_arguments(
         return []
     merges = merges[merges["sampled for testing"]]
     return [
-        (repo_slug, merge_data, Path(args.cache_dir))
-        for _, merge_data in merges.iterrows()
+        (merge_idx, repo_slug, merge_data, Path(args.cache_dir))
+        for merge_idx, merge_data in merges.iterrows()
     ]
 
 
-def main():  # pylint: disable=too-many-locals,too-many-statements
+def main():
     """Main function"""
     logger.info("merge_tester: Start")
     parser = argparse.ArgumentParser()
@@ -211,7 +219,7 @@ def main():  # pylint: disable=too-many-locals,too-many-statements
         )
         for idx, merge_results in enumerate(merge_tester_arguments):
             progress.update(task, advance=1)
-            repo_slug = merge_results[0]
+            repo_slug = merge_results[1]
             repo_result[repo_slug].append(merge_tester_results[idx])
 
     n_total_merges = 0

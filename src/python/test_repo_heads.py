@@ -12,6 +12,7 @@ contain a column "head hash" which contains a commit hash that will be tested.
 Cache_dir is the directory where the cache will be stored.
 Output: the rows of the input for which the commit at head hash passes tests.
 """
+
 import multiprocessing
 import os
 import argparse
@@ -71,6 +72,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     # Load repo
     try:
         repo = Repository(
+            "HEAD",
             repo_slug,
             cache_directory=cache,
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
@@ -88,18 +90,7 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     test_state, _, repo_info["head tree fingerprint"] = repo.checkout_and_test(
         repo_info["head hash"], timeout=TIMEOUT_TESTING_PARENT, n_tests=3
     )
-    if test_state == TEST_STATE.Tests_passed:
-        # Make sure the repo is cloned and exists
-        repo.clone_repo()
-        if not repo.repo_path.exists():
-            logger.error(
-                f"head_passes_tests: Repo {repo_slug} does not exist after passing tests."
-            )
-            raise Exception(
-                f"Repo {repo_slug} does not exist after passing tests. \
-                    (Either clone the repo or remove the cache entry)"
-            )
-    else:
+    if test_state != TEST_STATE.Tests_passed:
         shutil.rmtree(repo.repo_path, ignore_errors=True)
 
     repo_info["head test result"] = test_state.name
@@ -146,9 +137,9 @@ if __name__ == "__main__":
     logger.info("test_repo_heads: Finished Building Output")
 
     logger.success(
-        "test_repo_heads: Number of repos whose head passes tests:"
+        "test_repo_heads: Number of repos whose head passes tests: "
         + str(len(filtered_df))
-        + "out of"
+        + " out of "
         + str(len(df))
     )
     if len(filtered_df) == 0:

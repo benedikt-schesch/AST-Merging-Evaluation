@@ -20,12 +20,11 @@ following input files:
 - output_dir: path to the directory where the LaTeX files will be saved
 """
 
-
 import os
 import argparse
 from pathlib import Path
 import warnings
-
+from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -64,6 +63,61 @@ MERGE_TOOL_RENAME = {
 }
 
 
+def check_fingerprint_consistency(result_df: pd.DataFrame, merge_tools: List[str]):
+    """Check if the fingerprints are consistent.
+
+    Args:
+        result_df: DataFrame containing the results of the merge tools
+        merge_tools: list of merge tools
+    """
+    for merge_tool1 in merge_tools:
+        for merge_tool2 in merge_tools:
+            if merge_tool1 == "gitmerge_resolve" or merge_tool2 == "gitmerge_resolve":
+                continue
+            # ignore adajcent
+            if (
+                merge_tool1 == "gitmerge_ort_adjacent"
+                or merge_tool2 == "gitmerge_ort_adjacent"
+            ):
+                continue
+            # Ignore
+            if (
+                merge_tool1 == "gitmerge_ort_imports"
+                or merge_tool2 == "gitmerge_ort_imports"
+            ):
+                continue
+            if (
+                merge_tool1 == "gitmerge_ort_imports_ignorespace"
+                or merge_tool2 == "gitmerge_ort_imports_ignorespace"
+            ):
+                continue
+            if merge_tool1 != merge_tool2:
+                # Check if fingerprints are the same
+                same_fingerprint_mask = (
+                    result_df[merge_tool1 + "_merge_fingerprint"]
+                    == result_df[merge_tool2 + "_merge_fingerprint"]
+                )
+
+                # Check if results are the same
+                same_result_mask = result_df[merge_tool1] == result_df[merge_tool2]
+
+                # Check if the fingerprints are the same but the results are different
+                inconsistent_mask = same_fingerprint_mask & ~same_result_mask
+                if inconsistent_mask.sum() > 0:
+                    logger.warning(
+                        f"Inconsistency found between {merge_tool1} and {merge_tool2} in {inconsistent_mask.sum()} cases."
+                    )
+                    logger.warning(
+                        result_df.loc[inconsistent_mask][
+                            [
+                                merge_tool1,
+                                merge_tool2,
+                                merge_tool1 + "_merge_fingerprint",
+                            ]
+                        ]
+                    )
+
+
 def merge_tool_latex_name(name: str) -> str:
     """Return the LaTeX name of a merge tool.
     Args:
@@ -73,9 +127,7 @@ def merge_tool_latex_name(name: str) -> str:
     """
     if name in MERGE_TOOL_RENAME:
         return MERGE_TOOL_RENAME[name]
-    name = name.capitalize()
-    name = name.replace("_", "-")
-    return name.capitalize()
+    return name.replace("_", "-").replace("plumelib", "P").capitalize()
 
 
 def latex_def(name, value) -> str:
@@ -98,7 +150,6 @@ PLOTS = {
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
         "gitmerge_recursive_histogram",
-        "gitmerge_recursive_ignorespace",
         "gitmerge_recursive_minimal",
         "gitmerge_recursive_myers",
         "gitmerge_recursive_patience",
@@ -107,12 +158,14 @@ PLOTS = {
     "tools": [
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
-        "gitmerge_ort_adjacent",
-        "gitmerge_ort_imports",
-        "gitmerge_ort_imports_ignorespace",
         "git_hires_merge",
         "spork",
         "intellimerge",
+        "plumelib_ort_adjacent",
+        "plumelib_ort_imports",
+        "plumelib_ort_version_number",
+        "plumelib_ort",
+        "plumelib_ort_ignorespace",
     ],
 }
 
@@ -122,7 +175,6 @@ MERGE_CORRECT_NAMES = [
 
 MERGE_INCORRECT_NAMES = [
     TEST_STATE.Tests_failed.name,
-    TEST_STATE.Tests_timedout.name,
 ]
 
 MERGE_UNHANDLED_NAMES = [
@@ -133,26 +185,159 @@ MERGE_UNHANDLED_NAMES = [
 UNDESIRABLE_STATES = [
     TEST_STATE.Git_checkout_failed.name,
     TEST_STATE.Not_tested.name,
+    TEST_STATE.Tests_timedout.name,
     MERGE_STATE.Git_checkout_failed.name,
-    MERGE_STATE.Merge_timedout.name,
 ]
 
 
 main_branch_names = ["main", "refs/heads/main", "master", "refs/heads/master"]
 
 
-def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
+def build_table1(
+    result_df: pd.DataFrame,
+    merge_tools: List[str],
+    correct: List[int],
+    unhandled: List[int],
+    incorrect: List[int],
+) -> str:
+    """Build a table with the results of the merge tools.
+    Args:
+        result_df: DataFrame containing the results of the merge tools
+        merge_tools: list of merge tools
+        correct: list of correct merges
+        unhandled: list of unhandled merges
+        incorrect: list of incorrect merges
+    Returns:
+        LaTeX table with the results of the merge tools
+    """
+    # Table overall results
+    table = """% Do not edit.  This file is automatically generated.
+\\begin{tabular}{l|c c|c c|c c|}
+        Tool & \\multicolumn{6}{c|}{Merges} \\\\ \\cline{2-7}
+        & \\multicolumn{2}{c|}{Correct} &
+        \\multicolumn{2}{c|}{Unhandled} &
+        \\multicolumn{2}{c|}{Incorrect} \\\\
+        & \\# & \\% & \\# & \\% & \\# & \\% \\\\
+        \\hline\n"""
+    total = len(result_df)
+    for merge_tool_idx, merge_tool in enumerate(merge_tools):
+        correct_percentage = 100 * correct[merge_tool_idx] / total if total != 0 else 0
+        unhandled_percentage = (
+            100 * unhandled[merge_tool_idx] / total if total != 0 else 0
+        )
+        incorrect_percentage = (
+            100 * incorrect[merge_tool_idx] / total if total != 0 else 0
+        )
+        table += f"{merge_tool_latex_name(merge_tool):32}"
+        table += f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
+        table += (
+            f" & {unhandled[merge_tool_idx]:5} & {round(unhandled_percentage):3}\\%"
+        )
+        table += f" & {incorrect[merge_tool_idx]:5} & {round(incorrect_percentage):3}\\% \\\\\n"
+    table += "\\end{tabular}\n"
+    return table
+
+
+def build_table2(main_df: pd.DataFrame, merge_tools: List[str], feature) -> str:
+    """Build a table with the results of the merge tools.
+    Args:
+        main: DataFrame containing the results of the merge tools for the main branch
+        merge_tools: list of merge tools
+        feature: DataFrame containing the results of the merge tools for the other branches
+    Returns:
+        LaTeX table with the results of the merge tools
+    """
+    table2 = """% Do not edit.  This file is automatically generated.
+\\setlength{\\tabcolsep}{.285\\tabcolsep}
+\\begin{tabular}{c|cc|cc|cc}
+            Tool &
+            \\multicolumn{6}{c}{Merges} \\\\ \\cline{2-7}
+            &
+            \\multicolumn{2}{c|}{Correct} &
+            \\multicolumn{2}{c|}{Unhandled} &
+            \\multicolumn{2}{c}{Incorrect} \\\\
+            &
+            \\multicolumn{1}{c}{Main} &
+            \\multicolumn{1}{c|}{Other} &
+            \\multicolumn{1}{c}{Main} &
+            \\multicolumn{1}{c|}{Other} &
+            \\multicolumn{1}{c}{Main} &
+            \\multicolumn{1}{c}{Other} \\\\
+            \\hline\n"""
+
+    for _, merge_tool in enumerate(merge_tools):
+        merge_main = main_df[merge_tool]
+        merge_feature = feature[merge_tool]
+
+        correct_main = sum(val in MERGE_CORRECT_NAMES for val in merge_main)
+        correct_main_percentage = (
+            100 * correct_main / len(main_df) if len(main_df) != 0 else 0
+        )
+        correct_feature = sum(val in MERGE_CORRECT_NAMES for val in merge_feature)
+        correct_feature_percentage = (
+            100 * correct_feature / len(feature) if len(feature) > 0 else -1
+        )
+
+        incorrect_main = sum(val in MERGE_INCORRECT_NAMES for val in merge_main)
+        incorrect_main_percentage = (
+            100 * incorrect_main / len(main_df) if len(main_df) != 0 else 0
+        )
+        incorrect_feature = sum(val in MERGE_INCORRECT_NAMES for val in merge_feature)
+        incorrect_feature_percentage = (
+            100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
+        )
+
+        unhandled_main = sum(val in MERGE_UNHANDLED_NAMES for val in merge_main)
+        unhandled_main_percentage = (
+            100 * unhandled_main / len(main_df) if len(main_df) != 0 else 0
+        )
+        unhandled_feature = sum(val in MERGE_UNHANDLED_NAMES for val in merge_feature)
+        unhandled_feature_percentage = (
+            100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
+        )
+
+        table2 += f"            {merge_tool_latex_name(merge_tool):32}"
+        table2 += f" & {round(correct_main_percentage):3}\\%"
+        table2 += f" & {round(correct_feature_percentage):3}\\%"
+        table2 += f" & {round(unhandled_main_percentage):3}\\%"
+        table2 += f" & {round(unhandled_feature_percentage):3}\\%"
+        table2 += f" & {round(incorrect_main_percentage):3}\\%"
+        table2 += f" & {round(incorrect_feature_percentage):3}\\% \\\\\n"
+
+    table2 += "\\end{tabular}\n"
+    return table2
+
+
+def main():
     """Main function"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run_name", type=str)
-    parser.add_argument("--full_repos_csv", type=Path)
-    parser.add_argument("--repos_head_passes_csv", type=Path)
-    parser.add_argument("--tested_merges_path", type=Path)
-    parser.add_argument("--merges_path", type=Path)
-    parser.add_argument("--analyzed_merges_path", type=Path)
-    parser.add_argument("--n_merges", type=int, default=20)
-    parser.add_argument("--output_dir", type=Path)
-    parser.add_argument("--timed_merges_path", type=Path)
+    parser.add_argument("--run_name", type=str, default="combined")
+    parser.add_argument(
+        "--full_repos_csv",
+        type=Path,
+        default=Path("input_data/repos_combined_with_hashes.csv"),
+    )
+    parser.add_argument(
+        "--repos_head_passes_csv",
+        type=Path,
+        default=Path("results/combined/repos_head_passes.csv"),
+    )
+    parser.add_argument(
+        "--tested_merges_path",
+        type=Path,
+        default=Path("results/combined/merges_tested"),
+    )
+    parser.add_argument(
+        "--merges_path", type=Path, default=Path("results/combined/merges")
+    )
+    parser.add_argument(
+        "--analyzed_merges_path",
+        type=Path,
+        default=Path("results/combined/merges_analyzed"),
+    )
+    parser.add_argument("--n_merges", type=int, default=100)
+    parser.add_argument("--output_dir", type=Path, default=Path("results/combined"))
+    parser.add_argument("--timed_merges_path", type=Path, default=None)
     args = parser.parse_args()
     output_dir = args.output_dir
 
@@ -172,7 +357,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             repo_slug = repository_data["repository"]
             merge_list_file = args.tested_merges_path / (repo_slug + ".csv")
             if not merge_list_file.exists():
-                raise Exception(
+                raise ValueError(
                     "latex_ouput.py:",
                     repo_slug,
                     "does not have a list of merges. Missing file: ",
@@ -182,18 +367,10 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             try:
                 merges = pd.read_csv(merge_list_file, header=0, index_col="idx")
                 if len(merges) == 0:
-                    raise pd.errors.EmptyDataError
+                    continue
             except pd.errors.EmptyDataError:
-                logger.info(
-                    "latex_output: Skipping"
-                    + repo_slug
-                    + "because it does not contain any merges."
-                )
                 continue
             merges = merges[merges["parents pass"]]
-            if len(merges) > args.n_merges:
-                merges = merges.sample(args.n_merges, random_state=42)
-                merges.sort_index(inplace=True)
             merges["repository"] = repo_slug
             merges["repo-idx"] = repository_data.name
             merges["merge-idx"] = merges.index
@@ -215,7 +392,7 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
-    main = result_df[result_df["branch_name"].isin(main_branch_names)]
+    main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
 
     for plot_category, merge_tools in PLOTS.items():
@@ -224,45 +401,54 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         Path(plots_output_path).mkdir(parents=True, exist_ok=True)
         Path(tables_output_path).mkdir(parents=True, exist_ok=True)
 
+        check_fingerprint_consistency(result_df, merge_tools)
+
         # Figure Heat map diffing
-        result = np.zeros((len(merge_tools), len(merge_tools)))
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(),
-        ) as progress:
-            task = progress.add_task("Processing merges...", total=len(result_df))
-            for _, row in result_df.iterrows():
-                progress.update(task, advance=1)
-                for idx, merge_tool1 in enumerate(merge_tools):
-                    for idx2, merge_tool2 in enumerate(merge_tools[(idx + 1) :]):
-                        if row[merge_tool1 + "_merge_fingerprint"] != row[
-                            merge_tool2 + "_merge_fingerprint"
-                        ] and (
-                            row[merge_tool1] in MERGE_CORRECT_NAMES
-                            or row[merge_tool2] in MERGE_CORRECT_NAMES
-                        ):
-                            result[idx][idx2 + idx + 1] += 1
-                            result[idx2 + idx + 1][idx] += 1
+        result = pd.DataFrame(
+            {
+                merge_tool: {merge_tool: 0 for merge_tool in merge_tools}
+                for merge_tool in merge_tools
+            }
+        )
+        for merge_tool1 in merge_tools:
+            for merge_tool2 in merge_tools:
+                # Mask for different fingerprints
+                mask_diff_fingerprint = (
+                    result_df[merge_tool1 + "_merge_fingerprint"]
+                    != result_df[merge_tool2 + "_merge_fingerprint"]
+                )
+
+                # Mask if one of the results is in correct or incorrect names
+                merge_name_flags1 = result_df[merge_tool1].isin(
+                    MERGE_CORRECT_NAMES + MERGE_INCORRECT_NAMES
+                )
+                merge_name_flags2 = result_df[merge_tool2].isin(
+                    MERGE_CORRECT_NAMES + MERGE_INCORRECT_NAMES
+                )
+                mask_merge_name = merge_name_flags1 | merge_name_flags2
+
+                # Calculate the result
+                result.loc[merge_tool1, merge_tool2] = (
+                    mask_diff_fingerprint & mask_merge_name
+                ).sum()
+
+        # Transform the result into a numpy array
         _, ax = plt.subplots(figsize=(8, 6))
-        result = np.tril(result)
+        result_array = np.tril(result.to_numpy())
         latex_merge_tool = [
-            "\\mbox{" + merge_tool_latex_name(i) + "}" for i in merge_tools
+            "\\mbox{" + merge_tool_latex_name(i) + "}" for i in result.columns
         ]
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             heatmap = sns.heatmap(
-                result,
+                result_array,
                 annot=True,
                 ax=ax,
                 xticklabels=latex_merge_tool,  # type: ignore
                 yticklabels=latex_merge_tool,  # type: ignore
-                fmt="g",
                 mask=np.triu(np.ones_like(result, dtype=bool), k=1),
                 cmap="Blues",
-                annot_kws={"size": 6},
+                annot_kws={"size": 8},
             )
         heatmap.set_yticklabels(labels=heatmap.get_yticklabels(), va="center")
         heatmap.set_xticklabels(
@@ -303,28 +489,48 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             )
 
         # Cost plot
-        MAX_COST = 14
+        max_cost_intersection = 0
+        for idx, merge_tool in enumerate(merge_tools):
+            if incorrect[idx] == 0:
+                continue
+            max_cost_intersection = max(
+                max_cost_intersection,
+                ((unhandled[idx] + incorrect[idx] + correct[idx]) - unhandled[idx])
+                * 1.0
+                / incorrect[idx],
+            )
+
         _, ax = plt.subplots()
         for idx, merge_tool in enumerate(merge_tools):
             results = []
-            for cost_factor in np.linspace(1, MAX_COST, 1000):
+            for cost_factor in np.linspace(1, max_cost_intersection, 1000):
                 score = unhandled[idx] * 1 + incorrect[idx] * cost_factor
-                score = score / ((unhandled[idx] + incorrect[idx] + correct[idx]))
+                score = score / (unhandled[idx] + incorrect[idx] + correct[idx])
                 score = 1 - score
                 results.append(score)
-            line_style = [(idx, (1, 1)), "--", "-."][idx % 3]
+            line_styles = [
+                "-",
+                ":",
+                "--",
+                "-.",
+                (0, (1, 1)),
+                (0, (5, 10)),
+                (0, (5, 5)),
+                (0, (3, 5, 1, 5)),
+            ]
+            line_style = line_styles[idx % len(line_styles)]
             ax.plot(
-                np.linspace(1, MAX_COST, 1000),
+                np.linspace(1, max_cost_intersection, 1000),
                 results,
                 label=merge_tool_latex_name(merge_tool),
                 linestyle=line_style,
-                linewidth=3,
+                linewidth=2,
                 alpha=0.8,
             )
         plt.xlabel("Incorrect merges cost factor $k$")
         plt.ylabel("\\mbox{Effort Reduction}")
-        plt.xlim(0, MAX_COST)
-        plt.ylim(-0.02, 0.6)
+        plt.xlim(0, 12.5)
+        plt.ylim(0.2, 0.5)
         plt.legend()
         plt.tight_layout()
         plt.savefig(plots_output_path / "cost_without_manual.pgf")
@@ -332,56 +538,27 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
 
         # Cost plot with manual merges
         ax.plot(
-            np.linspace(1, MAX_COST, 1000),
+            np.linspace(1, max_cost_intersection, 1000),
             np.zeros(1000),
             label="Manual Merging",
             color="red",
         )
-        plt.xlim(0, MAX_COST)
+        plt.xlim(0, max_cost_intersection)
         plt.ylim(-0.02, 0.6)
         plt.legend()
         plt.tight_layout()
         plt.savefig(plots_output_path / "cost_with_manual.pgf")
         plt.savefig(plots_output_path / "cost_with_manual.pdf")
-        plt.close()
 
-        # Table overall results
-        table = """% Do not edit.  This file is automatically generated.
-\\begin{tabular}{l|c c|c c|c c}
-            Tool &
-            \\multicolumn{2}{c|}{Correct Merges} &
-            \\multicolumn{2}{c|}{Unhandled Merges} &
-            \\multicolumn{2}{c}{Incorrect Merges} \\\\
-            & \\# & \\% & \\# & \\% & \\# & \\% \\\\
-            \\hline\n"""
-        total = len(result_df)
-        for merge_tool_idx, merge_tool in enumerate(merge_tools):
-            correct_percentage = (
-                100 * correct[merge_tool_idx] / total if total != 0 else 0
-            )
-            unhandled_percentage = (
-                100 * unhandled[merge_tool_idx] / total if total != 0 else 0
-            )
-            incorrect_percentage = (
-                100 * incorrect[merge_tool_idx] / total if total != 0 else 0
-            )
-            table += f"{merge_tool_latex_name(merge_tool):32}"
-            table += (
-                f" & {correct[merge_tool_idx]:5} & {round(correct_percentage):3}\\%"
-            )
-            table += (
-                f" & {unhandled[merge_tool_idx]:5} & {round(unhandled_percentage):3}\\%"
-            )
-            table += f" & {incorrect[merge_tool_idx]:5} & {round(incorrect_percentage):3}\\% \\\\\n"
-        table += "\\end{tabular}\n"
-
+        # Table results
         with open(
             tables_output_path / "table_summary.tex", "w", encoding="utf-8"
         ) as file:
-            file.write(table)
+            file.write(
+                build_table1(result_df, merge_tools, correct, unhandled, incorrect)
+            )
 
         # Printed Table
-
         my_table = PrettyTable()
         my_table.field_names = [
             "Merge Tool",
@@ -400,133 +577,60 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
             )
 
         logger.success(my_table)
-        if total == 0:
-            raise Exception("No merges found in the results")
 
         # Table by merge source
-        table2 = """% Do not edit.  This file is automatically generated.
-\\begin{tabular}{c|c c c c|c c c c|c c c c}
-            Tool &
-            \\multicolumn{4}{c|}{Correct Merges} &
-            \\multicolumn{4}{c|}{Unhandled Merges} &
-            \\multicolumn{4}{c}{Incorrect Merges} \\\\
-            &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c|}{Other Branches} &
-            \\multicolumn{2}{c}{Main Branch} &
-            \\multicolumn{2}{c}{Other Branches} \\\\
-            \\hline
-            & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% & \\# & \\% \\\\\n"""
-
-        for merge_tool_idx, merge_tool in enumerate(merge_tools):
-            merge_main = main[merge_tool]
-            merge_feature = feature[merge_tool]
-
-            correct_main = sum(val in MERGE_CORRECT_NAMES for val in merge_main)
-            correct_main_percentage = (
-                100 * correct_main / len(main) if len(main) != 0 else 0
-            )
-            correct_feature = sum(val in MERGE_CORRECT_NAMES for val in merge_feature)
-            correct_feature_percentage = (
-                100 * correct_feature / len(feature) if len(feature) > 0 else -1
-            )
-
-            incorrect_main = sum(val in MERGE_INCORRECT_NAMES for val in merge_main)
-            incorrect_main_percentage = (
-                100 * incorrect_main / len(main) if len(main) != 0 else 0
-            )
-            incorrect_feature = sum(
-                val in MERGE_INCORRECT_NAMES for val in merge_feature
-            )
-            incorrect_feature_percentage = (
-                100 * incorrect_feature / len(feature) if len(feature) > 0 else -1
-            )
-
-            unhandled_main = sum(val in MERGE_UNHANDLED_NAMES for val in merge_main)
-            unhandled_main_percentage = (
-                100 * unhandled_main / len(main) if len(main) != 0 else 0
-            )
-            unhandled_feature = sum(
-                val in MERGE_UNHANDLED_NAMES for val in merge_feature
-            )
-            unhandled_feature_percentage = (
-                100 * unhandled_feature / len(feature) if len(feature) > 0 else -1
-            )
-
-            table2 += f"            {merge_tool_latex_name(merge_tool):32}"
-            table2 += f" & {correct_main:5} & {round(correct_main_percentage):3}\\%"
-            table2 += (
-                f" & {correct_feature:5} & {round(correct_feature_percentage):3}\\%"
-            )
-            table2 += f" & {unhandled_main:5} & {round(unhandled_main_percentage):3}\\%"
-            table2 += (
-                f" & {unhandled_feature:5} & {round(unhandled_feature_percentage):3}\\%"
-            )
-            table2 += f" & {incorrect_main:5} & {round(incorrect_main_percentage):3}\\%"
-            table2 += (
-                f" & {incorrect_feature:5}"
-                + f" & {round(incorrect_feature_percentage):3}\\% \\\\\n"
-            )
-
-        table2 += "\\end{tabular}\n"
-
         with open(
             tables_output_path / "table_feature_main_summary.tex",
             "w",
             encoding="utf-8",
         ) as file:
-            file.write(table2)
+            file.write(build_table2(main_df, merge_tools, feature))
 
-            # Table run time
-            if args.timed_merges_path:
-                table3 = """% Do not edit.  This file is automatically generated.
-    \\begin{tabular}{c|c|c|c}
-        & \\multicolumn{3}{c}{Run time (seconds)} \\\\
-        Tool & Mean & Median & Max \\\\
-        \\hline\n"""
-                timed_df = []
-                with Progress(
-                    SpinnerColumn(),
-                    TextColumn("[progress.description]{task.description}"),
-                    BarColumn(),
-                    TimeElapsedColumn(),
-                    TimeRemainingColumn(),
-                ) as progress:
-                    task = progress.add_task(
-                        "Processing timed merges...", total=len(repos)
+        # Table run time
+        if args.timed_merges_path:
+            table3 = """% Do not edit.  This file is automatically generated.
+\\begin{tabular}{c|c|c|c}
+    & \\multicolumn{3}{c}{Run time (seconds)} \\\\
+    Tool & Mean & Median & Max \\\\
+    \\hline\n"""
+            timed_df = []
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[progress.description]{task.description}"),
+                BarColumn(),
+                TimeElapsedColumn(),
+                TimeRemainingColumn(),
+            ) as progress:
+                task = progress.add_task("Processing timed merges...", total=len(repos))
+                for _, repository_data in repos.iterrows():
+                    progress.update(task, advance=1)
+                    repo_slug = repository_data["repository"]
+                    merges = pd.read_csv(
+                        Path(args.timed_merges_path) / f"{repo_slug}.csv",
+                        header=0,
                     )
-                    for _, repository_data in repos.iterrows():
-                        progress.update(task, advance=1)
-                        repo_slug = repository_data["repository"]
-                        print(Path(args.timed_merges_path) / f"{repo_slug}.csv")
-                        merges = pd.read_csv(
-                            Path(args.timed_merges_path) / f"{repo_slug}.csv",
-                            header=0,
-                        )
-                        timed_df.append(merges)
-                    timed_df = pd.concat(timed_df, ignore_index=True)
+                    timed_df.append(merges)
+                timed_df = pd.concat(timed_df, ignore_index=True)
 
-                for merge_tool in merge_tools:
-                    table3 += f"    {merge_tool_latex_name(merge_tool):32}"
-                    for f in [np.mean, np.median, np.max]:
-                        run_time = f(timed_df[merge_tool + "_run_time"])
-                        if run_time < 10:
-                            table3 += f" & {run_time:0.2f}"
-                        elif run_time < 100:
-                            table3 += f" & {run_time:0.1f}"
-                        else:
-                            table3 += f" & {round(run_time)}"
-                    table3 += " \\\\\n"
-                table3 += "\\end{tabular}\n"
+            for merge_tool in merge_tools:
+                table3 += f"    {merge_tool_latex_name(merge_tool):32}"
+                for f in [np.mean, np.median, np.max]:
+                    run_time = f(timed_df[merge_tool + "_run_time"])
+                    if run_time < 10:
+                        table3 += f" & {run_time:0.2f}"
+                    elif run_time < 100:
+                        table3 += f" & {run_time:0.1f}"
+                    else:
+                        table3 += f" & {round(run_time)}"
+                table3 += " \\\\\n"
+            table3 += "\\end{tabular}\n"
 
-                with open(
-                    tables_output_path / "table_run_time.tex",
-                    "w",
-                    encoding="utf-8",
-                ) as file:
-                    file.write(table3)
+            with open(
+                tables_output_path / "table_run_time.tex",
+                "w",
+                encoding="utf-8",
+            ) as file:
+                file.write(table3)
 
     # Create defs.tex
     full_repos_df = pd.read_csv(args.full_repos_csv)
@@ -693,14 +797,14 @@ def main():  # pylint: disable=too-many-locals,too-many-branches,too-many-statem
         run_name_camel_case + "SporkOverOrtIncorrect", spork_incorrect - ort_incorrect
     )
 
-    output += latex_def(run_name_camel_case + "MainBranchMerges", len(main))
+    output += latex_def(run_name_camel_case + "MainBranchMerges", len(main_df))
     output += latex_def(
         run_name_camel_case + "MainBranchMergesPercent",
-        round(len(main) * 100 / len(result_df)),
+        round(len(main_df) * 100 / len(result_df)),
     )
-    output += latex_def(run_name_camel_case + "OtherBranceshMerges", len(feature))
+    output += latex_def(run_name_camel_case + "OtherBranchMerges", len(feature))
     output += latex_def(
-        run_name_camel_case + "OtherBranchesMergesPercent",
+        run_name_camel_case + "OtherBranchMergesPercent",
         round(len(feature) * 100 / len(result_df)),
     )
     output += latex_def(

@@ -6,7 +6,10 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 
-cd "$clone_dir" || exit 1
+# Print the current PATH
+echo "PATH: $PATH"
+
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
 
@@ -24,7 +27,7 @@ retVal=$?
 
 # report conflicts
 if [ "$retVal" -ne 0 ]; then
-    echo "Conflict"
+    echo "git_hires_merge: Conflict"
 fi
 
 exit "$retVal"

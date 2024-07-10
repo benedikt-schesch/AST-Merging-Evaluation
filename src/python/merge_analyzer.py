@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Analyze the merges i.e. check if the parents pass tests and statistics between merges.
+"""Analyze the merges i.e. check if the parents pass tests and statistics between merges.
 usage: python3 merge_analyzer.py --repos_head_passes_csv <path_to_repos_head_passes.csv>
                                 --merges_path <path_to_merges>
                                 --output_dir <output_dir>
@@ -17,7 +17,6 @@ import argparse
 from pathlib import Path
 from typing import Tuple, Dict, Union, Any
 import random
-import numpy as np
 import pandas as pd
 from repo import Repository, TEST_STATE
 from cache_utils import set_in_cache, lookup_in_cache
@@ -67,6 +66,7 @@ def get_diff_files(
 
 
 def diff_merge_analyzer(
+    merge_idx: str,
     repo_slug: str,
     left_sha: str,
     right_sha: str,
@@ -76,6 +76,7 @@ def diff_merge_analyzer(
     Computes the diff between two branches using git diff.
     Args:
         repo (Repository): The repository object.
+        merge_idx (str): The merge index, such as 42-123.
         repo_slug (str): The repository slug.
         left_sha (str): The left sha.
         right_sha (str): The right sha.
@@ -92,6 +93,7 @@ def diff_merge_analyzer(
         return cache_data
 
     repo = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_dir,
         workdir_id=repo_slug + "/diff-" + left_sha + "-" + right_sha,
@@ -149,35 +151,42 @@ def diff_merge_analyzer(
     return cache_data
 
 
-def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
-    args: Tuple[str, pd.Series, Path]
+def merge_analyzer(
+    args: Tuple[str, str, pd.Series, Path],
 ) -> pd.Series:
     """
     Merges two branches and returns the result.
     Args:
-        args (Tuple[str,pd.Series,Path]): A tuple containing the repo slug,
+        args (Tuple[str,str,pd.Series,Path]): A tuple containing the merge index, the repo slug,
                 the merge data (which is side-effected), and the cache path.
     Returns:
         dict: A dictionary containing the merge result.
     """
-    repo_slug, merge_data, cache_directory = args
+    merge_idx, repo_slug, merge_data, cache_directory = args
 
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
 
-    logger.info(f"merge_analyzer: Analyzing {repo_slug} {left_sha} {right_sha}")
+    logger.info(
+        f"merge_analyzer: Analyzing {merge_idx} {repo_slug} {left_sha} {right_sha}"
+    )
 
     # Compute diff size in lines between left and right
-    cache_data = diff_merge_analyzer(repo_slug, left_sha, right_sha, cache_directory)
+    cache_data = diff_merge_analyzer(
+        merge_idx, repo_slug, left_sha, right_sha, cache_directory
+    )
 
     if cache_data["diff contains java file"] in (False, None):
         merge_data["test merge"] = False
         merge_data["diff contains java file"] = False
-        logger.info(f"merge_analyzer: Analyzed {repo_slug} {left_sha} {right_sha}")
+        logger.info(
+            f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
+        )
         return merge_data
 
     # Checkout left parent
     repo_left = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
@@ -186,6 +195,7 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
 
     # Checkout right parent
     repo_right = Repository(
+        merge_idx,
         repo_slug,
         cache_directory=cache_directory,
         workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
@@ -215,15 +225,20 @@ def merge_analyzer(  # pylint: disable=too-many-locals,too-many-statements
         merge_data["parents pass"] and merge_data["diff contains java file"] is True
     )
 
-    logger.info(f"merge_analyzer: Analyzed {repo_slug} {left_sha} {right_sha}")
+    logger.info(
+        f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
+    )
 
     return merge_data
 
 
-def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
+def build_merge_analyzer_arguments(
+    repo_idx: str, args: argparse.Namespace, repo_slug: str
+):
     """
     Creates the arguments for the merger function.
     Args:
+        reo_idx (str): The repository index.
         args (argparse.Namespace): The arguments to the script.
         repo_slug (str): The repository slug.
     Returns:
@@ -253,11 +268,11 @@ def build_merge_analyzer_arguments(args: argparse.Namespace, repo_slug: str):
     )
     merges["left"] = merges["left"].astype(str)
     merges["right"] = merges["right"].astype(str)
-    merges["notes"].replace(np.nan, "", inplace=True)
+    merges["notes"] = merges["notes"].fillna("")
 
     arguments = [
-        (repo_slug, merge_data, Path(args.cache_dir))
-        for _, merge_data in merges.iterrows()
+        (f"{repo_idx}-{idx}", repo_slug, merge_data, Path(args.cache_dir))
+        for idx, merge_data in merges.iterrows()
     ]
     return arguments
 
@@ -298,9 +313,11 @@ if __name__ == "__main__":
         TimeRemainingColumn(),
     ) as progress:
         task = progress.add_task("[green]Constructing Input...", total=len(repos))
-        for _, repository_data in repos.iterrows():
+        for repo_idx, repository_data in repos.iterrows():
             repo_slug = repository_data["repository"]
-            merger_arguments += build_merge_analyzer_arguments(args, repo_slug)
+            merger_arguments += build_merge_analyzer_arguments(
+                repo_idx, args, repo_slug
+            )
             progress.update(task, advance=1)
 
     # Shuffle input to reduce cache contention
@@ -340,10 +357,10 @@ if __name__ == "__main__":
         TimeRemainingColumn(),
     ) as progress:
         task = progress.add_task("[green]Processing...", total=len(merger_arguments))
-        for idx, merge_data in enumerate(merger_arguments):
-            repo_slug = merge_data[0]
-            results_data = merger_results[idx]
-            repo_result[repo_slug].append(merger_results[idx])
+        for new_merges_idx, merge_data in enumerate(merger_arguments):
+            repo_slug = merge_data[1]
+            results_data = merger_results[new_merges_idx]
+            repo_result[repo_slug].append(merger_results[new_merges_idx])
             n_new_analyzed += 1
             if "test merge" in results_data and results_data["test merge"]:
                 n_new_candidates_to_test += 1
