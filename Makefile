@@ -152,9 +152,13 @@ clean-local:
 check-merges-reproducibility:
 	@echo "Running replay_merge sequentially for each idx..."
 	@set -e; \
+	FAILED_IDXES=""; \
 	for idx in $(shell tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}'); do \
-		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx; \
-	done
+		echo "Running replay_merge for idx $$idx";
+		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx || FAILED_IDXES="$$FAILED_IDXES $$idx"; \
+	done; \
+	echo "$$FAILED_IDXES"; \
+	test -z "$$FAILED_IDXES"
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
