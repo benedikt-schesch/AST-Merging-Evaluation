@@ -2,10 +2,8 @@
 """Delete the keys containing 'imports' in the JSON files in the given directory."""
 
 import os
-import sys
 import json
 from pathlib import Path
-from argparse import ArgumentParser
 
 
 def count_import_keys(directory: Path) -> int:
