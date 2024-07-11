@@ -8,6 +8,8 @@ branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 merge_strategy=$5 #"--only-adjacent"
 
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
 cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
@@ -18,7 +20,7 @@ git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd 'java-merge-tool.sh '"$merge_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR"/'java-merge-tool.sh '"$merge_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 # shellcheck disable=SC2086
