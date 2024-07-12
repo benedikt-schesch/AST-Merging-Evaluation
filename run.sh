@@ -146,8 +146,10 @@ mkdir -p "$OUT_DIR"
 if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
 fi
-if [ -d "repos" ]; then
-    find "repos" -name "*.lock" -delete
+REPOS_PATH=${AST_REPOS_PATH:-repos}
+if [ -d "$REPOS_PATH" ]; then
+    # Find and delete all ".lock" files in the directory
+    find "$REPOS_PATH" -name "*.lock" -delete
 fi
 
 python3 src/python/utils/delete_cache_placeholders.py \
