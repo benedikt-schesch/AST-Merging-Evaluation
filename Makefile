@@ -151,7 +151,7 @@ check-merges-reproducibility:
 	@set -e; \
 	FAILED_IDXES=""; \
 	for idx in $(shell tail -n +2 $(CSV_RESULTS) | awk -F, '{print $$1}'); do \
-		echo "Running replay_merge for idx $$idx";
+		echo "Running replay_merge for idx $$idx"; \
 		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx || FAILED_IDXES="$$FAILED_IDXES $$idx"; \
 	done; \
 	echo "$$FAILED_IDXES"; \
