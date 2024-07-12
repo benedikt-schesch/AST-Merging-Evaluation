@@ -148,7 +148,6 @@ if [ -d "$CACHE_DIR" ]; then
 fi
 REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
-    # Find and delete all ".lock" files in the directory
     find "$REPOS_PATH" -name "*.lock" -delete
 fi
 
