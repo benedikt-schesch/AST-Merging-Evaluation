@@ -150,7 +150,7 @@ if [ -d "repos" ]; then
     find "repos/locks" -name "*.lock" -delete
 fi
 
-python3 src/python/delete_cache_placeholders.py \
+python3 src/python/utils/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/write_head_hashes.py \

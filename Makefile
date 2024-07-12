@@ -97,11 +97,6 @@ copy-paper:
 	rsync -av --exclude='*.csv' results ../AST-Merging-Evaluation-Paper/
 	find  ../AST-Merging-Evaluation-Paper/ -type d -empty -delete
 
-# Update cache
-update-cache-results:
-	python3 src/python/cache_merger.py
-	make compress-cache
-
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
