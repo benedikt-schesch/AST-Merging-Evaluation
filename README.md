@@ -100,7 +100,7 @@ Directory `results/merges_tested` contains all the merges that have been tested.
 To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
 ```bash
-./run_multiple_machine.sh main machines.txt <project_path_on_machine>
+./src/scripts/utils/run_multiple_machines.sh main machines.txt <project_path_on_machine>
 ```
 
 #### If `make small-test` fails
@@ -208,7 +208,7 @@ To run style checking run `make style`.
 
   * merge_test_results/ -> Caches the test results for specific merges. Used for merge testing. First line indicates the merge result, second line indicates the run time.
 
-* .workdir/ -> This folder is used for the local computations of each process and content is named by Unix process (using "$$"). If `DELETE_WORKDIRS` is set to `false` in `src/python/repo.py` this folder is not deleted after the computation and can be inspectedx.
+* .workdir/ -> This folder is used for the local computations of each process and content is named by Unix process (using "$$"). If `DELETE_WORKDIRS` is set to `false` in `src/python/variables.py` this folder is not deleted after the computation and can be inspected.
 
 * repos/ -> In this folder each repo is cloned.
 
@@ -224,4 +224,5 @@ To investigate differences between two mergers:
 
 * edit file `src/python/utils/select_from_results.py` to reflect the differences you are interested in.
 * run `src/python/utils/select_from_results.py` to create a .csv database containing only the differences.
+* Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
