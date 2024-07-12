@@ -150,12 +150,6 @@ if [ -d "repos" ]; then
     find "repos/locks" -name "*.lock" -delete
 fi
 
-# Check if .workdir exists and delete it
-if [ -d .workdir ]; then
-    chmod -R +w .workdir
-    rm -rf .workdir
-fi
-
 python3 src/python/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
