@@ -81,7 +81,7 @@ def main():
                     else:
                         logger.info(
                             f"merge_timer: Running {merge_tool.name} "
-                            f"on {idx} {repo_slug} {left_hash} {right_hash}"
+                            f"on {merge_idx} {repo_slug} {left_hash} {right_hash}"
                         )
                         run_times = []
                         for _ in range(args.n_timings):
