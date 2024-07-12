@@ -100,7 +100,7 @@ Directory `results/merges_tested` contains all the merges that have been tested.
 To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
 ```bash
-./run_multiple_machine.sh main machines.txt <project_path_on_machine>
+./src/scripts/utils/run_multiple_machines.sh main machines.txt <project_path_on_machine>
 ```
 
 #### If `make small-test` fails
