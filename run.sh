@@ -147,7 +147,7 @@ if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
 fi
 if [ -d "repos" ]; then
-    find "repos/locks" -name "*.lock" -delete
+    find "repos" -name "*.lock" -delete
 fi
 
 python3 src/python/utils/delete_cache_placeholders.py \
