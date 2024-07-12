@@ -239,7 +239,7 @@ class Repository:
         if not self.repo_path.exists():
             self.clone_repo()
         if self.local_repo_path.exists():
-            return
+            shutil.rmtree(self.local_repo_path, ignore_errors=True)
         self.workdir.mkdir(parents=True, exist_ok=True)
         shutil.copytree(
             self.repo_path,
