@@ -4,7 +4,7 @@ style: shell-script-style python-style java-style
 
 SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
-PYTHON_FILES = $(shell find .  -name '*.py' ! -path './repos/*' -not -path "./.workdir/*" -not -path "./cache*/*" | grep -v '/__pycache__/' | grep -v '/.git/' | grep -v gradlew)
+PYTHON_FILES = $(shell find .  -name '*.py' ! -path './repos/*' -not -path "./.workdir/*" -not -path "./cache*/*" | grep -v '/__pycache__/' | grep -v '/.git/' | grep -v gradlew | grep -v git-hires-merge)
 
 CSV_RESULTS_COMBINED = results/combined/result.csv
 CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result.csv
@@ -33,11 +33,13 @@ check-python-style:
 # This target deletes files that are not committed to version control.
 clean:
 	${MAKE} clean-workdir
-	rm -rf repos
+	rm -rf repos-small-test
 	rm -rf scratch
 	rm -rf results/small
 	rm -rf .valid_merges_counters
 
+clean-repos:
+	rm -rf repos
 # This target deletes files in the cache, which is commited to version control.
 clean-cache:
 	rm -rf cache
@@ -95,24 +97,19 @@ copy-paper:
 	rsync -av --exclude='*.csv' results ../AST-Merging-Evaluation-Paper/
 	find  ../AST-Merging-Evaluation-Paper/ -type d -empty -delete
 
-# Update cache
-update-cache-results:
-	python3 src/python/cache_merger.py
-	make compress-cache
-
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
 	rm -rf results/small
-	./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
-	./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 update-figures:
@@ -147,7 +144,7 @@ clean-workdir:
 
 clean-local:
 	${MAKE} clean-workdir
-	rm -rf repos
+	rm -rf repos-small-test
 
 check-merges-reproducibility:
 	@echo "Running replay_merge sequentially for each idx..."
