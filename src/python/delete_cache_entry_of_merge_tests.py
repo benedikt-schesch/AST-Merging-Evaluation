@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Delete the keys containing 'imports' in the JSON files in the given directory."""
+"""Delete the keys containing the SHA of the merge tests from the cache."""
 
 import pandas as pd
 from pathlib import Path
