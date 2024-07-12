@@ -222,7 +222,7 @@ To run style checking run `make style`.
 
 To investigate differences between two mergers:
 
-* edit file `src/python/select_from_results.py` to reflect the differences you are interested in.
-* run `src/python/select_from_results.py` to create a .csv database containing only the differences.
+* edit file `src/python/utils/select_from_results.py` to reflect the differences you are interested in.
+* run `src/python/utils/select_from_results.py` to create a .csv database containing only the differences.
 * Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.

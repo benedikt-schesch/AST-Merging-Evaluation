@@ -146,17 +146,12 @@ mkdir -p "$OUT_DIR"
 if [ -d "$CACHE_DIR" ]; then
     find "$CACHE_DIR" -name "*.lock" -delete
 fi
-if [ -d "repos" ]; then
-    find "repos/locks" -name "*.lock" -delete
+REPOS_PATH=${AST_REPOS_PATH:-repos}
+if [ -d "$REPOS_PATH" ]; then
+    find "$REPOS_PATH" -name "*.lock" -delete
 fi
 
-# Check if .workdir exists and delete it
-if [ -d .workdir ]; then
-    chmod -R +w .workdir
-    rm -rf .workdir
-fi
-
-python3 src/python/delete_cache_placeholders.py \
+python3 src/python/utils/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
 python3 src/python/write_head_hashes.py \

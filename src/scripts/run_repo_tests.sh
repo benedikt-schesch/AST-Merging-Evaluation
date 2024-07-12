@@ -22,13 +22,13 @@ cd "$REPO_DIR" || exit 1
 
 if [ -f "gradlew" ] ; then
   # Append JaCoCo plugin and task to build.gradle
-  python3 "$CURR_PATH"/src/python/add_jacoco_gradle.py pom.xml
+  python3 "$CURR_PATH"/src/python/utils/add_jacoco_gradle.py pom.xml
   command="./gradlew clean test jacocoTestReport"
 elif [ -f pom.xml ] ; then
   # Add Jacoco plugin to pom.xml
   if ! grep -q "jacoco-maven-plugin" pom.xml ; then
     echo "Adding Jacoco plugin to pom.xml"
-    python3 "$CURR_PATH"/src/python/add_jacoco_maven.py pom.xml
+    python3 "$CURR_PATH"/src/python/utils/add_jacoco_maven.py pom.xml
   fi
   mvn -version
   command="mvn clean jacoco:prepare-agent test jacoco:report"
