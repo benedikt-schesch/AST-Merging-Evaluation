@@ -151,18 +151,22 @@ if [ -d "$REPOS_PATH" ]; then
     find "$REPOS_PATH" -name "*.lock" -delete
 fi
 
+echo "run.sh: about to run delete_cache_placeholders.py"
 python3 src/python/utils/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
+echo "run.sh: about to run write_head_hashes.py"
 python3 src/python/write_head_hashes.py \
     --repos_csv "$REPOS_CSV" \
     --output_path "$REPOS_CSV_WITH_HASHES"
 
+echo "run.sh: about to run test_repo_heads.py"
 python3 src/python/test_repo_heads.py \
     --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
     --output_path "$OUT_DIR/repos_head_passes.csv" \
     --cache_dir "$CACHE_DIR"
 
+echo "run.sh: about to run FindMergeCommits"
 JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeevaluation-all.jar \
     astmergeevaluation.FindMergeCommits \
     "$OUT_DIR/repos_head_passes.csv" \
@@ -172,6 +176,7 @@ JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeeval
 total_merges=$((5 * N_MERGES))
 
 # Ensure comparator_flags is set, but default to an empty array if not
+echo "run.sh: about to run merges_sampler.py"
 if [[ -n "${comparator_flags}" ]]; then
     read -ra merge_comparator_flags <<< "${comparator_flags}"
     python3 src/python/merges_sampler.py \
@@ -189,12 +194,14 @@ else
         --n_merges "$total_merges"
 fi
 
+echo "run.sh: about to run split_repos.py"
 python3 src/python/split_repos.py \
     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
     --machine_id "$machine_id" \
     --num_machines "$num_machines" \
     --output_file "$OUT_DIR/local_repos.csv"
 
+echo "run.sh: about to run split_repos.py"
 python3 src/python/merge_analyzer.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
@@ -202,6 +209,7 @@ python3 src/python/merge_analyzer.py \
     --n_sampled_merges "$N_MERGES" \
     --cache_dir "$CACHE_DIR"
 
+echo "run.sh: about to run merge_tester.py"
 python3 src/python/merge_tester.py \
     --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
@@ -209,6 +217,7 @@ python3 src/python/merge_tester.py \
     --cache_dir "$CACHE_DIR"
 
 if [ "$no_timing" = false ]; then
+    echo "run.sh: about to run merge_runtime_measure.py"
     python3 src/python/merge_runtime_measure.py \
         --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
         --merges "$OUT_DIR/merges_tested/" \
@@ -217,9 +226,12 @@ if [ "$no_timing" = false ]; then
         --n_timings 3 \
         --cache_dir "$CACHE_DIR"
 
+    echo "run.sh: about to run run_latex_output"
     run_latex_output "--timed_merges_path $OUT_DIR/merges_timed/"
 else
+    echo "run.sh: about to run run_latex_output"
     run_latex_output ""
 fi
 
+echo "run.sh: about to run run_latex_output"
 run_latex_output ""
