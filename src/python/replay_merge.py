@@ -116,7 +116,7 @@ def merge_replay(
                 merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=True if delete_workdir else False,
                 lazy_clone=False,
             )

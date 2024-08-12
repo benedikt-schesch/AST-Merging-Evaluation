@@ -43,6 +43,7 @@ import seaborn as sns
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
 from loguru import logger
+from cache_utils import lookup_in_cache
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -335,6 +336,7 @@ def main():
         type=Path,
         default=Path("results/combined/merges_analyzed"),
     )
+    parser.add_argument("--test_cache_dir", type=Path, default=Path("cache/test_cache"))
     parser.add_argument("--n_merges", type=int, default=100)
     parser.add_argument("--output_dir", type=Path, default=Path("results/combined"))
     parser.add_argument("--timed_merges_path", type=Path, default=None)
@@ -782,6 +784,32 @@ def main():
     output += latex_def(run_name_camel_case + "MergesTotal", len(result_df))
 
     output += "\n% Results\n"
+
+    tries = []
+    for idx, merge in result_df.iterrows():
+        for merge_tool in MERGE_TOOL:
+            if merge[merge_tool.name] != TEST_STATE.Tests_passed.name:
+                continue
+            # Load cached test results
+            cache_entry = lookup_in_cache(
+                cache_key=merge[merge_tool.name + "_merge_fingerprint"],
+                repo_slug=merge["repository"],
+                cache_directory=args.test_cache_dir,
+                set_run=False,
+            )
+            tries.append(len(cache_entry["test_results"]))
+    average_tries = sum(tries) / len(tries) if len(tries) > 0 else 0
+    output += latex_def(run_name_camel_case + "AverageTriesUntilPass", average_tries)
+    # Output the number of merges for each amount of tries before pass
+    tries_count = {}
+    for t in tries:
+        if t not in tries_count:
+            tries_count[t] = 0
+        tries_count[t] += 1
+    for t in range(1, 11):
+        output += latex_def(
+            run_name_camel_case + f"NumberofTriesUntilPass{t}", tries_count.get(t, 0)
+        )
 
     spork_correct = len(result_df[result_df["spork"].isin(MERGE_CORRECT_NAMES)])
     ort_correct = len(result_df[result_df["gitmerge_ort"].isin(MERGE_CORRECT_NAMES)])
