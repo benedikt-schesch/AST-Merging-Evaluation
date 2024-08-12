@@ -316,7 +316,7 @@ if __name__ == "__main__":
         for repo_idx, repository_data in repos.iterrows():
             repo_slug = repository_data["repository"]
             merger_arguments += build_merge_analyzer_arguments(
-                repo_idx, args, repo_slug
+                str(repo_idx), args, repo_slug
             )
             progress.update(task, advance=1)
 

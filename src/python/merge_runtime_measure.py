@@ -86,8 +86,8 @@ def main():
                         run_times = []
                         for _ in range(args.n_timings):
                             repo = Repository(
-                                merge_idx,
-                                repo_slug,
+                                merge_idx=str(merge_idx),
+                                repo_slug=repo_slug,
                                 workdir_id=repo_slug
                                 + f"/merge-tester-{merge_tool.name}-"
                                 + f"{left_hash}-{right_hash}",

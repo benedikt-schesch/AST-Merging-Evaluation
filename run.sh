@@ -74,7 +74,8 @@ run_latex_output() {
         --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
         --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
+        --output_dir "$OUT_DIR" \
+        --test_cache_dir "$CACHE_DIR/test_cache"
 }
 
 if [ "$only_plotting" = true ]; then
