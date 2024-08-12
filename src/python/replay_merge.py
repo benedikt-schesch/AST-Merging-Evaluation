@@ -128,10 +128,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -143,10 +143,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -167,10 +167,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -213,10 +213,10 @@ def merge_replay(
                     continue
             try:
                 repo = Repository(
-                    merge_idx,
-                    repo_slug,
+                    merge_idx=merge_idx,
+                    repo_slug=repo_slug,
                     cache_directory=Path("no_cache/"),
-                    workdir_id=workdir,
+                    workdir_id=str(workdir),
                     delete_workdir=False,
                     lazy_clone=False,
                 )
