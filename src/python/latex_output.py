@@ -806,9 +806,10 @@ def main():
         if t not in tries_count:
             tries_count[t] = 0
         tries_count[t] += 1
-    for t in range(1, 11):
+    for t in tries_count:
         output += latex_def(
-            run_name_camel_case + f"NumberofTriesUntilPass{t}", tries_count.get(t, 0)
+            run_name_camel_case + f"NumberofMergesWith{t}TriesUntilPass",
+            tries_count.get(t, 0),
         )
 
     spork_correct = len(result_df[result_df["spork"].isin(MERGE_CORRECT_NAMES)])
