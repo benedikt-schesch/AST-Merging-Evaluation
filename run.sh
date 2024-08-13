@@ -236,3 +236,8 @@ fi
 
 echo "run.sh: about to run run_latex_output"
 run_latex_output ""
+
+python3 src/python/merge_statistics.py \
+    --input_csv "$OUT_DIR/result.csv" \
+    --output_csv "$OUT_DIR/result_with_stats.csv" \
+    --cache_dir "$CACHE_DIR"

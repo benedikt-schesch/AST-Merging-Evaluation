@@ -186,6 +186,19 @@ class Repository:
     merge_idx is purely for diagnostic purposes.
     """
 
+    merge_idx: str
+    repo_slug: str
+    owner: str
+    name: str
+    repo_path: Path
+    workdir: Path
+    local_repo_path: Path
+    delete_workdir: bool
+    lazy_clone: bool
+    repo: Repo
+    test_cache_directory: Path
+    sha_cache_directory: Path
+
     def __init__(
         self,
         merge_idx: str,
