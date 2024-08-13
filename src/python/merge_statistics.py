@@ -77,25 +77,25 @@ def get_merge_stats(
     """
     cache_key = f"{left_sha}_{right_sha}"
     stats_cache_dir = cache_dir / "merge_stats"
-    cache_data = lookup_in_cache(cache_key, repo.repo_slug, stats_cache_dir, True)
+    stats = lookup_in_cache(cache_key, repo.repo_slug, stats_cache_dir, True)
 
-    if cache_data is not None and isinstance(cache_data, dict):
-        return cache_data
-
-    stats = {}
+    if stats is None:
+        stats = {}
+    write = False
 
     try:
         for stat_name, stat_func in stat_functions:
             if stat_name not in stats:
                 stats[stat_name] = stat_func(repo, left_sha, right_sha)
+                write = True
 
     except Exception as e:
         logger.error(
             f"Error computing merge stats for {repo.repo_slug} {left_sha} {right_sha}: {e}"
         )
         raise e
-
-    set_in_cache(cache_key, stats, repo.repo_slug, stats_cache_dir)
+    if write:
+        set_in_cache(cache_key, stats, repo.repo_slug, stats_cache_dir)
     return stats
 
 
