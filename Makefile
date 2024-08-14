@@ -129,6 +129,7 @@ run-all-without-timing:
 
 run-all:
 	${MAKE} clean-workdir
+	${MAKE} small-test-without-cleaning
 	./run_combined.sh
 	./run_greatest_hits.sh --no_timing
 	./run_reaper.sh --no_timing

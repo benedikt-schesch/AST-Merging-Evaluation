@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-5,refs/heads/master,b6707b643f7a1a76f3f7c7e79f860654f40d14ac,5c849368710d7ddf472dc7f2b22a3e7bfbac25b2,916c1f4fd29a0c3e718190fecca9f0bcee71101f,,False,False,,,,,,False
-6,refs/heads/master,56b07f0eb815b3e60d6f267df9f04f4f465b502e,0b3bd88bd7aa6cf2f60549327027c71d18765031,da4409d64f14a1345eb4470f0f3903c9639b7694,,False,False,,,,,,False
-8,refs/heads/master,f776d6e5173f878d4b3028dedabc81d5c7d62f88,68e07ac013336e42e83bd20c126ff49a711fc90b,d1b10ad193c359ca9e801716a6d6869d14eadd64,,False,True,5c5bc6632978f8b8431eb430a46feff76fbd01669dab5551a9fb07017954c725,Tests_failed,cc8cf6d8a96ac12fdeab7127575070d052c08d0b11809ca66ce1b4c04858fb70,Tests_failed,False,False
-13,refs/remotes/origin/pull/5,69ac7936d97ade98a49a34778363a9762472ed81,a73421f5b13227c4517b00e95540f9d822a122f5,4065a708911598c75aea0ba40423db557d9b4d85,,False,False,,,,,,False
-14,refs/remotes/origin/pull/5,a73421f5b13227c4517b00e95540f9d822a122f5,b706fa0ea9ee342229c392cd728956b26509aa28,57cfd882edbe48119b19385ca6ce00d16e2378db,,False,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+5,refs/heads/master,b6707b643f7a1a76f3f7c7e79f860654f40d14ac,5c849368710d7ddf472dc7f2b22a3e7bfbac25b2,916c1f4fd29a0c3e718190fecca9f0bcee71101f,,False,True,True,8,75,False,,,,,,False
+6,refs/heads/master,56b07f0eb815b3e60d6f267df9f04f4f465b502e,0b3bd88bd7aa6cf2f60549327027c71d18765031,da4409d64f14a1345eb4470f0f3903c9639b7694,,False,False,True,6,43,False,,,,,,False
+8,refs/heads/master,f776d6e5173f878d4b3028dedabc81d5c7d62f88,68e07ac013336e42e83bd20c126ff49a711fc90b,d1b10ad193c359ca9e801716a6d6869d14eadd64,,True,False,True,23,269,False,Tests_failed,5c5bc6632978f8b8431eb430a46feff76fbd01669dab5551a9fb07017954c725,False,Tests_failed,cc8cf6d8a96ac12fdeab7127575070d052c08d0b11809ca66ce1b4c04858fb70,False
+13,refs/remotes/origin/pull/5,69ac7936d97ade98a49a34778363a9762472ed81,a73421f5b13227c4517b00e95540f9d822a122f5,4065a708911598c75aea0ba40423db557d9b4d85,,False,True,True,35,492,False,,,,,,False
+14,refs/remotes/origin/pull/5,a73421f5b13227c4517b00e95540f9d822a122f5,b706fa0ea9ee342229c392cd728956b26509aa28,57cfd882edbe48119b19385ca6ce00d16e2378db,,False,False,True,3,6,False,,,,,,False
