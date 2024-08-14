@@ -75,7 +75,8 @@ run_latex_output() {
         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
         --n_merges "$N_MERGES" \
         --output_dir "$OUT_DIR" \
-        --test_cache_dir "$CACHE_DIR/test_cache"
+        --test_cache_dir "$CACHE_DIR/test_cache" \
+        --manual_override_csv "results/manual_override.csv"
 }
 
 if [ "$only_plotting" = true ]; then
@@ -149,7 +150,7 @@ if [ -d "$CACHE_DIR" ]; then
 fi
 REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
-    find "$REPOS_PATH" -name "*.lock" -delete
+    find "$REPOS_PATH/locks" -name "*.lock" -delete
 fi
 
 echo "run.sh: about to run delete_cache_placeholders.py"

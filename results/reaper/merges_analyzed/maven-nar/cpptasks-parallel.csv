@@ -1,10 +1,10 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-4,refs/heads/master,ae820a5ea05dbdadf0d779df1254b20a3414a99a,ea35f80fbf6cab98bfad0bee21396b301d70655e,11d5e0cfb338fc81a7606fc4482e24ed0f398c12,,False,False,,,,,,False
-5,refs/heads/master,fd01b310d15d24bfdf64a88d5217ae8654b34a2b,c2382aca9895b8bd05a32a30891b3f37de706177,fa0ec865ec4e5c99a0ee9b475be9184d7ab6bf42,,False,False,,,,,,False
-6,refs/heads/master,9cd3413080406cb66aa9a23998081e9ef757fe0a,8fafc6ee5cc901b301baee9760c6744be3816d29,4b91fee5ea7faa7a6cf5a6bc64ebc052f41018b8,,True,True,4334654c4fec4cf5cd0edda031569c8528e4d2f931b919cf1bc9c30ce1d75d5b,Tests_passed,bd5b75a8905214677a2a4813b9f5e78279ff68057a41f767a3764fdebebb178e,Tests_passed,True,True
-7,refs/heads/master,8fafc6ee5cc901b301baee9760c6744be3816d29,51ef1a4e3ffe2c98fc12d4db5fd1999643bdadcc,66e301128e06e1640a6628f3d623e41c4e357da7,,False,False,,,,,,False
-12,refs/heads/master,0379ab878244c8802d3a03f6eb040c5e41e7ea55,d0d30c6bfcd4316ff006f42a9242239ef9d1d1c3,5731d693eb6154d9f2b99eb581b026101e79248f,,False,False,,,,,,False
-13,refs/heads/master,d55195311fd0a0eb531d3bbc68087d5f82d3341d,0a125329abe4ea413fdc987b331df129aaa2569b,3f19a314f1285ac42a8b6ee6dec489effc1df787,two initial commits,False,False,,,,,,False
-14,refs/heads/master,fa6eb468613603bfa2571f2e456468878bfe0b95,7ea719da26b29976e7227b4846953d24ced709d8,683d490074d93baa8a47db7ec43b7bd31145a12a,two initial commits,False,False,,,,,,False
-15,refs/remotes/origin/pull/7,845ca4b309dd0f18ebab019ff577f151d6bfd72f,69b655fbfe33bf9a288c85047caf5dc2819c49a6,b95598ba8b2e96c89cc4f25a1c4924a1f2cbb06c,,False,False,,,,,,False
-16,refs/remotes/origin/pull/9,0a8b22d206c9775420f3ffe6fe140dce56ea6a43,1f7be1669b9689b9f2afe537e2095dd21bcec846,b95598ba8b2e96c89cc4f25a1c4924a1f2cbb06c,,False,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+4,refs/heads/master,ae820a5ea05dbdadf0d779df1254b20a3414a99a,ea35f80fbf6cab98bfad0bee21396b301d70655e,11d5e0cfb338fc81a7606fc4482e24ed0f398c12,,False,True,True,15,229.0,False,,,,,,False
+5,refs/heads/master,fd01b310d15d24bfdf64a88d5217ae8654b34a2b,c2382aca9895b8bd05a32a30891b3f37de706177,fa0ec865ec4e5c99a0ee9b475be9184d7ab6bf42,,False,True,True,8,130.0,False,,,,,,False
+6,refs/heads/master,9cd3413080406cb66aa9a23998081e9ef757fe0a,8fafc6ee5cc901b301baee9760c6744be3816d29,4b91fee5ea7faa7a6cf5a6bc64ebc052f41018b8,,True,True,True,5,34.0,True,Tests_passed,4334654c4fec4cf5cd0edda031569c8528e4d2f931b919cf1bc9c30ce1d75d5b,True,Tests_passed,bd5b75a8905214677a2a4813b9f5e78279ff68057a41f767a3764fdebebb178e,True
+7,refs/heads/master,8fafc6ee5cc901b301baee9760c6744be3816d29,51ef1a4e3ffe2c98fc12d4db5fd1999643bdadcc,66e301128e06e1640a6628f3d623e41c4e357da7,,False,True,True,4,12.0,False,,,,,,False
+12,refs/heads/master,0379ab878244c8802d3a03f6eb040c5e41e7ea55,d0d30c6bfcd4316ff006f42a9242239ef9d1d1c3,5731d693eb6154d9f2b99eb581b026101e79248f,,False,False,True,4,29.0,False,,,,,,False
+13,refs/heads/master,d55195311fd0a0eb531d3bbc68087d5f82d3341d,0a125329abe4ea413fdc987b331df129aaa2569b,3f19a314f1285ac42a8b6ee6dec489effc1df787,two initial commits,False,True,True,62,1983.0,False,,,,,,False
+14,refs/heads/master,fa6eb468613603bfa2571f2e456468878bfe0b95,7ea719da26b29976e7227b4846953d24ced709d8,683d490074d93baa8a47db7ec43b7bd31145a12a,two initial commits,False,,True,849,,False,,,,,,False
+15,refs/remotes/origin/pull/7,845ca4b309dd0f18ebab019ff577f151d6bfd72f,69b655fbfe33bf9a288c85047caf5dc2819c49a6,b95598ba8b2e96c89cc4f25a1c4924a1f2cbb06c,,False,,True,1147,,False,,,,,,False
+16,refs/remotes/origin/pull/9,0a8b22d206c9775420f3ffe6fe140dce56ea6a43,1f7be1669b9689b9f2afe537e2095dd21bcec846,b95598ba8b2e96c89cc4f25a1c4924a1f2cbb06c,,False,,True,1147,,False,,,,,,False

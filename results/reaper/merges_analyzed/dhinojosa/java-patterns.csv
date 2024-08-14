@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-1,refs/heads/master,be11dbfd1501281dc11a98ab25d7fa0702ce974d,8b75a7ab4a160cf6ac34886ff5867f10a7467faf,674c48d4c18dc79f7575d7a58b61588ad37749db,,False,False,False
-2,refs/heads/master,b01398b215c248475a60275c2856e2bfa69ccd83,469710b55b2010f67ee2ebc4f9969c7ac4bae681,87c57bc318b0d4fb45ee1b9a64b55b9c86b84bf2,,False,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
+1,refs/heads/master,be11dbfd1501281dc11a98ab25d7fa0702ce974d,8b75a7ab4a160cf6ac34886ff5867f10a7467faf,674c48d4c18dc79f7575d7a58b61588ad37749db,,False,True,True,34,513,False,False
+2,refs/heads/master,b01398b215c248475a60275c2856e2bfa69ccd83,469710b55b2010f67ee2ebc4f9969c7ac4bae681,87c57bc318b0d4fb45ee1b9a64b55b9c86b84bf2,,False,True,True,61,805,False,False

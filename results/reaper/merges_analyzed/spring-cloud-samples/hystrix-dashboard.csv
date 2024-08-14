@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-2,refs/heads/main,1df9c2ec0c541ab5f9263ff5fee10db97cd0d0df,06c97e17fda769aef7ee5e706591e6ce747c0f85,a3f570cdc5cce081627db0b7f42707babe34a9c6,two initial commits,False,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
+2,refs/heads/main,1df9c2ec0c541ab5f9263ff5fee10db97cd0d0df,06c97e17fda769aef7ee5e706591e6ce747c0f85,a3f570cdc5cce081627db0b7f42707babe34a9c6,two initial commits,False,True,True,37,454,False,False

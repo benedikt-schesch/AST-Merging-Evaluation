@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-2,refs/heads/master,123681cc5b4e3bec58f059e8b0c02a8e7b664788,f6cf30a65a9a8709544aa8cab2428465bc035010,1561dacd9be2cf61950cd2bed7e35bcd8a1ce24b,,False,False,,,,,,False
-3,refs/heads/master,f6cf30a65a9a8709544aa8cab2428465bc035010,a4f61220e83d50f2cd3226b276021745eae2caa4,d73a3bf220a04cc6368203c23fe121423f02ccf7,,False,False,,,,,,False
-4,refs/heads/master,e97dadb7dcd7b929d5878f788ceb4a66262d4a32,d81c036dc038f920135b650a9edabb33acaec859,710e64bce256afad6832b4029ab633eda947ee14,,False,False,,,,,,False
-5,refs/heads/master,f1b45352cf9c8510a94fd97c943d4fe526cc94ad,98fb6a09755102f18ced62474bc1d08093fe06af,dc0f7cdf4f2186ff65e8ac4fb1edd7b2930d6171,,True,True,8d2a1271a18045a380a928f3f87fa85f72215fafeaa6cd022459005e346aa220,Tests_passed,618dc5d39d5479d4d406718de1ceb91417fc3d2ea9052ad15711cc34fc74e090,Tests_passed,True,True
-6,refs/heads/master,b3e5b7eba11e3facb06f3e8bac46dd938c0f50ca,2f827501a2c165281b4c2ac32047c9c103dfcf1f,0b3f915c21be244fcf6ed99d9bcedf6247be9d29,two initial commits,False,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+2,refs/heads/master,123681cc5b4e3bec58f059e8b0c02a8e7b664788,f6cf30a65a9a8709544aa8cab2428465bc035010,1561dacd9be2cf61950cd2bed7e35bcd8a1ce24b,,False,True,True,11,322,False,,,,,,False
+3,refs/heads/master,f6cf30a65a9a8709544aa8cab2428465bc035010,a4f61220e83d50f2cd3226b276021745eae2caa4,d73a3bf220a04cc6368203c23fe121423f02ccf7,,False,True,True,12,322,False,,,,,,False
+4,refs/heads/master,e97dadb7dcd7b929d5878f788ceb4a66262d4a32,d81c036dc038f920135b650a9edabb33acaec859,710e64bce256afad6832b4029ab633eda947ee14,,False,False,True,3,4,False,,,,,,False
+5,refs/heads/master,f1b45352cf9c8510a94fd97c943d4fe526cc94ad,98fb6a09755102f18ced62474bc1d08093fe06af,dc0f7cdf4f2186ff65e8ac4fb1edd7b2930d6171,,True,True,True,7,170,True,Tests_passed,8d2a1271a18045a380a928f3f87fa85f72215fafeaa6cd022459005e346aa220,True,Tests_passed,618dc5d39d5479d4d406718de1ceb91417fc3d2ea9052ad15711cc34fc74e090,True
+6,refs/heads/master,b3e5b7eba11e3facb06f3e8bac46dd938c0f50ca,2f827501a2c165281b4c2ac32047c9c103dfcf1f,0b3f915c21be244fcf6ed99d9bcedf6247be9d29,two initial commits,False,True,True,26,104453,False,,,,,,False
