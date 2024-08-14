@@ -8,7 +8,8 @@ import re
 from pathlib import Path
 from argparse import ArgumentParser
 
-def delete_keys_matching_regex(directory:Path, regex:str, dry_run:bool=False):
+
+def delete_keys_matching_regex(directory: Path, regex: str, dry_run: bool = False):
     """Delete the keys matching the given regex in the JSON files in the given directory."""
     total_deleted = 0
     pattern = re.compile(regex)
@@ -61,7 +62,9 @@ def main():
         return
 
     if not args.yes:
-        potential_deletions = delete_keys_matching_regex(args.cache, regex, dry_run=True)
+        potential_deletions = delete_keys_matching_regex(
+            args.cache, regex, dry_run=True
+        )
         print(f"Potential deletions: {potential_deletions}")
         confirm = input("Do you want to proceed with deleting these keys? (yes/no): ")
         if confirm.lower() != "yes":

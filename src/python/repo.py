@@ -817,6 +817,8 @@ class Repository:
         Returns:
             Tuple[str,str]: The standard output and standard error of the command.
         """
+        if not self.local_repo_path.exists():
+            self.copy_repo()
         process = subprocess.run(
             command,
             shell=True,
