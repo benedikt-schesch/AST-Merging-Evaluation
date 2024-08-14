@@ -60,7 +60,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
 
 
 @timeout(10 * 60)
-def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
+def clone_repo(repo_slug: str, repo_dir: Path) -> None:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".

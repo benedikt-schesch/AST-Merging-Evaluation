@@ -385,7 +385,7 @@ def main():
         + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
     result_df.index = (
-        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)
+        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)  # type: ignore
     )
 
     # Remove undesired states
@@ -797,7 +797,7 @@ def main():
                 cache_directory=args.test_cache_dir,
                 set_run=False,
             )
-            tries.append(len(cache_entry["test_results"]))
+            tries.append(len(cache_entry["test_results"]))  # type: ignore
     average_tries = sum(tries) / len(tries) if len(tries) > 0 else 0
     output += latex_def(run_name_camel_case + "AverageTriesUntilPass", average_tries)
     # Output the number of merges for each amount of tries before pass
