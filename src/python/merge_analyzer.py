@@ -201,6 +201,7 @@ def merge_analyzer(
     cache_data = lookup_in_cache(
         cache_key, repo_slug, cache_directory / "merge_analysis", True
     )
+    write = False
 
     if cache_data is None:
         cache_data = {}
@@ -220,11 +221,6 @@ def merge_analyzer(
     repo = None
     for name, func in stats:
         if name not in cache_data:
-            # if name == "diff contains java file":
-            #     raise Exception(
-            #         "merge_analyzer: The diff contains java file test result is missing.",
-            #         merge_idx,
-            #     )
             if repo is None:
                 repo = Repository(
                     merge_idx,
@@ -239,6 +235,7 @@ def merge_analyzer(
                 )
             cache_data[name] = func(repo, merge_data["left"], merge_data["right"])
             merge_data[name] = cache_data[name]
+            write = True
 
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
@@ -248,19 +245,27 @@ def merge_analyzer(
     )
 
     if cache_data["diff contains java file"] in (False, None):
-        cache_data["test merge"] = False
-        cache_data["diff contains java file"] = False
+        if (
+            "test merge" not in cache_data
+            or "diff contains java file" not in cache_data
+        ):
+            cache_data["test merge"] = False
+            cache_data["diff contains java file"] = False
+            write = True
         logger.info(
             f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
         )
-        set_in_cache(
-            cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
-        )
+        if write:
+            set_in_cache(
+                cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
+            )
         for key in cache_data:
-            merge_data[key] = cache_data[key]
+            if key != "diff_logs":
+                merge_data[key] = cache_data[key]
         return merge_data
 
     if "parents pass" not in cache_data:
+        write = True
         # Checkout left parent
         repo_left = Repository(
             merge_idx,
@@ -308,10 +313,14 @@ def merge_analyzer(
         logger.info(
             f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
         )
-    set_in_cache(cache_key, cache_data, repo_slug, cache_directory / "merge_analysis")
+    if write:
+        set_in_cache(
+            cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
+        )
 
     for key in cache_data:
-        merge_data[key] = cache_data[key]
+        if key != "diff_logs":
+            merge_data[key] = cache_data[key]
 
     return merge_data
 

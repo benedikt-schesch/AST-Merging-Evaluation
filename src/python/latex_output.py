@@ -336,6 +336,12 @@ def main():
         type=Path,
         default=Path("results/combined/merges_analyzed"),
     )
+    parser.add_argument(
+        "--manual_override_csv",
+        type=Path,
+        help="Path to the manual override CSV file",
+        default=Path("results/manual_override.csv"),
+    )
     parser.add_argument("--test_cache_dir", type=Path, default=Path("cache/test_cache"))
     parser.add_argument("--n_merges", type=int, default=100)
     parser.add_argument("--output_dir", type=Path, default=Path("results/combined"))
@@ -391,6 +397,39 @@ def main():
     # Remove undesired states
     for merge_tool in MERGE_TOOL:
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
+
+    # Apply manual overrides if the file exists
+    if args.manual_override_csv and args.manual_override_csv.exists():
+        manual_overrides = pd.read_csv(args.manual_override_csv)
+        for _, override in manual_overrides.iterrows():
+            repo_slug = override["repository"]
+            left = override["left"]
+            right = override["right"]
+            merge = override["merge"]
+
+            # Find the corresponding row in result_df
+            mask = (
+                (result_df["repository"] == repo_slug)
+                & (result_df["left"] == left)
+                & (result_df["right"] == right)
+                & (result_df["merge"] == merge)
+            )
+
+            if mask.sum() == 1:
+                # Apply the override for each column specified in the manual override CSV
+                for col in override.index:
+                    if col not in ["repository", "left", "right", "merge"]:
+                        # Check if the value is not empty (not ,,)
+                        if pd.notna(override[col]) and override[col] != "":
+                            result_df.loc[mask, col] = override[col]
+            elif mask.sum() > 1:
+                raise ValueError(
+                    f"Multiple matches found for {repo_slug}, {left}, {right}, {merge}. Skipping this override."
+                )
+            else:
+                logger.info(
+                    f"Warning: No match found for {repo_slug}, {left}, {right}, {merge}. Skipping this override."
+                )
 
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
@@ -785,11 +824,29 @@ def main():
 
     output += "\n% Results\n"
 
+    manual_override_set = set()
+    if args.manual_override_csv and args.manual_override_csv.exists():
+        manual_overrides = pd.read_csv(args.manual_override_csv)
+        manual_override_set = set(
+            (row["repository"], row["left"], row["right"], row["merge"])
+            for _, row in manual_overrides.iterrows()
+        )
+
     tries = []
     for idx, merge in result_df.iterrows():
         for merge_tool in MERGE_TOOL:
             if merge[merge_tool.name] != TEST_STATE.Tests_passed.name:
                 continue
+
+            # Ignore entry if it is contained in the manual override CSV
+            if (
+                merge["repository"],
+                merge["left"],
+                merge["right"],
+                merge["merge"],
+            ) in manual_override_set:
+                continue
+
             # Load cached test results
             cache_entry = lookup_in_cache(
                 cache_key=merge[merge_tool.name + "_merge_fingerprint"],
