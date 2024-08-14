@@ -128,8 +128,16 @@ def diff_contains_non_java_file(
     return any(not file.endswith(".java") for file in merge_diff)
 
 
-def compute_num_diff_files(repo: Repository, left_sha: str, right_sha: str) -> int:
-    diff_file = get_diff_files_branches(repo, left_sha, right_sha)
+def compute_num_diff_files(
+    repo: Repository, left_sha: str, right_sha: str
+) -> Union[int, None]:
+    try:
+        diff_file = get_diff_files_branches(repo, left_sha, right_sha)
+    except Exception as e:
+        logger.error(
+            f"compute_num_diff_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return None
     return len(diff_file)
 
 
