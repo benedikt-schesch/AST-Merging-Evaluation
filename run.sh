@@ -149,7 +149,7 @@ if [ -d "$CACHE_DIR" ]; then
 fi
 REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
-    find "$REPOS_PATH" -name "*.lock" -delete
+    find "$REPOS_PATH/locks" -name "*.lock" -delete
 fi
 
 echo "run.sh: about to run delete_cache_placeholders.py"

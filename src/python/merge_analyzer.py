@@ -74,7 +74,6 @@ def get_diff_files_merge(
     """
     command = f"git merge-base {left_sha} {right_sha}"
     base_sha = repo.run_command(command)[0].strip()
-
     left_right_files = get_diff_files_branches(repo, left_sha, right_sha)
     base_right_files = get_diff_files_branches(repo, base_sha, right_sha)
     base_left_files = get_diff_files_branches(repo, base_sha, left_sha)
@@ -85,7 +84,9 @@ def get_diff_files_merge(
     return common_files
 
 
-def diff_contains_java_file(repo: Repository, left_sha: str, right_sha: str) -> bool:
+def diff_contains_java_file(
+    repo: Repository, left_sha: str, right_sha: str
+) -> Union[bool, None]:
     """
     Computes the diff between two branches using git diff.
     Args:
@@ -95,13 +96,19 @@ def diff_contains_java_file(repo: Repository, left_sha: str, right_sha: str) -> 
     Returns:
         bool: True if the diff contains a java file, False otherwise.
     """
-    merge_diff = get_diff_files_merge(repo, left_sha, right_sha)
+    try:
+        merge_diff = get_diff_files_merge(repo, left_sha, right_sha)
+    except Exception as e:
+        logger.error(
+            f"diff_contains_java_file: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return None
     return any(file.endswith(".java") for file in merge_diff)
 
 
 def diff_contains_non_java_file(
     repo: Repository, left_sha: str, right_sha: str
-) -> bool:
+) -> Union[bool, None]:
     """
     Computes the diff between two branches using git diff.
     Args:
@@ -111,14 +118,19 @@ def diff_contains_non_java_file(
     Returns:
         bool: True if the diff contains a non-java file, False otherwise.
     """
-    merge_diff = get_diff_files_branches(repo, left_sha, right_sha)
+    try:
+        merge_diff = get_diff_files_branches(repo, left_sha, right_sha)
+    except Exception as e:
+        logger.error(
+            f"diff_contains_non_java_file: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return None
     return any(not file.endswith(".java") for file in merge_diff)
 
 
 def compute_num_diff_files(repo: Repository, left_sha: str, right_sha: str) -> int:
-    diff_command = f"git diff --name-only {left_sha} {right_sha}"
-    output, _ = repo.run_command(diff_command)
-    return len(output.splitlines())
+    diff_file = get_diff_files_branches(repo, left_sha, right_sha)
+    return len(diff_file)
 
 
 def get_diff(
@@ -138,13 +150,29 @@ def get_diff(
     return stdout
 
 
-def compute_num_diff_lines(repo: Repository, left_sha: str, right_sha: str) -> int:
-    diff = get_diff(repo, left_sha, right_sha, None)
+def compute_num_diff_lines(
+    repo: Repository, left_sha: str, right_sha: str
+) -> Union[int, None]:
+    try:
+        diff = get_diff(repo, left_sha, right_sha, None)
+    except Exception as e:
+        logger.error(
+            f"compute_num_diff_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return None
     return sum(1 for line in diff.splitlines() if line.startswith(("+ ", "- ")))
 
 
-def compute_imports_involved(repo: Repository, left_sha: str, right_sha: str) -> bool:
-    diff = get_diff(repo, left_sha, right_sha, None)
+def compute_imports_involved(
+    repo: Repository, left_sha: str, right_sha: str
+) -> Union[bool, None]:
+    try:
+        diff = get_diff(repo, left_sha, right_sha, None)
+    except Exception as e:
+        logger.error(
+            f"compute_imports_involved: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return None
     return "import " in diff
 
 
@@ -184,6 +212,11 @@ def merge_analyzer(
     repo = None
     for name, func in stats:
         if name not in cache_data:
+            # if name == "diff contains java file":
+            #     raise Exception(
+            #         "merge_analyzer: The diff contains java file test result is missing.",
+            #         merge_idx,
+            #     )
             if repo is None:
                 repo = Repository(
                     merge_idx,
@@ -267,9 +300,7 @@ def merge_analyzer(
         logger.info(
             f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
         )
-        set_in_cache(
-            cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
-        )
+    set_in_cache(cache_key, cache_data, repo_slug, cache_directory / "merge_analysis")
 
     for key in cache_data:
         merge_data[key] = cache_data[key]
