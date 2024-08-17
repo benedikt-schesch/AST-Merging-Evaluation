@@ -110,112 +110,91 @@ def compute_statistics(
     """
     Compute statistics for a merge.
     """
-    with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(),
-    ) as progress:
-        task = progress.add_task(
-            f"Computing {repo_slug} {merge_data['left']} {merge_data['right']}",
-            total=8
+    # Create row results.
+    statistics = {"idx": merge_idx}
+
+    # Clone base, left, right branches.
+
+    workdir = Path(
+        f"{repo_slug}-merge-input-left-"
+        + f'{merge_data["left"]}-{merge_data["right"]}'
+    )
+    left = Repository(
+        merge_idx=merge_idx,
+        repo_slug=repo_slug,
+        cache_directory=Path("no_cache/"),
+        workdir_id=str(workdir),
+        delete_workdir=False,
+        lazy_clone=False,
+    )
+    if not (WORKDIR_DIRECTORY / workdir).exists():
+        left.checkout(merge_data["left"], use_cache=False)
+
+    workdir = Path(
+        f"{repo_slug}-merge-input-right-"
+        + f'{merge_data["left"]}-{merge_data["right"]}'
+    )
+    right = Repository(
+        merge_idx=merge_idx,
+        repo_slug=repo_slug,
+        cache_directory=Path("no_cache/"),
+        workdir_id=str(workdir),
+        delete_workdir=False,
+        lazy_clone=False,
+    )
+    if not (WORKDIR_DIRECTORY / workdir).exists():
+        right.checkout(merge_data["right"], use_cache=False)
+
+    workdir = Path(
+        f"{repo_slug}-merge-input-base-"
+        + f'{merge_data["left"]}-{merge_data["right"]}'
+    )
+    base = Repository(
+        merge_idx=merge_idx,
+        repo_slug=repo_slug,
+        cache_directory=Path("no_cache/"),
+        workdir_id=str(workdir),
+        delete_workdir=False,
+        lazy_clone=False,
+    )
+    base_commit_sha = (
+        subprocess.run(
+            ["git", "merge-base", merge_data["left"], merge_data["right"]],
+            cwd=base.local_repo_path,
+            stdout=subprocess.PIPE,
         )
+        .stdout.decode("utf-8")
+        .strip()
+    )
+    if not (WORKDIR_DIRECTORY / workdir).exists():
+        base.checkout(base_commit_sha, use_cache=False)
 
-        # Create row results.
-        row = {"idx": merge_idx}
+    # Count files.
+    base_left_files = get_diff_files(base, base_commit_sha, merge_data["left"])
+    base_right_files = get_diff_files(base, base_commit_sha, merge_data["right"])
+    statistics["num_files"] = len(base_left_files.union(base_right_files))
 
-        # Clone base, left, right branches.
+    # Count intersecting files.
+    statistics["num_intersecting_files"] = len(base_left_files.intersection(base_right_files))
 
-        workdir = Path(
-            f"{repo_slug}-merge-input-left-"
-            + f'{merge_data["left"]}-{merge_data["right"]}'
-        )
-        left = Repository(
-            merge_idx=merge_idx,
-            repo_slug=repo_slug,
-            cache_directory=Path("no_cache/"),
-            workdir_id=str(workdir),
-            delete_workdir=False,
-            lazy_clone=False,
-        )
-        if not (WORKDIR_DIRECTORY / workdir).exists():
-            left.checkout(merge_data["left"], use_cache=False)
+    # Count hunks.
+    statistics["num_hunks"] = get_diff_hunks(left, merge_data["left"], merge_data["right"])
 
-        workdir = Path(
-            f"{repo_slug}-merge-input-right-"
-            + f'{merge_data["left"]}-{merge_data["right"]}'
-        )
-        right = Repository(
-            merge_idx=merge_idx,
-            repo_slug=repo_slug,
-            cache_directory=Path("no_cache/"),
-            workdir_id=str(workdir),
-            delete_workdir=False,
-            lazy_clone=False,
-        )
-        if not (WORKDIR_DIRECTORY / workdir).exists():
-            right.checkout(merge_data["right"], use_cache=False)
+    # Count number of lines.
+    statistics["num_lines"] = compute_num_diff_lines(left, merge_data["left"], merge_data["right"])
 
-        workdir = Path(
-            f"{repo_slug}-merge-input-base-"
-            + f'{merge_data["left"]}-{merge_data["right"]}'
-        )
-        base = Repository(
-            merge_idx=merge_idx,
-            repo_slug=repo_slug,
-            cache_directory=Path("no_cache/"),
-            workdir_id=str(workdir),
-            delete_workdir=False,
-            lazy_clone=False,
-        )
-        base_commit_sha = (
-            subprocess.run(
-                ["git", "merge-base", merge_data["left"], merge_data["right"]],
-                cwd=base.local_repo_path,
-                stdout=subprocess.PIPE,
-            )
-            .stdout.decode("utf-8")
-            .strip()
-        )
-        if not (WORKDIR_DIRECTORY / workdir).exists():
-            base.checkout(base_commit_sha, use_cache=False)
+    # Count number of intersecting lines.
+    # TODO: Mike will implement this.
+    statistics["num_intersecting_lines"] = 0
 
-        progress.update(task, advance=1)
+    # Check if imports are involved.
+    statistics["imports"] = compute_imports_involved(left, merge_data["left"], merge_data["right"])
 
-        # Count files.
-        base_left_files = get_diff_files(base, base_commit_sha, merge_data["left"])
-        base_right_files = get_diff_files(base, base_commit_sha, merge_data["right"])
-        row["num_files"] = len(base_left_files.union(base_right_files))
-        progress.update(task, advance=1)
+    # Check if non-java files are involved.
+    statistics["non_java_files"] = diff_contains_non_java_file(left, merge_data["left"], merge_data["right"])
 
-        # Count intersecting files.
-        row["num_intersecting_files"] = len(base_left_files.intersection(base_right_files))
-        progress.update(task, advance=1)
-
-        # Count hunks.
-        row["num_hunks"] = get_diff_hunks(left, merge_data["left"], merge_data["right"])
-        progress.update(task, advance=1)
-
-        # Count number of lines.
-        row["num_lines"] = compute_num_diff_lines(left, merge_data["left"], merge_data["right"])
-        progress.update(task, advance=1)
-
-        # Count number of intersecting lines.
-        # TODO: Mike will implement this.
-        row["num_intersecting_lines"] = 0
-        progress.update(task, advance=1)
-
-        # Check if imports are involved.
-        row["imports"] = compute_imports_involved(left, merge_data["left"], merge_data["right"])
-        progress.update(task, advance=1)
-
-        # Check if non-java files are involved.
-        row["non_java_files"] = diff_contains_non_java_file(left, merge_data["left"], merge_data["right"])
-        progress.update(task, advance=1)
-
-        # Return the row.
-        return pd.DataFrame([row])
+    # Return the row.
+    return pd.DataFrame([statistics])
 
 
 if __name__ == "__main__":
@@ -227,6 +206,12 @@ if __name__ == "__main__":
         type=str,
         default="results/combined/result.csv",
     )
+    parser.add_argument(
+        "--output_dir",
+        help="Output directory for the statistics",
+        type=str,
+        default="results/combined",
+    )
     args = parser.parse_args()
 
     # Load the CSV file.
@@ -236,12 +221,28 @@ if __name__ == "__main__":
     results = pd.DataFrame(columns=["idx", "num_files", "num_intersecting_files", "num_hunks", "num_lines",
                                     "num_intersecting_lines", "imports", "non_java_files"])
 
-    # Get data for a merge.
-    idx = "38-1"
-    repo_slug = data.loc[idx, "repository"]
-    merge_data = data.loc[idx]
+    with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+    ) as progress:
+        task = progress.add_task(
+            f"Computing statistics for {data.shape[0]} merges",
+            total=data.shape[0]
+        )
+        for idx, row in data.iterrows():
+            # Get data for a merge.
+            repo_slug = row["repository"]
+            merge_data = row
 
-    # Compute statistics for a merge.
-    row = compute_statistics(idx, repo_slug, merge_data)
-    results = pd.concat([results, row], ignore_index=True)
-    print(results)
+            # Compute statistics for a merge.
+            row = compute_statistics(str(idx), repo_slug, merge_data)
+            results = pd.concat([results, row], ignore_index=True)
+
+            # Update progress.
+            progress.update(task, advance=1)
+
+    # Save the results.
+    results.to_csv(f"{args.output_dir}/statistics.csv", index=False)
