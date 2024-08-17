@@ -17,6 +17,7 @@ cache.tar
 output.txt
 replay_logs/
 my.secrets
+.nix/
 .direnv/
 .idea/
 .envrc
