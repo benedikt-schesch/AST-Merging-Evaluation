@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Checks some statistics between branches of a merge and outputs them to a CSV.
+usage: python3 merge_statistics.py --merges_path <path_to_merges>
+                                   --output_dir <output_dir>
+This script computes statistics between merges via git diff and outputs them to a CSV.
+It takes in one of the results CSV files and loops through each merge.
+"""
+
 import argparse
 import subprocess
 from pathlib import Path
@@ -14,11 +23,12 @@ from src.python.variables import WORKDIR_DIRECTORY
 def get_diff_files(base_repo: Repository, base_sha: str, other_sha: str) -> set:
     """
     Compute the files that are different between two branches using git diff.
-    
-    :param base_repo: Repository object for the base repository.
-    :param base_sha: SHA of the base commit.
-    :param other_sha: SHA of the other commit.
-    :return: Set of file names that are different between the two branches.
+    Args:
+        base_repo (Repository): The repository object.
+        base_sha (str): The base sha.
+        other_sha (str): The other sha.
+    Returns:
+        set: A set containing the files that are different between the two branches.
     """
     diff, _ = base_repo.run_command(f"git diff --name-only {base_sha} {other_sha}")
     return set(diff.split("\n")) if diff else set()
@@ -27,11 +37,12 @@ def get_diff_files(base_repo: Repository, base_sha: str, other_sha: str) -> set:
 def get_diff_hunks(left_repo: Repository, left_sha: str, right_sha: str) -> int:
     """
     Compute the number of hunks that are different between two branches using git diff.
-    
-    :param left_repo: Repository object for the left repository.
-    :param left_sha: SHA of the left commit.
-    :param right_sha: SHA of the right commit.
-    :return: Number of hunks that are different between the two branches.
+    Args:
+        left_repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        int: The number of hunks that are different between the two branches.
     """
     diff, _ = left_repo.run_command(f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'")
     return int(diff)
@@ -57,6 +68,13 @@ def get_diff(
 def compute_num_diff_lines(
         repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
+    """
+    Computes the number of lines that are different between two branches using git diff.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    """
     try:
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:
@@ -70,6 +88,15 @@ def compute_num_diff_lines(
 def compute_imports_involved(
         repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
+    """
+    Computes if imports are involved in the diff between two branches using git diff.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        bool: True if imports are involved, False otherwise.
+    """
     try:
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:
@@ -109,6 +136,12 @@ def compute_statistics(
 ) -> pd.DataFrame:
     """
     Compute statistics for a merge.
+    Args:
+        merge_idx (str): The merge index.
+        repo_slug (str): The repository slug.
+        merge_data (pd.Series): The merge data.
+    Returns:
+        pd.DataFrame: A dataframe containing the statistics.
     """
     # Create row results.
     statistics = {"idx": merge_idx}
@@ -232,6 +265,8 @@ if __name__ == "__main__":
             f"Computing statistics for {data.shape[0]} merges",
             total=data.shape[0]
         )
+
+        # Loop through each merge.
         for idx, row in data.iterrows():
             # Get data for a merge.
             repo_slug = row["repository"]
