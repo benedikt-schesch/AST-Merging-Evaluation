@@ -23,6 +23,19 @@ def get_diff_files(base_repo: Repository, base_sha: str, other_sha: str) -> set:
     return set(diff.split("\n"))
 
 
+def get_diff_hunks(left_repo: Repository, left_sha: str, right_sha: str) -> int:
+    """
+    Compute the number of hunks that are different between two branches using git diff.
+    
+    :param left_repo: Repository object for the left repository.
+    :param left_sha: SHA of the left commit.
+    :param right_sha: SHA of the right commit.
+    :return: Number of hunks that are different between the two branches.
+    """
+    diff, _ = left_repo.run_command(f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'")
+    return int(diff)
+
+
 def compute_statistics(
         merge_idx: str,
         repo_slug: str,
@@ -102,7 +115,7 @@ def compute_statistics(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             base.checkout(base_commit_sha, use_cache=False)
-            
+
         progress.update(task, advance=1)
 
         # Count files.
@@ -110,13 +123,16 @@ def compute_statistics(
         base_right_files = get_diff_files(base, base_commit_sha, merge_data["right"])
         row["num_files"] = len(base_left_files.union(base_right_files))
         progress.update(task, advance=1)
-        
+
         # Count intersecting files.
         row["num_intersecting_files"] = len(base_left_files.intersection(base_right_files))
         progress.update(task, advance=1)
         
+        # Count hunks.
+        row["num_hunks"] = get_diff_hunks(left, merge_data["left"], merge_data["right"])
+        progress.update(task, advance=1)
+
         print(row)
-        
 
 
 if __name__ == "__main__":
