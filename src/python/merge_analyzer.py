@@ -10,7 +10,8 @@ computes statistics between merges.
 The output is written in output_dir and consists of the same merges as the input
 but with the test results and statistics.
 
-There is another script, `merge_statistics.py`, that computes statistics (only) between merges via git diff and outputs them to a CSV.
+There is another script, `merge_statistics.py`, that computes statistics (only)
+between merges via git diff and outputs them to a CSV file.
 """
 
 import os

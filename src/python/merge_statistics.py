@@ -3,7 +3,7 @@
 """Checks some statistics between branches of a merge and outputs them to a CSV.
 usage: python3 merge_statistics.py --merges_path <path_to_merges>
                                    --output_dir <output_dir>
-This script computes statistics between merges via git diff and outputs them to a CSV.
+This script computes statistics between merges via git diff and outputs them to a CSV file.
 It takes in one of the results CSV files and loops through each merge.
 
 The following statistics are computed:
@@ -15,7 +15,8 @@ The following statistics are computed:
 - Whether imports are involved.
 - Whether non-java files are involved.
 
-There is another script, `merge_analyzer.py`, that computes some of the same statistics in addition to verifying tests pass.
+There is another script, `merge_analyzer.py`, that computes some of the same
+statistics in addition to verifying that tests pass.
 """
 
 import argparse
