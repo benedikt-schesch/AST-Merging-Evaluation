@@ -5,6 +5,17 @@ usage: python3 merge_statistics.py --merges_path <path_to_merges>
                                    --output_dir <output_dir>
 This script computes statistics between merges via git diff and outputs them to a CSV.
 It takes in one of the results CSV files and loops through each merge.
+
+The following statistics are computed:
+- Number of files in base -> left union base -> right.
+- Number of intersecting files between base -> left and base -> right.
+- Number of hunks between left and right.
+- Number of lines between left and right.
+- Number of intersecting lines between left and right.
+- Whether imports are involved.
+- Whether non-java files are involved.
+
+There is another script, `merge_analyzer.py`, that computes some of the same statistics in addition to verifying tests pass.
 """
 
 import argparse
@@ -15,124 +26,29 @@ from loguru import logger
 
 import pandas as pd
 from repo import Repository
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
 from src.python.variables import WORKDIR_DIRECTORY
-
-
-def get_diff_files(base_repo: Repository, base_sha: str, other_sha: str) -> set:
-    """
-    Compute the files that are different between two branches using git diff.
-    Args:
-        base_repo (Repository): The repository object.
-        base_sha (str): The base sha.
-        other_sha (str): The other sha.
-    Returns:
-        set: A set containing the files that are different between the two branches.
-    """
-    diff, _ = base_repo.run_command(f"git diff --name-only {base_sha} {other_sha}")
-    return set(diff.split("\n")) if diff else set()
-
-
-def get_diff_hunks(left_repo: Repository, left_sha: str, right_sha: str) -> int:
-    """
-    Compute the number of hunks that are different between two branches using git diff.
-    Args:
-        left_repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    Returns:
-        int: The number of hunks that are different between the two branches.
-    """
-    diff, _ = left_repo.run_command(f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'")
-    return int(diff)
-
-
-def get_diff(
-        repo: Repository, left_sha: str, right_sha: str, diff_log_file: Union[None, Path]
-) -> str:
-    """
-    Computes the diff between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    Returns:
-        str: A string containing the diff result.
-    """
-    command = f"git diff {left_sha} {right_sha}"
-    stdout, _ = repo.run_command(command)
-    return stdout
-
-
-def compute_num_diff_lines(
-        repo: Repository, left_sha: str, right_sha: str
-) -> Union[int, None]:
-    """
-    Computes the number of lines that are different between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    """
-    try:
-        diff = get_diff(repo, left_sha, right_sha, None)
-    except Exception as e:
-        logger.error(
-            f"compute_num_diff_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
-        )
-        return None
-    return sum(1 for line in diff.splitlines() if line.startswith(("+ ", "- ")))
-
-
-def compute_imports_involved(
-        repo: Repository, left_sha: str, right_sha: str
-) -> Union[bool, None]:
-    """
-    Computes if imports are involved in the diff between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    Returns:
-        bool: True if imports are involved, False otherwise.
-    """
-    try:
-        diff = get_diff(repo, left_sha, right_sha, None)
-    except Exception as e:
-        logger.error(
-            f"compute_imports_involved: {left_sha} {right_sha} {repo.repo_slug} {e}"
-        )
-        return None
-    return "import " in diff
-
-
-def diff_contains_non_java_file(
-        repo: Repository, left_sha: str, right_sha: str
-) -> Union[bool, None]:
-    """
-    Computes the diff between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    Returns:
-        bool: True if the diff contains a non-java file, False otherwise.
-    """
-    try:
-        merge_diff = get_diff_files(repo, left_sha, right_sha)
-    except Exception as e:
-        logger.error(
-            f"diff_contains_non_java_file: {left_sha} {right_sha} {repo.repo_slug} {e}"
-        )
-        return None
-    return any(not file.endswith(".java") for file in merge_diff)
+from src.python.utils.diff_statistics import (
+    get_diff_files_branches,
+    get_diff_hunks,
+    compute_num_diff_lines,
+    diff_contains_non_java_file,
+    compute_imports_involved,
+)
 
 
 def compute_statistics(
-        merge_idx: str,
-        repo_slug: str,
-        merge_data: pd.Series,
+    merge_idx: str,
+    repo_slug: str,
+    merge_data: pd.Series,
 ) -> pd.DataFrame:
     """
     Compute statistics for a merge.
@@ -149,8 +65,7 @@ def compute_statistics(
     # Clone base, left, right branches.
 
     workdir = Path(
-        f"{repo_slug}-merge-input-left-"
-        + f'{merge_data["left"]}-{merge_data["right"]}'
+        f"{repo_slug}-merge-input-left-" + f'{merge_data["left"]}-{merge_data["right"]}'
     )
     left = Repository(
         merge_idx=merge_idx,
@@ -179,8 +94,7 @@ def compute_statistics(
         right.checkout(merge_data["right"], use_cache=False)
 
     workdir = Path(
-        f"{repo_slug}-merge-input-base-"
-        + f'{merge_data["left"]}-{merge_data["right"]}'
+        f"{repo_slug}-merge-input-base-" + f'{merge_data["left"]}-{merge_data["right"]}'
     )
     base = Repository(
         merge_idx=merge_idx,
@@ -203,28 +117,40 @@ def compute_statistics(
         base.checkout(base_commit_sha, use_cache=False)
 
     # Count files.
-    base_left_files = get_diff_files(base, base_commit_sha, merge_data["left"])
-    base_right_files = get_diff_files(base, base_commit_sha, merge_data["right"])
+    base_left_files = get_diff_files_branches(base, base_commit_sha, merge_data["left"])
+    base_right_files = get_diff_files_branches(
+        base, base_commit_sha, merge_data["right"]
+    )
     statistics["num_files"] = len(base_left_files.union(base_right_files))
 
     # Count intersecting files.
-    statistics["num_intersecting_files"] = len(base_left_files.intersection(base_right_files))
+    statistics["num_intersecting_files"] = len(
+        base_left_files.intersection(base_right_files)
+    )
 
     # Count hunks.
-    statistics["num_hunks"] = get_diff_hunks(left, merge_data["left"], merge_data["right"])
+    statistics["num_hunks"] = get_diff_hunks(
+        left, merge_data["left"], merge_data["right"]
+    )
 
     # Count number of lines.
-    statistics["num_lines"] = compute_num_diff_lines(left, merge_data["left"], merge_data["right"])
+    statistics["num_lines"] = compute_num_diff_lines(
+        left, merge_data["left"], merge_data["right"]
+    )
 
     # Count number of intersecting lines.
     # TODO: Mike will implement this.
     statistics["num_intersecting_lines"] = 0
 
     # Check if imports are involved.
-    statistics["imports"] = compute_imports_involved(left, merge_data["left"], merge_data["right"])
+    statistics["imports"] = compute_imports_involved(
+        left, merge_data["left"], merge_data["right"]
+    )
 
     # Check if non-java files are involved.
-    statistics["non_java_files"] = diff_contains_non_java_file(left, merge_data["left"], merge_data["right"])
+    statistics["non_java_files"] = diff_contains_non_java_file(
+        left, merge_data["left"], merge_data["right"]
+    )
 
     # Return the row.
     return pd.DataFrame([statistics])
@@ -251,19 +177,28 @@ if __name__ == "__main__":
     data = pd.read_csv(args.merges_csv, index_col="idx")
 
     # Create result dataframe.
-    results = pd.DataFrame(columns=["idx", "num_files", "num_intersecting_files", "num_hunks", "num_lines",
-                                    "num_intersecting_lines", "imports", "non_java_files"])
+    results = pd.DataFrame(
+        columns=[
+            "idx",
+            "num_files",
+            "num_intersecting_files",
+            "num_hunks",
+            "num_lines",
+            "num_intersecting_lines",
+            "imports",
+            "non_java_files",
+        ]
+    )
 
     with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(),
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
     ) as progress:
         task = progress.add_task(
-            f"Computing statistics for {data.shape[0]} merges",
-            total=data.shape[0]
+            f"Computing statistics for {data.shape[0]} merges", total=data.shape[0]
         )
 
         # Loop through each merge.
