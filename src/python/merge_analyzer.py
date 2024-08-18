@@ -116,7 +116,7 @@ def diff_contains_non_java_file(
         left_sha (str): The left sha.
         right_sha (str): The right sha.
     Returns:
-        bool: True if the diff contains a non-java file, False otherwise.
+        bool: True if the diff contains a non-Java file, False otherwise.
     """
     try:
         merge_diff = get_diff_files_branches(repo, left_sha, right_sha)
