@@ -3,7 +3,7 @@ from typing import Union, Set
 
 from loguru import logger
 
-from src.python.repo import Repository
+from repo import Repository
 
 
 def get_diff(
