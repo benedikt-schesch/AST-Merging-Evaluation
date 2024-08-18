@@ -37,7 +37,7 @@ from rich.progress import (
 from src.python.utils.diff_statistics import (
     compute_num_diff_files,
     compute_num_diff_lines,
-    compute_imports_involved,
+    compute_are_imports_involved,
     diff_contains_non_java_file,
     diff_contains_java_file,
 )
@@ -78,7 +78,7 @@ def merge_analyzer(
     stats = (
         ("num_diff_files", compute_num_diff_files),
         ("num_diff_lines", compute_num_diff_lines),
-        ("imports_involved", compute_imports_involved),
+        ("imports_involved", compute_are_imports_involved),
         ("non_java_involved", diff_contains_non_java_file),
         ("diff contains java file", diff_contains_java_file),
     )
