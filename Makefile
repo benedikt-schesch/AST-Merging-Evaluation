@@ -1,6 +1,8 @@
 all: style gradle-assemble
 
-style: shell-script-style python-style java-style
+fix-style: fix-python-style fix-java-style
+
+check-style: check-shell-script-style check-python-style check-java-style
 
 SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
@@ -13,22 +15,29 @@ CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
 NUM_PROCESSES = 0
 
-shell-script-style:
-	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
-	checkbashisms ${SH_SCRIPTS}
-
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
 	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
-python-style:
+check-shell-script-style:
+	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	checkbashisms ${SH_SCRIPTS}
+
+fix-python-style:
 	ruff format ${PYTHON_FILES}
 	ruff check ${PYTHON_FILES} --fix
 
 check-python-style:
 	ruff format ${PYTHON_FILES} --check
 	ruff check ${PYTHON_FILES}
+
+fix-java-style:
+	./gradlew -q spotlessApply -g ../.gradle/
+
+check-java-style:
+	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
+
 
 # This target deletes files that are not committed to version control.
 clean:
@@ -162,9 +171,6 @@ check-merges-reproducibility:
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
-
-java-style:
-	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
 download-merge-tools: jars/IntelliMerge-1.0.9-all.jar jars/spork.jar
 
