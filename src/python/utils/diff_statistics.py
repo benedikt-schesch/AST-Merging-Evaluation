@@ -39,7 +39,7 @@ def get_diff_files(repo: Repository, left_sha: str, right_sha: str) -> set:
     return set(stdout.split("\n")) if stdout else set()
 
 
-def num_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
+def compute_num_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
     """
     Compute the number of hunks that are different between two commits using git diff.
     Args:
@@ -128,7 +128,7 @@ def diff_contains_non_java_file(
     return any(not file.endswith(".java") for file in merge_diff)
 
 
-def num_different_files(
+def compute_num_different_files(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
     """
@@ -144,13 +144,13 @@ def num_different_files(
         diff_file = get_diff_files(repo, left_sha, right_sha)
     except Exception as e:
         logger.error(
-            f"num_different_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
+            f"compute_num_different_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
         )
         return None
     return len(diff_file)
 
 
-def num_different_lines(
+def compute_num_different_lines(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
     """
@@ -166,7 +166,7 @@ def num_different_lines(
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:
         logger.error(
-            f"num_different_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
+            f"compute_num_different_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
         )
         return None
     return sum(
@@ -176,7 +176,7 @@ def num_different_lines(
     )
 
 
-def are_imports_involved(
+def compute_are_imports_involved(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
     """
