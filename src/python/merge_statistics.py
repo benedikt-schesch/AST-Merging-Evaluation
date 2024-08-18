@@ -13,7 +13,7 @@ The following statistics are computed:
 - Number of lines between left and right.
 - Number of intersecting lines between left and right.
 - Whether imports are involved.
-- Whether non-java files are involved.
+- Whether non-Java files are involved.
 
 There is another script, `merge_analyzer.py`, that computes some of the same
 statistics in addition to verifying that tests pass.
@@ -110,7 +110,7 @@ def compute_statistics(
         raise ValueError("Could not compute if imports are involved.")
     statistics["imports"] = are_imports_involved
 
-    # Check if non-java files are involved.
+    # Check if non-Java files are involved.
     non_java_files = diff_contains_non_java_file(repo, left_sha, right_sha)
     if non_java_files is None:
         raise ValueError("Could not compute if non-Java files are involved.")
