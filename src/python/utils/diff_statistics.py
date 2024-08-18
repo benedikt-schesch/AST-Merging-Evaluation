@@ -10,7 +10,7 @@ def get_diff(
     repo: Repository, left_sha: str, right_sha: str, diff_log_file: Union[None, Path]
 ) -> str:
     """
-    Computes the diff between two branches using git diff.
+    Computes the git diff between two commits.
     Args:
         repo (Repository): The repository object.
         left_sha (str): The left sha.
@@ -23,9 +23,9 @@ def get_diff(
     return stdout
 
 
-def get_diff_files_branches(repo: Repository, left_sha: str, right_sha: str) -> set:
+def get_diff_files(repo: Repository, left_sha: str, right_sha: str) -> set:
     """
-    Computes the diff between two branches using git diff.
+    Computes the set of files that are different between two commits using git diff.
     Args:
         repo (Repository): The repository object.
         left_sha (str): The left sha.
@@ -41,7 +41,7 @@ def get_diff_files_branches(repo: Repository, left_sha: str, right_sha: str) -> 
 
 def get_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
     """
-    Compute the number of hunks that are different between two branches using git diff.
+    Compute the number of hunks that are different between two commits using git diff.
     Args:
         repo (Repository): The repository object.
         left_sha (str): The left sha.
@@ -61,7 +61,7 @@ def get_diff_files_merge(
     right_sha: str,
 ) -> Set[str]:
     """
-    Computes the diff between two branches using git diff.
+    Computes the intersection of files that are different between a three-way merge using git diff.
     Args:
         repo (Repository): The repository object.
         merge_idx (str): The merge index, such as 42-123.
@@ -74,9 +74,9 @@ def get_diff_files_merge(
     """
     command = f"git merge-base {left_sha} {right_sha}"
     base_sha = repo.run_command(command)[0].strip()
-    left_right_files = get_diff_files_branches(repo, left_sha, right_sha)
-    base_right_files = get_diff_files_branches(repo, base_sha, right_sha)
-    base_left_files = get_diff_files_branches(repo, base_sha, left_sha)
+    left_right_files = get_diff_files(repo, left_sha, right_sha)
+    base_right_files = get_diff_files(repo, base_sha, right_sha)
+    base_left_files = get_diff_files(repo, base_sha, left_sha)
 
     # Check that at least one java file is contained in all 3 diffs
     common_files = left_right_files & base_right_files & base_left_files
@@ -88,7 +88,7 @@ def diff_contains_java_file(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
     """
-    Computes the diff between two branches using git diff.
+    Computes whether the diff between two commits contains a java file.
     Args:
         repo (Repository): The repository object.
         left_sha (str): The left sha.
@@ -110,7 +110,7 @@ def diff_contains_non_java_file(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
     """
-    Computes the diff between two branches using git diff.
+    Computes whether the diff between two commits contains a non-Java file.
     Args:
         repo (Repository): The repository object.
         left_sha (str): The left sha.
@@ -119,7 +119,7 @@ def diff_contains_non_java_file(
         bool: True if the diff contains a non-Java file, False otherwise.
     """
     try:
-        merge_diff = get_diff_files_branches(repo, left_sha, right_sha)
+        merge_diff = get_diff_files(repo, left_sha, right_sha)
     except Exception as e:
         logger.error(
             f"diff_contains_non_java_file: {left_sha} {right_sha} {repo.repo_slug} {e}"
@@ -131,8 +131,17 @@ def diff_contains_non_java_file(
 def compute_num_diff_files(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
+    """
+    Computes the number of files that are different between two commits.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        int: The number of files that are different between the two branches.
+    """
     try:
-        diff_file = get_diff_files_branches(repo, left_sha, right_sha)
+        diff_file = get_diff_files(repo, left_sha, right_sha)
     except Exception as e:
         logger.error(
             f"compute_num_diff_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
@@ -144,6 +153,15 @@ def compute_num_diff_files(
 def compute_num_diff_lines(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
+    """
+    Computes the number of lines that are different between two commits.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        int: The number of lines that are different between the two branches.
+    """
     try:
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:
@@ -151,12 +169,25 @@ def compute_num_diff_lines(
             f"compute_num_diff_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
         )
         return None
-    return sum(1 for line in diff.splitlines() if line.startswith(("+ ", "- ")))
+    return sum(
+        1
+        for line in diff.splitlines()
+        if line.startswith(("+", "-")) and not line.startswith(("++", "--"))
+    )
 
 
 def compute_are_imports_involved(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
+    """
+    Computes whether the diff between two commits contains an import statement.
+    Args:
+        repo (Repository): The repository object.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        bool: True if the diff contains an import statement, False otherwise.
+    """
     try:
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:

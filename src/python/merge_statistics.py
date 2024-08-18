@@ -35,7 +35,7 @@ from rich.progress import (
 )
 
 from src.python.utils.diff_statistics import (
-    get_diff_files_branches,
+    get_diff_files,
     get_diff_hunks,
     compute_num_diff_lines,
     diff_contains_non_java_file,
@@ -82,8 +82,8 @@ def compute_statistics(
     )
 
     # Count files.
-    base_left_files = get_diff_files_branches(repo, base_sha, left_sha)
-    base_right_files = get_diff_files_branches(repo, base_sha, right_sha)
+    base_left_files = get_diff_files(repo, base_sha, left_sha)
+    base_right_files = get_diff_files(repo, base_sha, right_sha)
     statistics["num_files"] = len(base_left_files.union(base_right_files))
 
     # Count intersecting files.
@@ -154,6 +154,20 @@ if __name__ == "__main__":
         ]
     )
 
+    # Create failed results dataframe.
+    failed_results = pd.DataFrame(
+        columns=[
+            "idx",
+            "num_files",
+            "num_intersecting_files",
+            "num_hunks",
+            "num_lines",
+            "num_intersecting_lines",
+            "imports",
+            "non_java_files",
+        ]
+    )
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -173,11 +187,18 @@ if __name__ == "__main__":
             right_sha = row["right"]
 
             # Compute statistics for a merge.
-            row = compute_statistics(str(idx), repo_slug, left_sha, right_sha)
-            results = pd.concat([results, row], ignore_index=True)
+            try:
+                statistics = compute_statistics(
+                    str(idx), repo_slug, left_sha, right_sha
+                )
+                results = pd.concat([results, statistics], ignore_index=True)
+            except Exception as e:
+                failed_results = pd.concat([failed_results, row], ignore_index=True)
+                print(f"Failed to compute statistics for {idx}: {e}")
 
             # Update progress.
             progress.update(task, advance=1)
 
     # Save the results.
     results.to_csv(f"{args.output_dir}/statistics.csv", index=False)
+    failed_results.to_csv(f"{args.output_dir}/failed_statistics.csv", index=False)
