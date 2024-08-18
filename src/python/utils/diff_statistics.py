@@ -31,7 +31,7 @@ def get_diff_files(repo: Repository, left_sha: str, right_sha: str) -> set:
         left_sha (str): The left sha.
         right_sha (str): The right sha.
     Returns:
-        set: A set containing the diff result.
+        set: A set containing the files that differ.
     """
     # Using git diff to compare the two SHAs
     command = f"git diff --name-only {left_sha} {right_sha}"
@@ -39,7 +39,7 @@ def get_diff_files(repo: Repository, left_sha: str, right_sha: str) -> set:
     return set(stdout.split("\n")) if stdout else set()
 
 
-def get_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
+def num_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
     """
     Compute the number of hunks that are different between two commits using git diff.
     Args:
@@ -47,7 +47,7 @@ def get_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> int:
         left_sha (str): The left sha.
         right_sha (str): The right sha.
     Returns:
-        int: The number of hunks that are different between the two branches.
+        int: The number of hunks that are different between the two commits.
     """
     diff, _ = repo.run_command(
         f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'"
@@ -70,7 +70,7 @@ def get_diff_files_merge(
         right_sha (str): The right sha.
         cache_dir (Path): The path to the cache directory.
     Returns:
-        Set[str]: A set containing the diff result.
+        Set[str]: A set containing the files that differ.
     """
     command = f"git merge-base {left_sha} {right_sha}"
     base_sha = repo.run_command(command)[0].strip()
@@ -128,7 +128,7 @@ def diff_contains_non_java_file(
     return any(not file.endswith(".java") for file in merge_diff)
 
 
-def compute_num_diff_files(
+def num_different_files(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
     """
@@ -138,19 +138,19 @@ def compute_num_diff_files(
         left_sha (str): The left sha.
         right_sha (str): The right sha.
     Returns:
-        int: The number of files that are different between the two branches.
+        int: The number of files that are different between the two commits.
     """
     try:
         diff_file = get_diff_files(repo, left_sha, right_sha)
     except Exception as e:
         logger.error(
-            f"compute_num_diff_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
+            f"num_different_files: {left_sha} {right_sha} {repo.repo_slug} {e}"
         )
         return None
     return len(diff_file)
 
 
-def compute_num_diff_lines(
+def num_different_lines(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:
     """
@@ -160,23 +160,23 @@ def compute_num_diff_lines(
         left_sha (str): The left sha.
         right_sha (str): The right sha.
     Returns:
-        int: The number of lines that are different between the two branches.
+        int: The number of lines that are different between the two commits.
     """
     try:
         diff = get_diff(repo, left_sha, right_sha, None)
     except Exception as e:
         logger.error(
-            f"compute_num_diff_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
+            f"num_different_lines: {left_sha} {right_sha} {repo.repo_slug} {e}"
         )
         return None
     return sum(
         1
         for line in diff.splitlines()
-        if line.startswith(("+", "-")) and not line.startswith(("++", "--"))
+        if line.startswith(("+", "-")) and not line.startswith(("+++ ", "--- "))
     )
 
 
-def compute_are_imports_involved(
+def are_imports_involved(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
     """

@@ -36,10 +36,10 @@ from rich.progress import (
 
 from utils.diff_statistics import (
     get_diff_files,
-    get_diff_hunks,
-    compute_num_diff_lines,
+    num_diff_hunks,
+    num_different_lines,
     diff_contains_non_java_file,
-    compute_are_imports_involved,
+    are_imports_involved,
 )
 
 
@@ -92,10 +92,10 @@ def compute_statistics(
     )
 
     # Count hunks.
-    statistics["num_hunks"] = get_diff_hunks(repo, left_sha, right_sha)
+    statistics["num_hunks"] = num_diff_hunks(repo, left_sha, right_sha)
 
     # Count number of lines.
-    num_lines = compute_num_diff_lines(repo, left_sha, right_sha)
+    num_lines = num_different_lines(repo, left_sha, right_sha)
     if num_lines is None:
         raise ValueError("Could not compute number of lines.")
     statistics["num_lines"] = num_lines
@@ -105,7 +105,7 @@ def compute_statistics(
     statistics["num_intersecting_lines"] = 0
 
     # Check if imports are involved.
-    are_imports_involved = compute_are_imports_involved(repo, left_sha, right_sha)
+    are_imports_involved = are_imports_involved(repo, left_sha, right_sha)
     if are_imports_involved is None:
         raise ValueError("Could not compute if imports are involved.")
     statistics["imports"] = are_imports_involved
