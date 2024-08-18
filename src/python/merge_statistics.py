@@ -35,7 +35,7 @@ from rich.progress import (
 )
 
 from src.python.utils.diff_statistics import (
-    get_diff_files_branches,
+    get_diff_files,
     get_diff_hunks,
     compute_num_diff_lines,
     diff_contains_non_java_file,
@@ -82,8 +82,8 @@ def compute_statistics(
     )
 
     # Count files.
-    base_left_files = get_diff_files_branches(repo, base_sha, left_sha)
-    base_right_files = get_diff_files_branches(repo, base_sha, right_sha)
+    base_left_files = get_diff_files(repo, base_sha, left_sha)
+    base_right_files = get_diff_files(repo, base_sha, right_sha)
     statistics["num_files"] = len(base_left_files.union(base_right_files))
 
     # Count intersecting files.
