@@ -34,7 +34,7 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
-from src.python.utils.diff_statistics import (
+from utils.diff_statistics import (
     get_diff_files,
     get_diff_hunks,
     compute_num_diff_lines,
