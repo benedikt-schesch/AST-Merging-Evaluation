@@ -154,7 +154,7 @@ def compute_num_diff_lines(
     return sum(1 for line in diff.splitlines() if line.startswith(("+ ", "- ")))
 
 
-def compute_imports_involved(
+def compute_are_imports_involved(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[bool, None]:
     try:

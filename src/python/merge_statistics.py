@@ -41,86 +41,51 @@ from src.python.utils.diff_statistics import (
     get_diff_hunks,
     compute_num_diff_lines,
     diff_contains_non_java_file,
-    compute_imports_involved,
+    compute_are_imports_involved,
 )
 
 
 def compute_statistics(
     merge_idx: str,
     repo_slug: str,
-    merge_data: pd.Series,
+    left_sha: str,
+    right_sha: str,
 ) -> pd.DataFrame:
     """
     Compute statistics for a merge.
     Args:
         merge_idx (str): The merge index.
         repo_slug (str): The repository slug.
-        merge_data (pd.Series): The merge data.
+        left_sha (str): The left branch's sha.
+        right_sha (str): The right branch's sha.
     Returns:
         pd.DataFrame: A dataframe containing the statistics.
     """
     # Create row results.
     statistics = {"idx": merge_idx}
 
-    # Clone base, left, right branches.
-
-    workdir = Path(
-        f"{repo_slug}-merge-input-left-" + f'{merge_data["left"]}-{merge_data["right"]}'
-    )
-    left = Repository(
+    # Clone repository.
+    repo = Repository(
         merge_idx=merge_idx,
         repo_slug=repo_slug,
         cache_directory=Path("no_cache/"),
-        workdir_id=str(workdir),
+        workdir_id=f"{repo_slug}-{left_sha}-{right_sha}",
         delete_workdir=False,
         lazy_clone=False,
     )
-    if not (WORKDIR_DIRECTORY / workdir).exists():
-        left.checkout(merge_data["left"], use_cache=False)
-
-    workdir = Path(
-        f"{repo_slug}-merge-input-right-"
-        + f'{merge_data["left"]}-{merge_data["right"]}'
-    )
-    right = Repository(
-        merge_idx=merge_idx,
-        repo_slug=repo_slug,
-        cache_directory=Path("no_cache/"),
-        workdir_id=str(workdir),
-        delete_workdir=False,
-        lazy_clone=False,
-    )
-    if not (WORKDIR_DIRECTORY / workdir).exists():
-        right.checkout(merge_data["right"], use_cache=False)
-
-    workdir = Path(
-        f"{repo_slug}-merge-input-base-" + f'{merge_data["left"]}-{merge_data["right"]}'
-    )
-    base = Repository(
-        merge_idx=merge_idx,
-        repo_slug=repo_slug,
-        cache_directory=Path("no_cache/"),
-        workdir_id=str(workdir),
-        delete_workdir=False,
-        lazy_clone=False,
-    )
-    base_commit_sha = (
+    base_sha = (
         subprocess.run(
-            ["git", "merge-base", merge_data["left"], merge_data["right"]],
-            cwd=base.local_repo_path,
+            ["git", "merge-base", left_sha, right_sha],
+            cwd=repo.local_repo_path,
             stdout=subprocess.PIPE,
         )
         .stdout.decode("utf-8")
         .strip()
     )
-    if not (WORKDIR_DIRECTORY / workdir).exists():
-        base.checkout(base_commit_sha, use_cache=False)
 
     # Count files.
-    base_left_files = get_diff_files_branches(base, base_commit_sha, merge_data["left"])
-    base_right_files = get_diff_files_branches(
-        base, base_commit_sha, merge_data["right"]
-    )
+    base_left_files = get_diff_files_branches(repo, base_sha, left_sha)
+    base_right_files = get_diff_files_branches(repo, base_sha, right_sha)
     statistics["num_files"] = len(base_left_files.union(base_right_files))
 
     # Count intersecting files.
@@ -129,28 +94,29 @@ def compute_statistics(
     )
 
     # Count hunks.
-    statistics["num_hunks"] = get_diff_hunks(
-        left, merge_data["left"], merge_data["right"]
-    )
+    statistics["num_hunks"] = get_diff_hunks(repo, left_sha, right_sha)
 
     # Count number of lines.
-    statistics["num_lines"] = compute_num_diff_lines(
-        left, merge_data["left"], merge_data["right"]
-    )
+    num_lines = compute_num_diff_lines(repo, left_sha, right_sha)
+    if num_lines is None:
+        raise ValueError("Could not compute number of lines.")
+    statistics["num_lines"] = num_lines
 
     # Count number of intersecting lines.
     # TODO: Mike will implement this.
     statistics["num_intersecting_lines"] = 0
 
     # Check if imports are involved.
-    statistics["imports"] = compute_imports_involved(
-        left, merge_data["left"], merge_data["right"]
-    )
+    are_imports_involved = compute_are_imports_involved(repo, left_sha, right_sha)
+    if are_imports_involved is None:
+        raise ValueError("Could not compute if imports are involved.")
+    statistics["imports"] = are_imports_involved
 
     # Check if non-java files are involved.
-    statistics["non_java_files"] = diff_contains_non_java_file(
-        left, merge_data["left"], merge_data["right"]
-    )
+    non_java_files = diff_contains_non_java_file(repo, left_sha, right_sha)
+    if non_java_files is None:
+        raise ValueError("Could not compute if non-Java files are involved.")
+    statistics["non_java_files"] = non_java_files
 
     # Return the row.
     return pd.DataFrame([statistics])
@@ -205,10 +171,11 @@ if __name__ == "__main__":
         for idx, row in data.iterrows():
             # Get data for a merge.
             repo_slug = row["repository"]
-            merge_data = row
+            left_sha = row["left"]
+            right_sha = row["right"]
 
             # Compute statistics for a merge.
-            row = compute_statistics(str(idx), repo_slug, merge_data)
+            row = compute_statistics(str(idx), repo_slug, left_sha, right_sha)
             results = pd.concat([results, row], ignore_index=True)
 
             # Update progress.
