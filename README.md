@@ -158,6 +158,8 @@ To run style checking run `make style`.
 
     * merge_analyzer.py -> Analyzes a merge to determine if it should be tested.
 
+    * merge_statistics.py -> Computes statistics for a merges.
+
     * merges_sampler.py -> Samples merges to be tested.
 
     * get_repos.py -> Downloads the repos list.
@@ -187,6 +189,8 @@ To run style checking run `make style`.
       * run_remotely.sh -> Runs the full stack on a remote machine.
 
       * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
+
+      * diff_statistics.py -> Various diff commands to compare the results of two merges.
 
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
