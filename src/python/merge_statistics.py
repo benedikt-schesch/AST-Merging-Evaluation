@@ -154,6 +154,20 @@ if __name__ == "__main__":
         ]
     )
 
+    # Create failed results dataframe.
+    failed_results = pd.DataFrame(
+        columns=[
+            "idx",
+            "num_files",
+            "num_intersecting_files",
+            "num_hunks",
+            "num_lines",
+            "num_intersecting_lines",
+            "imports",
+            "non_java_files",
+        ]
+    )
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -173,11 +187,18 @@ if __name__ == "__main__":
             right_sha = row["right"]
 
             # Compute statistics for a merge.
-            row = compute_statistics(str(idx), repo_slug, left_sha, right_sha)
-            results = pd.concat([results, row], ignore_index=True)
+            try:
+                statistics = compute_statistics(
+                    str(idx), repo_slug, left_sha, right_sha
+                )
+                results = pd.concat([results, statistics], ignore_index=True)
+            except Exception as e:
+                failed_results = pd.concat([failed_results, row], ignore_index=True)
+                print(f"Failed to compute statistics for {idx}: {e}")
 
             # Update progress.
             progress.update(task, advance=1)
 
     # Save the results.
     results.to_csv(f"{args.output_dir}/statistics.csv", index=False)
+    failed_results.to_csv(f"{args.output_dir}/failed_statistics.csv", index=False)
