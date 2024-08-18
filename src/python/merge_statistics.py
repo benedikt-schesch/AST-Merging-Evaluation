@@ -21,8 +21,6 @@ There is another script, `merge_analyzer.py`, that computes some of the same sta
 import argparse
 import subprocess
 from pathlib import Path
-from typing import Union
-from loguru import logger
 
 import pandas as pd
 from repo import Repository
@@ -35,7 +33,6 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
-from src.python.variables import WORKDIR_DIRECTORY
 from src.python.utils.diff_statistics import (
     get_diff_files_branches,
     get_diff_hunks,
