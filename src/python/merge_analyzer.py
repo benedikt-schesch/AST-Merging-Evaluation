@@ -114,7 +114,7 @@ def merge_analyzer(
                     .strip()
                 )
                 cache_data[name] = func(
-                    repo, base_sha, merge_data["right"], merge_data["base"]
+                    repo, base_sha, merge_data["left"], merge_data["right"]
                 )
             else:
                 cache_data[name] = func(repo, merge_data["left"], merge_data["right"])
