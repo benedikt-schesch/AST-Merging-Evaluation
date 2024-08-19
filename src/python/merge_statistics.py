@@ -44,10 +44,10 @@ from utils.diff_statistics import (
 
 
 def compute_statistics(
-    merge_idx: str,
-    repo_slug: str,
-    left_sha: str,
-    right_sha: str,
+        merge_idx: str,
+        repo_slug: str,
+        left_sha: str,
+        right_sha: str,
 ) -> str:
     """
     Compute statistics for a merge.
@@ -87,9 +87,7 @@ def compute_statistics(
     statistics.append(len(base_left_files.union(base_right_files)))
 
     # Count intersecting files.
-    statistics.append(len(
-        base_left_files.intersection(base_right_files)
-    ))
+    statistics.append(len(base_left_files.intersection(base_right_files)))
 
     # Count hunks.
     statistics.append(compute_num_diff_hunks(repo, left_sha, right_sha))
@@ -117,7 +115,7 @@ def compute_statistics(
     statistics.append(non_java_files)
 
     # Return the row.
-    return ','.join(map(str, statistics))
+    return ",".join(map(str, statistics))
 
 
 if __name__ == "__main__":
@@ -136,7 +134,7 @@ if __name__ == "__main__":
         default="results/combined",
     )
     args = parser.parse_args()
-    
+
     # Define output files.
     statistics_output_file = f"{args.output_dir}/statistics.csv"
     failed_statistics_output_file = f"{args.output_dir}/failed_statistics.csv"
@@ -146,23 +144,25 @@ if __name__ == "__main__":
     data = pd.read_csv(args.merges_csv, index_col="idx")
 
     # Create result CSV header.
-    with open(statistics_output_file, 'w') as output_file:
-        output_file.write(header_string)
+    with open(statistics_output_file, "r+") as output_file:
+        output_file.seek(0)
+        current = output_file.readlines()
+        if len(current) == 0:
+            current.append(header_string + "\n")
+        else:
+            current[0] = header_string + "\n"
+        output_file.writelines(current)
 
-    # Create failed results dataframe.
-    with open(failed_statistics_output_file, 'w') as failed_output_file:
-        failed_output_file.write(header_string)
-    
     # Has failed results flag.
     has_failed_results = False
-    
+
     # Loop through each merge.
     with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        TimeElapsedColumn(),
-        TimeRemainingColumn(),
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
     ) as progress:
         task = progress.add_task(
             f"Computing statistics for {data.shape[0]} merges", total=data.shape[0]
@@ -181,17 +181,21 @@ if __name__ == "__main__":
                     str(idx), repo_slug, left_sha, right_sha
                 )
                 # Add to results.
-                with open(statistics_output_file, 'a') as output_file:
+                with open(statistics_output_file, "a") as output_file:
                     output_file.write(statistics + "\n")
             except Exception as e:
                 # Add to failed results.
                 has_failed_results = True
-                with open(failed_statistics_output_file, 'a') as failed_output_file:
-                    failed_output_file.write(f"{",".join(row)}\n")
+                with open(failed_statistics_output_file, "a") as failed_output_file:
+                    failed_output_file.write(f"{",".join(map(str, row.values))}\n")
                 print(f"Failed to compute statistics for {idx}: {e}")
 
             # Update progress.
-            progress.update(task, advance=1, description=f"Computing statistics for {i}/{data.shape[0]} merges")
+            progress.update(
+                task,
+                advance=1,
+                description=f"Computing statistics for {i}/{data.shape[0]} merges",
+            )
 
     # If there are failed results, exit 1.
     if has_failed_results:
