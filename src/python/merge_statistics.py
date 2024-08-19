@@ -48,7 +48,7 @@ def compute_statistics(
     repo_slug: str,
     left_sha: str,
     right_sha: str,
-) -> pd.DataFrame:
+) -> str:
     """
     Compute statistics for a merge.
     Args:
@@ -60,14 +60,14 @@ def compute_statistics(
         pd.DataFrame: A dataframe containing the statistics.
     """
     # Create row results.
-    statistics = {"idx": merge_idx}
+    statistics = [merge_idx]
 
     # Clone repository.
     repo = Repository(
         merge_idx=merge_idx,
         repo_slug=repo_slug,
         cache_directory=Path("no_cache/"),
-        workdir_id=f"{repo_slug}-{left_sha}-{right_sha}",
+        workdir_id=repo_slug,
         delete_workdir=False,
         lazy_clone=False,
     )
@@ -84,40 +84,40 @@ def compute_statistics(
     # Count files.
     base_left_files = get_diff_files(repo, base_sha, left_sha)
     base_right_files = get_diff_files(repo, base_sha, right_sha)
-    statistics["num_files"] = len(base_left_files.union(base_right_files))
+    statistics.append(len(base_left_files.union(base_right_files)))
 
     # Count intersecting files.
-    statistics["num_intersecting_files"] = len(
+    statistics.append(len(
         base_left_files.intersection(base_right_files)
-    )
+    ))
 
     # Count hunks.
-    statistics["num_hunks"] = compute_num_diff_hunks(repo, left_sha, right_sha)
+    statistics.append(compute_num_diff_hunks(repo, left_sha, right_sha))
 
     # Count number of lines.
     num_lines = compute_num_different_lines(repo, left_sha, right_sha)
     if num_lines is None:
         raise ValueError("Could not compute number of lines.")
-    statistics["num_lines"] = num_lines
+    statistics.append(num_lines)
 
     # Count number of intersecting lines.
     # TODO: Mike will implement this.
-    statistics["num_intersecting_lines"] = 0
+    statistics.append(0)
 
     # Check if imports are involved.
     are_imports_involved = compute_are_imports_involved(repo, left_sha, right_sha)
     if are_imports_involved is None:
         raise ValueError("Could not compute if imports are involved.")
-    statistics["imports"] = are_imports_involved
+    statistics.append(are_imports_involved)
 
     # Check if non-Java files are involved.
     non_java_files = diff_contains_non_java_file(repo, left_sha, right_sha)
     if non_java_files is None:
         raise ValueError("Could not compute if non-Java files are involved.")
-    statistics["non_java_files"] = non_java_files
+    statistics.append(non_java_files)
 
     # Return the row.
-    return pd.DataFrame([statistics])
+    return ','.join(map(str, statistics))
 
 
 if __name__ == "__main__":
@@ -136,38 +136,27 @@ if __name__ == "__main__":
         default="results/combined",
     )
     args = parser.parse_args()
+    
+    # Define output files.
+    statistics_output_file = f"{args.output_dir}/statistics.csv"
+    failed_statistics_output_file = f"{args.output_dir}/failed_statistics.csv"
+    header_string = "idx,num_files,num_intersecting_files,num_hunks,num_lines,num_intersecting_lines,imports,non_java_files\n"
 
     # Load the CSV file.
     data = pd.read_csv(args.merges_csv, index_col="idx")
 
-    # Create result dataframe.
-    results = pd.DataFrame(
-        columns=[
-            "idx",
-            "num_files",
-            "num_intersecting_files",
-            "num_hunks",
-            "num_lines",
-            "num_intersecting_lines",
-            "imports",
-            "non_java_files",
-        ]
-    )
+    # Create result CSV header.
+    with open(statistics_output_file, 'w') as output_file:
+        output_file.write(header_string)
 
     # Create failed results dataframe.
-    failed_results = pd.DataFrame(
-        columns=[
-            "idx",
-            "num_files",
-            "num_intersecting_files",
-            "num_hunks",
-            "num_lines",
-            "num_intersecting_lines",
-            "imports",
-            "non_java_files",
-        ]
-    )
-
+    with open(failed_statistics_output_file, 'w') as failed_output_file:
+        failed_output_file.write(header_string)
+    
+    # Has failed results flag.
+    has_failed_results = False
+    
+    # Loop through each merge.
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -180,7 +169,7 @@ if __name__ == "__main__":
         )
 
         # Loop through each merge.
-        for idx, row in data.iterrows():
+        for i, (idx, row) in enumerate(data.iterrows()):
             # Get data for a merge.
             repo_slug = row["repository"]
             left_sha = row["left"]
@@ -191,14 +180,19 @@ if __name__ == "__main__":
                 statistics = compute_statistics(
                     str(idx), repo_slug, left_sha, right_sha
                 )
-                results = pd.concat([results, statistics], ignore_index=True)
+                # Add to results.
+                with open(statistics_output_file, 'a') as output_file:
+                    output_file.write(statistics + "\n")
             except Exception as e:
-                failed_results = pd.concat([failed_results, row], ignore_index=True)
+                # Add to failed results.
+                has_failed_results = True
+                with open(failed_statistics_output_file, 'a') as failed_output_file:
+                    failed_output_file.write(f"{",".join(row)}\n")
                 print(f"Failed to compute statistics for {idx}: {e}")
 
             # Update progress.
-            progress.update(task, advance=1)
+            progress.update(task, advance=1, description=f"Computing statistics for {i}/{data.shape[0]} merges")
 
-    # Save the results.
-    results.to_csv(f"{args.output_dir}/statistics.csv", index=False)
-    failed_results.to_csv(f"{args.output_dir}/failed_statistics.csv", index=False)
+    # If there are failed results, exit 1.
+    if has_failed_results:
+        exit(1)
