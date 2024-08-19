@@ -44,10 +44,10 @@ from utils.diff_statistics import (
 
 
 def compute_statistics(
-        merge_idx: str,
-        repo_slug: str,
-        left_sha: str,
-        right_sha: str,
+    merge_idx: str,
+    repo_slug: str,
+    left_sha: str,
+    right_sha: str,
 ) -> str:
     """
     Compute statistics for a merge.
@@ -158,11 +158,11 @@ if __name__ == "__main__":
 
     # Loop through each merge.
     with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(),
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
     ) as progress:
         task = progress.add_task(
             f"Computing statistics for {data.shape[0]} merges", total=data.shape[0]

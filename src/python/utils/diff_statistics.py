@@ -150,6 +150,44 @@ def compute_num_different_files(
     return len(diff_file)
 
 
+def compute_union_of_different_files_three_way(
+    repo: Repository, base_sha: str, left_sha: str, right_sha: str
+) -> int:
+    """
+    Computes the union of files that are different between a three-way merge using git diff.
+    Args:
+        repo (Repository): The repository object.
+        base_sha (str): The base sha.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        int: The number of files that are invovled in a git diff between the two commits.
+    """
+    base_left_files = get_diff_files(repo, base_sha, left_sha)
+    base_right_files = get_diff_files(repo, base_sha, right_sha)
+
+    return len(base_left_files.union(base_right_files))
+
+
+def compute_intersection_of_diff(
+    repo: Repository, base_sha: str, left_sha: str, right_sha: str
+) -> int:
+    """
+    Computes the intersection of files that are different between a three-way merge using git diff.
+    Args:
+        repo (Repository): The repository object.
+        base_sha (str): The base sha.
+        left_sha (str): The left sha.
+        right_sha (str): The right sha.
+    Returns:
+        int: The number of common files between the two commits in a git diff.
+    """
+    base_left_files = get_diff_files(repo, base_sha, left_sha)
+    base_right_files = get_diff_files(repo, base_sha, right_sha)
+
+    return len(base_left_files.intersection(base_right_files))
+
+
 def compute_num_different_lines(
     repo: Repository, left_sha: str, right_sha: str
 ) -> Union[int, None]:

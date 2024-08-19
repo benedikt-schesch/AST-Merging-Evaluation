@@ -17,6 +17,7 @@ between merges via git diff and outputs them to a CSV file.
 import os
 import multiprocessing
 import argparse
+import subprocess
 from pathlib import Path
 from typing import Tuple
 import random
@@ -36,11 +37,14 @@ from rich.progress import (
     TextColumn,
 )
 from utils.diff_statistics import (
+    compute_union_of_different_files_three_way,
+    compute_intersection_of_diff,
     compute_num_different_files,
     compute_num_different_lines,
     compute_are_imports_involved,
     diff_contains_non_java_file,
     diff_contains_java_file,
+    compute_num_diff_hunks,
 )
 
 
@@ -78,7 +82,10 @@ def merge_analyzer(
     repo = None
     stats = (
         ("num_diff_files", compute_num_different_files),
+        ("union_diff_files", compute_union_of_different_files_three_way),
+        ("num_intersecting_files", compute_intersection_of_diff),
         ("num_diff_lines", compute_num_different_lines),
+        ("num_diff_hunks", compute_num_diff_hunks),
         ("imports_involved", compute_are_imports_involved),
         ("non_java_involved", diff_contains_non_java_file),
         ("diff contains java file", diff_contains_java_file),
@@ -98,7 +105,23 @@ def merge_analyzer(
                     + merge_data["right"],
                     lazy_clone=True,
                 )
-            cache_data[name] = func(repo, merge_data["left"], merge_data["right"])
+
+            # Pass in base sha for union and intersection stats.
+            if name == "union_diff_files" or name == "num_intersecting_files":
+                base_sha = (
+                    subprocess.run(
+                        ["git", "merge-base", merge_data["left"], merge_data["right"]],
+                        cwd=repo.local_repo_path,
+                        stdout=subprocess.PIPE,
+                    )
+                    .stdout.decode("utf-8")
+                    .strip()
+                )
+                cache_data[name] = func(
+                    repo, base_sha, merge_data["right"], merge_data["base"]
+                )
+            else:
+                cache_data[name] = func(repo, merge_data["left"], merge_data["right"])
             merge_data[name] = cache_data[name]
             write = True
 
