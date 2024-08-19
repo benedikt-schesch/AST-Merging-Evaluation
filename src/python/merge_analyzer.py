@@ -41,6 +41,7 @@ from utils.diff_statistics import (
     compute_are_imports_involved,
     diff_contains_non_java_file,
     diff_contains_java_file,
+    compute_num_diff_hunks,
 )
 
 
@@ -82,6 +83,7 @@ def merge_analyzer(
         ("imports_involved", compute_are_imports_involved),
         ("non_java_involved", diff_contains_non_java_file),
         ("diff contains java file", diff_contains_java_file),
+        ("num_hunks", compute_num_diff_hunks),
     )
     repo = None
     for name, func in stats:
