@@ -13,6 +13,7 @@ but with the test results and statistics.
 
 import os
 import multiprocessing
+import subprocess
 import argparse
 from pathlib import Path
 from typing import Tuple
@@ -39,6 +40,8 @@ from diff_statistics import (
     diff_contains_non_java_file,
     diff_contains_java_file,
     compute_num_diff_hunks,
+    compute_union_of_different_files_three_way,
+    compute_intersection_of_diff,
 )
 
 
