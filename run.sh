@@ -62,6 +62,8 @@ done
 # Add a _with_hashes to the $REPOS_CSV
 REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
+make clean-workdir
+
 # shellcheck disable=SC2086
 run_latex_output() {
     local timing_option="$1"
@@ -91,9 +93,6 @@ fi
 PATH=$(pwd)/src/scripts/merge_tools:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
 export PATH
-
-# Clone all submodules
-git submodule update --init --recursive
 
 # Empty config file
 GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
@@ -234,6 +233,3 @@ else
     echo "run.sh: about to run run_latex_output"
     run_latex_output ""
 fi
-
-echo "run.sh: about to run run_latex_output"
-run_latex_output ""

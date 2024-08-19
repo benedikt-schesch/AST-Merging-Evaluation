@@ -99,7 +99,6 @@ def merge_analyzer(
                     + merge_data["left"]
                     + "-"
                     + merge_data["right"],
-                    lazy_clone=False,
                 )
             # Pass in base sha for union and intersection stats.
             if name == "union_diff_files" or name == "num_intersecting_files":
@@ -109,7 +108,16 @@ def merge_analyzer(
                     + " "
                     + str(merge_data["right"])
                 )
-                base_sha = repo.run_command(command)[0].strip()
+                try:
+                    base_sha = repo.run_command(command)[0].strip()
+                except Exception as e:
+                    logger.error(
+                        f"merge_analyzer: Error while running command: {command}"
+                    )
+                    logger.error(f"merge_analyzer: Error: {e}")
+                    cache_data[name] = "Error while retrieving base sha"
+                    write = True
+                    continue
                 cache_data[name] = func(
                     repo, base_sha, merge_data["left"], merge_data["right"]
                 )
