@@ -35,7 +35,7 @@ from rich.progress import (
     TimeRemainingColumn,
     TextColumn,
 )
-from utils.diff_statistics import (
+from diff_statistics import (
     compute_num_different_files,
     compute_num_different_lines,
     compute_are_imports_involved,
