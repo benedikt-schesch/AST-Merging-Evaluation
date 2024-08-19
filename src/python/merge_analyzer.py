@@ -13,7 +13,6 @@ but with the test results and statistics.
 
 import os
 import multiprocessing
-import subprocess
 import argparse
 from pathlib import Path
 from typing import Tuple
@@ -100,19 +99,17 @@ def merge_analyzer(
                     + merge_data["left"]
                     + "-"
                     + merge_data["right"],
-                    lazy_clone=True,
+                    lazy_clone=False,
                 )
             # Pass in base sha for union and intersection stats.
             if name == "union_diff_files" or name == "num_intersecting_files":
-                base_sha = (
-                    subprocess.run(
-                        ["git", "merge-base", merge_data["left"], merge_data["right"]],
-                        cwd=repo.local_repo_path,
-                        stdout=subprocess.PIPE,
-                    )
-                    .stdout.decode("utf-8")
-                    .strip()
+                command = (
+                    "git merge-base "
+                    + str(merge_data["left"])
+                    + " "
+                    + str(merge_data["right"])
                 )
+                base_sha = repo.run_command(command)[0].strip()
                 cache_data[name] = func(
                     repo, base_sha, merge_data["left"], merge_data["right"]
                 )
