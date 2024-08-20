@@ -65,7 +65,7 @@ MERGE_TOOL_RENAME = {
     "plumelib_ort_imports": "Imports",
     "plumelib_ort_version_number": "Version Numbers",
     "plumelib_ort": "IVn",
-    "plumelib_ort_ignorespace": "Ignorespace",
+    "plumelib_ort_ignorespace": "IVn-ignorespace",
 }
 
 
