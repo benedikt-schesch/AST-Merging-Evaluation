@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/master,8f20150cc933b6947031778ed581a8b712210d21,88a7106bacae441c13ce8cfbb334e686a64b88ab,18cc89e7fa7d153ba9eee27e790d3c2293b4f1e7,,False,False,True,3,10,False,False
-3,refs/heads/master,65eb6807c7b61f11cc4c55bba0dee9fd40209e26,b4e49dc7a95dde16f6b4bf0a5f90c03813c3caab,81ba733475e90801a715ae3ff7f6e44e1634ce2e,,False,True,True,77,8799,False,False
-4,refs/heads/master,e277a00188c4f3be5041d8fb6430b7c5b4c2ed65,159addcfdd830bcaeb9890440535ed6b3a7ab1ab,9e4ddba54db51e20c41564f8e8a81a000dcc2faa,,False,False,True,3,17,False,False
-5,refs/heads/master,159addcfdd830bcaeb9890440535ed6b3a7ab1ab,7adc594c226301dfa33a488c572704492eb5ea30,6340c3cdd479a34765fa856b560842a7032050ba,,False,False,True,3,17,False,False
-6,refs/heads/master,29cd00116c171596e12c4f1fb4083130bb5ea5c0,43211739e29fd970729e551d6799519b2d0eeff3,08ac79c8edd07a7739a4bbee0226c00aad36fdc4,,False,True,True,11,116,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,8f20150cc933b6947031778ed581a8b712210d21,88a7106bacae441c13ce8cfbb334e686a64b88ab,18cc89e7fa7d153ba9eee27e790d3c2293b4f1e7,,False,False,True,3,4,17,1,False,3,False
+3,refs/heads/master,65eb6807c7b61f11cc4c55bba0dee9fd40209e26,b4e49dc7a95dde16f6b4bf0a5f90c03813c3caab,81ba733475e90801a715ae3ff7f6e44e1634ce2e,,False,True,True,77,536,10985,1,False,78,False
+4,refs/heads/master,e277a00188c4f3be5041d8fb6430b7c5b4c2ed65,159addcfdd830bcaeb9890440535ed6b3a7ab1ab,9e4ddba54db51e20c41564f8e8a81a000dcc2faa,,False,False,True,3,2,20,1,False,3,False
+5,refs/heads/master,159addcfdd830bcaeb9890440535ed6b3a7ab1ab,7adc594c226301dfa33a488c572704492eb5ea30,6340c3cdd479a34765fa856b560842a7032050ba,,False,False,True,3,2,19,1,False,3,False
+6,refs/heads/master,29cd00116c171596e12c4f1fb4083130bb5ea5c0,43211739e29fd970729e551d6799519b2d0eeff3,08ac79c8edd07a7739a4bbee0226c00aad36fdc4,,False,True,True,11,28,212,1,False,11,False

@@ -1,8 +1,8 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-2,refs/heads/2.1-master,e7d8bbbde66c0c6984fd362d519580d637808127,b34b12bfdc2077bf1b01b8d2a0043ed2d362e074,e2d80d3b49689a67197563f4bb00fbc826bd53e6,,52,2,2491,127,False,True,True,52,False,False
-3,refs/heads/2.1-master,b34b12bfdc2077bf1b01b8d2a0043ed2d362e074,29d258bb665a12df061cac5d1dd65cd4fc19694d,9591555b43880929a6c1351fe8afa5064b63213d,,16,2,1059,19,False,False,True,16,False,False
-5,refs/heads/2.1-master,a3a136ad8ebb1c4aa5d5faed6a3e8331651a53c2,dd0eb5a55edd2c7c2b751b3f38bf1da64c9b066d,0cc771f1c9b679b57eec3879f4e1ed25ca203304,,20,1,1066,22,False,True,True,20,False,False
-7,refs/heads/2.1-master,95e8b64a5a7417d79f4d823c4aa6745ee11d960f,faca0eb1c2a1830c268c8847944f8f70bb1f57eb,3d9a37fe701791d380d02462489800ffe23ab7de,,28,2,1032,39,False,True,True,28,False,False
-8,refs/heads/2.1-master,3d9a37fe701791d380d02462489800ffe23ab7de,18aa56c9c5077fde7b172f34e8e7cc44ced0c32b,65065a8979ff6e72385fe8dc4bb1a98dba6a491e,,9,1,275,12,False,True,True,9,False,False
-9,refs/heads/2.1-master,82d6f5e87051c4be19d014913cda9bbc51bf0900,223ca19736854ab858ab56f3827e682b576dedd8,18aa56c9c5077fde7b172f34e8e7cc44ced0c32b,,6,1,14,6,False,True,True,6,False,False
-13,refs/remotes/origin/old-petclinic,6bb983373d0d1b85b423d518980c8cc56c061d46,13455bdedbbfa300a3a7733e65504cadcb4454f3,29901dfec79a0fbf40deabf78e488a54bae75e3e,,3,1,6,3,False,False,True,3,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/heads/2.1-master,e7d8bbbde66c0c6984fd362d519580d637808127,b34b12bfdc2077bf1b01b8d2a0043ed2d362e074,e2d80d3b49689a67197563f4bb00fbc826bd53e6,,False,True,True,52,127,2491,2,False,52,False
+3,refs/heads/2.1-master,b34b12bfdc2077bf1b01b8d2a0043ed2d362e074,29d258bb665a12df061cac5d1dd65cd4fc19694d,9591555b43880929a6c1351fe8afa5064b63213d,,False,False,True,16,19,1059,2,False,16,False
+5,refs/heads/2.1-master,a3a136ad8ebb1c4aa5d5faed6a3e8331651a53c2,dd0eb5a55edd2c7c2b751b3f38bf1da64c9b066d,0cc771f1c9b679b57eec3879f4e1ed25ca203304,,False,True,True,20,22,1066,1,False,20,False
+7,refs/heads/2.1-master,95e8b64a5a7417d79f4d823c4aa6745ee11d960f,faca0eb1c2a1830c268c8847944f8f70bb1f57eb,3d9a37fe701791d380d02462489800ffe23ab7de,,False,True,True,28,39,1032,2,False,28,False
+8,refs/heads/2.1-master,3d9a37fe701791d380d02462489800ffe23ab7de,18aa56c9c5077fde7b172f34e8e7cc44ced0c32b,65065a8979ff6e72385fe8dc4bb1a98dba6a491e,,False,True,True,9,12,275,1,False,9,False
+9,refs/heads/2.1-master,82d6f5e87051c4be19d014913cda9bbc51bf0900,223ca19736854ab858ab56f3827e682b576dedd8,18aa56c9c5077fde7b172f34e8e7cc44ced0c32b,,False,True,True,6,6,14,1,False,6,False
+13,refs/remotes/origin/old-petclinic,6bb983373d0d1b85b423d518980c8cc56c061d46,13455bdedbbfa300a3a7733e65504cadcb4454f3,29901dfec79a0fbf40deabf78e488a54bae75e3e,,False,False,True,3,3,6,1,False,3,False

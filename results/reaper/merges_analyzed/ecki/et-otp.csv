@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/remotes/origin/gh-pages,850703812777d5312478ea3851f4d7e841bf9088,aa3a706b5ce41550a4d0e5734dfc30f42617f505,378c17750c8705fee609bf9e096615582983b39c,,False,False,True,3,3,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/remotes/origin/gh-pages,850703812777d5312478ea3851f4d7e841bf9088,aa3a706b5ce41550a4d0e5734dfc30f42617f505,378c17750c8705fee609bf9e096615582983b39c,,False,False,True,3,2,6,1,False,3,False

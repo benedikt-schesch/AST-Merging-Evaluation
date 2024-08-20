@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,union_diff_files,num_intersecting_files,sampled for testing
-1,refs/heads/master,eabc5a4201969e4c365be0f72fe219b61fe1fa2c,fe7ccd8cc5f8d7646835536cc99aba04cc3bde04,87da87c2d6d477531284d0972f66d6da105df807,,,Error,False,,,,False,Error while retrieving base sha,Error while retrieving base sha,False
-3,refs/heads/master,d510022f373be1a8f2c09ec64c3c2c50781100d8,bab14d732f009db3db9dac7ed6f062174ab30b4a,72b06f368ce9fb8e881ae0c097c5d24c9424f26e,,,Error,False,,,,False,Error while retrieving base sha,Error while retrieving base sha,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,eabc5a4201969e4c365be0f72fe219b61fe1fa2c,fe7ccd8cc5f8d7646835536cc99aba04cc3bde04,87da87c2d6d477531284d0972f66d6da105df807,,False,,,,Error,,Error while retrieving base sha,False,Error while retrieving base sha,False
+3,refs/heads/master,d510022f373be1a8f2c09ec64c3c2c50781100d8,bab14d732f009db3db9dac7ed6f062174ab30b4a,72b06f368ce9fb8e881ae0c097c5d24c9424f26e,,False,,,,Error,,Error while retrieving base sha,False,Error while retrieving base sha,False

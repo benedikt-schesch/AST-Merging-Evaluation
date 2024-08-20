@@ -1,8 +1,8 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/master,5483105ef29c3c77249c1263497c8a0c1fae0c29,f1fe568f37ec5a59226d5280e04b5552ffb838dc,3a246705534b351b9f45b7f86676f3394678a53d,,False,True,True,4,0,False,False
-2,refs/heads/master,f1fe568f37ec5a59226d5280e04b5552ffb838dc,f9ecc4d2dc9ef159d33aeea21a773d082333aa09,451f8f489f3f7793e769c9e6525083a62b6862c7,,False,True,True,3,0,False,False
-4,refs/heads/master,7c089a3da9743bbd68d75c4da104de7bfb29c3c6,b38c7770d15b4607ff89f9f192c068d4cd7d1b1b,8f180433816e49ae91455e0032486595ce33f8ba,,False,False,True,3,0,False,False
-6,refs/heads/master,1a0b91da5e10410176980a10b18f9e38348ee6fd,29c2963c1fe8c8ffa3a40b63fc97a67d419c6ae2,629764c385861826b617cc10fdba5b58d427b463,,False,False,True,4,2,False,False
-7,refs/heads/master,29c2963c1fe8c8ffa3a40b63fc97a67d419c6ae2,6075915dd25d2230171fee2ed22060fe5eae1c5f,784726992a28e8f29607d0c2aad2a07d57bfef73,,False,True,True,8,6,False,False
-8,refs/heads/master,6075915dd25d2230171fee2ed22060fe5eae1c5f,d8c0d150c6d8e512c9f151d9ae065959d5e78a95,7bd5328418fdf5c8a1bdc594d19be1626dc327e0,,False,True,True,15,186,False,False
-11,refs/remotes/origin/gh-pages,7528bf6bf1478b905827e9dba76e15aab16914f8,e3b4147c084d59105a3a80edcff6c798a7f49baa,8d4c0a74e6c4f8c30340ad79fb6437185a1f0a36,two initial commits,False,True,True,14,415,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,5483105ef29c3c77249c1263497c8a0c1fae0c29,f1fe568f37ec5a59226d5280e04b5552ffb838dc,3a246705534b351b9f45b7f86676f3394678a53d,,False,True,True,4,5,17,1,False,4,False
+2,refs/heads/master,f1fe568f37ec5a59226d5280e04b5552ffb838dc,f9ecc4d2dc9ef159d33aeea21a773d082333aa09,451f8f489f3f7793e769c9e6525083a62b6862c7,,False,True,True,3,3,6,1,False,3,False
+4,refs/heads/master,7c089a3da9743bbd68d75c4da104de7bfb29c3c6,b38c7770d15b4607ff89f9f192c068d4cd7d1b1b,8f180433816e49ae91455e0032486595ce33f8ba,,False,False,True,3,3,6,1,False,3,False
+6,refs/heads/master,1a0b91da5e10410176980a10b18f9e38348ee6fd,29c2963c1fe8c8ffa3a40b63fc97a67d419c6ae2,629764c385861826b617cc10fdba5b58d427b463,,False,False,True,4,16,58,1,False,4,False
+7,refs/heads/master,29c2963c1fe8c8ffa3a40b63fc97a67d419c6ae2,6075915dd25d2230171fee2ed22060fe5eae1c5f,784726992a28e8f29607d0c2aad2a07d57bfef73,,False,True,True,8,20,209,1,False,8,False
+8,refs/heads/master,6075915dd25d2230171fee2ed22060fe5eae1c5f,d8c0d150c6d8e512c9f151d9ae065959d5e78a95,7bd5328418fdf5c8a1bdc594d19be1626dc327e0,,False,True,True,15,15,1075,0,False,15,False
+11,refs/remotes/origin/gh-pages,7528bf6bf1478b905827e9dba76e15aab16914f8,e3b4147c084d59105a3a80edcff6c798a7f49baa,8d4c0a74e6c4f8c30340ad79fb6437185a1f0a36,two initial commits,False,True,True,14,59,762,Error while retrieving base sha,False,Error while retrieving base sha,False

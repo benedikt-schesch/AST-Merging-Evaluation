@@ -1,10 +1,10 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-4,refs/remotes/origin/pull/136,16bddda15aab48867fbe1a642e5cdd57bd23a1bc,c63cb7f6c1433d3f6dca09ad5da5b345150e7ceb,23e4216c6447c8d195f15fac13eae64e079cdfbc,,False,True,True,19,436,False,False
-5,refs/remotes/origin/pull/136,4996d03811d47318541b98b19a479a36995fc5c2,e0b4802278550dfbec69c4618e88f6f0e66def0e,f42a2de8668e5abe65c43d57b62f614940517c0f,,False,True,True,37,245,False,False
-6,refs/remotes/origin/pull/140,016541ac3f09058854dab5d4aea52863855a9052,14282758ee7009ace3f8fce04ffc52c1fd700b17,23e4216c6447c8d195f15fac13eae64e079cdfbc,,False,True,True,10,189,False,False
-7,refs/remotes/origin/pull/140,12926ad70eed6d639ac3156e6da395f056ddc436,af1400707807e5f3a773affac3b7beb418499f02,ad149e8d05c335cb7078fc9b85fe4e2500f358b8,,False,True,True,11,194,False,False
-8,refs/remotes/origin/pull/144,2672c89cab8be4912516efe0db109c1aa59c66a2,eee861faeed3d49f92a5705f049212a6cd6115db,7594fd8fe8453eeb10980dcd59f320f2f18b0b19,,False,True,True,20,588,False,False
-10,refs/remotes/origin/pull/52,3f417c21fc754b0733f51b8ff9ec2f7f2e3cc112,f469c090402e42a940056db1b3084e807971c832,9bfcf4aeb979aed26e3ed8635e12566309d82988,,False,True,True,9,63,False,False
-12,refs/remotes/origin/pull/52,c8ac1c34d2e8193512ffe8a8aafd7417398b35fc,0570581a659d6fc6ab9fde2fbc217a41e940c3c6,5d92facb017d74c93178777c21d1fdc82f0beab7,,False,True,True,3,14,False,False
-13,refs/remotes/origin/pull/52,5d92facb017d74c93178777c21d1fdc82f0beab7,2fd02394a7803a561aed2a603ea36b757a3daf43,d32728cfd2cfb39de5cb0433c3a702327cedf7dd,,False,False,True,2,16,False,False
-15,refs/remotes/origin/pull/52,b701d1e26e3d25e93ab2c5fe294d3cfc90e6167a,7483842d99f6e0ab9c0c599284dad56e0c08cff0,a24ad116b3f4b00661a4cba85336251497fe9094,,False,False,True,2,10,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+4,refs/remotes/origin/pull/136,16bddda15aab48867fbe1a642e5cdd57bd23a1bc,c63cb7f6c1433d3f6dca09ad5da5b345150e7ceb,23e4216c6447c8d195f15fac13eae64e079cdfbc,,False,True,True,19,34,606,1,False,19,False
+5,refs/remotes/origin/pull/136,4996d03811d47318541b98b19a479a36995fc5c2,e0b4802278550dfbec69c4618e88f6f0e66def0e,f42a2de8668e5abe65c43d57b62f614940517c0f,,False,True,True,37,37,413,1,False,37,False
+6,refs/remotes/origin/pull/140,016541ac3f09058854dab5d4aea52863855a9052,14282758ee7009ace3f8fce04ffc52c1fd700b17,23e4216c6447c8d195f15fac13eae64e079cdfbc,,False,True,True,10,22,289,9,False,18,False
+7,refs/remotes/origin/pull/140,12926ad70eed6d639ac3156e6da395f056ddc436,af1400707807e5f3a773affac3b7beb418499f02,ad149e8d05c335cb7078fc9b85fe4e2500f358b8,,False,True,True,11,22,292,1,False,11,False
+8,refs/remotes/origin/pull/144,2672c89cab8be4912516efe0db109c1aa59c66a2,eee861faeed3d49f92a5705f049212a6cd6115db,7594fd8fe8453eeb10980dcd59f320f2f18b0b19,,False,True,True,20,39,823,1,False,20,False
+10,refs/remotes/origin/pull/52,3f417c21fc754b0733f51b8ff9ec2f7f2e3cc112,f469c090402e42a940056db1b3084e807971c832,9bfcf4aeb979aed26e3ed8635e12566309d82988,,False,True,True,9,11,101,0,False,9,False
+12,refs/remotes/origin/pull/52,c8ac1c34d2e8193512ffe8a8aafd7417398b35fc,0570581a659d6fc6ab9fde2fbc217a41e940c3c6,5d92facb017d74c93178777c21d1fdc82f0beab7,,False,True,True,3,5,15,0,False,3,False
+13,refs/remotes/origin/pull/52,5d92facb017d74c93178777c21d1fdc82f0beab7,2fd02394a7803a561aed2a603ea36b757a3daf43,d32728cfd2cfb39de5cb0433c3a702327cedf7dd,,False,False,True,2,4,30,0,False,2,False
+15,refs/remotes/origin/pull/52,b701d1e26e3d25e93ab2c5fe294d3cfc90e6167a,7483842d99f6e0ab9c0c599284dad56e0c08cff0,a24ad116b3f4b00661a4cba85336251497fe9094,,False,False,True,2,6,12,0,False,2,False

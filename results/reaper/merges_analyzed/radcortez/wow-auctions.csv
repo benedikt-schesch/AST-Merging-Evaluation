@@ -1,7 +1,7 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/main,53014d2938cda833b8a167e98cbbf580c7ce0981,19eb642ce1147b48d8416dc4ef61aaeba88d9d2e,563be87470d9e517f21653e7a229959c75432d7f,,False,False,False,0,0,False,False
-6,refs/remotes/origin/pull/10,f399a1d9bf6cf736005650a689ac78055b4ea6b1,f14e8ef830c5c4c2b20ee5466464d4371313542b,130aa4842449fc6b1ffd4085fa5945bb30598aa4,,False,False,True,2,10,False,False
-7,refs/remotes/origin/pull/11,bff9e6ed1ace27c01dec7cec9cba868fa3334ea0,dcc7767f9eb11dfc27f23dd56391754afc7c113b,47fe3154e6373c12e9be6778f3ff1d6eb0b41bc8,,False,False,True,3,29,False,False
-8,refs/remotes/origin/pull/15,c948f429c7c6555e651395dffe2cbaffdc865bdf,cdc2386be275e8a77898530a1144fb33d84f74f0,203d1371f28031cbf6514e05d8f52058f15ea83e,,False,False,True,2,4,False,False
-9,refs/remotes/origin/pull/18,90c4b66d2c66c0830c4bc382b3e947059e89a5c2,0b4206f8b728b36d2d90d20a2ff6aaa49bf1fcd2,f182c21e36fb84139b48e4ee12244eca3232b184,,False,False,True,2,4,False,False
-10,refs/remotes/origin/pull/32,681332414270f97752dc2ce7ffa14301474900bf,a1028f794fe6424a465c317fd15fe87e05ee94de,d8c956cd90668bb737ba642ce8eecc4025298063,,False,False,True,3,6,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/main,53014d2938cda833b8a167e98cbbf580c7ce0981,19eb642ce1147b48d8416dc4ef61aaeba88d9d2e,563be87470d9e517f21653e7a229959c75432d7f,,False,False,False,0,Error,0,4,False,4,False
+6,refs/remotes/origin/pull/10,f399a1d9bf6cf736005650a689ac78055b4ea6b1,f14e8ef830c5c4c2b20ee5466464d4371313542b,130aa4842449fc6b1ffd4085fa5945bb30598aa4,,False,False,True,2,2,10,2,False,3,False
+7,refs/remotes/origin/pull/11,bff9e6ed1ace27c01dec7cec9cba868fa3334ea0,dcc7767f9eb11dfc27f23dd56391754afc7c113b,47fe3154e6373c12e9be6778f3ff1d6eb0b41bc8,,False,False,True,3,2,37,1,False,3,False
+8,refs/remotes/origin/pull/15,c948f429c7c6555e651395dffe2cbaffdc865bdf,cdc2386be275e8a77898530a1144fb33d84f74f0,203d1371f28031cbf6514e05d8f52058f15ea83e,,False,False,True,2,2,4,2,False,2,False
+9,refs/remotes/origin/pull/18,90c4b66d2c66c0830c4bc382b3e947059e89a5c2,0b4206f8b728b36d2d90d20a2ff6aaa49bf1fcd2,f182c21e36fb84139b48e4ee12244eca3232b184,,False,False,True,2,2,4,2,False,2,False
+10,refs/remotes/origin/pull/32,681332414270f97752dc2ce7ffa14301474900bf,a1028f794fe6424a465c317fd15fe87e05ee94de,d8c956cd90668bb737ba642ce8eecc4025298063,,False,False,True,3,2,9,1,False,3,False

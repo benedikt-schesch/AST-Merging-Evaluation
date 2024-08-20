@@ -1,4 +1,4 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-2,refs/heads/master,7b2b8eb3877d65457e4dbbfa5d8002860a3a1bbb,34ac33b799d4cdb4b976fe846dbdbb63333f9c8d,1ed250187f808ee078a73462c9d3e84e11d8a6ea,,430,4,40333,2350,False,True,True,430,False,False
-3,refs/heads/master,34ac33b799d4cdb4b976fe846dbdbb63333f9c8d,914a881aa20937a96a2b26ece868f99dc3230d42,9afbe7794eed478bf1c936896b329defc5dd2e7a,,5,2,589,4,False,False,True,4,False,False
-5,refs/remotes/origin/pull/21,a8f710cf7430acaece5637916c1bd4f8c350f972,c1d81d239390e3b82d373d6c20c911dd6d407a26,5d4a52d910e4c334975eccf50f18a3d64e46f9f1,,523,5,2685,161,False,True,True,521,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/heads/master,7b2b8eb3877d65457e4dbbfa5d8002860a3a1bbb,34ac33b799d4cdb4b976fe846dbdbb63333f9c8d,1ed250187f808ee078a73462c9d3e84e11d8a6ea,,False,True,True,430,2350,40333,4,False,430,False
+3,refs/heads/master,34ac33b799d4cdb4b976fe846dbdbb63333f9c8d,914a881aa20937a96a2b26ece868f99dc3230d42,9afbe7794eed478bf1c936896b329defc5dd2e7a,,False,False,True,4,4,589,2,False,5,False
+5,refs/remotes/origin/pull/21,a8f710cf7430acaece5637916c1bd4f8c350f972,c1d81d239390e3b82d373d6c20c911dd6d407a26,5d4a52d910e4c334975eccf50f18a3d64e46f9f1,,False,True,True,521,161,2685,5,False,523,False

@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,union_diff_files,num_intersecting_files,sampled for testing
-1,refs/heads/master,81781b7e710d3f8c7fb9c9a14d691c9b2bdcf87a,ff1b9b76451ec843781b998c5c9dce0bb794c089,a07f221903b6022f988a572b890f01c6bd3691e7,two initial commits,915,14,False,True,True,12,False,Error while retrieving base sha,Error while retrieving base sha,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,81781b7e710d3f8c7fb9c9a14d691c9b2bdcf87a,ff1b9b76451ec843781b998c5c9dce0bb794c089,a07f221903b6022f988a572b890f01c6bd3691e7,two initial commits,False,True,True,12,14,915,Error while retrieving base sha,False,Error while retrieving base sha,False

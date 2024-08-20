@@ -1,4 +1,4 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-2,refs/remotes/origin/docker,392e8fb247dc0b27bb41ff8d8137c6a0776b1b6d,92b3985c34ff6b39c4ec25e9d849d261bfd2850c,7306b03da083da9d81a648a5649575fbd6867b1b,,False,True,True,16,221,False,False
-3,refs/remotes/origin/docker,f19a47078dbf348dd5c08e7bd95afa8d26b58145,3efaacddb410057f840a8b651077b47071bc6fdd,84e69fdd760039189b486eb7b03ca33c143e1f21,,False,False,True,7,211,False,False
-4,refs/remotes/origin/docker,037053207a75ef15999314955ed230f735ea1f49,ee37630f7bef3a4125995d1ba369820ffb4dbc36,5cfbdde7dc464c20f1de845642be50fdbec82bad,,False,True,True,7,215,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/remotes/origin/docker,392e8fb247dc0b27bb41ff8d8137c6a0776b1b6d,92b3985c34ff6b39c4ec25e9d849d261bfd2850c,7306b03da083da9d81a648a5649575fbd6867b1b,,False,True,True,16,38,373,1,False,16,False
+3,refs/remotes/origin/docker,f19a47078dbf348dd5c08e7bd95afa8d26b58145,3efaacddb410057f840a8b651077b47071bc6fdd,84e69fdd760039189b486eb7b03ca33c143e1f21,,False,False,True,7,14,234,1,False,7,False
+4,refs/remotes/origin/docker,037053207a75ef15999314955ed230f735ea1f49,ee37630f7bef3a4125995d1ba369820ffb4dbc36,5cfbdde7dc464c20f1de845642be50fdbec82bad,,False,True,True,7,15,226,1,False,7,False

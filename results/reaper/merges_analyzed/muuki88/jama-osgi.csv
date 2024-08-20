@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-2,refs/heads/master,95d5dbd64db49aa0eb5f4a23e6b996bec95ab336,af6426b96461540eefea428e5fa83ab1bf007bbf,acd8851bdf6a588464cf37e5a52179920d4e807d,,False,False,True,3,48,False,False
-3,refs/heads/master,f130866abb65c37e61c82dd632e5dfc7a69cbcde,dc7d08febdb0d265f2dc0d8690c38313216c7db1,d9a0736ebb847b95812dd041416f08daf53b3cb1,,False,False,True,8,69,False,False
-4,refs/heads/master,4501874b24ce2bef1c07d100c0d54e27c8167c73,85047d6723894ab74b53010857a907ec5a49158f,135dd7cd7f5416a4eb832fc63dc9d20d95ba389c,,False,True,True,7,1859,False,False
-5,refs/remotes/origin/tycho,870c05a1468cfd2ea6196bc0ba5f5b3ef85532c8,850646f6c2ca8b53ef4bd8deca990f13aa04cccb,87dbd683b5aab133cb076516efb974ee34c69495,,False,True,True,34,1694,False,False
-6,refs/remotes/origin/tycho,d31e7628bfee65603d1b106a102f41af249911b2,e34d821cd9d74c731e8457773937ec070e9c252e,f130866abb65c37e61c82dd632e5dfc7a69cbcde,,False,True,True,12,1093,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/heads/master,95d5dbd64db49aa0eb5f4a23e6b996bec95ab336,af6426b96461540eefea428e5fa83ab1bf007bbf,acd8851bdf6a588464cf37e5a52179920d4e807d,,False,False,True,3,8,54,3,False,3,False
+3,refs/heads/master,f130866abb65c37e61c82dd632e5dfc7a69cbcde,dc7d08febdb0d265f2dc0d8690c38313216c7db1,d9a0736ebb847b95812dd041416f08daf53b3cb1,,False,False,True,8,19,145,5,False,8,False
+4,refs/heads/master,4501874b24ce2bef1c07d100c0d54e27c8167c73,85047d6723894ab74b53010857a907ec5a49158f,135dd7cd7f5416a4eb832fc63dc9d20d95ba389c,,False,True,True,7,27,4620,1,False,7,False
+5,refs/remotes/origin/tycho,870c05a1468cfd2ea6196bc0ba5f5b3ef85532c8,850646f6c2ca8b53ef4bd8deca990f13aa04cccb,87dbd683b5aab133cb076516efb974ee34c69495,,False,True,True,34,37,3793,6,False,34,False
+6,refs/remotes/origin/tycho,d31e7628bfee65603d1b106a102f41af249911b2,e34d821cd9d74c731e8457773937ec070e9c252e,f130866abb65c37e61c82dd632e5dfc7a69cbcde,,False,True,True,12,22,2606,8,False,13,False
