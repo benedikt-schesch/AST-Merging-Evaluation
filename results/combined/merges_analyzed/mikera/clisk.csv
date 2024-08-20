@@ -1,13 +1,13 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/develop,77818a1561cb46242da7e778088c3d13f51424a5,510454097476db1a47bf9586294ec75c1346b6e5,ce2a8d762b87a6b76553c5192b05103020170de6,,False,False,True,2,41,False,False
-2,refs/heads/develop,f1429488539180aace464eea290477982fb57d89,3ce690cf271a3bd7efa115cc76fca378d1bf043f,ef35cf252809726d1f0194b6ccc7565671dd99b7,,False,False,True,3,2,False,False
-3,refs/heads/develop,cafad1d9087861ffc0dd81056108ff744e7d76da,42c4f27c0c3d1126a6123e90721d68a82ee717eb,c091a218647e6e9a4d247efebd1536c9b1180845,,False,True,True,5,100,False,False
-5,refs/heads/develop,9765e8e8f742e84a28616d2f19cf3f6c37fee3f8,e34ce81ed35ad1f793d265b34cc01ba8e4474c00,b7e6b2868cff4c4c866ffcbe86a2004c3d2061e9,,False,False,True,2,0,False,False
-7,refs/heads/develop,1fe7656c46af7bef46dd9ab3ac93cc1bb1152598,895514df2569f5489c6c9b8954ba4122821dccdc,9430c7403acaff49b6a5b7b8147c0f990646cbda,two initial commits,False,True,True,34,1535,False,False
-8,refs/heads/develop,f385d1ae47378e55042957fe8054ff3ca869f81c,f3d585f7c764a21e8445e56c3268eadc4e2b487d,a3e774832c1026fc403328057d646eb793e19dc4,,False,True,True,10,294,False,False
-9,refs/heads/develop,f3d585f7c764a21e8445e56c3268eadc4e2b487d,80093cca62c0d0847b8a1c582441f44b8267d9cb,d4eea44883d6017b26ec8e82a654db61f0e5d609,,False,False,True,6,115,False,False
-10,refs/heads/develop,d4eea44883d6017b26ec8e82a654db61f0e5d609,cff72b29754e37733f400f85d46fcafe09298cb9,6c98653606407e3346dbd46b4fb639d617a87c26,,False,True,True,6,185,False,False
-11,refs/remotes/origin/1.5-test,fa761fbf2aee792a323e34a890b3fb9bcdbdb3d6,dcd5cd61441bf929c71d7dec4a9fabc989548593,895514df2569f5489c6c9b8954ba4122821dccdc,,False,True,True,10,294,False,False
-12,refs/remotes/origin/1.5-test,dcd5cd61441bf929c71d7dec4a9fabc989548593,0e1e5cb4148cc9492b36fb6f0b0f4734d0e05702,1cc048b9f94c96c477a25d18039a446ac94f0dc7,,False,False,True,6,115,False,False
-13,refs/remotes/origin/1.5-test,1cc048b9f94c96c477a25d18039a446ac94f0dc7,8afe5bb293f974664c37fed1448c1d62fefc6dc7,4ca1819b9971fbcf385f4cd1e76422bfd5d7787c,,False,True,True,6,185,False,False
-14,refs/remotes/origin/master,edca72640cc4912e146323198f8abf530845fd76,9c646cf6603a1d22b245a5149c548d28ad77e8b5,588bcf1bfeb4a0cedb9c745774ae69460f8f666e,,False,True,True,5,100,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+1,refs/heads/develop,77818a1561cb46242da7e778088c3d13f51424a5,510454097476db1a47bf9586294ec75c1346b6e5,ce2a8d762b87a6b76553c5192b05103020170de6,,2,2,47,8,False,False,True,2,False,False
+2,refs/heads/develop,f1429488539180aace464eea290477982fb57d89,3ce690cf271a3bd7efa115cc76fca378d1bf043f,ef35cf252809726d1f0194b6ccc7565671dd99b7,,3,1,9,4,False,False,True,3,False,False
+3,refs/heads/develop,cafad1d9087861ffc0dd81056108ff744e7d76da,42c4f27c0c3d1126a6123e90721d68a82ee717eb,c091a218647e6e9a4d247efebd1536c9b1180845,,5,1,209,36,False,True,True,5,False,False
+5,refs/heads/develop,9765e8e8f742e84a28616d2f19cf3f6c37fee3f8,e34ce81ed35ad1f793d265b34cc01ba8e4474c00,b7e6b2868cff4c4c866ffcbe86a2004c3d2061e9,,2,0,4,2,False,False,True,2,False,False
+7,refs/heads/develop,1fe7656c46af7bef46dd9ab3ac93cc1bb1152598,895514df2569f5489c6c9b8954ba4122821dccdc,9430c7403acaff49b6a5b7b8147c0f990646cbda,two initial commits,Error while retrieving base sha,Error while retrieving base sha,3452,173,False,True,True,34,False,False
+8,refs/heads/develop,f385d1ae47378e55042957fe8054ff3ca869f81c,f3d585f7c764a21e8445e56c3268eadc4e2b487d,a3e774832c1026fc403328057d646eb793e19dc4,,11,2,511,49,False,True,True,10,False,False
+9,refs/heads/develop,f3d585f7c764a21e8445e56c3268eadc4e2b487d,80093cca62c0d0847b8a1c582441f44b8267d9cb,d4eea44883d6017b26ec8e82a654db61f0e5d609,,6,3,258,28,False,False,True,6,False,False
+10,refs/heads/develop,d4eea44883d6017b26ec8e82a654db61f0e5d609,cff72b29754e37733f400f85d46fcafe09298cb9,6c98653606407e3346dbd46b4fb639d617a87c26,,6,2,288,45,False,True,True,6,False,False
+11,refs/remotes/origin/1.5-test,fa761fbf2aee792a323e34a890b3fb9bcdbdb3d6,dcd5cd61441bf929c71d7dec4a9fabc989548593,895514df2569f5489c6c9b8954ba4122821dccdc,,11,2,511,49,False,True,True,10,False,False
+12,refs/remotes/origin/1.5-test,dcd5cd61441bf929c71d7dec4a9fabc989548593,0e1e5cb4148cc9492b36fb6f0b0f4734d0e05702,1cc048b9f94c96c477a25d18039a446ac94f0dc7,,6,3,258,28,False,False,True,6,False,False
+13,refs/remotes/origin/1.5-test,1cc048b9f94c96c477a25d18039a446ac94f0dc7,8afe5bb293f974664c37fed1448c1d62fefc6dc7,4ca1819b9971fbcf385f4cd1e76422bfd5d7787c,,6,2,288,45,False,True,True,6,False,False
+14,refs/remotes/origin/master,edca72640cc4912e146323198f8abf530845fd76,9c646cf6603a1d22b245a5149c548d28ad77e8b5,588bcf1bfeb4a0cedb9c745774ae69460f8f666e,,5,0,227,44,False,True,True,5,False,False

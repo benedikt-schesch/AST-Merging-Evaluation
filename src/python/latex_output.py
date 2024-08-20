@@ -61,6 +61,11 @@ MERGE_TOOL_RENAME = {
     "gitmerge_ort_imports_ignorespace": "Imports+ort-ignorespace",
     "intellimerge": "IntelliMerge",
     "git_hires_merge": "Hires-Merge",
+    "plumelib_ort_adjacent": "Adjacent",
+    "plumelib_ort_imports": "Imports",
+    "plumelib_ort_version_number": "Version Numbers",
+    "plumelib_ort": "IVn",
+    "plumelib_ort_ignorespace": "Ignorespace",
 }
 
 

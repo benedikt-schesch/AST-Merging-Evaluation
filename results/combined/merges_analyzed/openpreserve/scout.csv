@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-2,refs/heads/master,714ca83125b0f056cba6432fd17bb183176907b0,1bc83404a7af2bb35f468d99bb1cf423a88c3df3,480ab2db8ddbd0c22c194b3fe9f80162088bc8af,,False,True,True,431,35963,False,False
-3,refs/heads/master,8d0a348abe6de33ef43384c3a0ae1437fbbb3ef4,a0822c99f27c3ee783a1b7d18ae1399b37a1ca79,cf3384a0a3c48529f684cfc5779fc97e44dacfc0,,False,True,True,12,326,False,False
-4,refs/heads/master,307c08a30e138b6d49b5781ec234097ac0cd53dd,1645cf39ab61dd941b77cbe6c304412bc71a936f,fbfa96fdc712f608b414f0e0930f36243d15c8f4,,False,True,True,19,872,False,False
-5,refs/remotes/origin/integration,02f412c4f9197658d1731a6ed61e6c5a3d0bdfe0,61b3211cedf42664eefd0819379aaaf75c8e3286,e6fb730ff17ed60175eb47287f68b11f012943e6,,False,True,True,16,2436,False,False
-6,refs/remotes/origin/vagrant-dev,9c30c4059724aa2835b3fac763195f5475f7fc9b,662c046f6f1ea7bc81bd25a330478a08e40acd18,070becb56df9295742b081f78edd8d6d1d14ccf6,,False,False,True,16,48,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+2,refs/heads/master,714ca83125b0f056cba6432fd17bb183176907b0,1bc83404a7af2bb35f468d99bb1cf423a88c3df3,480ab2db8ddbd0c22c194b3fe9f80162088bc8af,,431,2,76669,1555,False,True,True,431,False,False
+3,refs/heads/master,8d0a348abe6de33ef43384c3a0ae1437fbbb3ef4,a0822c99f27c3ee783a1b7d18ae1399b37a1ca79,cf3384a0a3c48529f684cfc5779fc97e44dacfc0,,46,35,472,29,False,True,True,12,False,False
+4,refs/heads/master,307c08a30e138b6d49b5781ec234097ac0cd53dd,1645cf39ab61dd941b77cbe6c304412bc71a936f,fbfa96fdc712f608b414f0e0930f36243d15c8f4,,41,23,1130,22,False,True,True,19,False,False
+5,refs/remotes/origin/integration,02f412c4f9197658d1731a6ed61e6c5a3d0bdfe0,61b3211cedf42664eefd0819379aaaf75c8e3286,e6fb730ff17ed60175eb47287f68b11f012943e6,,100,85,6321,110,False,True,True,16,False,False
+6,refs/remotes/origin/vagrant-dev,9c30c4059724aa2835b3fac763195f5475f7fc9b,662c046f6f1ea7bc81bd25a330478a08e40acd18,070becb56df9295742b081f78edd8d6d1d14ccf6,,16,1,136,23,False,False,True,16,False,False

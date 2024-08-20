@@ -829,6 +829,7 @@ class Repository:
         if process.returncode != 0:
             raise RuntimeError(
                 f"Command {command} failed with exit code {process.returncode}:\n"
+                f"In folder {self.local_repo_path}\n"
                 f"stdout: {process.stdout}\nstderr: {process.stderr}"
             )
         return process.stdout, process.stderr

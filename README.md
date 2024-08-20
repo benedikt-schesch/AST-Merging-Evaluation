@@ -188,6 +188,8 @@ To run style checking run `make style`.
 
       * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
 
+      * diff_statistics.py -> Various diff commands to compare the results of two merges.
+
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
