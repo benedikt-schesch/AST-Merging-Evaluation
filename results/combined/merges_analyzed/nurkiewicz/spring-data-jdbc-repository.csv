@@ -1,7 +1,7 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-1,refs/heads/master,13af49f83f38fc5328322020d6b9e8a524d04ede,83d02b0f71d4c420a526db43709e89877369b0d2,75e4cebd512d3bf137a3181e0a6a4223b04e722d,,29,3,972,94,False,True,True,29,False,False
-2,refs/heads/master,676f249a5e1e6ae483ef6ca08755fb2755ace7d1,193721e4e4ec8856972579685a443904e2cceba2,8c1fd097bf651fe0afb5493f8969027ef7c0166a,,13,2,655,21,False,True,True,13,False,False
-3,refs/heads/master,9e28bdfee9b6288b76071322e670e59a1fac0515,fcabbcb72ba680f6ddbdb71086d39c2f2f85a50f,747da55c10432389032d71bdef6aab42dd44be60,,12,1,596,18,False,True,True,12,False,False
-4,refs/heads/master,1bb25d8d3b4d66c0ce8f9bfaab957b7e803b4cf5,024308532882d3f2f13d0ae4b8211fe66f1dd7c6,05f8aa2e099319a38df6b5f3990e29227143e4d5,,26,1,521,48,False,True,True,26,False,False
-5,refs/heads/master,3f810d91cff6da7c9eb6f3f4c437c92e6291b783,aedf7aa3ca45d983e4b905f2725e57686910c534,0fe5e15b88b00faac29b4e26490596586a3f4e9d,,7,1,159,7,False,True,True,7,False,False
-6,refs/heads/master,8ad23e49a34489a6816458c76305bacfffaaf4c4,b590274f7e9812d0970ae6423b9ede58c66f95ba,db906994a9fb10169a147b7a7bae3ba0f704e3e6,,10,1,210,27,False,True,True,10,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,13af49f83f38fc5328322020d6b9e8a524d04ede,83d02b0f71d4c420a526db43709e89877369b0d2,75e4cebd512d3bf137a3181e0a6a4223b04e722d,,False,True,True,29,94,972,3,False,29,False
+2,refs/heads/master,676f249a5e1e6ae483ef6ca08755fb2755ace7d1,193721e4e4ec8856972579685a443904e2cceba2,8c1fd097bf651fe0afb5493f8969027ef7c0166a,,False,True,True,13,21,655,2,False,13,False
+3,refs/heads/master,9e28bdfee9b6288b76071322e670e59a1fac0515,fcabbcb72ba680f6ddbdb71086d39c2f2f85a50f,747da55c10432389032d71bdef6aab42dd44be60,,False,True,True,12,18,596,1,False,12,False
+4,refs/heads/master,1bb25d8d3b4d66c0ce8f9bfaab957b7e803b4cf5,024308532882d3f2f13d0ae4b8211fe66f1dd7c6,05f8aa2e099319a38df6b5f3990e29227143e4d5,,False,True,True,26,48,521,1,False,26,False
+5,refs/heads/master,3f810d91cff6da7c9eb6f3f4c437c92e6291b783,aedf7aa3ca45d983e4b905f2725e57686910c534,0fe5e15b88b00faac29b4e26490596586a3f4e9d,,False,True,True,7,7,159,1,False,7,False
+6,refs/heads/master,8ad23e49a34489a6816458c76305bacfffaaf4c4,b590274f7e9812d0970ae6423b9ede58c66f95ba,db906994a9fb10169a147b7a7bae3ba0f704e3e6,,False,True,True,10,27,210,1,False,10,False

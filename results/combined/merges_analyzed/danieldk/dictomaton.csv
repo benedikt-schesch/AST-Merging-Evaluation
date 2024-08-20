@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-4,refs/heads/master,664bfe9a7e2cef3e9ec2af9dbc5dff886e919305,91f27a155beb2c4d0d98bfb6f108fa46cb30177a,be19bcaa0c26d13a0c7e0d2a0f6a507e3cba7220,,11,2,384,43,False,True,True,11,False,False
-6,refs/heads/master,d86dc1766176469001e5ce4488cfb728ac4fd238,a7581f5a26514adce5f1a1224976b4d5ddaffbd7,52c8eee31f9e3b03ac0c8a172b797c93e6d79e71,,8,2,391,11,False,True,True,8,False,False
-7,refs/heads/master,253f70e8448df9750104ef7e9b3ade43cf99e98e,8220c9a580e5ad33033c587edcc28d1fb6175420,eefe936c53052c5e4eb46278b10771719a75e2fd,,7,1,368,41,False,True,True,7,False,False
-8,refs/remotes/origin/benchmark,ca78885cb162421e8baf5025747b78d0cb043c76,2d9839dd00c6adcc607e86c7c2496ec909c900d4,1145e57e8a19024ebe41ea601c1339501cbc22ef,,13,2,236009,27,False,True,True,12,False,False
-9,refs/remotes/origin/release-0.0,17549e6aee047ba28fc9d23cf68b1bf1ecfecfe9,3a6d543e2334659f72b7e9fc79df15b905cfe9f4,5e81b6f3fa8ce54ad5386b60634412f6b6f1b3d1,,5,2,33,9,False,True,True,5,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+4,refs/heads/master,664bfe9a7e2cef3e9ec2af9dbc5dff886e919305,91f27a155beb2c4d0d98bfb6f108fa46cb30177a,be19bcaa0c26d13a0c7e0d2a0f6a507e3cba7220,,False,True,True,11,43,384,2,False,11,False
+6,refs/heads/master,d86dc1766176469001e5ce4488cfb728ac4fd238,a7581f5a26514adce5f1a1224976b4d5ddaffbd7,52c8eee31f9e3b03ac0c8a172b797c93e6d79e71,,False,True,True,8,11,391,2,False,8,False
+7,refs/heads/master,253f70e8448df9750104ef7e9b3ade43cf99e98e,8220c9a580e5ad33033c587edcc28d1fb6175420,eefe936c53052c5e4eb46278b10771719a75e2fd,,False,True,True,7,41,368,1,False,7,False
+8,refs/remotes/origin/benchmark,ca78885cb162421e8baf5025747b78d0cb043c76,2d9839dd00c6adcc607e86c7c2496ec909c900d4,1145e57e8a19024ebe41ea601c1339501cbc22ef,,False,True,True,12,27,236009,2,False,13,False
+9,refs/remotes/origin/release-0.0,17549e6aee047ba28fc9d23cf68b1bf1ecfecfe9,3a6d543e2334659f72b7e9fc79df15b905cfe9f4,5e81b6f3fa8ce54ad5386b60634412f6b6f1b3d1,,False,True,True,5,9,33,2,False,5,False

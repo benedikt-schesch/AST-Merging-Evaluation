@@ -1,7 +1,7 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-2,refs/heads/master,89bbdf5809ace97bdb4808888af3be41bf5d3d92,d400cb7a924b6f425d81546e3da33272d4e41863,6e3b630a2df3c18d6b84c194072b1c799c5cb455,,2,0,19,1,False,False,True,2,False,False
-3,refs/heads/master,d400cb7a924b6f425d81546e3da33272d4e41863,b4601fbadad626049d773fab4ac47ab07d72e7a1,78e5c500595bfdad3c0da5fc7c073f87becd5959,,5,0,79,7,False,True,True,5,False,False
-5,refs/heads/master,5eb82b4c6e583b13bcdc5a1ca592d475d479f44b,16b4e64f10a3f25c50b6a5547b48a9224b3e045f,78594729a9fee140eb19ca2f0cefc5d192de7fa3,,3,0,53,5,False,True,True,3,False,False
-8,refs/heads/master,b1970f92fed28eed9903df815648af60521eb7c1,c770c6bb7330e31ebf15ce86c65fcd1ad95be489,ea424022562d4539db79840b1c2ff3acb5925f92,,5,0,63,11,False,True,True,5,False,False
-10,refs/heads/master,93fd546f5ae7f2ed8ec71863fa2b53766426c84c,42549e69582226eabc785070555cdac374868c78,104167a21927b91cd11186bcaa5b5223ad4d5df3,,14,1,57,26,False,False,True,14,False,False
-11,refs/heads/master,32254a722db41a934bcd9d505e826f036141e1d8,85be356c5076eed798f66dc9cc2ae2bb9b18a8bc,61e6a3f94d06521dfafc42eff2276a478e0b6614,two initial commits,Error while retrieving base sha,Error while retrieving base sha,13859,205,False,True,True,184,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/heads/master,89bbdf5809ace97bdb4808888af3be41bf5d3d92,d400cb7a924b6f425d81546e3da33272d4e41863,6e3b630a2df3c18d6b84c194072b1c799c5cb455,,False,False,True,2,1,19,0,False,2,False
+3,refs/heads/master,d400cb7a924b6f425d81546e3da33272d4e41863,b4601fbadad626049d773fab4ac47ab07d72e7a1,78e5c500595bfdad3c0da5fc7c073f87becd5959,,False,True,True,5,7,79,0,False,5,False
+5,refs/heads/master,5eb82b4c6e583b13bcdc5a1ca592d475d479f44b,16b4e64f10a3f25c50b6a5547b48a9224b3e045f,78594729a9fee140eb19ca2f0cefc5d192de7fa3,,False,True,True,3,5,53,0,False,3,False
+8,refs/heads/master,b1970f92fed28eed9903df815648af60521eb7c1,c770c6bb7330e31ebf15ce86c65fcd1ad95be489,ea424022562d4539db79840b1c2ff3acb5925f92,,False,True,True,5,11,63,0,False,5,False
+10,refs/heads/master,93fd546f5ae7f2ed8ec71863fa2b53766426c84c,42549e69582226eabc785070555cdac374868c78,104167a21927b91cd11186bcaa5b5223ad4d5df3,,False,False,True,14,26,57,1,False,14,False
+11,refs/heads/master,32254a722db41a934bcd9d505e826f036141e1d8,85be356c5076eed798f66dc9cc2ae2bb9b18a8bc,61e6a3f94d06521dfafc42eff2276a478e0b6614,two initial commits,False,True,True,184,205,13859,Error while retrieving base sha,False,Error while retrieving base sha,False

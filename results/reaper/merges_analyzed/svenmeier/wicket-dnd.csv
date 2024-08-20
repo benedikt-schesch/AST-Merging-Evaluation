@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-3,refs/remotes/origin/wicket-6.x,5fea48fc2041018a1d8670bc91345714cc2b8774,c0b944c56d7bd08d058a674eeb76148bc252f09c,34b4a8531cd788b047060df9221296ccf7b4df06,,False,False,True,6,8,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+3,refs/remotes/origin/wicket-6.x,5fea48fc2041018a1d8670bc91345714cc2b8774,c0b944c56d7bd08d058a674eeb76148bc252f09c,34b4a8531cd788b047060df9221296ccf7b4df06,,False,False,True,6,13,68,1,False,6,False

@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-1,refs/heads/master,e47bcd3a17b342fe76d3abfd5f2030b30cf675ce,463a8aded47ef3ad2d4b299e08faaffecf7d36a0,1314239440de759a775df99b0162a7ffcddac817,,102,1,7457,824,False,True,True,102,False,False
-2,refs/heads/master,42ac5a43ae03cd7a4080abeedcc322838aa79b8f,933c75dda9aa2634fb38f6e05da188792aa90473,5adacf20ae09c400d6dba552b8914c24e510534e,,3,1,21,6,False,False,True,3,False,False
-3,refs/heads/master,9a97a0a519544a2f853acea42250670b563810f9,5c946e7c00b46d668343205e70d360a553b4385a,19ac3400d2efa7a90fe9a5656f58e694202a89be,,3,1,8,4,False,False,True,3,False,False
-4,refs/heads/master,9122092fb9a1f7fad7a8e2db17e313d63fa12f11,05754089ae0d6423c57507ebc999f8bc9d839767,ac8873c2551c50eac32de6bd00032d38c6a9fe32,,9,1,79,9,False,True,True,9,False,False
-5,refs/remotes/origin/gh-pages,5426256392ecb24e9de561baecd1848233397ded,c29f37365c1b0305b7f76de0e5d8a31027769339,717889c8a6404000aa45524ac255d8ada337a2c4,,33,2,1036,95,False,False,True,33,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,e47bcd3a17b342fe76d3abfd5f2030b30cf675ce,463a8aded47ef3ad2d4b299e08faaffecf7d36a0,1314239440de759a775df99b0162a7ffcddac817,,False,True,True,102,824,7457,1,False,102,False
+2,refs/heads/master,42ac5a43ae03cd7a4080abeedcc322838aa79b8f,933c75dda9aa2634fb38f6e05da188792aa90473,5adacf20ae09c400d6dba552b8914c24e510534e,,False,False,True,3,6,21,1,False,3,False
+3,refs/heads/master,9a97a0a519544a2f853acea42250670b563810f9,5c946e7c00b46d668343205e70d360a553b4385a,19ac3400d2efa7a90fe9a5656f58e694202a89be,,False,False,True,3,4,8,1,False,3,False
+4,refs/heads/master,9122092fb9a1f7fad7a8e2db17e313d63fa12f11,05754089ae0d6423c57507ebc999f8bc9d839767,ac8873c2551c50eac32de6bd00032d38c6a9fe32,,False,True,True,9,9,79,1,False,9,False
+5,refs/remotes/origin/gh-pages,5426256392ecb24e9de561baecd1848233397ded,c29f37365c1b0305b7f76de0e5d8a31027769339,717889c8a6404000aa45524ac255d8ada337a2c4,,False,False,True,33,95,1036,2,False,33,False

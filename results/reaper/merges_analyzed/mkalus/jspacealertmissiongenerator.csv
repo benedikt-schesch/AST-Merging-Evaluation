@@ -1,8 +1,8 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
-1,refs/heads/master,5c040d6d29cbc29a6031e23340cf6d49e127a881,4e15c0b0909cfe133138488f2180e7809077b7fe,003e119bd25b5020c8ec1bdcc17e6ca6967d207c,,False,False,True,12,0,False,,,,,,False
-2,refs/heads/master,4e15c0b0909cfe133138488f2180e7809077b7fe,5d1b19ac7bc8474a2b372baddb1ff5d075c7f7f9,36421c81679a5ac12ac88f5003908818070292bb,,True,False,True,7,0,False,Git_checkout_failed,,False,Git_checkout_failed,,False
-3,refs/heads/master,5d1b19ac7bc8474a2b372baddb1ff5d075c7f7f9,f616259ca9223b399324db8bc60d9e3364442b98,71c5b77fab7442e99dd6a266cc724a481a0234eb,,False,False,True,4,0,False,,,,,,False
-6,refs/heads/master,add6138e1aa66e82522f73b493467c84dceb4daf,c3226a3e1df374ef0391e2dc61e703996cc3ff14,5c19eb0ae4eee629d91fce320656f9765be83a5d,,False,True,True,8,0,False,,,,,,False
-7,refs/heads/master,04bfccda7ee623e33167874e391233870503953f,1a57be3fe2be50d3569d84707e169a5a83b27cce,b70e562f610fecb23808a05b6fd8ba1513530fff,,False,False,True,3,0,False,,,,,,False
-9,refs/heads/master,4b674048ce70c9ddbe5b6323b3ad0e28093b82a8,179f34fa390366d7a65336da2d2baae9e1470c0e,b2ac5fa99505782ba0a15fd6674066238c2154ed,,False,False,False,0,0,False,,,,,,False
-10,refs/heads/master,557f01869efb13738ca686cf92cdc5a1774f85b9,20fedd84d9fe7da3d9a53db1d5cb020d14a03f94,5edd1ca562faa8b7da7505737e3a9a567bd5c301,,False,False,True,2,0,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+1,refs/heads/master,5c040d6d29cbc29a6031e23340cf6d49e127a881,4e15c0b0909cfe133138488f2180e7809077b7fe,003e119bd25b5020c8ec1bdcc17e6ca6967d207c,,False,False,True,12,35,64,1,False,12,,,,,,False
+2,refs/heads/master,4e15c0b0909cfe133138488f2180e7809077b7fe,5d1b19ac7bc8474a2b372baddb1ff5d075c7f7f9,36421c81679a5ac12ac88f5003908818070292bb,,True,False,True,7,30,54,2,False,7,Git_checkout_failed,,False,Git_checkout_failed,,False
+3,refs/heads/master,5d1b19ac7bc8474a2b372baddb1ff5d075c7f7f9,f616259ca9223b399324db8bc60d9e3364442b98,71c5b77fab7442e99dd6a266cc724a481a0234eb,,False,False,True,4,9,10,1,False,4,,,,,,False
+6,refs/heads/master,add6138e1aa66e82522f73b493467c84dceb4daf,c3226a3e1df374ef0391e2dc61e703996cc3ff14,5c19eb0ae4eee629d91fce320656f9765be83a5d,,False,True,True,8,44,307,1,False,8,,,,,,False
+7,refs/heads/master,04bfccda7ee623e33167874e391233870503953f,1a57be3fe2be50d3569d84707e169a5a83b27cce,b70e562f610fecb23808a05b6fd8ba1513530fff,,False,False,True,3,3,12,1,False,3,,,,,,False
+9,refs/heads/master,4b674048ce70c9ddbe5b6323b3ad0e28093b82a8,179f34fa390366d7a65336da2d2baae9e1470c0e,b2ac5fa99505782ba0a15fd6674066238c2154ed,,False,False,False,0,Error,0,6,False,6,,,,,,False
+10,refs/heads/master,557f01869efb13738ca686cf92cdc5a1774f85b9,20fedd84d9fe7da3d9a53db1d5cb020d14a03f94,5edd1ca562faa8b7da7505737e3a9a567bd5c301,,False,False,True,2,1,2,23,False,23,,,,,,False

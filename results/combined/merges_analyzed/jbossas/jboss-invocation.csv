@@ -1,14 +1,14 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-1,refs/heads/main,36251cbadc0d2ffa5a28f200882f9f0bfb19af22,2e90178f58f08d118c47e30213981d3ce6edee09,daaef839954a36aeffdeea0c03872acae5179c4d,,2,2,8,4,False,False,True,2,False,False
-2,refs/heads/main,2e90178f58f08d118c47e30213981d3ce6edee09,4380733d26caee07b16506b1721ed3582474972e,776e775fb8747400a4e0ee7610d466c77e276106,,2,2,6,3,False,False,True,2,False,False
-3,refs/heads/main,4380733d26caee07b16506b1721ed3582474972e,40e7d96c34c1920c9c8cdffd7feedcdfcae5cb05,f488f1466e6c62286cd8dcfc8af7f8fc805cbca0,,2,2,4,2,False,False,True,2,False,False
-9,refs/heads/main,e24ce2fc3d36ad2e537d01d277e5a440d93fed1a,491a71d2d50a968a36c076e5f5431d7cea582742,25c64f076114acc4c9795cf2b04fea45ed87d957,,2,2,4,2,False,False,True,2,False,False
-13,refs/heads/main,799bb62f90e3e0bde1c67b562544a91cc622c16d,74a42985c37408c01bcfbc350654c8d4dd148440,1da4e996cea5b6acb346e0f963f80b7945562688,,3,2,8,3,False,False,True,3,False,False
-15,refs/heads/main,86ac552d740958171dd81335f8e5ca786d8ea1ba,e8ebc12c64bc14eda779d03b4ba41d6d4fbf649d,b35a8cff2642f46c2d55655f2496058e92e998e6,,3,1,4,2,False,False,True,3,False,False
-19,refs/heads/main,5559c76946efca3210737cede62fc5a9b1ce3854,4a14bfee5619374086d884873679860d834a7327,50ba045d397116f2bcbc9bb056d3c17de7fc1cb4,,2,2,33,2,False,False,True,2,False,False
-21,refs/heads/main,216861bbc9e96597716b0a893f7364684b680302,999368c9a898e5025c390ffd88a1b49ce597db94,6c0b70d6c99c2b59110f1b6b8fcf8c83bf3abfb0,,2,2,6,3,False,False,True,2,False,False
-22,refs/heads/main,999368c9a898e5025c390ffd88a1b49ce597db94,3c5e6a5c8c24503e4bc0b43b8ff964b520ab9379,7ff62f6751e506d7402c0f8f66e7d423b54da2ad,,2,2,4,2,False,False,True,2,False,False
-30,refs/heads/main,a0ae8dadca4400567f4333acb4cafa336d497cdc,dbde63576cd39e79efa21ff25c5a7f8005e2c0d8,ce4c746d5de4628a891164a0a028b0f6c92bba2d,,3,2,51,3,False,False,True,3,False,False
-31,refs/heads/main,dbde63576cd39e79efa21ff25c5a7f8005e2c0d8,c6105e7c4e5bc98c1d943e58312b25fa1131c010,c76c9890c40879e050baa0f344b9c1cd3e6e5c34,,3,1,47,2,False,False,True,3,False,False
-43,refs/heads/main,8f7fea59b3d2b2aebc7936fc6c5311b513737171,c0c679fba95e806f635a0e3817013219078718c9,8c2744c40b7e0e8d66bfd135ca2047bd5c4c3850,,4,0,72,7,False,True,True,4,False,False
-50,refs/heads/main,f048768663759052890e212a2c3e9222006c36fc,4bf4431bedf7b47e8957c9433488e4f1533b09a1,5514ca2529196dfbd0811a1a258d5b792b836ec1,two initial commits,Error while retrieving base sha,Error while retrieving base sha,2721,62,False,True,True,35,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/main,36251cbadc0d2ffa5a28f200882f9f0bfb19af22,2e90178f58f08d118c47e30213981d3ce6edee09,daaef839954a36aeffdeea0c03872acae5179c4d,,False,False,True,2,4,8,2,False,2,False
+2,refs/heads/main,2e90178f58f08d118c47e30213981d3ce6edee09,4380733d26caee07b16506b1721ed3582474972e,776e775fb8747400a4e0ee7610d466c77e276106,,False,False,True,2,3,6,2,False,2,False
+3,refs/heads/main,4380733d26caee07b16506b1721ed3582474972e,40e7d96c34c1920c9c8cdffd7feedcdfcae5cb05,f488f1466e6c62286cd8dcfc8af7f8fc805cbca0,,False,False,True,2,2,4,2,False,2,False
+9,refs/heads/main,e24ce2fc3d36ad2e537d01d277e5a440d93fed1a,491a71d2d50a968a36c076e5f5431d7cea582742,25c64f076114acc4c9795cf2b04fea45ed87d957,,False,False,True,2,2,4,2,False,2,False
+13,refs/heads/main,799bb62f90e3e0bde1c67b562544a91cc622c16d,74a42985c37408c01bcfbc350654c8d4dd148440,1da4e996cea5b6acb346e0f963f80b7945562688,,False,False,True,3,3,8,2,False,3,False
+15,refs/heads/main,86ac552d740958171dd81335f8e5ca786d8ea1ba,e8ebc12c64bc14eda779d03b4ba41d6d4fbf649d,b35a8cff2642f46c2d55655f2496058e92e998e6,,False,False,True,3,2,4,1,False,3,False
+19,refs/heads/main,5559c76946efca3210737cede62fc5a9b1ce3854,4a14bfee5619374086d884873679860d834a7327,50ba045d397116f2bcbc9bb056d3c17de7fc1cb4,,False,False,True,2,2,33,2,False,2,False
+21,refs/heads/main,216861bbc9e96597716b0a893f7364684b680302,999368c9a898e5025c390ffd88a1b49ce597db94,6c0b70d6c99c2b59110f1b6b8fcf8c83bf3abfb0,,False,False,True,2,3,6,2,False,2,False
+22,refs/heads/main,999368c9a898e5025c390ffd88a1b49ce597db94,3c5e6a5c8c24503e4bc0b43b8ff964b520ab9379,7ff62f6751e506d7402c0f8f66e7d423b54da2ad,,False,False,True,2,2,4,2,False,2,False
+30,refs/heads/main,a0ae8dadca4400567f4333acb4cafa336d497cdc,dbde63576cd39e79efa21ff25c5a7f8005e2c0d8,ce4c746d5de4628a891164a0a028b0f6c92bba2d,,False,False,True,3,3,51,2,False,3,False
+31,refs/heads/main,dbde63576cd39e79efa21ff25c5a7f8005e2c0d8,c6105e7c4e5bc98c1d943e58312b25fa1131c010,c76c9890c40879e050baa0f344b9c1cd3e6e5c34,,False,False,True,3,2,47,1,False,3,False
+43,refs/heads/main,8f7fea59b3d2b2aebc7936fc6c5311b513737171,c0c679fba95e806f635a0e3817013219078718c9,8c2744c40b7e0e8d66bfd135ca2047bd5c4c3850,,False,True,True,4,7,72,0,False,4,False
+50,refs/heads/main,f048768663759052890e212a2c3e9222006c36fc,4bf4431bedf7b47e8957c9433488e4f1533b09a1,5514ca2529196dfbd0811a1a258d5b792b836ec1,two initial commits,False,True,True,35,62,2721,Error while retrieving base sha,False,Error while retrieving base sha,False

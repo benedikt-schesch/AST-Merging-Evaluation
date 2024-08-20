@@ -1,3 +1,3 @@
-idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
-3,refs/heads/jboss-fuse-6.3.0,c813b8459cdd419e6728fa924713bcdd8d11a408,622e862491779f81344359918267c250cd48ca91,3cfce63505a549e9dec9ae00bf568c9e25031b18,,3,1,10,3,False,False,True,3,False,False
-4,refs/heads/jboss-fuse-6.3.0,efeb55a08995e174266d50694212f0f1149cb302,9c203244efdfbe84dee946b21a0b8264f32f67d6,3926c306fcdd1d81f3d4b62be9917425cf620567,,8,1,28,7,False,False,True,8,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+3,refs/heads/jboss-fuse-6.3.0,c813b8459cdd419e6728fa924713bcdd8d11a408,622e862491779f81344359918267c250cd48ca91,3cfce63505a549e9dec9ae00bf568c9e25031b18,,False,False,True,3,3,10,1,False,3,False
+4,refs/heads/jboss-fuse-6.3.0,efeb55a08995e174266d50694212f0f1149cb302,9c203244efdfbe84dee946b21a0b8264f32f67d6,3926c306fcdd1d81f3d4b62be9917425cf620567,,False,False,True,8,7,28,1,False,8,False
