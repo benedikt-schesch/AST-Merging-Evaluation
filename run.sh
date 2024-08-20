@@ -156,51 +156,51 @@ echo "run.sh: about to run delete_cache_placeholders.py"
 python3 src/python/utils/delete_cache_placeholders.py \
     --cache_dir "$CACHE_DIR"
 
-echo "run.sh: about to run write_head_hashes.py"
-python3 src/python/write_head_hashes.py \
-    --repos_csv "$REPOS_CSV" \
-    --output_path "$REPOS_CSV_WITH_HASHES"
+# echo "run.sh: about to run write_head_hashes.py"
+# python3 src/python/write_head_hashes.py \
+#     --repos_csv "$REPOS_CSV" \
+#     --output_path "$REPOS_CSV_WITH_HASHES"
 
-echo "run.sh: about to run test_repo_heads.py"
-python3 src/python/test_repo_heads.py \
-    --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
-    --output_path "$OUT_DIR/repos_head_passes.csv" \
-    --cache_dir "$CACHE_DIR"
+# echo "run.sh: about to run test_repo_heads.py"
+# python3 src/python/test_repo_heads.py \
+#     --repos_csv_with_hashes "$REPOS_CSV_WITH_HASHES" \
+#     --output_path "$OUT_DIR/repos_head_passes.csv" \
+#     --cache_dir "$CACHE_DIR"
 
-echo "run.sh: about to run FindMergeCommits"
-JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeevaluation-all.jar \
-    astmergeevaluation.FindMergeCommits \
-    "$OUT_DIR/repos_head_passes.csv" \
-    "$OUT_DIR/merges"
+# echo "run.sh: about to run FindMergeCommits"
+# JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeevaluation-all.jar \
+#     astmergeevaluation.FindMergeCommits \
+#     "$OUT_DIR/repos_head_passes.csv" \
+#     "$OUT_DIR/merges"
 
-# Calculate the number of merges
-total_merges=$((5 * N_MERGES))
+# # Calculate the number of merges
+# total_merges=$((5 * N_MERGES))
 
-# Ensure comparator_flags is set, but default to an empty array if not
-echo "run.sh: about to run merges_sampler.py"
-if [[ -n "${comparator_flags}" ]]; then
-    read -ra merge_comparator_flags <<< "${comparator_flags}"
-    python3 src/python/merges_sampler.py \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --merges_path "$OUT_DIR/merges/" \
-        --output_dir "$OUT_DIR/merges_sampled/" \
-        --n_merges "$total_merges" \
-        "${merge_comparator_flags[@]}"
-else
-    echo "Warning: 'comparator_flags' is empty, continuing without additional flags."
-    python3 src/python/merges_sampler.py \
-        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
-        --merges_path "$OUT_DIR/merges/" \
-        --output_dir "$OUT_DIR/merges_sampled/" \
-        --n_merges "$total_merges"
-fi
+# # Ensure comparator_flags is set, but default to an empty array if not
+# echo "run.sh: about to run merges_sampler.py"
+# if [[ -n "${comparator_flags}" ]]; then
+#     read -ra merge_comparator_flags <<< "${comparator_flags}"
+#     python3 src/python/merges_sampler.py \
+#         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+#         --merges_path "$OUT_DIR/merges/" \
+#         --output_dir "$OUT_DIR/merges_sampled/" \
+#         --n_merges "$total_merges" \
+#         "${merge_comparator_flags[@]}"
+# else
+#     echo "Warning: 'comparator_flags' is empty, continuing without additional flags."
+#     python3 src/python/merges_sampler.py \
+#         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
+#         --merges_path "$OUT_DIR/merges/" \
+#         --output_dir "$OUT_DIR/merges_sampled/" \
+#         --n_merges "$total_merges"
+# fi
 
-echo "run.sh: about to run split_repos.py"
-python3 src/python/split_repos.py \
-    --repos_csv "$OUT_DIR/repos_head_passes.csv" \
-    --machine_id "$machine_id" \
-    --num_machines "$num_machines" \
-    --output_file "$OUT_DIR/local_repos.csv"
+# echo "run.sh: about to run split_repos.py"
+# python3 src/python/split_repos.py \
+#     --repos_csv "$OUT_DIR/repos_head_passes.csv" \
+#     --machine_id "$machine_id" \
+#     --num_machines "$num_machines" \
+#     --output_file "$OUT_DIR/local_repos.csv"
 
 echo "run.sh: about to run split_repos.py"
 python3 src/python/merge_analyzer.py \

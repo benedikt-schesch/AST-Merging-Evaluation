@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-2,refs/heads/master,be295fb5261742c16fa3f941094d7d32bb50f249,83f8603255434f43b80afe499ab49bf6efcc188e,007965409ecf930551ad4de7d67d5a73ee04faab,,False,True,True,476,54100,False,False
-3,refs/heads/master,6285d5b8eb65876af5034d91b0cd50533b5b0538,855649e62e22baccb49788d6dbfd5d63b46fdafc,2ca1f6edca7983ade52a81e79444da60eb76a0b3,,False,True,True,38,2156,False,False
-4,refs/heads/master,161459f67d6b69ff25563e2882d9e03dcd752463,bb4806e69008e662c09dfc57bf8b74a63eaa0fba,5b841fd210610673f5951eb5c6a93bdfb924ed31,,False,False,True,4,6,False,False
-5,refs/heads/master,bb4806e69008e662c09dfc57bf8b74a63eaa0fba,4a7ec2086cedc95a14dbbf0b09eebd491d3e23a4,8089d5743e4a38ec890a829d1d88c482126074fe,,False,False,True,3,4,False,False
-7,refs/heads/master,a6f0790f630f34d5b87ccd0590f34418ed9af5ac,9b5412e6d06308afaf33a74e774bc4e1e745450f,4269ff2fd5a8eef02021d76f8326f7f31868bf4c,,False,True,True,6,110,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+2,refs/heads/master,be295fb5261742c16fa3f941094d7d32bb50f249,83f8603255434f43b80afe499ab49bf6efcc188e,007965409ecf930551ad4de7d67d5a73ee04faab,,476,2,75236,516,False,True,True,476,False,False
+3,refs/heads/master,6285d5b8eb65876af5034d91b0cd50533b5b0538,855649e62e22baccb49788d6dbfd5d63b46fdafc,2ca1f6edca7983ade52a81e79444da60eb76a0b3,,38,2,2658,238,False,True,True,38,False,False
+4,refs/heads/master,161459f67d6b69ff25563e2882d9e03dcd752463,bb4806e69008e662c09dfc57bf8b74a63eaa0fba,5b841fd210610673f5951eb5c6a93bdfb924ed31,,4,1,6,3,False,False,True,4,False,False
+5,refs/heads/master,bb4806e69008e662c09dfc57bf8b74a63eaa0fba,4a7ec2086cedc95a14dbbf0b09eebd491d3e23a4,8089d5743e4a38ec890a829d1d88c482126074fe,,3,1,4,2,False,False,True,3,False,False
+7,refs/heads/master,a6f0790f630f34d5b87ccd0590f34418ed9af5ac,9b5412e6d06308afaf33a74e774bc4e1e745450f,4269ff2fd5a8eef02021d76f8326f7f31868bf4c,,6,0,114,12,False,True,True,6,False,False

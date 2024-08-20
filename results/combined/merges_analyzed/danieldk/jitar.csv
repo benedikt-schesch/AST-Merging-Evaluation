@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/remotes/origin/scala,4e6a13c283dd7a2a1281c4d5120b31faba8885b0,5033243c2fec59928730facb0b3af3df95f5641d,08826c7cd7b3513eb70246a8e8293a701d55f94a,,False,False,True,5,103,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+1,refs/remotes/origin/scala,4e6a13c283dd7a2a1281c4d5120b31faba8885b0,5033243c2fec59928730facb0b3af3df95f5641d,08826c7cd7b3513eb70246a8e8293a701d55f94a,,5,1,159,21,False,False,True,5,False,False

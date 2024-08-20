@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/remotes/origin/vaadin7.2,3c522b6c9d8f6057ef859b9acfa1c118edd8fd66,de4a9de6b2488ea3e684b6b6ab967a6ba42a7706,a2694fd5f277fabb5800b7b98fff09a224d530af,,False,True,True,41,542,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+1,refs/remotes/origin/vaadin7.2,3c522b6c9d8f6057ef859b9acfa1c118edd8fd66,de4a9de6b2488ea3e684b6b6ab967a6ba42a7706,a2694fd5f277fabb5800b7b98fff09a224d530af,,41,2,1408,132,False,True,True,41,False,False

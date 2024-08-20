@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/jboss-fuse-6.3.0,6486001fe8dc05eee3d2be9cb3bc7c28c8360283,f68b1f326f796b1fec0002bc4af9f4494019d9fd,dc8e3dfe966d8664d08516db3a3564e973a104e0,,False,False,True,3,92,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+1,refs/heads/jboss-fuse-6.3.0,6486001fe8dc05eee3d2be9cb3bc7c28c8360283,f68b1f326f796b1fec0002bc4af9f4494019d9fd,dc8e3dfe966d8664d08516db3a3564e973a104e0,,3,2,95,5,False,False,True,3,False,False

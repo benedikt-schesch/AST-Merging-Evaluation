@@ -1,10 +1,10 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-1,refs/heads/latest,4f443742a4551beb0e77219a874e56ac54951e9d,41adc3df4bdf508f195908e3c1652e65e90ebd43,727847b1e9fe452a24e3eea78b7a5037877b0610,,False,True,True,65,514,False,False
-4,refs/heads/latest,a24b81a692edeeb6e9fbc6ec83d09eeb5d6ba68f,e9efa92d246f3e3a754634cb62b56df98534016b,b2dc531a5e51adc9754475d9a9d4ea6ed4943e7c,,False,True,True,250,3736,False,False
-5,refs/heads/latest,301516fd98d99a2e96e47c5aca78a29419fc6915,28b86f1b13eb162b5284319dc57bc41d2a5db46e,55c8f6321d7e68c23e95a2002866527649723b1c,,False,True,True,53,136,False,False
-7,refs/heads/latest,412d793992e83f781f2ef39e9eb925db12dc3927,5581e0601effcf943426a43fb917d2f00a44f477,e768aae95f44ead4c60e70fa9d80e48b6e2816a5,,False,True,True,49,594,False,False
-9,refs/heads/latest,6f4a8289a14f44baf00384ecb296ade9c69d504a,06d598fe3557c2e6a1c3c1c13ac8cef2c35d76a0,b85c909542d54cf548113b44c2f1d1e6508bed18,,False,True,True,133,879,False,False
-10,refs/heads/latest,612ad0725dea4e2854ee0f795d0c7664dbd5ab7c,24beb8ab92696dbf759e5076be149951b725f8eb,b9482d0e319e4635988aed5a52bbc2e2b4d5a6fe,,False,False,False,0,0,False,False
-11,refs/heads/latest,c3e28454d5eaa8ac55c5649b2a7bc71bdb5b7e7a,3cc6c1e4a0583109d639e8e64d6d6557eefb26b8,09919e52148d706f0d2754179e56cfa6b6a78f98,,False,True,True,9,142,False,False
-12,refs/remotes/origin/3.3,7a6daa986e17dd94a47fc4401c43869650d7a206,7fe46e5ffdaeff5b68648d6bd46e7eb652303bd6,009e9854a2779645f6e8d7d5dfdb8c367cd2af79,,False,False,True,11,12,False,False
-13,refs/remotes/origin/3.3,7fe46e5ffdaeff5b68648d6bd46e7eb652303bd6,3e71c0f015846e147c64fe4973ca534614042016,2f98bbde0ded28dda8a632c962aecadd2656b0dc,,False,False,True,11,12,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+1,refs/heads/latest,4f443742a4551beb0e77219a874e56ac54951e9d,41adc3df4bdf508f195908e3c1652e65e90ebd43,727847b1e9fe452a24e3eea78b7a5037877b0610,,65,10,961,171,False,True,True,65,False,False
+4,refs/heads/latest,a24b81a692edeeb6e9fbc6ec83d09eeb5d6ba68f,e9efa92d246f3e3a754634cb62b56df98534016b,b2dc531a5e51adc9754475d9a9d4ea6ed4943e7c,,250,0,10040,472,False,True,True,250,False,False
+5,refs/heads/latest,301516fd98d99a2e96e47c5aca78a29419fc6915,28b86f1b13eb162b5284319dc57bc41d2a5db46e,55c8f6321d7e68c23e95a2002866527649723b1c,,53,1,1263,72,False,True,True,53,False,False
+7,refs/heads/latest,412d793992e83f781f2ef39e9eb925db12dc3927,5581e0601effcf943426a43fb917d2f00a44f477,e768aae95f44ead4c60e70fa9d80e48b6e2816a5,,49,7,958,205,False,True,True,49,False,False
+9,refs/heads/latest,6f4a8289a14f44baf00384ecb296ade9c69d504a,06d598fe3557c2e6a1c3c1c13ac8cef2c35d76a0,b85c909542d54cf548113b44c2f1d1e6508bed18,,136,2,2714,150,False,True,True,133,False,False
+10,refs/heads/latest,612ad0725dea4e2854ee0f795d0c7664dbd5ab7c,24beb8ab92696dbf759e5076be149951b725f8eb,b9482d0e319e4635988aed5a52bbc2e2b4d5a6fe,,75,75,0,Error,False,False,False,0,False,False
+11,refs/heads/latest,c3e28454d5eaa8ac55c5649b2a7bc71bdb5b7e7a,3cc6c1e4a0583109d639e8e64d6d6557eefb26b8,09919e52148d706f0d2754179e56cfa6b6a78f98,,9,1,179,16,False,True,True,9,False,False
+12,refs/remotes/origin/3.3,7a6daa986e17dd94a47fc4401c43869650d7a206,7fe46e5ffdaeff5b68648d6bd46e7eb652303bd6,009e9854a2779645f6e8d7d5dfdb8c367cd2af79,,11,2,53,24,False,False,True,11,False,False
+13,refs/remotes/origin/3.3,7fe46e5ffdaeff5b68648d6bd46e7eb652303bd6,3e71c0f015846e147c64fe4973ca534614042016,2f98bbde0ded28dda8a632c962aecadd2656b0dc,,11,9,53,24,False,False,True,11,False,False

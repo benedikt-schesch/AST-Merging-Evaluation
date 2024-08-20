@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_lines,test merge,sampled for testing
-4,refs/heads/master,0d62835af86818d1b6a564b56d645a95f2ee5319,af8a1dbcb938b292bf34c142e619b5e87da582a1,6bdd925b20c46fea2a796f7e0f0cef7af84a5960,,False,False,True,3,4,False,False
-9,refs/heads/master,b9845fe86db2608de8549d5bd5cb07b8639f52f8,448f5732910c0f07e93b66718d3f4da8193ebe77,eeba0456bb72b12d0dbf6c2effa0dbddd18d2f87,,False,False,True,8,39,False,False
-10,refs/heads/master,d73d5a58dcec1d8fcc0f13cc02a4f75c45d72608,1a283c117b53db3e86b0a6039e43f46c095e86b1,69ef3852ecc3a293f950d2d7b276e424563edd59,,False,False,True,3,22,False,False
-12,refs/heads/master,2614ff8a6de9c9f65cac30760d8049351cee7e52,83f15f72199f6357680744f3ca197d903cf14fc8,94f71899b900dda1bef21111fc836bdf8bc51577,,False,False,True,3,93,False,False
-13,refs/heads/master,83f15f72199f6357680744f3ca197d903cf14fc8,9176c91946c09ff84839e48d74474112ff0fad73,827dddc4489200482fa0ebab67c148ab98a47227,,False,False,True,3,60,False,False
+idx,branch_name,merge,left,right,notes,union_diff_files,num_intersecting_files,num_diff_lines,num_diff_hunks,diff contains java file,imports_involved,non_java_involved,num_diff_files,test merge,sampled for testing
+4,refs/heads/master,0d62835af86818d1b6a564b56d645a95f2ee5319,af8a1dbcb938b292bf34c142e619b5e87da582a1,6bdd925b20c46fea2a796f7e0f0cef7af84a5960,,3,0,4,2,False,False,True,3,False,False
+9,refs/heads/master,b9845fe86db2608de8549d5bd5cb07b8639f52f8,448f5732910c0f07e93b66718d3f4da8193ebe77,eeba0456bb72b12d0dbf6c2effa0dbddd18d2f87,,8,2,45,9,False,False,True,8,False,False
+10,refs/heads/master,d73d5a58dcec1d8fcc0f13cc02a4f75c45d72608,1a283c117b53db3e86b0a6039e43f46c095e86b1,69ef3852ecc3a293f950d2d7b276e424563edd59,,3,0,27,4,False,False,True,3,False,False
+12,refs/heads/master,2614ff8a6de9c9f65cac30760d8049351cee7e52,83f15f72199f6357680744f3ca197d903cf14fc8,94f71899b900dda1bef21111fc836bdf8bc51577,,3,1,100,6,False,False,True,3,False,False
+13,refs/heads/master,83f15f72199f6357680744f3ca197d903cf14fc8,9176c91946c09ff84839e48d74474112ff0fad73,827dddc4489200482fa0ebab67c148ab98a47227,,3,1,71,7,False,False,True,3,False,False

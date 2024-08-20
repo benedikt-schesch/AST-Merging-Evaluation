@@ -50,9 +50,15 @@ def compute_num_diff_hunks(repo: Repository, left_sha: str, right_sha: str) -> i
     Returns:
         int: The number of hunks that are different between the two commits.
     """
-    diff, _ = repo.run_command(
-        f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'"
-    )
+    try:
+        diff, _ = repo.run_command(
+            f"git diff --unified=0 {left_sha} {right_sha} | grep -c '^@@'"
+        )
+    except Exception as e:
+        logger.error(
+            f"compute_num_diff_hunks: {left_sha} {right_sha} {repo.repo_slug} {e}"
+        )
+        return "Error"
     return int(diff)
 
 
