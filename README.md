@@ -82,13 +82,13 @@ The output data appears in `results/small/`.
 To run the stack on all repos:
 
 ```bash
-./run_full.sh
+./run_combined.sh
 ```
 
 To run the stack on all repos and also diff the merges' outputs:
 
 ```bash
-./run_full.sh -d
+./run_combined.sh -d
 ```
 
 This will run the entire code on all the repos and automatically decompress the cache if `cache/` does not exist.
@@ -97,7 +97,7 @@ The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_tested` contains all the merges that have been tested.
 
-To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
+To execute `run_combined.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
 ```bash
 ./src/scripts/utils/run_multiple_machines.sh main machines.txt <project_path_on_machine>
@@ -112,7 +112,7 @@ in your branch, and investigate the differences.
 
 ### Load the stored cache
 
-To decompress the cache run `make decompress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.
+To decompress the cache run `make decompress-cache`. This is done automatically in `run_combined.sh` if `cache/` does not exist.
 
 ### Store the cache
 
@@ -144,7 +144,13 @@ To run style checking run `make style`.
 
 * run_small.sh -> This file executes the stack on two repositories.
 
-* run_full.sh -> This file executes the stack on all the repositories.
+* run_combined.sh -> This file executes the stack on all the repositories.
+
+* run_greatest_hits.sh -> This file executes the stack on the greatest hits repositories.
+
+* run_reaper.sh -> This file executes the stack on the reaper repositories.
+
+* run_1000.sh -> This file executes the stack on the 1000 repositories.
 
 * src/ -> contains the following scripts:
 
