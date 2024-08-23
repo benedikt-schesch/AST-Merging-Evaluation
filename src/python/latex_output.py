@@ -436,6 +436,25 @@ def main():
                     f"Warning: No match found for {repo_slug}, {left}, {right}, {merge}. Skipping this override."
                 )
 
+    git_merge_tools = ["gitmerge_ort", "gitmerge_ort_ignorespace"]
+    plume_lib_tools = [
+        "plumelib_ort_adjacent",
+        "plumelib_ort_imports",
+        "plumelib_ort_version_number",
+        "plumelib_ort",
+        "plumelib_ort_ignorespace",
+    ]
+
+    for git_tool in git_merge_tools:
+        for plume_tool in plume_lib_tools:
+            # Condition: Git Merge is unhandled and plume-lib is incorrect
+            mask = (result_df[git_tool].isin(MERGE_UNHANDLED_NAMES)) & (
+                result_df[plume_tool].isin(MERGE_INCORRECT_NAMES)
+            )
+
+            # Reclassify Git Merge as incorrect in these cases
+            result_df.loc[mask, git_tool] = TEST_STATE.Tests_failed.name
+
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
     main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
