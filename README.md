@@ -6,6 +6,10 @@
 
 ## Requirements
 
+### Download the cached data
+
+Download the compressed cached data [here](https://zenodo.org/records/13366866) and put it in the root directory of the project. Be aware the the uncompressed cache size is 84GB as of 09-23-2024.
+
 ### Python
 
 To install all the Python requirements, create a conda or mamba environment:
@@ -108,7 +112,6 @@ To execute `run_combined.sh` on multiple machines in parallel create a machine a
 If `make small-test` fails in a branch that you wish to merge into the main
 branch, run `make small-test` in the main branch (which should succeed) and also
 in your branch, and investigate the differences.
-
 
 ### Load the stored cache
 
