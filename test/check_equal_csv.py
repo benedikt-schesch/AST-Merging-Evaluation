@@ -58,6 +58,8 @@ if __name__ == "__main__":
             # Now print details, after diffs so it is not obscured by the diff output.
             different_columns = []
             for col in goal_df.columns:
+                if "intellimerge" in col:
+                    continue
                 if "run_time" in col:
                     raise ValueError(
                         f'goal_df.columns contains "run_time": {goal_df.columns}'

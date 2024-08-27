@@ -1,0 +1,8 @@
+,gitmerge_ort,gitmerge_ort_ignorespace,gitmerge_recursive_histogram,gitmerge_recursive_minimal,gitmerge_recursive_myers,gitmerge_recursive_patience,gitmerge_resolve
+gitmerge_ort,-,1,0,0,0,0,2
+gitmerge_ort_ignorespace,18,-,18,18,18,18,20
+gitmerge_recursive_histogram,0,1,-,0,0,0,2
+gitmerge_recursive_minimal,1,2,1,-,0,0,2
+gitmerge_recursive_myers,1,2,1,0,-,0,2
+gitmerge_recursive_patience,1,2,1,0,0,-,2
+gitmerge_resolve,2,3,2,1,1,1,-

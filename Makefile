@@ -187,4 +187,4 @@ tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
 
 run:
-	nice -n 5 sh run_full.sh | tee output.txt
+	nice -n 5 sh run_combined.sh | tee output.txt
