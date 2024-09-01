@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./gitmerge_ort_imports_ignorespace.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <merge_strategy>
+# usage: ./merge_plumelib.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <merge_strategy>
 
 clone_dir=$1
 branch1=$2
