@@ -23,13 +23,6 @@ OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
 
-# Check if it's run on MacOS, if yes raise an error
-# backend=$(uname -s)
-# if [ "$backend" = "Darwin" ]; then
-#     echo "Error: MacOS is not supported. Please run the script on a Linux machine. This is due to the use of readarray in certain merge tools."
-#     exit 1
-# fi
-
 comparator_flags=""
 no_timing=false
 only_plotting=false
