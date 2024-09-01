@@ -5,7 +5,7 @@
 # Check if the correct number of arguments was provided
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 <timeout_in_seconds> <command>"
-    exit 1
+    exit 2
 fi
 
 # Read the timeout and command from arguments

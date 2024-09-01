@@ -11,7 +11,7 @@ set -o nounset
 
 if [ "$#" -ne 4 ]; then
   echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 STRATEGY" >&2
-  exit 1
+  exit 2
 fi
 
 clone_dir=$1
@@ -20,7 +20,7 @@ branch2=$3
 strategy=$4
 
 # perform merge
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
 
 git checkout "$branch1" --force
 git config merge.conflictstyle zdiff3
