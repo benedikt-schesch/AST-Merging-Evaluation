@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./merge_plumelib.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <plumelib_strategy>
+# usage: ./merge_git_then_plumelib.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <plumelib_strategy>
 # First runs `git merge`, then runs Plume-lib Merging to improve the ruselt of `git merge`.
 # <clone_dir> must contain a clone of a repository.
 # Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
