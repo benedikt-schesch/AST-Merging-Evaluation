@@ -13,8 +13,8 @@ echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merg
 cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
-
 git config --local merge.conflictstyle diff3
+
 git config --local mergetool.prompt false
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
