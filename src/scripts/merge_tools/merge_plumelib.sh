@@ -1,6 +1,17 @@
 #!/usr/bin/env sh
 
 # usage: ./gitmerge_ort_imports_ignorespace.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <merge_strategy>
+# First runs `git merge`, then runs Plume-lib Merging to improve the result of `git merge`.
+# <clone_dir> must contain a clone of a repository.
+# Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
+# For merge failure, also outputs "Conflict" and aborts the merge.
+
+set -o nounset
+
+if [ "$#" -ne 5 ]; then
+  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 GIT_STRATEGY PLUMELIB_STRATEGY" >&2
+  exit 2
+fi
 
 clone_dir=$1
 branch1=$2
