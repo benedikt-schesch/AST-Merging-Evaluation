@@ -4,14 +4,14 @@
 # <clone_dir> must contain a clone of a repository.
 # <git_strategy> is arguments to `git merge`, including -s and possibly -X.
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <git_strategy>.
-# Return code is 0 for merge success, 1 for merge failure.
+# Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
 # For merge failure, also outputs "Conflict" and aborts the merge.
 
 set -o nounset
 
 if [ "$#" -ne 4 ]; then
   echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 GIT_STRATEGY" >&2
-  exit 1
+  exit 2
 fi
 
 clone_dir=$1
@@ -21,7 +21,7 @@ git_strategy=$4
 
 ## Perform merge
 
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
 
 git checkout "$branch1" --force
 git config --local merge.conflictstyle zdiff3

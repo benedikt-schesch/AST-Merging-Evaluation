@@ -14,11 +14,11 @@ find /tmp -maxdepth 1 -user "$(whoami)" -mmin +120 -exec rm -rf {} \;
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 REPO_DIR" >&2
-  exit 1
+  exit 2
 fi
 REPO_DIR=$1
 CURR_PATH=$(pwd)
-cd "$REPO_DIR" || exit 1
+cd "$REPO_DIR" || exit 2
 
 if [ -f "gradlew" ] ; then
   # Append JaCoCo plugin and task to build.gradle
@@ -40,12 +40,12 @@ else
   exit 1
 fi
 
-if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
-if [ ! -d "${JAVA8_HOME}" ] ; then echo "JAVA8_HOME is set to a nonexistent directory: ${JAVA8_HOME}"; exit 1; fi
-if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
-if [ ! -d "${JAVA11_HOME}" ] ; then echo "JAVA11_HOME is set to a nonexistent directory: ${JAVA11_HOME}"; exit 1; fi
-if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
-if [ ! -d "${JAVA17_HOME}" ] ; then echo "JAVA17_HOME is set to a nonexistent directory: ${JAVA17_HOME}"; exit 1; fi
+if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 2; fi
+if [ ! -d "${JAVA8_HOME}" ] ; then echo "JAVA8_HOME is set to a nonexistent directory: ${JAVA8_HOME}"; exit 2; fi
+if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 2; fi
+if [ ! -d "${JAVA11_HOME}" ] ; then echo "JAVA11_HOME is set to a nonexistent directory: ${JAVA11_HOME}"; exit 2; fi
+if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 2; fi
+if [ ! -d "${JAVA17_HOME}" ] ; then echo "JAVA17_HOME is set to a nonexistent directory: ${JAVA17_HOME}"; exit 2; fi
 
 ORIG_PATH="${PATH}"
 
