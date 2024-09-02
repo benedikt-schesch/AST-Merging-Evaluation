@@ -45,10 +45,10 @@ def store_artifacts(result_df: pd.DataFrame) -> None:
             log_path = result_df.loc[idx, "merge log path"]
 
             # Add repository directories or files to the tarball with absolute paths
-            tar.add(repo_path, arcname=repo_path)
+            tar.add(repo_path, arcname=repo_path)  # type: ignore
 
             # Add log files to the tarball with absolute paths
-            tar.add(log_path, arcname=log_path)
+            tar.add(log_path, arcname=log_path)  # type: ignore
 
     logger.info("Artifacts created")
 
@@ -57,7 +57,7 @@ def delete_workdirs(results_df: pd.DataFrame) -> None:
     """Delete the workdirs after replaying the merges."""
     for idx in results_df.index:
         os.system("chmod -R 777 " + str(results_df.loc[idx, "repo path"]))
-        shutil.rmtree(results_df.loc[idx, "repo path"])
+        shutil.rmtree(results_df.loc[idx, "repo path"])  # type: ignore
     logger.info("Workdirs deleted")
 
 
@@ -87,6 +87,8 @@ def merge_replay(
     """
 
     ast_merging_evaluation_repo = git.Repo(".", search_parent_directories=True)
+    if ast_merging_evaluation_repo.working_tree_dir is None:
+        raise Exception("Could not find the ast-merging-evaluation repository")
     plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
         "src/scripts/merge_tools/merging"
     )
@@ -116,7 +118,7 @@ def merge_replay(
                 merge_idx,
                 repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=True if delete_workdir else False,
                 lazy_clone=False,
             )
@@ -128,10 +130,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -143,10 +145,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -167,10 +169,10 @@ def merge_replay(
         )
         if not (WORKDIR_DIRECTORY / workdir).exists():
             repo = Repository(
-                merge_idx,
-                repo_slug,
+                merge_idx=merge_idx,
+                repo_slug=repo_slug,
                 cache_directory=Path("no_cache/"),
-                workdir_id=workdir,
+                workdir_id=str(workdir),
                 delete_workdir=False,
                 lazy_clone=False,
             )
@@ -213,10 +215,10 @@ def merge_replay(
                     continue
             try:
                 repo = Repository(
-                    merge_idx,
-                    repo_slug,
+                    merge_idx=merge_idx,
+                    repo_slug=repo_slug,
                     cache_directory=Path("no_cache/"),
-                    workdir_id=workdir,
+                    workdir_id=str(workdir),
                     delete_workdir=False,
                     lazy_clone=False,
                 )
