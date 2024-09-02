@@ -8,7 +8,7 @@
 # Check arguments
 if [ "$#" -ne 3 ]; then
     echo "Usage: ./run_multiple_machines.sh <branch> <machine_address_path> <root_path_on_machine>"
-    exit 1
+    exit 2
 fi
 
 BRANCH="$1"
@@ -26,7 +26,7 @@ NUM_MACHINES=${#MACHINE_ADDRESSES[@]}
 # Check that the number of machines is at least 1
 if [ "$NUM_MACHINES" -lt 1 ]; then
     echo "Error: number of machines is less than 1"
-    exit 1
+    exit 2
 fi
 
 # Check that machines are reachable
@@ -35,7 +35,7 @@ for i in "${!MACHINE_ADDRESSES[@]}"; do
     echo "Checking if machine $i with address $MACHINE_ADDRESS is reachable"
     if ! ssh -o ConnectTimeout=1 "$MACHINE_ADDRESS" exit >/dev/null 2>&1; then
         echo "Error: machine $i with address $MACHINE_ADDRESS is not reachable"
-        exit 1
+        exit 2
     fi
 done
 echo "Success: all machines are reachable"
