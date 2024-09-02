@@ -2,6 +2,13 @@
 
 # usage: ./git_hires_merge.sh <clone_dir> <branch-1> <branch-2>
 
+set -o nounset
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2" >&2
+  exit 1
+fi
+
 clone_dir=$1
 branch1=$2
 branch2=$3
@@ -9,7 +16,7 @@ branch2=$3
 # Print the current PATH
 echo "PATH: $PATH"
 
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
 
 git checkout "$branch1" --force
 

@@ -11,7 +11,7 @@
 # Check arguments
 if [ "$#" -ne 5 ]; then
     echo "Usage: ./run_remotely.sh <branch> <machine_ssh> <machine_id> <num_machines> <root_path_on_machine>"
-    exit 1
+    exit 2
 fi
 
 BRANCH=$1
