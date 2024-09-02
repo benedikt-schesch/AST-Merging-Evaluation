@@ -1,0 +1,17 @@
+,gitmerge_ort,gitmerge_ort_ignorespace,gitmerge_recursive_histogram,gitmerge_recursive_ignorespace,gitmerge_recursive_minimal,gitmerge_recursive_myers,gitmerge_recursive_patience,gitmerge_resolve,git_hires_merge,spork,intellimerge,plumelib_ort,plumelib_ort_ignorespace,plumelib_ort_adjacent,plumelib_ort_imports,plumelib_ort_version_number
+gitmerge_ort,-,1,0,1,0,0,0,2,0,3,2,0,1,0,0,0
+gitmerge_ort_ignorespace,18,-,18,0,18,18,18,20,14,14,13,15,0,11,18,18
+gitmerge_recursive_histogram,0,1,-,1,0,0,0,2,0,3,2,0,1,0,0,0
+gitmerge_recursive_ignorespace,19,1,19,-,18,18,18,21,14,15,14,15,0,12,18,19
+gitmerge_recursive_minimal,1,2,1,1,-,0,0,2,0,3,3,0,1,1,0,1
+gitmerge_recursive_myers,1,2,1,1,0,-,0,2,0,3,3,0,1,1,0,1
+gitmerge_recursive_patience,1,2,1,1,0,0,-,2,0,3,3,0,1,1,0,1
+gitmerge_resolve,2,3,2,2,1,1,1,-,1,4,4,1,2,2,1,2
+git_hires_merge,56,53,56,52,55,55,55,57,-,25,28,49,48,32,52,56
+spork,289,272,289,271,288,288,286,294,243,-,158,233,211,227,243,289
+intellimerge,926,865,926,867,927,927,925,944,775,451,-,788,745,757,830,926
+plumelib_ort,35,32,35,33,36,36,35,41,30,17,23,-,0,23,12,34
+plumelib_ort_ignorespace,61,43,61,44,62,62,61,67,54,33,39,26,-,43,38,60
+plumelib_ort_adjacent,73,67,73,67,73,73,72,75,49,34,40,53,48,-,60,73
+plumelib_ort_imports,23,23,23,24,24,24,23,29,21,12,17,0,0,16,-,23
+plumelib_ort_version_number,1,2,1,2,1,1,1,3,1,4,3,0,1,1,1,-
