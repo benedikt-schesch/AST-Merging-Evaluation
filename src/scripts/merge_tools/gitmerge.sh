@@ -24,7 +24,8 @@ strategy=$4
 cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
 
 git checkout "$branch1" --force
-git config merge.conflictstyle zdiff3
+git config --local merge.conflictstyle zdiff3
+git config --local mergetool.prompt false
 
 echo "Running: git merge --no-edit $strategy $branch2"
 # shellcheck disable=SC2086
