@@ -9,7 +9,7 @@ branch2=$3
 # Print the current PATH
 echo "PATH: $PATH"
 
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 1)
+cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
 
 git checkout "$branch1" --force
 
