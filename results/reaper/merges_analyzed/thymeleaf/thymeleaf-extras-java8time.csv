@@ -1,5 +1,5 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-1,refs/heads/3.0-master,6c270d0804f167d7ba13dabd49429a1b81c9d3f5,5e526f0b9d1a91582c7b5336f9cc6f5e12b6743d,f70857006922aeb3990aeefd87cfd61e808c92f9,,False,False,,,,,,False
-3,refs/heads/3.0-master,bfbb3588d89c95ac484130949e830a42ad177b0b,9d44098daf0f145d913532f47978a5fd9f505dd3,50b398cfc1349836cc62d3566048f2603d7169e9,,False,False,,,,,,False
-4,refs/heads/3.0-master,ef69a2ccfc2e7ee22d000164b23b59819838c2ed,dd92a07ec990393af01e04a1e9c348f8cf491aa5,ef2b0af6c9493941b48deeef31f3de81e5a58af1,,False,True,,Git_checkout_failed,,Git_checkout_failed,False,False
-8,refs/remotes/origin/2.1-dev,c4ed588472e1675630105f4e766776d745da63fe,e20fd010076011b6b6947f79f73088dce97da2d4,b8e67a702086c2482e29347275d5dbfb44698748,,False,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+1,refs/heads/3.0-master,6c270d0804f167d7ba13dabd49429a1b81c9d3f5,5e526f0b9d1a91582c7b5336f9cc6f5e12b6743d,f70857006922aeb3990aeefd87cfd61e808c92f9,,False,False,True,12,37,142,2,False,12,,,,,,False
+3,refs/heads/3.0-master,bfbb3588d89c95ac484130949e830a42ad177b0b,9d44098daf0f145d913532f47978a5fd9f505dd3,50b398cfc1349836cc62d3566048f2603d7169e9,,False,True,True,13,51,332,2,False,13,,,,,,False
+4,refs/heads/3.0-master,ef69a2ccfc2e7ee22d000164b23b59819838c2ed,dd92a07ec990393af01e04a1e9c348f8cf491aa5,ef2b0af6c9493941b48deeef31f3de81e5a58af1,,True,True,True,11,29,83,2,False,11,Git_checkout_failed,,False,Git_checkout_failed,,False
+8,refs/remotes/origin/2.1-dev,c4ed588472e1675630105f4e766776d745da63fe,e20fd010076011b6b6947f79f73088dce97da2d4,b8e67a702086c2482e29347275d5dbfb44698748,,False,True,True,16,89,650,2,False,16,,,,,,False

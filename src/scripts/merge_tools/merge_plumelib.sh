@@ -8,6 +8,8 @@ branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 merge_strategy=$5 #"--only-adjacent"
 
+## Perform merge
+
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and merge_strategy=$merge_strategy"
 
 cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
@@ -23,6 +25,8 @@ git config --local mergetool.merge-plumelib.trustExitCode true
 
 # shellcheck disable=SC2086
 git merge --no-edit $git_strategy "$branch2"
+
+## Now, run Plume-lib Merging to improve the result of `git merge`.
 
 case "$merge_strategy" in
     *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)

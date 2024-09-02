@@ -1,6 +1,6 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-1,refs/heads/master,18f1ded87aaee51e70b9fc30d486338e39526c68,88752d6148c1352bf5dede85ed59dcdf0b25bb4f,7ffade72f2879f38afa821426b26a27eec08796d,,False,False,False
-2,refs/heads/master,ee56094b8b0b9b612a9d4aa58b8094540b0abc7c,f6df1e9b87bae897e9a8f25ace4f0491a7e4099a,3ac6179d4ad3bc16e48a769a73b244bb647671e3,,False,False,False
-3,refs/heads/master,f6df1e9b87bae897e9a8f25ace4f0491a7e4099a,00d087c934861a7019dd7cd7275b32d8143b2f5c,bea80605ec600b6590c681cf570bcd88742d80f0,,False,False,False
-5,refs/heads/master,a888636b63db2665e4dc9356e59fb2c60f475cce,6837f0bc7f493a55c4683fd040a462940883f7bc,ddc71d73d2a3169b2943868b0ac1d45d5ab58240,,False,False,False
-6,refs/heads/master,f86315a6cb8d67235922bb3041115c8e2c95d7fa,343d151fcd19437bc30ea275e6928675de26dd81,c2fb29e899a3e856b61db727de91e0da18f309c5,two initial commits,False,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,18f1ded87aaee51e70b9fc30d486338e39526c68,88752d6148c1352bf5dede85ed59dcdf0b25bb4f,7ffade72f2879f38afa821426b26a27eec08796d,,False,False,True,2,2,7.0,39,False,39,False
+2,refs/heads/master,ee56094b8b0b9b612a9d4aa58b8094540b0abc7c,f6df1e9b87bae897e9a8f25ace4f0491a7e4099a,3ac6179d4ad3bc16e48a769a73b244bb647671e3,,False,False,True,4,7,14.0,1,False,4,False
+3,refs/heads/master,f6df1e9b87bae897e9a8f25ace4f0491a7e4099a,00d087c934861a7019dd7cd7275b32d8143b2f5c,bea80605ec600b6590c681cf570bcd88742d80f0,,False,False,True,2,1,2.0,2,False,3,False
+5,refs/heads/master,a888636b63db2665e4dc9356e59fb2c60f475cce,6837f0bc7f493a55c4683fd040a462940883f7bc,ddc71d73d2a3169b2943868b0ac1d45d5ab58240,,False,True,True,15,92,2514.0,3,False,16,False
+6,refs/heads/master,f86315a6cb8d67235922bb3041115c8e2c95d7fa,343d151fcd19437bc30ea275e6928675de26dd81,c2fb29e899a3e856b61db727de91e0da18f309c5,two initial commits,False,,True,239,216,,Error while retrieving base sha,False,Error while retrieving base sha,False
