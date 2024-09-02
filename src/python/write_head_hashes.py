@@ -49,17 +49,17 @@ def get_latest_hash(args):
         logger.info("write_head_hashes " + repo_slug + " : Cloning repo")
         repo = Repository(
             "HEAD",
-            repo_slug,
+            repo_slug=repo_slug,
             workdir_id=repo_slug + "/head-" + repo_slug,
             lazy_clone=False,
         )
         row["head hash"] = repo.get_head_hash()
     except Exception as e:
-        logger.info(
+        logger.info(  # type: ignore
             "write_head_hashes: "
             + repo_slug
             + " : Finished get_latest_hash, result = exception, cause: "
-            + e
+            + str(e)
         )
         return None
 

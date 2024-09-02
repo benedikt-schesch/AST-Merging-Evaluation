@@ -54,8 +54,8 @@ def merge_tester(args: Tuple[str, str, pd.Series, Path]) -> pd.Series:
             "merge_tester: Waiting for CPU or memory to be available."
             + merge_idx
             + repo_slug
-            + merge_data["left"]
-            + merge_data["right"]
+            + str(merge_data["left"])
+            + str(merge_data["right"])
         )
         time.sleep(60)
 

@@ -1,17 +1,17 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,left_tree_fingerprint,left parent test result,right_tree_fingerprint,right parent test result,parents pass,sampled for testing
-4,refs/heads/main,3742bf28157ce7f6d61cf6390d4d812c7ff21534,7a67f1611117734194c3360f22ecdc6da12add53,69acdad51100f8752cc73e70e087f43361a97e37,,False,False,,,,,,False
-16,refs/heads/main,52fbb85dbc09a999bb440e4b9de60d54c1855266,ca56268847bae7b00d0694b03d0416f22163b3a9,31f4a52131f55e967753d5f5efc1fd906a6530ac,,False,False,,,,,,False
-18,refs/heads/main,f0dc3f5fcc221231b8658a13987da75b6efcc36f,020c39b8e7c6a1f9626f0884cca2454edede1bc3,a097e0047a645b53207f308745fbd8132c1e4a34,,False,False,,,,,,False
-19,refs/heads/main,020c39b8e7c6a1f9626f0884cca2454edede1bc3,4652fd1aa92ca44a688787b0da6a55ee174431e6,6e053794c209ff456c053b3e8bec1c1369115ce8,,False,False,,,,,,False
-22,refs/heads/main,d729cb7baa4016f0cacb3c679ad92bf73840feed,44f7a1be121f0436831f6fa915f50166590fcc49,89315f801b26c167e0eb44abed4db732c50173a9,,False,False,,,,,,False
-23,refs/heads/main,44f7a1be121f0436831f6fa915f50166590fcc49,0a8a6e12f706c6b39dd06cea096b3316e5ae1291,1acd7ca764f5029f013e012de76726437bef8ca0,,False,False,,,,,,False
-25,refs/heads/main,406a1a757b552b09fc3b14c9bb9d7db6b963687f,27857123433719d73ec4afaa03a386d385d3c294,d147b2d365f45c03cc0c29a76fa4ac505eb6ec81,,False,False,,,,,,False
-28,refs/heads/main,fd58f05ba1c3b49a6a3e6cb2e2aa9c61f352ea63,af10462ab280052d103f70c7f785d14ab8b44208,fd56708569f171c998d44407a64bbb2c921c24e5,,False,False,,,,,,False
-35,refs/heads/main,5efa3e24f74f4250e9979fe893d99afc5f5a0595,3d9a51223b729c29c512181701daeb35c47a2d8e,b1dcc3cc526f927714048ead4b5fe7a6590d47f2,,False,False,,,,,,False
-43,refs/heads/main,1e751b579e96299d916765c217391446cc0eea93,b8d275ef292cfc28f296e64aabfa26f3e4bfa8f3,059a322b2b4ce1e78aa1bbfee983ff0253736f93,,False,False,,,,,,False
-45,refs/heads/main,fc5a102ebc73360a34f4eecffcf2a8e251364d03,af6526bbd89fe505b9c3b0e3e8e060f63fc9ef3e,e16db50afd9e41439c4a6bb908ae21831e00fda8,,False,False,,,,,,False
-46,refs/heads/main,e16db50afd9e41439c4a6bb908ae21831e00fda8,062c405a743fc518d7c9ef68148deab374c281c8,529ce263594b208e7309feebaff80fee93f6824c,,False,False,,,,,,False
-47,refs/heads/main,1669e206a9bdd7cce70c1be1df0aac2884c5de0b,9414ce42396dcf5b5d34f35a9245fae05562cf92,02aa296dacfa998849bb9d78d83b2ae6427d27ff,,False,False,,,,,,False
-49,refs/heads/main,bc5084d37f7e4dbb3d1dbffceb831068b6f71368,3cdd7b241897e4ac1479e3063bb78807fd3f5016,536802acc3c701a87fd2d06c372d2d55aa63fbe9,,False,True,2f67310931ffbda0110723ad8d2188b9d115c7d54e0ecdf37e12180a4363cbeb,Tests_failed,440b439c27f97a3db25f4c8be1d6d1a42b44d2afd97bcef2bb5958b794b832d2,Tests_failed,False,False
-51,refs/heads/main,b4dce994b29118b093c32edd92e0d3efe1fe5a7c,c97be8f9e824624c923722a80e67f12f37003fab,84fa15267a1914c097fbe7975a816f23bf15ab8d,,False,True,7dee4c6ebf57cb80481f50e50143dd83835f94e79f90f89a5342a1a43a780cc3,Tests_failed,b9698adb3f8d08118e9a1400a8dd850c00adea0c82d417a0621d8f58f137126e,Tests_failed,False,False
-54,refs/heads/main,86b495efb6352fbebe3f0986db9feb9cf6ad3adc,1e54d1e1848fd2b0f05a32a941883c7d58de8c6f,0ecf9512bab4f8d8194b3062db180483f9acb5ef,,False,False,,,,,,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,left parent test result,left_tree_fingerprint,parents pass,right parent test result,right_tree_fingerprint,sampled for testing
+4,refs/heads/main,3742bf28157ce7f6d61cf6390d4d812c7ff21534,7a67f1611117734194c3360f22ecdc6da12add53,69acdad51100f8752cc73e70e087f43361a97e37,,False,False,True,2,2,4,2,False,2,,,,,,False
+16,refs/heads/main,52fbb85dbc09a999bb440e4b9de60d54c1855266,ca56268847bae7b00d0694b03d0416f22163b3a9,31f4a52131f55e967753d5f5efc1fd906a6530ac,,False,False,True,2,2,4,2,False,2,,,,,,False
+18,refs/heads/main,f0dc3f5fcc221231b8658a13987da75b6efcc36f,020c39b8e7c6a1f9626f0884cca2454edede1bc3,a097e0047a645b53207f308745fbd8132c1e4a34,,False,False,True,3,4,9,1,False,3,,,,,,False
+19,refs/heads/main,020c39b8e7c6a1f9626f0884cca2454edede1bc3,4652fd1aa92ca44a688787b0da6a55ee174431e6,6e053794c209ff456c053b3e8bec1c1369115ce8,,False,False,True,2,2,4,2,False,2,,,,,,False
+22,refs/heads/main,d729cb7baa4016f0cacb3c679ad92bf73840feed,44f7a1be121f0436831f6fa915f50166590fcc49,89315f801b26c167e0eb44abed4db732c50173a9,,False,False,True,3,3,6,2,False,3,,,,,,False
+23,refs/heads/main,44f7a1be121f0436831f6fa915f50166590fcc49,0a8a6e12f706c6b39dd06cea096b3316e5ae1291,1acd7ca764f5029f013e012de76726437bef8ca0,,False,False,True,3,2,4,1,False,3,,,,,,False
+25,refs/heads/main,406a1a757b552b09fc3b14c9bb9d7db6b963687f,27857123433719d73ec4afaa03a386d385d3c294,d147b2d365f45c03cc0c29a76fa4ac505eb6ec81,,False,False,True,2,2,4,2,False,2,,,,,,False
+28,refs/heads/main,fd58f05ba1c3b49a6a3e6cb2e2aa9c61f352ea63,af10462ab280052d103f70c7f785d14ab8b44208,fd56708569f171c998d44407a64bbb2c921c24e5,,False,False,True,2,2,4,2,False,2,,,,,,False
+35,refs/heads/main,5efa3e24f74f4250e9979fe893d99afc5f5a0595,3d9a51223b729c29c512181701daeb35c47a2d8e,b1dcc3cc526f927714048ead4b5fe7a6590d47f2,,False,True,True,15,39,157,1,False,15,,,,,,False
+43,refs/heads/main,1e751b579e96299d916765c217391446cc0eea93,b8d275ef292cfc28f296e64aabfa26f3e4bfa8f3,059a322b2b4ce1e78aa1bbfee983ff0253736f93,,False,False,True,6,9,122,1,False,6,,,,,,False
+45,refs/heads/main,fc5a102ebc73360a34f4eecffcf2a8e251364d03,af6526bbd89fe505b9c3b0e3e8e060f63fc9ef3e,e16db50afd9e41439c4a6bb908ae21831e00fda8,,False,False,True,3,6,12,2,False,3,,,,,,False
+46,refs/heads/main,e16db50afd9e41439c4a6bb908ae21831e00fda8,062c405a743fc518d7c9ef68148deab374c281c8,529ce263594b208e7309feebaff80fee93f6824c,,False,False,True,3,2,23,3,False,5,,,,,,False
+47,refs/heads/main,1669e206a9bdd7cce70c1be1df0aac2884c5de0b,9414ce42396dcf5b5d34f35a9245fae05562cf92,02aa296dacfa998849bb9d78d83b2ae6427d27ff,,False,True,True,5,17,70,1,False,5,,,,,,False
+49,refs/heads/main,bc5084d37f7e4dbb3d1dbffceb831068b6f71368,3cdd7b241897e4ac1479e3063bb78807fd3f5016,536802acc3c701a87fd2d06c372d2d55aa63fbe9,,True,True,True,2,8,44,2,False,2,Tests_failed,2f67310931ffbda0110723ad8d2188b9d115c7d54e0ecdf37e12180a4363cbeb,False,Tests_failed,440b439c27f97a3db25f4c8be1d6d1a42b44d2afd97bcef2bb5958b794b832d2,False
+51,refs/heads/main,b4dce994b29118b093c32edd92e0d3efe1fe5a7c,c97be8f9e824624c923722a80e67f12f37003fab,84fa15267a1914c097fbe7975a816f23bf15ab8d,,True,False,True,5,7,12,2,False,5,Tests_failed,7dee4c6ebf57cb80481f50e50143dd83835f94e79f90f89a5342a1a43a780cc3,False,Tests_failed,b9698adb3f8d08118e9a1400a8dd850c00adea0c82d417a0621d8f58f137126e,False
+54,refs/heads/main,86b495efb6352fbebe3f0986db9feb9cf6ad3adc,1e54d1e1848fd2b0f05a32a941883c7d58de8c6f,0ecf9512bab4f8d8194b3062db180483f9acb5ef,,False,False,True,3,10,36,0,False,3,,,,,,False

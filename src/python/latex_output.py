@@ -43,6 +43,7 @@ import seaborn as sns
 from variables import TIMEOUT_TESTING_PARENT, TIMEOUT_TESTING_MERGE
 from repo import MERGE_STATE, TEST_STATE, MERGE_TOOL
 from loguru import logger
+from cache_utils import lookup_in_cache
 
 matplotlib.use("pgf")
 matplotlib.rcParams.update(
@@ -60,6 +61,11 @@ MERGE_TOOL_RENAME = {
     "gitmerge_ort_imports_ignorespace": "Imports+ort-ignorespace",
     "intellimerge": "IntelliMerge",
     "git_hires_merge": "Hires-Merge",
+    "plumelib_ort_adjacent": "Adjacent",
+    "plumelib_ort_imports": "Imports",
+    "plumelib_ort_version_number": "Version Numbers",
+    "plumelib_ort": "IVn",
+    "plumelib_ort_ignorespace": "IVn-ignorespace",
 }
 
 
@@ -308,6 +314,26 @@ def build_table2(main_df: pd.DataFrame, merge_tools: List[str], feature) -> str:
     return table2
 
 
+# Create a 2D comparison table
+def create_comparison_table(df: pd.DataFrame, merge_tools: List[str]) -> pd.DataFrame:
+    all_tools = [tool for tool in merge_tools]
+    comparison_table = pd.DataFrame(index=all_tools, columns=all_tools)
+
+    for tool1 in merge_tools:
+        for tool2 in merge_tools:
+            if tool1 != tool2:
+                # Count where tool1 is incorrect and tool2 is unhandled
+                count = (
+                    (df[tool1].isin(MERGE_INCORRECT_NAMES))
+                    & (df[tool2].isin(MERGE_UNHANDLED_NAMES))
+                ).sum()
+                comparison_table.loc[tool1, tool2] = count
+            else:
+                comparison_table.loc[tool1, tool2] = "-"
+
+    return comparison_table
+
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser()
@@ -335,6 +361,13 @@ def main():
         type=Path,
         default=Path("results/combined/merges_analyzed"),
     )
+    parser.add_argument(
+        "--manual_override_csv",
+        type=Path,
+        help="Path to the manual override CSV file",
+        default=Path("results/manual_override.csv"),
+    )
+    parser.add_argument("--test_cache_dir", type=Path, default=Path("cache/test_cache"))
     parser.add_argument("--n_merges", type=int, default=100)
     parser.add_argument("--output_dir", type=Path, default=Path("results/combined"))
     parser.add_argument("--timed_merges_path", type=Path, default=None)
@@ -383,12 +416,85 @@ def main():
         + [col for col in result_df.columns if col not in ("repo-idx", "merge-idx")]
     ]
     result_df.index = (
-        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)
+        result_df["repo-idx"].astype(str) + "-" + result_df["merge-idx"].astype(str)  # type: ignore
     )
 
     # Remove undesired states
     for merge_tool in MERGE_TOOL:
         result_df = result_df[~result_df[merge_tool.name].isin(UNDESIRABLE_STATES)]
+
+    # Apply manual overrides if the file exists
+    if args.manual_override_csv and args.manual_override_csv.exists():
+        manual_overrides = pd.read_csv(args.manual_override_csv)
+        for _, override in manual_overrides.iterrows():
+            repo_slug = override["repository"]
+            left = override["left"]
+            right = override["right"]
+            merge = override["merge"]
+
+            # Find the corresponding row in result_df
+            mask = (
+                (result_df["repository"] == repo_slug)
+                & (result_df["left"] == left)
+                & (result_df["right"] == right)
+                & (result_df["merge"] == merge)
+            )
+
+            if mask.sum() == 1:
+                # Apply the override for each column specified in the manual override CSV
+                for col in override.index:
+                    if col not in ["repository", "left", "right", "merge"]:
+                        # Check if the value is not empty (not ,,)
+                        if pd.notna(override[col]) and override[col] != "":
+                            result_df.loc[mask, col] = override[col]
+            elif mask.sum() > 1:
+                raise ValueError(
+                    f"Multiple matches found for {repo_slug}, {left}, {right}, {merge}. Skipping this override."
+                )
+            else:
+                logger.info(
+                    f"Warning: No match found for {repo_slug}, {left}, {right}, {merge}. Skipping this override."
+                )
+
+    # Create a csv for results with both unhandled and incorrect merges without intellimerge
+    considered_merge_tools = [
+        merge_tool.name
+        for merge_tool in MERGE_TOOL
+        if merge_tool != MERGE_TOOL.intellimerge
+    ]
+    unhandled_mask = (
+        result_df[considered_merge_tools].isin(MERGE_UNHANDLED_NAMES).any(axis=1)
+    )
+    incorrect_mask = (
+        result_df[considered_merge_tools].isin(MERGE_INCORRECT_NAMES).any(axis=1)
+    )
+    filtered_df = result_df[unhandled_mask & incorrect_mask]
+    csv_filename = (
+        args.output_dir / "unhandled_and_failed_merges_without_intellimerge.csv"
+    )
+    filtered_df.to_csv(csv_filename, index=False)
+
+    # Create a csv for results with both unhandled and incorrect merges without intellimerge and spork
+    considered_merge_tools = [
+        merge_tool.name
+        for merge_tool in MERGE_TOOL
+        if merge_tool != MERGE_TOOL.intellimerge and merge_tool != MERGE_TOOL.spork
+    ]
+    unhandled_mask = (
+        result_df[considered_merge_tools].isin(MERGE_UNHANDLED_NAMES).any(axis=1)
+    )
+    incorrect_mask = (
+        result_df[considered_merge_tools].isin(MERGE_INCORRECT_NAMES).any(axis=1)
+    )
+    filtered_df = result_df[unhandled_mask & incorrect_mask]
+    csv_filename = (
+        args.output_dir
+        / "unhandled_and_failed_merges_without_intellimerge_and_spork.csv"
+    )
+    filtered_df.to_csv(csv_filename, index=False)
+
+    print(f"CSV saved to: {csv_filename}")
+    print(f"Rows: {len(filtered_df)}")
 
     result_df.to_csv(args.output_dir / "result.csv", index_label="idx")
 
@@ -402,6 +508,46 @@ def main():
         Path(tables_output_path).mkdir(parents=True, exist_ok=True)
 
         check_fingerprint_consistency(result_df, merge_tools)
+
+        # Generate the comparison table
+        comparison_table = create_comparison_table(result_df, merge_tools)
+
+        # Save the comparison table as a separate .tex file
+        with open(
+            tables_output_path / "tool_comparison_table.tex", "w", encoding="utf-8"
+        ) as file:
+            file.write("% Do not edit. This file is automatically generated.\n")
+            file.write("\\begin{table}[h]\n")
+            file.write("\\centering\n")
+            file.write(
+                "\\caption{Comparison of Merge Tool Results: Incorrect vs Unhandled}\n"
+            )
+            file.write("\\label{tab:tool-comparison}\n")
+            file.write("\\small\n")
+            file.write("\\begin{tabular}{l" + "r" * len(merge_tools) + "}\n")
+            file.write("\\toprule\n")
+            file.write(
+                "& "
+                + " & ".join([merge_tool_latex_name(tool) for tool in merge_tools])
+                + " \\\\\n"
+            )
+            file.write("\\midrule\n")
+
+            for i, row in enumerate(comparison_table.index):
+                row_values = [
+                    str(val) if val != "-" else "-" for val in comparison_table.loc[row]
+                ]
+                file.write(
+                    f"{merge_tool_latex_name(row)} & "
+                    + " & ".join(row_values)
+                    + " \\\\\n"
+                )
+
+            file.write("\\bottomrule\n")
+            file.write("\\end{tabular}\n")
+            file.write("\\end{table}\n")
+
+        comparison_table.to_csv(tables_output_path / "tool_comparison_table.csv")
 
         # Figure Heat map diffing
         result = pd.DataFrame(
@@ -782,6 +928,51 @@ def main():
     output += latex_def(run_name_camel_case + "MergesTotal", len(result_df))
 
     output += "\n% Results\n"
+
+    manual_override_set = set()
+    if args.manual_override_csv and args.manual_override_csv.exists():
+        manual_overrides = pd.read_csv(args.manual_override_csv)
+        manual_override_set = set(
+            (row["repository"], row["left"], row["right"], row["merge"])
+            for _, row in manual_overrides.iterrows()
+        )
+
+    tries = []
+    for idx, merge in result_df.iterrows():
+        for merge_tool in MERGE_TOOL:
+            if merge[merge_tool.name] != TEST_STATE.Tests_passed.name:
+                continue
+
+            # Ignore entry if it is contained in the manual override CSV
+            if (
+                merge["repository"],
+                merge["left"],
+                merge["right"],
+                merge["merge"],
+            ) in manual_override_set:
+                continue
+
+            # Load cached test results
+            cache_entry = lookup_in_cache(
+                cache_key=merge[merge_tool.name + "_merge_fingerprint"],
+                repo_slug=merge["repository"],
+                cache_directory=args.test_cache_dir,
+                set_run=False,
+            )
+            tries.append(len(cache_entry["test_results"]))  # type: ignore
+    average_tries = sum(tries) / len(tries) if len(tries) > 0 else 0
+    output += latex_def(run_name_camel_case + "AverageTriesUntilPass", average_tries)
+    # Output the number of merges for each amount of tries before pass
+    tries_count = {}
+    for t in tries:
+        if t not in tries_count:
+            tries_count[t] = 0
+        tries_count[t] += 1
+    for t in tries_count:
+        output += latex_def(
+            run_name_camel_case + f"NumberofMergesWith{t}TriesUntilPass",
+            tries_count.get(t, 0),
+        )
 
     spork_correct = len(result_df[result_df["spork"].isin(MERGE_CORRECT_NAMES)])
     ort_correct = len(result_df[result_df["gitmerge_ort"].isin(MERGE_CORRECT_NAMES)])

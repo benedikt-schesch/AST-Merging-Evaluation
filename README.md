@@ -6,6 +6,10 @@
 
 ## Requirements
 
+### Download the cached data
+
+Download the compressed cached data [here](https://zenodo.org/records/13366866) and put it in the root directory of the project. Be aware the the uncompressed cache size is 84GB as of 09-23-2024.
+
 ### Python
 
 To install all the Python requirements, create a conda or mamba environment:
@@ -82,13 +86,13 @@ The output data appears in `results/small/`.
 To run the stack on all repos:
 
 ```bash
-./run_full.sh
+./run_combined.sh
 ```
 
 To run the stack on all repos and also diff the merges' outputs:
 
 ```bash
-./run_full.sh -d
+./run_combined.sh -d
 ```
 
 This will run the entire code on all the repos and automatically decompress the cache if `cache/` does not exist.
@@ -97,7 +101,7 @@ The final result is found in `results/result.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_tested` contains all the merges that have been tested.
 
-To execute `run_full.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
+To execute `run_combined.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
 
 ```bash
 ./src/scripts/utils/run_multiple_machines.sh main machines.txt <project_path_on_machine>
@@ -109,10 +113,9 @@ If `make small-test` fails in a branch that you wish to merge into the main
 branch, run `make small-test` in the main branch (which should succeed) and also
 in your branch, and investigate the differences.
 
-
 ### Load the stored cache
 
-To decompress the cache run `make decompress-cache`. This is done automatically in `run_full.sh` if `cache/` does not exist.
+To decompress the cache run `make decompress-cache`. This is done automatically in `run_combined.sh` if `cache/` does not exist.
 
 ### Store the cache
 
@@ -144,7 +147,13 @@ To run style checking run `make style`.
 
 * run_small.sh -> This file executes the stack on two repositories.
 
-* run_full.sh -> This file executes the stack on all the repositories.
+* run_combined.sh -> This file executes the stack on all the repositories.
+
+* run_greatest_hits.sh -> This file executes the stack on the greatest hits repositories.
+
+* run_reaper.sh -> This file executes the stack on the reaper repositories.
+
+* run_1000.sh -> This file executes the stack on the 1000 repositories.
 
 * src/ -> contains the following scripts:
 
@@ -188,6 +197,8 @@ To run style checking run `make style`.
 
       * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
 
+      * diff_statistics.py -> Various diff commands to compare the results of two merges.
+
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
 * input_data/ -> Input data, which is a list of repositories; see its README.md.
@@ -226,3 +237,7 @@ To investigate differences between two mergers:
 * run `src/python/utils/select_from_results.py` to create a .csv database containing only the differences.
 * Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
+
+## Overwriting results manually
+
+In some cases it might be worth to overwrite the computed results. To do that you should modify the `results/manual_override.csv` file. In that file for the merge you want to overwrite a result of you should include at least the information `repository,merge,left,right` and a new column for the result you want to overwrite. You can overwrite anything you want but if there is a column you don't want to overwrite either do not include that column or leave the entry blanck i.e. `,,`. See the file for an example.

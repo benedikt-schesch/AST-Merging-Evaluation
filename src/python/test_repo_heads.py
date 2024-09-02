@@ -72,8 +72,8 @@ def head_passes_tests(args: Tuple[pd.Series, Path]) -> pd.Series:
     # Load repo
     try:
         repo = Repository(
-            "HEAD",
-            repo_slug,
+            merge_idx="HEAD",
+            repo_slug=repo_slug,
             cache_directory=cache,
             workdir_id=repo_slug + "/head-" + repo_info["repository"],
             lazy_clone=True,
