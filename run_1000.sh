@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./run_full.sh [-i <machine_id> -n <num_machines>] [-d]
+# usage: ./run_1000.sh [-i <machine_id> -n <num_machines>] [-d]
 # Runs the stack all the repositories
 # The output appears in result/ .
 # <machine_id> optional argument to specify the id of the current machine.

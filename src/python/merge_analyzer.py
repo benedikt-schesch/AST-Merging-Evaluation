@@ -15,7 +15,7 @@ import os
 import multiprocessing
 import argparse
 from pathlib import Path
-from typing import Tuple, Dict, Union, Any
+from typing import Tuple
 import random
 import pandas as pd
 from repo import Repository, TEST_STATE
@@ -32,123 +32,21 @@ from rich.progress import (
     TimeRemainingColumn,
     TextColumn,
 )
+from diff_statistics import (
+    compute_num_different_files,
+    compute_num_different_lines,
+    compute_are_imports_involved,
+    diff_contains_non_java_file,
+    diff_contains_java_file,
+    compute_num_diff_hunks,
+    compute_union_of_different_files_three_way,
+    compute_intersection_of_diff,
+)
 
 
 def is_test_passed(test_state: str) -> bool:
     """Returns true if the test state indicates passed tests."""
     return test_state == TEST_STATE.Tests_passed.name
-
-
-def get_diff_files(
-    repo: Repository, left_sha: str, right_sha: str, diff_log_file: Union[None, Path]
-) -> set:
-    """
-    Computes the diff between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-    Returns:
-        set: A set containing the diff result.
-    """
-    # Using git diff to compare the two SHAs
-    command = f"git diff --name-only {left_sha} {right_sha}"
-    stdout, stderr = repo.run_command(command)
-    if diff_log_file:
-        diff_log_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(diff_log_file, "w", encoding="utf-8") as f:
-            f.write(command)
-            f.write("\n stdout: \n")
-            f.write(stdout)
-            f.write("\n stderr: \n")
-            f.write(stderr)
-    return set(stdout.split("\n")) if stdout else set()
-
-
-def diff_merge_analyzer(
-    merge_idx: str,
-    repo_slug: str,
-    left_sha: str,
-    right_sha: str,
-    cache_dir: Path,
-) -> Dict[str, Any]:
-    """
-    Computes the diff between two branches using git diff.
-    Args:
-        repo (Repository): The repository object.
-        merge_idx (str): The merge index, such as 42-123.
-        repo_slug (str): The repository slug.
-        left_sha (str): The left sha.
-        right_sha (str): The right sha.
-        cache_dir (Path): The path to the cache directory.
-    Returns:
-        dict: A dictionary containing the diff result.
-    """
-    cache_key = str(left_sha) + "_" + str(right_sha)
-
-    diff_cache_dir = cache_dir / "diff_analyzer"
-    cache_data = lookup_in_cache(cache_key, repo_slug, diff_cache_dir, True)  # type: ignore
-
-    if cache_data is not None and isinstance(cache_data, dict):
-        return cache_data
-
-    repo = Repository(
-        merge_idx,
-        repo_slug,
-        cache_directory=cache_dir,
-        workdir_id=repo_slug + "/diff-" + left_sha + "-" + right_sha,
-        lazy_clone=False,
-    )
-
-    cache_data: Dict[str, Union[None, bool, str, Dict[str, str]]] = {
-        "diff contains java file": None,
-    }
-
-    try:
-        # Get the base sha
-        command = f"git merge-base {left_sha} {right_sha}"
-        base_sha = repo.run_command(command)[0].strip()
-
-        # Using git diff to compare the two SHAs
-        # Store the diff
-
-        cache_data["diff_logs"] = {
-            "left_right": str(
-                diff_cache_dir / "logs" / repo_slug / (cache_key + "_left_right.log")
-            ),
-            "base_right": str(
-                diff_cache_dir / "logs" / repo_slug / (cache_key + "_base_right.log")
-            ),
-            "base_left": str(
-                diff_cache_dir / "logs" / repo_slug / (cache_key + "_base_left.log")
-            ),
-        }
-        left_right_files = get_diff_files(
-            repo, left_sha, right_sha, Path(cache_data["diff_logs"]["left_right"])
-        )
-        base_right_files = get_diff_files(
-            repo, base_sha, right_sha, Path(cache_data["diff_logs"]["base_right"])
-        )
-        base_left_files = get_diff_files(
-            repo, base_sha, left_sha, Path(cache_data["diff_logs"]["base_left"])
-        )
-    except RuntimeError as e:
-        logger.error(
-            "merge_analyzer: Error while computing diff "
-            + f"for {repo_slug} {left_sha} {right_sha}: {e}"
-        )
-        cache_data["explanation"] = str(e)
-        set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
-        return cache_data
-
-    # Check that at least one java file is contained in all 3 diffs
-    common_files = left_right_files & base_right_files & base_left_files
-    cache_data["diff contains java file"] = any(
-        file.endswith(".java") for file in common_files
-    )
-
-    set_in_cache(cache_key, cache_data, repo_slug, diff_cache_dir)
-    return cache_data
 
 
 def merge_analyzer(
@@ -164,6 +62,70 @@ def merge_analyzer(
     """
     merge_idx, repo_slug, merge_data, cache_directory = args
 
+    cache_key = f"{merge_data['left']}_{merge_data['right']}"
+    cache_data = lookup_in_cache(
+        cache_key, repo_slug, cache_directory / "merge_analysis", True
+    )
+    write = False
+
+    if cache_data is None:
+        cache_data = {}
+    if isinstance(cache_data, str):
+        raise ValueError(
+            f"merge_analyzer: Expected a dictionary, got a string: {cache_data}"
+        )
+
+    repo = None
+    stats = (
+        ("num_diff_files", compute_num_different_files),
+        ("union_diff_files", compute_union_of_different_files_three_way),
+        ("num_intersecting_files", compute_intersection_of_diff),
+        ("num_diff_lines", compute_num_different_lines),
+        ("num_diff_hunks", compute_num_diff_hunks),
+        ("imports_involved", compute_are_imports_involved),
+        ("non_java_involved", diff_contains_non_java_file),
+        ("diff contains java file", diff_contains_java_file),
+    )
+    repo = None
+    for name, func in stats:
+        if name not in cache_data:
+            if repo is None:
+                repo = Repository(
+                    merge_idx,
+                    repo_slug,
+                    cache_directory=cache_directory,
+                    workdir_id=repo_slug
+                    + "/stats-"
+                    + merge_data["left"]
+                    + "-"
+                    + merge_data["right"],
+                )
+            # Pass in base sha for union and intersection stats.
+            if name == "union_diff_files" or name == "num_intersecting_files":
+                command = (
+                    "git merge-base "
+                    + str(merge_data["left"])
+                    + " "
+                    + str(merge_data["right"])
+                )
+                try:
+                    base_sha = repo.run_command(command)[0].strip()
+                except Exception as e:
+                    logger.error(
+                        f"merge_analyzer: Error while running command: {command}"
+                    )
+                    logger.error(f"merge_analyzer: Error: {e}")
+                    cache_data[name] = "Error while retrieving base sha"
+                    write = True
+                    continue
+                cache_data[name] = func(
+                    repo, base_sha, merge_data["left"], merge_data["right"]
+                )
+            else:
+                cache_data[name] = func(repo, merge_data["left"], merge_data["right"])
+            merge_data[name] = cache_data[name]
+            write = True
+
     left_sha = merge_data["left"]
     right_sha = merge_data["right"]
 
@@ -171,63 +133,83 @@ def merge_analyzer(
         f"merge_analyzer: Analyzing {merge_idx} {repo_slug} {left_sha} {right_sha}"
     )
 
-    # Compute diff size in lines between left and right
-    cache_data = diff_merge_analyzer(
-        merge_idx, repo_slug, left_sha, right_sha, cache_directory
-    )
-
     if cache_data["diff contains java file"] in (False, None):
-        merge_data["test merge"] = False
-        merge_data["diff contains java file"] = False
+        if (
+            "test merge" not in cache_data
+            or "diff contains java file" not in cache_data
+        ):
+            cache_data["test merge"] = False
+            cache_data["diff contains java file"] = False
+            write = True
         logger.info(
             f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
         )
+        if write:
+            set_in_cache(
+                cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
+            )
+        for key in cache_data:
+            if key != "diff_logs":
+                merge_data[key] = cache_data[key]
         return merge_data
 
-    # Checkout left parent
-    repo_left = Repository(
-        merge_idx,
-        repo_slug,
-        cache_directory=cache_directory,
-        workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
-        lazy_clone=True,
-    )
+    if "parents pass" not in cache_data:
+        write = True
+        # Checkout left parent
+        repo_left = Repository(
+            merge_idx,
+            repo_slug,
+            cache_directory=cache_directory,
+            workdir_id=repo_slug + "/left-" + left_sha + "-" + right_sha,
+            lazy_clone=True,
+        )
 
-    # Checkout right parent
-    repo_right = Repository(
-        merge_idx,
-        repo_slug,
-        cache_directory=cache_directory,
-        workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
-        lazy_clone=True,
-    )
+        # Checkout right parent
+        repo_right = Repository(
+            merge_idx,
+            repo_slug,
+            cache_directory=cache_directory,
+            workdir_id=repo_slug + "/right-" + left_sha + "-" + right_sha,
+            lazy_clone=True,
+        )
 
-    # Test left parent
-    result, _, left_tree_fingerprint = repo_left.checkout_and_test(
-        left_sha, TIMEOUT_TESTING_PARENT, N_TESTS
-    )
-    merge_data["left_tree_fingerprint"] = left_tree_fingerprint
-    merge_data["left parent test result"] = result.name
+        # Test left parent
+        result, _, left_tree_fingerprint = repo_left.checkout_and_test(
+            left_sha, TIMEOUT_TESTING_PARENT, N_TESTS
+        )
+        cache_data["left_tree_fingerprint"] = left_tree_fingerprint
+        cache_data["left parent test result"] = result.name
 
-    # Test right parent
-    result, _, right_tree_fingerprint = repo_right.checkout_and_test(
-        right_sha, TIMEOUT_TESTING_PARENT, N_TESTS
-    )
-    merge_data["right_tree_fingerprint"] = right_tree_fingerprint
-    merge_data["right parent test result"] = result.name
+        # Test right parent
+        result, _, right_tree_fingerprint = repo_right.checkout_and_test(
+            right_sha, TIMEOUT_TESTING_PARENT, N_TESTS
+        )
+        cache_data["right_tree_fingerprint"] = right_tree_fingerprint
+        cache_data["right parent test result"] = result.name
 
-    # Produce the final result
-    merge_data["parents pass"] = is_test_passed(
-        merge_data["left parent test result"]
-    ) and is_test_passed(merge_data["right parent test result"])
-    merge_data["diff contains java file"] = cache_data["diff contains java file"]
-    merge_data["test merge"] = (
-        merge_data["parents pass"] and merge_data["diff contains java file"] is True
-    )
+        # Produce the final result
+        print(
+            f"merge_analyzer: {merge_idx} {repo_slug} {left_sha} {right_sha} {cache_data['left parent test result']} {cache_data['right parent test result']}"
+        )
+        cache_data["parents pass"] = is_test_passed(
+            cache_data["left parent test result"]
+        ) and is_test_passed(cache_data["right parent test result"])
+        cache_data["diff contains java file"] = cache_data["diff contains java file"]
+        cache_data["test merge"] = (
+            cache_data["parents pass"] and cache_data["diff contains java file"] is True
+        )
 
-    logger.info(
-        f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
-    )
+        logger.info(
+            f"merge_analyzer: Analyzed {merge_idx} {repo_slug} {left_sha} {right_sha}"
+        )
+    if write:
+        set_in_cache(
+            cache_key, cache_data, repo_slug, cache_directory / "merge_analysis"
+        )
+
+    for key in cache_data:
+        if key != "diff_logs":
+            merge_data[key] = cache_data[key]
 
     return merge_data
 
@@ -299,6 +281,7 @@ if __name__ == "__main__":
     parser.add_argument("--n_sampled_merges", type=int, default=20)
     args = parser.parse_args()
     Path(args.cache_dir).mkdir(parents=True, exist_ok=True)
+    (Path(args.cache_dir) / "merge_analysis").mkdir(parents=True, exist_ok=True)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     repos = pd.read_csv(args.repos_head_passes_csv, index_col="idx")
@@ -316,7 +299,7 @@ if __name__ == "__main__":
         for repo_idx, repository_data in repos.iterrows():
             repo_slug = repository_data["repository"]
             merger_arguments += build_merge_analyzer_arguments(
-                repo_idx, args, repo_slug
+                str(repo_idx), args, repo_slug
             )
             progress.update(task, advance=1)
 

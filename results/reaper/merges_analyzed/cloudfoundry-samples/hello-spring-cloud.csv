@@ -1,2 +1,2 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-3,refs/remotes/origin/spring-boot-autoconfig,bff0e9d791e861c1a060aa8d9d7c6ec4b3382601,95284c7494e1919860096b769a406059bbc8f684,dd9f397c6ecd14a423da35c77041d29c7db6583f,,False,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+3,refs/remotes/origin/spring-boot-autoconfig,bff0e9d791e861c1a060aa8d9d7c6ec4b3382601,95284c7494e1919860096b769a406059bbc8f684,dd9f397c6ecd14a423da35c77041d29c7db6583f,,False,False,True,3,3,23,4,False,5,False

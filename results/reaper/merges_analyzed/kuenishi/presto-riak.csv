@@ -1,4 +1,4 @@
-idx,branch_name,merge,left,right,notes,test merge,diff contains java file,sampled for testing
-7,refs/heads/master,6145e149c94a37bd58ccc5f4679573844a8e3876,c86c1cd32a2e4aa3af748a90b4ac172bde7e6fda,4206b64a18cfe455d53a5a141f5e3c1d7f4fd865,,False,False,False
-9,refs/heads/master,cc844d8b288b05c850857c06d98a605abaa0f20b,09944fc869427ed504e773a838477b02dfd231e9,5ec1dc133990da8bf26267db7412cbc51ef6c413,,False,False,False
-11,refs/heads/master,e203bd84b04b0df26f2c833030d0ec09a3832ec0,cf88e551520f7582372b9b7b9070ee509271be5e,86beefe29fe4320032a1b3f5cae3b4279722870e,,False,False,False
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+7,refs/heads/master,6145e149c94a37bd58ccc5f4679573844a8e3876,c86c1cd32a2e4aa3af748a90b4ac172bde7e6fda,4206b64a18cfe455d53a5a141f5e3c1d7f4fd865,,False,False,True,3,2,5,1,False,3,False
+9,refs/heads/master,cc844d8b288b05c850857c06d98a605abaa0f20b,09944fc869427ed504e773a838477b02dfd231e9,5ec1dc133990da8bf26267db7412cbc51ef6c413,,False,False,True,6,9,42,1,False,6,False
+11,refs/heads/master,e203bd84b04b0df26f2c833030d0ec09a3832ec0,cf88e551520f7582372b9b7b9070ee509271be5e,86beefe29fe4320032a1b3f5cae3b4279722870e,,False,True,True,14,43,518,1,False,14,False
