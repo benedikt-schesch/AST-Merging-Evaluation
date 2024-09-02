@@ -4,7 +4,7 @@
 # <clone_dir> must contain a clone of a repository.
 # <git_strategy> is arguments to `git merge`, including -s and possibly -X.
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <git_strategy>.
-# Return code is 0 for merge success, 1 for merge failure.
+# Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
 # For merge failure, also outputs "Conflict" and aborts the merge.
 
 set -o nounset
