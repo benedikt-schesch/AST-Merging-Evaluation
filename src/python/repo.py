@@ -60,7 +60,7 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
 
 
 @timeout(10 * 60)
-def clone_repo(repo_slug: str, repo_dir: Path) -> git.repo.Repo:
+def clone_repo(repo_slug: str, repo_dir: Path) -> None:
     """Clones a repository, or runs `git fetch` if the repository is already cloned.
     Args:
         repo_slug (str): The slug of the repository, which is "owner/reponame".
@@ -185,6 +185,19 @@ class Repository:
     """A class that represents a repository.
     merge_idx is purely for diagnostic purposes.
     """
+
+    merge_idx: str
+    repo_slug: str
+    owner: str
+    name: str
+    repo_path: Path
+    workdir: Path
+    local_repo_path: Path
+    delete_workdir: bool
+    lazy_clone: bool
+    repo: Repo
+    test_cache_directory: Path
+    sha_cache_directory: Path
 
     def __init__(
         self,
@@ -804,6 +817,8 @@ class Repository:
         Returns:
             Tuple[str,str]: The standard output and standard error of the command.
         """
+        if not self.local_repo_path.exists():
+            self.copy_repo()
         process = subprocess.run(
             command,
             shell=True,
@@ -814,6 +829,7 @@ class Repository:
         if process.returncode != 0:
             raise RuntimeError(
                 f"Command {command} failed with exit code {process.returncode}:\n"
+                f"In folder {self.local_repo_path}\n"
                 f"stdout: {process.stdout}\nstderr: {process.stderr}"
             )
         return process.stdout, process.stderr
