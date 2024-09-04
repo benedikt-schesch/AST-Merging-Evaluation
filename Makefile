@@ -1,6 +1,8 @@
 all: style gradle-assemble
 
-style: shell-script-style python-style java-style
+fix-style: fix-python-style fix-java-style
+
+check-style: check-shell-script-style check-python-style check-java-style
 
 SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)sh'   * | grep -v 'git-hires-merge' | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
@@ -13,22 +15,29 @@ CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
 NUM_PROCESSES = 0
 
-shell-script-style:
-	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
-	checkbashisms ${SH_SCRIPTS}
-
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
 	@echo "PYTHON_FILES=${PYTHON_FILES}"
 
-python-style:
+check-shell-script-style:
+	shellcheck -e SC2153 -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	checkbashisms ${SH_SCRIPTS}
+
+fix-python-style:
 	ruff format ${PYTHON_FILES}
 	ruff check ${PYTHON_FILES} --fix
 
 check-python-style:
 	ruff format ${PYTHON_FILES} --check
 	ruff check ${PYTHON_FILES}
+
+fix-java-style:
+	./gradlew -q spotlessApply -g ../.gradle/
+
+check-java-style:
+	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
+
 
 # This target deletes files that are not committed to version control.
 clean:
@@ -59,36 +68,36 @@ clean-everything: clean clean-cache clean-test-cache clean-stored-hashes
 
 # Compresses the cache.
 compress-cache:
-	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
+	if [ ! -d cache ]; then echo "cache does not exist"; exit 2; fi
 	if [ -f cache.tar.gz ]; then rm -f cache.tar.gz; fi
 	tar --exclude="lock" -czf cache.tar.gz cache
 
 # Compresses the cache without logs.
 compress-cache-without-logs:
-	if [ ! -d cache ]; then echo "cache does not exist"; exit 1; fi
+	if [ ! -d cache ]; then echo "cache does not exist"; exit 2; fi
 	if [ -f cache_without_logs.tar.gz ]; then rm -f cache_without_logs.tar.gz; fi
 	tar --exclude="lock" --exclude="logs" -czf cache_without_logs.tar.gz cache
 
 compress-small-cache:
-	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 1; fi
+	if [ ! -d cache-small ]; then echo "cache-small does not exist"; exit 2; fi
 	if [ -f cache-small.tar ]; then rm -f cache-small.tar; fi
 	tar --exclude="lock" -czf cache-small.tar cache-small
 
 # Decompresses the cache.
 decompress-cache:
-	if [ ! -f cache.tar.gz ]; then echo "cache.tar.gz does not exist"; exit 1; fi
-	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
+	if [ ! -f cache.tar.gz ]; then echo "cache.tar.gz does not exist"; exit 2; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 2; fi
 	tar -xzf cache.tar.gz
 
 # Decompresses the cache without logs.
 decompress-cache-without-logs:
-	if [ ! -f cache_without_logs.tar.gz ]; then echo "cache_without_logs.tar.gz does not exist"; exit 1; fi
-	if [ -d cache ]; then echo "cache already exists"; exit 1; fi
+	if [ ! -f cache_without_logs.tar.gz ]; then echo "cache_without_logs.tar.gz does not exist"; exit 2; fi
+	if [ -d cache ]; then echo "cache already exists"; exit 2; fi
 	tar -xzf cache_without_logs.tar.gz
 
 decompress-small-cache:
-	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 1; fi
-	if [ -d cache-small ]; then echo "cache-small already exists"; exit 1; fi
+	if [ ! -f cache-small.tar ]; then echo "cache-small.tar does not exist"; exit 2; fi
+	if [ -d cache-small ]; then echo "cache-small already exists"; exit 2; fi
 	tar -xzf cache-small.tar
 
 # Copy tables and plots to the paper.
@@ -116,6 +125,9 @@ update-figures:
 	./run_combined.sh -op
 	./run_greatest_hits.sh -op --no_timing
 	./run_reaper.sh -op --no_timing
+
+update-figures-small:
+	AST_REPOS_PATH=repos-small-test ./run_small.sh -op --no_timing
 
 run-all-without-timing:
 	${MAKE} clean-workdir
@@ -160,9 +172,6 @@ check-merges-reproducibility:
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
 
-java-style:
-	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
-
 download-merge-tools: jars/IntelliMerge-1.0.9-all.jar jars/spork.jar
 
 jars/IntelliMerge-1.0.9-all.jar:
@@ -178,4 +187,4 @@ tags:
 	etags ${SH_SCRIPTS} ${BASH_SCRIPTS} ${PYTHON_FILES}
 
 run:
-	nice -n 5 sh run_full.sh | tee output.txt
+	nice -n 5 sh run_combined.sh | tee output.txt

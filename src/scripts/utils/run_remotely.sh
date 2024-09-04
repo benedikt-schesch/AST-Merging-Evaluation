@@ -11,7 +11,7 @@
 # Check arguments
 if [ "$#" -ne 5 ]; then
     echo "Usage: ./run_remotely.sh <branch> <machine_ssh> <machine_id> <num_machines> <root_path_on_machine>"
-    exit 1
+    exit 2
 fi
 
 BRANCH=$1
@@ -21,7 +21,7 @@ NUM_MACHINES=$4
 ROOT_PATH_ON_MACHINE=$5
 
 echo "Running branch $BRANCH on machine $MACHINE_SSH with id $MACHINE_ID out of $NUM_MACHINES machines (ROOT PATH: $ROOT_PATH_ON_MACHINE)"
-echo "Executing: ssh -t $MACHINE_SSH \"cd $ROOT_PATH_ON_MACHINE; pwd; killall screen; git checkout $BRANCH; git pull; conda activate AST; make clean-local; screen -m nice -n 10 ./run_full.sh $MACHINE_ID $NUM_MACHINES\""
+echo "Executing: ssh -t $MACHINE_SSH \"cd $ROOT_PATH_ON_MACHINE; pwd; killall screen; git checkout $BRANCH; git pull; conda activate AST; make clean-local; screen -m nice -n 10 ./run_combined.sh $MACHINE_ID $NUM_MACHINES\""
 
 # Connect to machine and execute code using a screen session
-ssh -t "$MACHINE_SSH" "cd $ROOT_PATH_ON_MACHINE; pwd; killall screen; git checkout $BRANCH; git pull; conda activate AST; make clean-local; screen -m nice -n 10 ./run_full.sh $MACHINE_ID $NUM_MACHINES"
+ssh -t "$MACHINE_SSH" "cd $ROOT_PATH_ON_MACHINE; pwd; killall screen; git checkout $BRANCH; git pull; conda activate AST; make clean-local; screen -m nice -n 10 ./run_combined.sh $MACHINE_ID $NUM_MACHINES"

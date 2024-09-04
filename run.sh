@@ -55,6 +55,8 @@ done
 # Add a _with_hashes to the $REPOS_CSV
 REPOS_CSV_WITH_HASHES="${REPOS_CSV%.*}_with_hashes.csv"
 
+make clean-workdir
+
 # shellcheck disable=SC2086
 run_latex_output() {
     local timing_option="$1"
@@ -67,7 +69,9 @@ run_latex_output() {
         --full_repos_csv "$REPOS_CSV_WITH_HASHES" \
         --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
         --n_merges "$N_MERGES" \
-        --output_dir "$OUT_DIR"
+        --output_dir "$OUT_DIR" \
+        --test_cache_dir "$CACHE_DIR/test_cache" \
+        --manual_override_csv "results/manual_override.csv"
 }
 
 if [ "$only_plotting" = true ]; then
@@ -82,9 +86,6 @@ fi
 PATH=$(pwd)/src/scripts/merge_tools:$PATH
 PATH=$(pwd)/src/scripts/merge_tools/merging/src/main/sh:$PATH
 export PATH
-
-# Clone all submodules
-git submodule update --init --recursive
 
 # Empty config file
 GIT_CONFIG_GLOBAL=$(pwd)/.gitconfig
@@ -112,10 +113,10 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
     fi
 fi
 
-mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 1; }
-if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 1; fi
-if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 1; fi
-if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 1; fi
+mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 2; }
+if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 2; fi
+if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 2; fi
+if [ -z "${JAVA17_HOME:+isset}" ] ; then echo "JAVA17_HOME is not set"; exit 2; fi
 
 if [ -z "${machine_id:+isset}" ] ; then machine_id=0; fi
 if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
@@ -141,7 +142,7 @@ if [ -d "$CACHE_DIR" ]; then
 fi
 REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
-    find "$REPOS_PATH" -name "*.lock" -delete
+    find "$REPOS_PATH/locks" -name "*.lock" -delete
 fi
 
 echo "run.sh: about to run delete_cache_placeholders.py"
@@ -225,6 +226,3 @@ else
     echo "run.sh: about to run run_latex_output"
     run_latex_output ""
 fi
-
-echo "run.sh: about to run run_latex_output"
-run_latex_output ""
