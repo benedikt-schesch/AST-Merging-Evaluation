@@ -41,7 +41,7 @@ def main():
     parser.add_argument(
         "--cache",
         type=str,
-        default="cache",
+        default="cache/sha_cache_entry",
         help="The cache directory to delete keys from.",
     )
     parser.add_argument(
