@@ -45,7 +45,7 @@ if __name__ == "__main__":
         actual_df = remove_run_time(actual_df)
 
         different_columns = []
-        for col in goal_df.columns+actual_df.columns:
+        for col in list(goal_df.columns)+list(actual_df.columns):
             if "intellimerge" in col or "run_time" in col:
                 continue
             if col not in actual_df:
