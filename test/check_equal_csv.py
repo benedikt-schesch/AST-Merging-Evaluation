@@ -45,11 +45,15 @@ if __name__ == "__main__":
         actual_df = remove_run_time(actual_df)
 
         different_columns = []
-        for col in list(goal_df.columns)+list(actual_df.columns):
+        all_columns = set(goal_df.columns) | set(actual_df.columns)
+        for col in all_columns:
             if "intellimerge" in col or "run_time" in col:
                 continue
-            if col not in actual_df:
-                print(f"Column {col} is not in actual_df")
+            if col not in goal_df:
+                print(f"Column {col} is in actual_df but not in goal_df")
+                different_columns.append(col)
+            elif col not in actual_df:
+                print(f"Column {col} is in goal_df but not in actual_df")
                 different_columns.append(col)
             elif not goal_df[col].equals(actual_df[col]):
                 print(f"Column {col} is not equal")
