@@ -63,7 +63,7 @@ if __name__ == "__main__":
             print(f"Columns that are not equal: {different_columns}")
             print(f"{goal_folder/goal_file} and {actual_file} are not equal")
             raise ValueError("goal_df and actual_df have different columns or values")
-  
+
         for col in goal_df.columns:
             if "intellimerge" in col:
                 continue
