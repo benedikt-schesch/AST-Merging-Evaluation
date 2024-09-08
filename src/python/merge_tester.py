@@ -52,7 +52,7 @@ def merge_tester(args: Tuple[str, str, pd.Series, Path]) -> pd.Series:
     while psutil.cpu_percent() > 90 or psutil.virtual_memory().percent > 85:
         logger.trace(
             "merge_tester: Waiting for CPU or memory to be available."
-            + merge_idx
+            + str(merge_idx)
             + repo_slug
             + str(merge_data["left"])
             + str(merge_data["right"])
