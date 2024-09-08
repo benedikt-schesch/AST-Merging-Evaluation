@@ -127,7 +127,6 @@ MERGE_TOOL = Enum(
         "plumelib_recursive_minimal",
         "plumelib_recursive_myers",
         "plumelib_recursive_patience",
-        "plumelib_resolve",
         "plumelib_spork",
         "plumelib_ort",
         "plumelib_ort_ignorespace",
