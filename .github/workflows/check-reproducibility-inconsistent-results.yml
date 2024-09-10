@@ -10,6 +10,12 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
+    - uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo "GRAALVM_HOME=$GRAALVM_HOME" >> $GITHUB_ENV
     - uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
