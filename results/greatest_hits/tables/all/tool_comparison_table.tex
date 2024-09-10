@@ -4,34 +4,35 @@
 \caption{Comparison of Merge Tool Results: Incorrect vs Unhandled}
 \label{tab:tool-comparison}
 \small
-\begin{tabular}{lrrrrrrrrrrrrrrrrrrrrrrrr}
+\begin{tabular}{lrrrrrrrrrrrrrrrrrrrrrrrrr}
 \toprule
-& Gitmerge-ort & Gitmerge-ort-ignorespace & Gitmerge-recursive-histogram & Gitmerge-recursive-ignorespace & Gitmerge-recursive-minimal & Gitmerge-recursive-myers & Gitmerge-recursive-patience & Gitmerge-resolve & Hires-Merge & Spork & IntelliMerge & P-git-hires-merge & P-intellimerge & P-recursive-histogram & P-recursive-ignorespace & P-recursive-minimal & P-recursive-myers & P-recursive-patience & P-spork & IVn & IVn-ignorespace & Adjacent & Imports & Version Numbers \\
+& Gitmerge-ort & Gitmerge-ort-ignorespace & Gitmerge-recursive-histogram & Gitmerge-recursive-ignorespace & Gitmerge-recursive-minimal & Gitmerge-recursive-myers & Gitmerge-recursive-patience & Gitmerge-resolve & Hires-Merge & Spork & IntelliMerge & P-git-hires-merge & P-intellimerge & P-recursive-histogram & P-recursive-ignorespace & P-recursive-minimal & P-recursive-myers & P-recursive-patience & P-resolve & P-spork & IVn & IVn-ignorespace & Adjacent & Imports & Version Numbers \\
 \midrule
-Gitmerge-ort & - & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-Gitmerge-ort-ignorespace & 5 & - & 5 & 0 & 5 & 5 & 5 & 6 & 3 & 3 & 2 & 3 & 4 & 4 & 0 & 4 & 4 & 4 & 2 & 4 & 0 & 3 & 5 & 5 \\
-Gitmerge-recursive-histogram & 0 & 0 & - & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-Gitmerge-recursive-ignorespace & 6 & 1 & 6 & - & 5 & 5 & 5 & 6 & 3 & 3 & 3 & 3 & 4 & 4 & 0 & 4 & 4 & 4 & 2 & 4 & 0 & 4 & 5 & 6 \\
-Gitmerge-recursive-minimal & 1 & 1 & 1 & 0 & - & 0 & 0 & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
-Gitmerge-recursive-myers & 1 & 1 & 1 & 0 & 0 & - & 0 & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
-Gitmerge-recursive-patience & 1 & 1 & 1 & 0 & 0 & 0 & - & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
-Gitmerge-resolve & 1 & 1 & 1 & 0 & 0 & 0 & 0 & - & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
-Hires-Merge & 17 & 15 & 17 & 14 & 16 & 16 & 16 & 17 & - & 8 & 10 & 0 & 15 & 15 & 14 & 15 & 15 & 15 & 7 & 15 & 14 & 10 & 16 & 17 \\
-Spork & 47 & 45 & 47 & 44 & 46 & 46 & 46 & 48 & 37 & - & 28 & 29 & 39 & 39 & 37 & 39 & 39 & 39 & 0 & 39 & 37 & 33 & 39 & 47 \\
-IntelliMerge & 197 & 187 & 197 & 187 & 197 & 197 & 197 & 201 & 164 & 95 & - & 133 & 167 & 167 & 159 & 167 & 167 & 167 & 85 & 167 & 159 & 157 & 177 & 197 \\
-P-git-hires-merge & 21 & 18 & 21 & 18 & 21 & 21 & 21 & 22 & 7 & 10 & 13 & - & 17 & 17 & 14 & 17 & 17 & 17 & 8 & 17 & 14 & 14 & 19 & 21 \\
-P-intellimerge & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & - & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 2 & 5 \\
-P-recursive-histogram & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & - & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 2 & 5 \\
-P-recursive-ignorespace & 10 & 4 & 10 & 4 & 10 & 10 & 10 & 11 & 8 & 6 & 6 & 4 & 6 & 6 & - & 6 & 6 & 6 & 4 & 6 & 0 & 7 & 8 & 10 \\
-P-recursive-minimal & 4 & 3 & 4 & 3 & 4 & 4 & 4 & 5 & 3 & 2 & 4 & 0 & 0 & 0 & 0 & - & 0 & 0 & 0 & 0 & 0 & 2 & 2 & 4 \\
-P-recursive-myers & 4 & 3 & 4 & 3 & 4 & 4 & 4 & 5 & 3 & 2 & 4 & 0 & 0 & 0 & 0 & 0 & - & 0 & 0 & 0 & 0 & 2 & 2 & 4 \\
-P-recursive-patience & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & - & 0 & 0 & 0 & 3 & 2 & 5 \\
-P-spork & 50 & 47 & 50 & 47 & 50 & 50 & 50 & 52 & 40 & 5 & 29 & 30 & 40 & 40 & 38 & 40 & 40 & 40 & - & 40 & 38 & 35 & 41 & 50 \\
-IVn & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & - & 0 & 3 & 2 & 5 \\
-IVn-ignorespace & 11 & 5 & 11 & 5 & 11 & 11 & 11 & 12 & 9 & 6 & 7 & 4 & 6 & 6 & 0 & 6 & 6 & 6 & 4 & 6 & - & 8 & 8 & 11 \\
-Adjacent & 18 & 15 & 18 & 15 & 18 & 18 & 18 & 19 & 11 & 9 & 6 & 8 & 14 & 14 & 13 & 14 & 14 & 14 & 6 & 14 & 13 & - & 17 & 18 \\
-Imports & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 4 & 3 & 1 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 2 & - & 3 \\
-Version Numbers & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & - \\
+Gitmerge-ort & - & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Gitmerge-ort-ignorespace & 5 & - & 5 & 0 & 5 & 5 & 5 & 6 & 3 & 3 & 2 & 3 & 4 & 4 & 0 & 4 & 4 & 4 & 5 & 2 & 4 & 0 & 3 & 5 & 5 \\
+Gitmerge-recursive-histogram & 0 & 0 & - & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Gitmerge-recursive-ignorespace & 6 & 1 & 6 & - & 5 & 5 & 5 & 6 & 3 & 3 & 3 & 3 & 4 & 4 & 0 & 4 & 4 & 4 & 5 & 2 & 4 & 0 & 4 & 5 & 6 \\
+Gitmerge-recursive-minimal & 1 & 1 & 1 & 0 & - & 0 & 0 & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 1 \\
+Gitmerge-recursive-myers & 1 & 1 & 1 & 0 & 0 & - & 0 & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 1 \\
+Gitmerge-recursive-patience & 1 & 1 & 1 & 0 & 0 & 0 & - & 1 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 1 \\
+Gitmerge-resolve & 1 & 1 & 1 & 0 & 0 & 0 & 0 & - & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
+Hires-Merge & 17 & 15 & 17 & 14 & 16 & 16 & 16 & 17 & - & 8 & 10 & 0 & 15 & 15 & 14 & 15 & 15 & 15 & 16 & 7 & 15 & 14 & 10 & 16 & 17 \\
+Spork & 47 & 45 & 47 & 44 & 46 & 46 & 46 & 48 & 37 & - & 28 & 29 & 39 & 39 & 37 & 39 & 39 & 39 & 41 & 0 & 39 & 37 & 33 & 39 & 47 \\
+IntelliMerge & 197 & 187 & 197 & 187 & 197 & 197 & 197 & 201 & 164 & 95 & - & 133 & 167 & 167 & 159 & 167 & 167 & 167 & 171 & 85 & 167 & 159 & 157 & 177 & 197 \\
+P-git-hires-merge & 21 & 18 & 21 & 18 & 21 & 21 & 21 & 22 & 7 & 10 & 13 & - & 17 & 17 & 14 & 17 & 17 & 17 & 18 & 8 & 17 & 14 & 14 & 19 & 21 \\
+P-intellimerge & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & - & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 3 & 2 & 5 \\
+P-recursive-histogram & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & - & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 3 & 2 & 5 \\
+P-recursive-ignorespace & 10 & 4 & 10 & 4 & 10 & 10 & 10 & 11 & 8 & 6 & 6 & 4 & 6 & 6 & - & 6 & 6 & 6 & 7 & 4 & 6 & 0 & 7 & 8 & 10 \\
+P-recursive-minimal & 4 & 3 & 4 & 3 & 4 & 4 & 4 & 5 & 3 & 2 & 4 & 0 & 0 & 0 & 0 & - & 0 & 0 & 1 & 0 & 0 & 0 & 2 & 2 & 4 \\
+P-recursive-myers & 4 & 3 & 4 & 3 & 4 & 4 & 4 & 5 & 3 & 2 & 4 & 0 & 0 & 0 & 0 & 0 & - & 0 & 1 & 0 & 0 & 0 & 2 & 2 & 4 \\
+P-recursive-patience & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & - & 1 & 0 & 0 & 0 & 3 & 2 & 5 \\
+P-resolve & 4 & 3 & 4 & 3 & 4 & 4 & 4 & 4 & 3 & 2 & 4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & - & 0 & 0 & 0 & 2 & 2 & 4 \\
+P-spork & 50 & 47 & 50 & 47 & 50 & 50 & 50 & 52 & 40 & 5 & 29 & 30 & 40 & 40 & 38 & 40 & 40 & 40 & 42 & - & 40 & 38 & 35 & 41 & 50 \\
+IVn & 5 & 4 & 5 & 4 & 5 & 5 & 5 & 6 & 4 & 2 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & - & 0 & 3 & 2 & 5 \\
+IVn-ignorespace & 11 & 5 & 11 & 5 & 11 & 11 & 11 & 12 & 9 & 6 & 7 & 4 & 6 & 6 & 0 & 6 & 6 & 6 & 7 & 4 & 6 & - & 8 & 8 & 11 \\
+Adjacent & 18 & 15 & 18 & 15 & 18 & 18 & 18 & 19 & 11 & 9 & 6 & 8 & 14 & 14 & 13 & 14 & 14 & 14 & 15 & 6 & 14 & 13 & - & 17 & 18 \\
+Imports & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 4 & 3 & 1 & 5 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 2 & - & 3 \\
+Version Numbers & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & - \\
 \bottomrule
 \end{tabular}
 \end{table}

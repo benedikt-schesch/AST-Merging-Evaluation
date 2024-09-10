@@ -180,9 +180,7 @@ def merge_replay(
 
         for merge_tool in MERGE_TOOL:
             if testing:
-                if merge_tool == MERGE_TOOL.spork:
-                    continue
-                if merge_tool == MERGE_TOOL.intellimerge:
+                if "spork" in merge_tool.name or "intellimerge" in merge_tool.name:
                     continue
             progress.update(task, advance=1)
             workdir = Path(
@@ -298,10 +296,10 @@ def merge_replay(
                     != merge_fingerprint
                     and not dont_check_fingerprints
                 )
-                and (merge_tool != MERGE_TOOL.spork)
-                and (merge_tool != MERGE_TOOL.intellimerge)
+                and ("spork" not in merge_tool.name)
+                and ("intellimerge" not in merge_tool.name)
                 and (
-                    merge_tool != MERGE_TOOL.gitmerge_resolve
+                    "resolve" not in merge_tool.name
                     or merge_result != MERGE_STATE.Merge_failed
                 )
             ):

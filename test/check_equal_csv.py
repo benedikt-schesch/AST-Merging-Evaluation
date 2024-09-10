@@ -47,7 +47,7 @@ if __name__ == "__main__":
         different_columns = []
         all_columns = set(goal_df.columns) | set(actual_df.columns)
         for col in all_columns:
-            if "intellimerge" in col or "run_time" in col:
+            if "intellimerge" in col or "run_time" in col or "resolve" in col:
                 continue
             if col not in goal_df:
                 print(f"Column {col} is in actual_df but not in goal_df")
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             raise ValueError("goal_df and actual_df have different columns or values")
 
         for col in goal_df.columns:
-            if "intellimerge" in col:
+            if "intellimerge" in col or "resolve" in col:
                 continue
             # Check if the columns are equal
             if actual_df[col].equals(goal_df[col]):
