@@ -125,7 +125,7 @@ if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
     git submodule update --init --recursive
 fi
 
-(cd ./src/scripts/merge_tools/merging && JAVA_HOME=$JAVA_GRAALVM_HOME ./gradlew nativeCompile)
+(cd ./src/scripts/merge_tools/merging && JAVA_HOME=$GRAALVM_HOME PATH="$JAVA_HOME/bin:$PATH" ./gradlew nativeCompile)
 
 echo "Machine ID: $machine_id"
 echo "Number of machines: $num_machines"
