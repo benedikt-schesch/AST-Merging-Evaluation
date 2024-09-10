@@ -44,6 +44,26 @@ if __name__ == "__main__":
         goal_df = remove_run_time(goal_df)
         actual_df = remove_run_time(actual_df)
 
+        different_columns = []
+        all_columns = set(goal_df.columns) | set(actual_df.columns)
+        for col in all_columns:
+            if "intellimerge" in col or "run_time" in col:
+                continue
+            if col not in goal_df:
+                print(f"Column {col} is in actual_df but not in goal_df")
+                different_columns.append(col)
+            elif col not in actual_df:
+                print(f"Column {col} is in goal_df but not in actual_df")
+                different_columns.append(col)
+            elif not goal_df[col].equals(actual_df[col]):
+                print(f"Column {col} is not equal")
+                different_columns.append(col)
+
+        if len(different_columns) > 0:
+            print(f"Columns that are not equal: {different_columns}")
+            print(f"{goal_folder/goal_file} and {actual_file} are not equal")
+            raise ValueError("goal_df and actual_df have different columns or values")
+
         for col in goal_df.columns:
             if "intellimerge" in col:
                 continue
@@ -58,8 +78,6 @@ if __name__ == "__main__":
             # Now print details, after diffs so it is not obscured by the diff output.
             different_columns = []
             for col in goal_df.columns:
-                if "intellimerge" in col:
-                    continue
                 if "run_time" in col:
                     raise ValueError(
                         f'goal_df.columns contains "run_time": {goal_df.columns}'
