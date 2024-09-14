@@ -34,7 +34,7 @@ echo "Temp dir: $temp_out_dir"
 clone_dir_absolutepath=$(realpath "$clone_dir")
 
 # run intellimerge
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
+cd "$clone_dir" || echo "$0: cannot cd to $clone_dir" && exit 2
 
 java -Djava.util.concurrent.ForkJoinPool.common.parallelism=1 -Djava.io.tmpdir="$temp_intellimerge_dir" -jar "$intellimerge_absolutepath" -r "$clone_dir_absolutepath" -b "$branch1" "$branch2" -o $temp_out_dir
 
