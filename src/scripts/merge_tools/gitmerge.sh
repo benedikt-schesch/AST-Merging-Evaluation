@@ -21,7 +21,7 @@ git_strategy=$4
 
 ## Perform merge
 
-cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
+cd "$clone_dir" || echo "$0: cannot cd to $clone_dir" && exit 2
 
 git checkout "$branch1" --force
 git config --local merge.conflictstyle diff3
