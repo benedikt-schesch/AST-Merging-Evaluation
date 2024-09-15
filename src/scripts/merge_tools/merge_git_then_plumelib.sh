@@ -23,7 +23,7 @@ plumelib_strategy=$5 #"--only-adjacent"
 
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and plumelib_strategy=$plumelib_strategy"
 
-cd "$clone_dir" || echo "$0: cannot cd to $clone_dir" && exit 2
+cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir" && exit 2; }
 
 git checkout "$branch1" --force
 git config --local merge.conflictstyle diff3
