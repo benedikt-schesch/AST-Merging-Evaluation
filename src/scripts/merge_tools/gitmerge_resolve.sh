@@ -12,7 +12,7 @@ status=$?
 
 if [ "$status" -ne 0 ]; then
   echo "Removing filenames from conflict markers."
-  cd "$clone_dir" || (echo "$0: cannot cd to $clone_dir" ; exit 2)
+  cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
   readarray -t files < <(grep -l -r '^\(<<<<<<<\||||||||\|>>>>>>>\) .merge_file_')
   for file in "${files[@]}" ; do
     echo "Removing filenames from conflict markers in $file"
