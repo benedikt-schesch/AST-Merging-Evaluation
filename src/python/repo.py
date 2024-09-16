@@ -131,7 +131,7 @@ MERGE_TOOL = Enum(
         "plumelib_spork",
         "plumelib_ort",
         "plumelib_ort_ignorespace",
-        "plumelib_ort_adjacent",
+        "adjacent",
         "plumelib_ort_imports",
         "plumelib_ort_version_number",
     ],
