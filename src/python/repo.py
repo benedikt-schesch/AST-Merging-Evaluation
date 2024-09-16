@@ -547,7 +547,7 @@ class Repository:
         command = [
             "src/scripts/run_with_timeout.sh",
             str(timeout),
-            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
+            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path.resolve()} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
         p = subprocess.run(
             command,
