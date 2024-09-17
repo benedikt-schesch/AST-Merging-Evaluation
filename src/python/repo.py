@@ -120,6 +120,12 @@ MERGE_TOOL = Enum(
         "git_hires_merge",
         "spork",
         "intellimerge",
+        # The below is mostly "X + plume-lib-merging-fixups",
+        # except that these are not:
+        #  * "adjacent"
+        #  * "imports"
+        #  * "version_numbers"
+        # TODO: move those above this comment, then adjust the comment.
         "plumelib_git_hires_merge",
         "plumelib_intellimerge",
         "plumelib_recursive_histogram",
@@ -132,8 +138,11 @@ MERGE_TOOL = Enum(
         "plumelib_ort",
         "plumelib_ort_ignorespace",
         "adjacent",
-        "plumelib_ort_imports",
-        "plumelib_ort_version_number",
+        "imports",
+        "version_numbers",
+        "plumelib_adjacent",
+        "plumelib_imports",
+        "plumelib_version_numbers",
     ],
 )
 MERGE_STATE = Enum(
