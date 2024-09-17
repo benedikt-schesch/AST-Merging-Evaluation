@@ -140,9 +140,6 @@ MERGE_TOOL = Enum(
         "adjacent",
         "imports",
         "version_numbers",
-        # "plumelib_adjacent",
-        # "plumelib_imports",
-        # "plumelib_version_numbers",
     ],
 )
 MERGE_STATE = Enum(
