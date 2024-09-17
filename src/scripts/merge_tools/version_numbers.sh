@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./plumelib_ort_version_number.sh <clone_dir> <branch-1> <branch-2>
+# usage: ./version_numbers.sh <clone_dir> <branch-1> <branch-2>
 
 MERGE_SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 clone_dir=$1
