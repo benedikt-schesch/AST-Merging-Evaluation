@@ -63,7 +63,7 @@ MERGE_TOOL_RENAME = {
     "git_hires_merge": "Hires-Merge",
     "adjacent": "Adjacent",
     "imports": "Imports",
-    "plumelib_ort_version_number": "Version Numbers",
+    "version_numbers": "Version Numbers",
     "plumelib_ort": "IVn",
     "plumelib_ort_ignorespace": "IVn-ignorespace",
 }
@@ -169,7 +169,7 @@ PLOTS = {
         "intellimerge",
         "adjacent",
         "imports",
-        "plumelib_ort_version_number",
+        "version_numbers",
         "plumelib_ort",
         "plumelib_ort_ignorespace",
     ],
