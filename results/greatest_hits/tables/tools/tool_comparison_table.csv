@@ -1,4 +1,4 @@
-,gitmerge_ort,gitmerge_ort_ignorespace,git_hires_merge,spork,intellimerge,adjacent,imports,version_numbers,plumelib_ort,plumelib_ort_ignorespace
+,gitmerge_ort,gitmerge_ort_ignorespace,git_hires_merge,spork,intellimerge,adjacent,imports,version_numbers,ivn,ivn_ignorespace
 gitmerge_ort,-,0,0,0,1,0,0,0,0,0
 gitmerge_ort_ignorespace,5,-,3,3,2,5,5,5,5,0
 git_hires_merge,17,15,-,8,10,17,17,17,17,15
@@ -7,5 +7,5 @@ intellimerge,198,188,165,96,-,198,198,198,198,188
 adjacent,0,0,0,0,1,-,0,0,0,0
 imports,0,0,0,0,1,0,-,0,0,0
 version_numbers,0,0,0,0,1,0,0,-,0,0
-plumelib_ort,0,0,0,0,1,0,0,0,-,0
-plumelib_ort_ignorespace,5,0,3,3,2,5,5,5,5,-
+ivn,0,0,0,0,1,0,0,0,-,0
+ivn_ignorespace,5,0,3,3,2,5,5,5,5,-

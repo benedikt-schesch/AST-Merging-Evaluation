@@ -64,8 +64,8 @@ MERGE_TOOL_RENAME = {
     "adjacent": "Adjacent",
     "imports": "Imports",
     "version_numbers": "Version Numbers",
-    "plumelib_ort": "IVn",
-    "plumelib_ort_ignorespace": "IVn-ignorespace",
+    "ivn": "IVn",
+    "ivn_ignorespace": "IVn-ignorespace",
 }
 
 
@@ -170,8 +170,8 @@ PLOTS = {
         "adjacent",
         "imports",
         "version_numbers",
-        "plumelib_ort",
-        "plumelib_ort_ignorespace",
+        "ivn",
+        "ivn_ignorespace",
     ],
 }
 
