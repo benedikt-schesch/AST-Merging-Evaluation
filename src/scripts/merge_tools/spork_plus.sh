@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./plumelib_spork.sh <clone_dir> <branch-1> <branch-2>
+# usage: ./spork_plus.sh <clone_dir> <branch-1> <branch-2>
 
 MERGE_SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 clone_dir=$1
