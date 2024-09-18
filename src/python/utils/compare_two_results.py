@@ -1,44 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Output a subset of the results, to standard out.
-The arguments are a query and an optional list of columns.
-The query is executed (to select rows), then columns are output that include:
- * idx
- * all the columns that appear in the query
- * any additional columns specified on the command line.
 
-The query is an expression using dataframe variables.
+"""Output indices where the differences of two columns are different between two result files (CSV).
 
-Here are example invocations:
-  select_from_results.py '(gitmerge_ort == "Merge_failed") and (spork != "Merge_failed")'
-  select_from_results.py '(gitmerge_ort == "Merge_failed") != (spork == "Merge_failed")'
+Params:
+    input1: str - The first input file path.
+    input1-column1: str - The first column name in the first input file.
+    input1-column2: str - The second column name in the first input file.
+    input2: str - The second input file path.
+    input2-column1: str - The first column name in the second input file.
+    input2-column2: str - The second column name in the second input file.
 
-The resulting .csv is useful for manual examination but cannot be passed to
-`replay_merge.py` because that requires a .csv file with all tools and all
-fingerprints.
+Prints the results to standard out.
 """
 
 import argparse
-from os import system
-import re
-import tempfile
 import pandas as pd
-
-
-def columns_in_query(query):
-    """Returns all the identifiers used in the query."""
-    result = re.findall(r"""(?<!['"])\b[A-Za-z][A-Za-z_]*\b(?!['"])""", query)
-    while "and" in result:
-        result.remove("and")
-    while "or" in result:
-        result.remove("or")
-    return result
-
-
-# Testing:
-# columns_in_query('(gitmerge_ort == "Merge_failed") && (spork != "Merge_failed")')
-# columns_in_query('(gitmerge_ort == "Merge_failed") != (spork == "Merge_failed")')
 
 
 def main():
@@ -47,76 +25,37 @@ def main():
         prog="select_from_results.py",
         description="Outputs a subset of the results, to standard out",
     )
-    parser.add_argument("query")
     parser.add_argument(
         "--input1",
         action="store",
-        default="results/combined/inconsistent_results.csv",
+        default="results/combined/result.csv",
     )
+    parser.add_argument("--input1-column1", action="store", default="gitmerge_ort")
+    parser.add_argument("--input1-column2", action="store", default="ivn")
     parser.add_argument(
         "--input2",
         action="store",
-        default="results/combined/inconsistent_results_copy.csv",
+        default="results/combined/result_346.csv",
     )
-    parser.add_argument("columns", nargs=argparse.REMAINDER)
+    parser.add_argument("--input2-column1", action="store", default="gitmerge_ort")
+    parser.add_argument("--input2-column2", action="store", default="plumelib_ort")
     args = parser.parse_args()
 
-    # Read files.
-    df1 = pd.read_csv(args.input1)
-    df2 = pd.read_csv(args.input2)
+    # Read files and set idx as index.
+    df1 = pd.read_csv(args.input1).set_index("idx")
+    df2 = pd.read_csv(args.input2).set_index("idx")
 
-    # Select some rows.
-    df1 = df1.query(args.query)
-    df2 = df2.query(args.query)
+    # Loop through each row.
+    for (index1, row1), (index2, row2) in zip(df1.iterrows(), df2.iterrows()):
+        # Boolean of the two columns.
+        input1_bool = row1[args.input1_column1] == row1[args.input1_column2]
+        input2_bool = row2[args.input2_column1] == row2[args.input2_column2]
 
-    # Select some columns
-    columns_to_select = (
-        [
-            "idx",
-            "repo-idx",
-            "merge-idx",
-            "branch_name",
-            "merge",
-            "left",
-            "left_tree_fingerprint",
-            "right",
-            "right_tree_fingerprint",
-            "ivn",
-            "ivn_merge_fingerprint",
-            "ivn_ignorespace",
-            "ivn_ignorespace_merge_fingerprint",
-            "adjacent",
-            "adjacent_merge_fingerprint",
-            "adjacent_ignorespace",
-            "adjacent_ignorespace_merge_fingerprint",
-            "imports",
-            "imports_merge_fingerprint",
-            "imports_ignorespace",
-            "imports_ignorespace_merge_fingerprint",
-            "version_numbers",
-            "version_numbers_merge_fingerprint",
-            "version_numbers_ignorespace",
-            "version_numbers_ignorespace_merge_fingerprint",
-            "Oracle tool",
-        ]
-        + columns_in_query(args.query)
-        + args.columns
-        + ["repository"]
-    )
-    df1 = df1[columns_to_select]
-    df2 = df2[columns_to_select]
-    
-    # Set 'idx' as the index.
-    df1 = df1.set_index('idx')
-    df2 = df2.set_index('idx')
-    
-    # Compare the two dataframes
-    print(df1.compare(df2))
-
-    # Gross way to produce output to standard out
-    # with tempfile.NamedTemporaryFile() as tmpfile:
-    #     df1.to_csv(tmpfile)
-    #     system("cat " + tmpfile.name)
+        # If the two booleans are different, print the row.
+        if input1_bool != input2_bool:
+            print(
+                f"Idx: {index1}    {args.input1_column1}: {row1[args.input1_column1]}, {args.input1_column2}: {row1[args.input1_column2]} | {args.input2_column1}: {row2[args.input2_column1]}, {args.input2_column2}: {row2[args.input2_column2]}"
+            )
 
 
 if __name__ == "__main__":
