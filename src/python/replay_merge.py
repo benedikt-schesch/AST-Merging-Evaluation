@@ -308,10 +308,11 @@ def merge_replay(
                     store_artifacts(result_df)
                 if delete_workdir:
                     delete_workdirs(result_df)
-                print("=====================================\n")
+                print(f"fingerprints differ; details follow.")
+                print(f"=================== start of {log_path}:")
                 with open(log_path, "r", encoding="utf-8") as f:
                     print(f.read())
-                print("=====================================\n")
+                print(f"=================== end of {log_path}.")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
