@@ -308,7 +308,7 @@ def merge_replay(
                     store_artifacts(result_df)
                 if delete_workdir:
                     delete_workdirs(result_df)
-                print(f"fingerprints differ; details follow.")
+                print("fingerprints differ; details follow.")
                 print(f"=================== start of {log_path}:")
                 with open(log_path, "r", encoding="utf-8") as f:
                     print(f.read())
