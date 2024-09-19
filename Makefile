@@ -1,4 +1,4 @@
-all: style gradle-assemble
+all: check-style gradle-assemble
 
 fix-style: fix-python-style fix-java-style
 
