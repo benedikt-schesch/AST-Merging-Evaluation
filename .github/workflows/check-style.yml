@@ -25,3 +25,5 @@ jobs:
       run: sudo apt update && sudo apt install shellcheck devscripts
     - name: Check style
       run: make check-style
+    - name: Check script diffs
+      run: cd src/scripts/merge_tools && check-implementations.sh
