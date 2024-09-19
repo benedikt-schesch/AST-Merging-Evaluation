@@ -113,12 +113,11 @@ If `make small-test` fails in a branch that you wish to merge into the main
 branch, run `make small-test` in the main branch (which should succeed) and also
 in your branch, and investigate the differences.
 
-#### Updatinge the goal files
+#### Updating the goal files
 
 If you make a change to the mergers that changes merge results, you need to
 update the goal files or else reproducibility checks will fail.
-
-
+Copy certain files from `results/small/` to `test/small-goal-files/`.
 
 ### Load the stored cache
 
