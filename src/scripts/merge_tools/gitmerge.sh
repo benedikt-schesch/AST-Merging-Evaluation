@@ -19,6 +19,7 @@ branch1=$2
 branch2=$3
 git_strategy=$4
 
+VERBOSE=
 ## Enable for debugging
 # VERBOSE=YES
 

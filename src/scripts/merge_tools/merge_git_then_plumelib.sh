@@ -19,6 +19,7 @@ branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 plumelib_strategy=$5 #"--only-adjacent"
 
+VERBOSE=
 ## Enable for debugging
 # VERBOSE=YES
 

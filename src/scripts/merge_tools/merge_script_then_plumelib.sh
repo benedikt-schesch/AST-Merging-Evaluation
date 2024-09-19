@@ -20,6 +20,7 @@ branch2=$3
 merge_script=$4 #"-Xignore-space-change"
 plumelib_strategy=$5 #"--only-adjacent"
 
+VERBOSE=
 ## Enable for debugging
 # VERBOSE=YES
 
