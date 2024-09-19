@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./git_hires_merge.sh <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
 
 set -o nounset
 
