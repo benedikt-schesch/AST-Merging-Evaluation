@@ -119,6 +119,8 @@ If you make a change to the mergers that changes merge results, you need to
 update the goal files or else reproducibility checks will fail.
 Copy certain files from `results/small/` to `test/small-goal-files/`.
 
+To update the reproducibility tests, run `make run-all`.
+
 ### Load the stored cache
 
 To decompress the cache run `make decompress-cache`. This is done automatically in `run_combined.sh` if `cache/` does not exist.
