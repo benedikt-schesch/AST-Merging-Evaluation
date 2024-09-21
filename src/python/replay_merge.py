@@ -268,11 +268,11 @@ def merge_replay(
                     stderr=subprocess.PIPE,
                 )
                 if len(process.stderr.decode("utf-8")) == 0:
-                    conflict_files = process.stdout.decode("utf-8")
-                    is_conflict = len(conflict_files) > 0
+                    git_conflict_files = process.stdout.decode("utf-8")
+                    is_conflict = len(git_conflict_files) > 0
                     assert (
                         is_conflict == (merge_result == MERGE_STATE.Merge_failed)
-                    ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match conflict_files {conflict_files} at path {repo.local_repo_path}"
+                    ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match git_conflict_files {git_conflict_files} at path {repo.local_repo_path}"
 
             result_df.loc[
                 merge_tool.name,
