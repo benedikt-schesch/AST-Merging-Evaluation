@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Replay merges and their test results.
-The output appears in the .workdirs/ directory.
+The output appears in the `.workdirsf`/ directory.
+Logs appear in the `replay_logs/merges/` directory.
 Command-line arguments are listed just after the line:
   if __name__ == "__main__":
 
