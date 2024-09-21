@@ -19,18 +19,37 @@ branch2=$3
 git_strategy=$4 #"-Xignore-space-change"
 plumelib_strategy=$5 #"--only-adjacent"
 
+VERBOSE=
+## Enable for debugging
+# VERBOSE=YES
+
+
 ## Perform merge
 
 echo "$0: Merging $branch1 and $branch2 with git_strategy=$git_strategy and plumelib_strategy=$plumelib_strategy"
 
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: about to run: git checkout $branch1 in $(pwd)"
+fi
 git checkout "$branch1" --force
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: ran: git checkout $branch1 in $(pwd)"
+fi
 git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)"
+fi
+
 # shellcheck disable=SC2086
 git merge --no-edit $git_strategy "$branch2"
+
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)"
+fi
 
 ## Now, run Plume-lib Merging to improve the result of `git merge`.
 
