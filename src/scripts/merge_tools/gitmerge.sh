@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-# usage: ./git_hires_merge_plus.sh <clone_dir> <branch-1> <branch-2>
 # usage: ./gitmerge.sh <clone_dir> <branch-1> <branch-2> <git_strategy>
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <git_strategy>.
 # <clone_dir> must contain a clone of a repository.
