@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./intellimerge.sh <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
 # <clone_dir> must contain a clone of a repository.
 # Merges branch2 into branch1, in <clone_dir>.
 # Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
@@ -44,13 +44,13 @@ git checkout "$branch1" --force
 git merge --no-edit "$branch2"
 
 # List conflicitng files
-conflict_files=$(git diff --name-only --diff-filter=U)
+git_conflict_files=$(git diff --name-only --diff-filter=U)
 
 # Initialize a flag to track conflict resolution
 conflicts_resolved=true
 
 # Iterate through conflicting files
-for file in $conflict_files; do
+for file in $git_conflict_files; do
     # Check if the conflicting file exists in the temp_out_dir
     if [ ! -f "$temp_out_dir$file" ]; then
         echo "Conflict not resolved for file: $file"
@@ -62,7 +62,7 @@ done
 if [ "$conflicts_resolved" = false ]; then
     echo "Conflict detected. Aborting the merge. Please resolve the conflicts."
     echo "All conflicting files:"
-    echo "$conflict_files"
+    echo "$git_conflict_files"
     rm -rf $temp_out_dir $temp_intellimerge_dir
     exit 1
 fi

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./spork.sh <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
 # <clone_dir> must contain a clone of a repository.
 # Merges branch2 into branch1, in <clone_dir>.
 # Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
