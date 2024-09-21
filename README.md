@@ -246,6 +246,8 @@ To investigate differences between two mergers:
 * Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
 
+If the merge is in the small test, you may need to add `--merges_csv ./test/small-goal-files/result.csv`.
+
 ## Overwriting results manually
 
 In some cases it might be worth to overwrite the computed results. To do that you should modify the `results/manual_override.csv` file. In that file for the merge you want to overwrite a result of you should include at least the information `repository,merge,left,right` and a new column for the result you want to overwrite. You can overwrite anything you want but if there is a column you don't want to overwrite either do not include that column or leave the entry blanck i.e. `,,`. See the file for an example.
