@@ -19,18 +19,34 @@ branch1=$2
 branch2=$3
 git_strategy=$4
 
+VERBOSE=
+## Enable for debugging
+# VERBOSE=YES
+
+
 ## Perform merge
 
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: about to run: git checkout $branch1 in $(pwd)"
+fi
 git checkout "$branch1" --force
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: ran: git checkout $branch1 in $(pwd)"
+fi
 git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 
-echo "Running: git merge --no-edit $git_strategy $branch2"
+echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)"
+
 # shellcheck disable=SC2086
 git merge --no-edit $git_strategy "$branch2"
 retVal=$?
+
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)"
+fi
 
 # report conflicts
 if [ $retVal -ne 0 ]; then

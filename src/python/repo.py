@@ -152,11 +152,20 @@ def stdout_and_stderr(
     source: Union[subprocess.TimeoutExpired, subprocess.CompletedProcess],
 ) -> str:
     """Produces the standard output and standard error of a timedout process."""
-    explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+    explanation = "Here is the output from: " + " ".join(command)
     if source.stdout:
-        explanation += "\nstdout:\n" + source.stdout.decode("utf-8", "replace")
+        explanation += (
+            "\nstdout:\n"
+            + source.stdout.decode("utf-8", "replace")
+            + "\nEnd of stdout."
+        )
     if source.stderr:
-        explanation += "\nstderr:\n" + source.stderr.decode("utf-8", "replace")
+        explanation += (
+            "\nstderr:\n"
+            + source.stderr.decode("utf-8", "replace")
+            + "\nEnd of stderr."
+        )
+    explanation += "\nEnd of output from: " + " ".join(command)
     return explanation
 
 

@@ -272,7 +272,7 @@ def merge_replay(
                     is_conflict = len(git_conflict_files) > 0
                     assert (
                         is_conflict == (merge_result == MERGE_STATE.Merge_failed)
-                    ), f"merge_replay: tool{merge_tool} merge_result {merge_result} does not match git_conflict_files {git_conflict_files} at path {repo.local_repo_path}"
+                    ), f"merge_replay: tool merge result is inconsistent with `git diff --diff-filter=U`: tool={merge_tool} merge_result={merge_result} git_conflict_files={git_conflict_files} path={repo.local_repo_path}"
 
             result_df.loc[
                 merge_tool.name,
@@ -308,10 +308,11 @@ def merge_replay(
                     store_artifacts(result_df)
                 if delete_workdir:
                     delete_workdirs(result_df)
-                print("=====================================\n")
+                print("fingerprints differ; details follow.")
+                print(f"=================== start of {log_path}:")
                 with open(log_path, "r", encoding="utf-8") as f:
                     print(f.read())
-                print("=====================================\n")
+                print(f"=================== end of {log_path}.")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
                     + f" {merge_fingerprint} but expected "
