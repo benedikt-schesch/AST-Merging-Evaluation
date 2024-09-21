@@ -78,7 +78,7 @@ if [ -n "$VERBOSE" ] ; then
 fi
 
 # Check if there are still conflicts
-diffs=$(git diff --name-only --diff-filter=U)
+diffs=$(git diff --name-only --diff-filter=U | sort)
 if [ -z "$diffs" ]; then
     git add .
     if [ -n "$VERBOSE" ] ; then
