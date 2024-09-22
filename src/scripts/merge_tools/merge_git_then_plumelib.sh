@@ -73,10 +73,10 @@ esac
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-fi
-git-mergetool.sh $all_arg --tool=merge-plumelib
-if [ -n "$VERBOSE" ] ; then
+  git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
   echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+else
+  git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
 
 # Check if there are still conflicts

@@ -14,6 +14,7 @@ where INDEX is, for example, 38-192 .
 import argparse
 import git
 import os
+import os.path
 import sys
 import tarfile
 from pathlib import Path
@@ -93,7 +94,22 @@ def merge_replay(
     plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
         "src/scripts/merge_tools/merging"
     )
-    subprocess.run(["./gradlew", "-q", "shadowJar"], cwd=plumelib_merging_dir)
+    print(f"About to compile in {plumelib_merging_dir}")
+    p = subprocess.run(
+        ["./gradlew", "-q", "shadowJar"],
+        cwd=plumelib_merging_dir,
+        capture_output=True,
+        text=True,
+    )
+    if p.returncode != 0:
+        print("Failure in: ./gradlew -q shadowJar")
+        print(p.stdout)
+        print(p.stderr)
+        sys.exit(1)
+    p = subprocess.run(
+        ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=False
+    )
+    print("Finished compiling")
 
     result_df = pd.DataFrame()
     with Progress(
@@ -158,6 +174,7 @@ def merge_replay(
                     ["git", "merge-base", merge_data["left"], merge_data["right"]],
                     cwd=repo.local_repo_path,
                     stdout=subprocess.PIPE,
+                    check=True,
                 )
                 .stdout.decode("utf-8")
                 .strip()

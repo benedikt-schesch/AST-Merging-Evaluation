@@ -109,10 +109,11 @@ TEST_STATE = Enum(
 MERGE_TOOL = Enum(
     "MERGE_TOOL",
     [
+        ## First, the algorithms that the paper evaluates.
         "gitmerge_ort",
         "gitmerge_ort_ignorespace",
         "gitmerge_recursive_histogram",
-        "gitmerge_recursive_ignorespace",
+        "gitmerge_recursive_myers_ignorespace",
         "gitmerge_recursive_minimal",
         "gitmerge_recursive_myers",
         "gitmerge_recursive_patience",
@@ -123,17 +124,26 @@ MERGE_TOOL = Enum(
         "adjacent",
         "imports",
         "version_numbers",
-        "git_hires_merge_plus",
-        "intellimerge_plus",
+        "ivn",
+        "ivn_ignorespace",
+        ## Second, the algorithms that we run to correct the classifications of the above algorithms.
+        ## "_plus" = plus known good = plus default plumelib == + imports + version_numbers
+        "gitmerge_ort_plus",
+        "gitmerge_ort_ignorespace_plus",
         "gitmerge_recursive_histogram_plus",
-        "gitmerge_recursive_ignorespace_plus",
+        "gitmerge_recursive_myers_ignorespace_plus",
         "gitmerge_recursive_minimal_plus",
         "gitmerge_recursive_myers_plus",
         "gitmerge_recursive_patience_plus",
         "gitmerge_resolve_plus",
+        "git_hires_merge_plus",
         "spork_plus",
-        "ivn",
-        "ivn_ignorespace",
+        "intellimerge_plus",
+        "adjacent_plus",
+        "imports_plus",
+        "version_numbers_plus",
+        "ivn_plus",
+        "ivn_ignorespace_plus",
     ],
 )
 MERGE_STATE = Enum(
