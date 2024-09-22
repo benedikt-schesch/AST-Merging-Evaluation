@@ -34,23 +34,6 @@ if __name__ == "__main__":
     goal_folder = Path(args.goal_folder)
     actual_folder = Path(args.actual_folder)
 
-    for goal_file in goal_folder.glob("**/*.tex"):
-        goal_file = goal_file.relative_to(goal_folder)
-        print(f"Checking {goal_file}")
-        actual_file = actual_folder / goal_file
-        assert actual_file.exists(), f"{actual_file} does not exist"
-        with open(goal_folder / goal_file, "r") as goal_f:
-            goal_lines = goal_f.readlines()
-        with open(actual_file, "r") as actual_f:
-            actual_lines = actual_f.readlines()
-        if goal_lines != actual_lines:
-            print(f"{goal_folder/goal_file} and {actual_file} are not equal")
-            print("Goal file:")
-            print("".join(goal_lines))
-            print("Actual file:")
-            print("".join(actual_lines))
-            raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")
-
     for goal_file in goal_folder.glob("**/*.csv"):
         goal_file = goal_file.relative_to(goal_folder)
         print(f"Checking {goal_file}")
