@@ -20,6 +20,8 @@ branch2=$3
 merge_script=$4 #"-Xignore-space-change"
 plumelib_strategy=$5 #"--only-adjacent"
 
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+
 VERBOSE=
 ## Enable for debugging
 # VERBOSE=YES
@@ -56,7 +58,7 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd 'java-merge-tool.sh '"$plumelib_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR"/'java-merge-tool.sh '"$plumelib_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
