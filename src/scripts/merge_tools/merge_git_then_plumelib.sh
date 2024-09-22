@@ -75,10 +75,8 @@ esac
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-  echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)" >&2
   git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
   echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-  echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)" >&2
 else
   git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
