@@ -129,7 +129,7 @@ fi
   cd ./src/scripts/merge_tools/merging
   export JAVA_HOME=$JAVA17_HOME
   export PATH="$JAVA_HOME/bin:$PATH"
-  ./gradlew shadowJar
+  ./gradlew -q nativeCompile
 )
 
 echo "Machine ID: $machine_id"
