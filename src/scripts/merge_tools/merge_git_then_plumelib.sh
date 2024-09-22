@@ -69,15 +69,28 @@ case "$plumelib_strategy" in
         ;;
 esac
 
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+fi
 git-mergetool.sh $all_arg --tool=merge-plumelib
+if [ -n "$VERBOSE" ] ; then
+  echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+fi
 
 # Check if there are still conflicts
-diffs=$(git diff --name-only --diff-filter=U)
+diffs=$(git diff --name-only --diff-filter=U | sort)
 if [ -z "$diffs" ]; then
     git add .
+    if [ -n "$VERBOSE" ] ; then
+      echo "$0: about to run: git commit in $(pwd)"
+    fi
     git commit -m "Resolved conflicts by calling: git-mergetool.sh $all_arg --tool=merge-plumelib"
+    if [ -n "$VERBOSE" ] ; then
+      echo "$0: ran: git commit in $(pwd)"
+    fi
     exit 0
 fi
+echo "$0: exiting with status 1"
 echo "$0: diffs=$diffs"
 echo "$0: Conflict after running in $(pwd):"
 echo "  git merge --no-edit $git_strategy $branch2"

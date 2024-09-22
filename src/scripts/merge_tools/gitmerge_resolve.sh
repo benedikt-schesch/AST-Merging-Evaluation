@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# usage: ./gitmerge_resolve.sh <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
 
 MERGE_SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 clone_dir=$1
