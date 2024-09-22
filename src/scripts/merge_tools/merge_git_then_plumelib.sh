@@ -32,19 +32,16 @@ cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git checkout $branch1 in $(pwd)"
-  echo "$0: about to run: git checkout $branch1 in $(pwd)" >&2
 fi
 git checkout "$branch1" --force
 if [ -n "$VERBOSE" ] ; then
   echo "$0: ran: git checkout $branch1 in $(pwd)"
-  echo "$0: ran: git checkout $branch1 in $(pwd)" >&2
 fi
 git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)"
-  echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)" >&2
 fi
 
 # shellcheck disable=SC2086
@@ -52,7 +49,6 @@ git merge --no-edit $git_strategy "$branch2"
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)"
-  echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)" >&2
 fi
 
 ## Now, run Plume-lib Merging to improve the result of `git merge`.
@@ -93,17 +89,14 @@ if [ -z "$diffs" ]; then
     git add .
     if [ -n "$VERBOSE" ] ; then
       echo "$0: about to run: git commit in $(pwd)"
-      echo "$0: about to run: git commit in $(pwd)" >&2
     fi
     git commit -m "Resolved conflicts by calling: git-mergetool.sh $all_arg --tool=merge-plumelib"
     if [ -n "$VERBOSE" ] ; then
       echo "$0: ran: git commit in $(pwd)"
-      echo "$0: ran: git commit in $(pwd)" >&2
     fi
     exit 0
 fi
 echo "$0: exiting with status 1"
-echo "$0: exiting with status 1" >&2
 echo "$0: diffs=$diffs"
 echo "$0: Conflict after running in $(pwd):"
 echo "  git merge --no-edit $git_strategy $branch2"
