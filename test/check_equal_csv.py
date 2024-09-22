@@ -45,6 +45,10 @@ if __name__ == "__main__":
             actual_lines = actual_f.readlines()
         if goal_lines != actual_lines:
             print(f"{goal_folder/goal_file} and {actual_file} are not equal")
+            print("Goal file:")
+            print("".join(goal_lines))
+            print("Actual file:")
+            print("".join(actual_lines))
             raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")
 
     for goal_file in goal_folder.glob("**/*.csv"):
@@ -57,7 +61,15 @@ if __name__ == "__main__":
         except Exception:
             goal_df = pd.read_csv(goal_folder / goal_file)
             actual_df = pd.read_csv(actual_file)
-            assert goal_df.equals(actual_df)
+            if not goal_df.equals(actual_df):
+                print(f"{goal_folder/goal_file} and {actual_file} are not equal")
+                print("Goal file:")
+                print(goal_df)
+                print("Actual file:")
+                print(actual_df)
+                raise ValueError(
+                    f"{goal_folder/goal_file} and {actual_file} are not equal"
+                )
             continue
         actual_df = pd.read_csv(actual_file, header=0, index_col="idx")
         goal_df = remove_run_time(goal_df)
