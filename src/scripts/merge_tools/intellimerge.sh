@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> [--verbose] <clone_dir> <branch-1> <branch-2>
 # <clone_dir> must contain a clone of a repository.
 # Merges branch2 into branch1, in <clone_dir>.
 # Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
@@ -8,8 +8,15 @@
 
 set -o nounset
 
+verbose=
+if [ "$1" = "--verbose" ] ; then
+  # shellcheck disable=SC2034 # unused
+  verbose="$1"
+  shift
+fi
+
 if [ "$#" -ne 3 ]; then
-  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2" >&2
+  echo "Usage: $0 [--verbose] CLONE_DIR BRANCH1 BRANCH2" >&2
   exit 2
 fi
 

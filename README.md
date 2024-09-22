@@ -245,8 +245,7 @@ To investigate differences between two mergers:
 * run `src/python/utils/select_from_results.py` to create a .csv database containing only the differences.
 * Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
-
-If the merge is in the small test, you may need to add `--merges_csv ./test/small-goal-files/result.csv`.
+  If the merge is in the small test, you may need to add `--merges_csv ./test/small-goal-files/result.csv`.
 
 ## Overwriting results manually
 

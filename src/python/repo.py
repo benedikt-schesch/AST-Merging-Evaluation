@@ -506,6 +506,7 @@ class Repository:
         right_commit: str,
         timeout: int,
         use_cache: bool = True,
+        verbose: bool = False,
     ) -> Tuple[
         MERGE_STATE, Union[str, None], Union[str, None], Union[str, None], str, float
     ]:
@@ -563,14 +564,19 @@ class Repository:
             f"merge: Merging {self.repo_slug} {left_commit} {right_commit} with {tool.name}"
         )
         start_time = time.time()
+
+        tool_sh = f"src/scripts/merge_tools/{tool.name}.sh"
+        if verbose:
+            tool_sh += " --verbose"
         command = [
             "src/scripts/run_with_timeout.sh",
             str(timeout),
-            f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path.resolve()} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
+            f"{tool_sh} {self.local_repo_path.resolve()} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
         logger.debug(
             f"merge: Merging {self.repo_slug} {left_commit} {right_commit} with {tool.name}"
         )
+        logger.debug(f"command = {command}")
         p = subprocess.run(
             command,
             capture_output=True,
