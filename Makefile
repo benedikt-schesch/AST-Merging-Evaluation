@@ -166,8 +166,7 @@ check-merges-reproducibility:
 		echo "Running replay_merge for idx $$idx"; \
 		src/python/replay_merge.py --testing --merges_csv $(CSV_RESULTS) -skip_build -delete_workdir --idx $$idx || FAILED_IDXES="$$FAILED_IDXES $$idx"; \
 	done; \
-	echo "$$FAILED_IDXES"; \
-	test -z "$$FAILED_IDXES"
+	test -z "$$FAILED_IDXES" || { echo "Failed indexes = $$FAILED_IDXES"; false; }
 
 protect-repos:
 	find repos -mindepth 1 -type d -exec chmod a-w {} +
