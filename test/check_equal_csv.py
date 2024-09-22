@@ -39,7 +39,21 @@ if __name__ == "__main__":
         print(f"Checking {goal_file}")
         actual_file = actual_folder / goal_file
         assert actual_file.exists(), f"{actual_file} does not exist"
-        goal_df = pd.read_csv(goal_folder / goal_file, header=0, index_col="idx")
+        try:
+            goal_df = pd.read_csv(goal_folder / goal_file, header=0, index_col="idx")
+        except Exception:
+            goal_df = pd.read_csv(goal_folder / goal_file)
+            actual_df = pd.read_csv(actual_file)
+            if not goal_df.equals(actual_df):
+                print(f"{goal_folder/goal_file} and {actual_file} are not equal")
+                print("Goal file:")
+                print(goal_df)
+                print("Actual file:")
+                print(actual_df)
+                raise ValueError(
+                    f"{goal_folder/goal_file} and {actual_file} are not equal"
+                )
+            continue
         actual_df = pd.read_csv(actual_file, header=0, index_col="idx")
         goal_df = remove_run_time(goal_df)
         actual_df = remove_run_time(actual_df)
