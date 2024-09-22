@@ -59,7 +59,11 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh '"$plumelib_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
+if [ -n "$VERBOSE" ] ; then
+  git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh --verbose '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+else
+  git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+fi
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
@@ -76,11 +80,11 @@ esac
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
   echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)" >&2
-fi
-git-mergetool.sh $all_arg --tool=merge-plumelib
-if [ -n "$VERBOSE" ] ; then
+  git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
   echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
   echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)" >&2
+else
+  git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
 
 # Check if there are still conflicts

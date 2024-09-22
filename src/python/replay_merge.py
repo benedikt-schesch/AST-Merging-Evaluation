@@ -94,15 +94,22 @@ def merge_replay(
     plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
         "src/scripts/merge_tools/merging"
     )
-    subprocess.run(
-        ["./gradlew", "-q", "shadowJar"], cwd=plumelib_merging_dir, check=True
+    print(f"About to compile in {plumelib_merging_dir}")
+    p = subprocess.run(
+        ["./gradlew", "-q", "shadowJar"],
+        cwd=plumelib_merging_dir,
+        capture_output=True,
+        text=True,
     )
-    if os.path.isfile(
-        plumelib_merging_dir / "build/native/nativeCompile/plumelib-merge"
-    ):
-        subprocess.run(
-            ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=True
-        )
+    if p.returncode != 0:
+        print("Failure in: ./gradlew -q shadowJar")
+        print(p.stdout)
+        print(p.stderr)
+        sys.exit(1)
+    p = subprocess.run(
+        ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=False
+    )
+    print("Finished compiling")
 
     result_df = pd.DataFrame()
     with Progress(
