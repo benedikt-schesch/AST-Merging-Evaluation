@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./git_hires_merge.sh <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
 
 set -o nounset
 
@@ -13,8 +13,10 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 
+SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+
 # Print the current PATH
-echo "PATH: $PATH"
+echo "$0 PATH: $PATH"
 
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir from $(pwd)"; exit 2; }
 
@@ -25,7 +27,7 @@ attributes_file=".git/info/attributes"
 echo "* merge=git-hires-merge" >> "$attributes_file"
 
 git config --local merge.git-hires-merge.name "An interactive merge driver for resolving conflicts on individual or adjacent lines"
-git config --local merge.git-hires-merge.driver "git-hires-merge %O %A %B %L %P"
+git config --local merge.git-hires-merge.driver "${SCRIPTDIR}/git-hires-merge %O %A %B %L %P"
 git config --local merge.git-hires-merge.recursive "binary"
 git config --local merge.conflictstyle diff3
 

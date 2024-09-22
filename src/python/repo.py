@@ -152,11 +152,20 @@ def stdout_and_stderr(
     source: Union[subprocess.TimeoutExpired, subprocess.CompletedProcess],
 ) -> str:
     """Produces the standard output and standard error of a timedout process."""
-    explanation = "Run Command: " + " ".join(command) + "\nTimed out"
+    explanation = "Here is the output from: " + " ".join(command)
     if source.stdout:
-        explanation += "\nstdout:\n" + source.stdout.decode("utf-8", "replace")
+        explanation += (
+            "\nstdout:\n"
+            + source.stdout.decode("utf-8", "replace")
+            + "\nEnd of stdout."
+        )
     if source.stderr:
-        explanation += "\nstderr:\n" + source.stderr.decode("utf-8", "replace")
+        explanation += (
+            "\nstderr:\n"
+            + source.stderr.decode("utf-8", "replace")
+            + "\nEnd of stderr."
+        )
+    explanation += "\nEnd of output from: " + " ".join(command)
     return explanation
 
 
@@ -549,13 +558,18 @@ class Repository:
             str(timeout),
             f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path.resolve()} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
+        logger.debug(
+            f"merge: Merging {self.repo_slug} {left_commit} {right_commit} with {tool.name}"
+        )
         p = subprocess.run(
             command,
             capture_output=True,
             check=False,
         )
+        std_streams = stdout_and_stderr(command, p)
+        logger.debug(std_streams)
         if p.returncode == 124:  # Timeout
-            explanation = explanation + "\n" + stdout_and_stderr(command, p)
+            explanation = explanation + "\n" + std_streams
             if use_cache:
                 cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
                 cache_entry["explanation"] = explanation
@@ -574,7 +588,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = explanation + "\n" + stdout_and_stderr(command, p)
+        explanation = explanation + "\n" + std_streams
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )
