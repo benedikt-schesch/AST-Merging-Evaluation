@@ -11,12 +11,12 @@ set -o nounset
 
 VERBOSE=
 ## Enable for debugging
-# VERBOSE=YES
+# VERBOSE=--verbose
 
 if [ "$1" = "--verbose" ] ; then
-  VERBOSE=YES
+  VERBOSE="$1"
   shift
-fi    
+fi
 
 if [ "$#" -ne 5 ]; then
   echo "Usage: $0 [--verbose] CLONE_DIR BRANCH1 BRANCH2 MERGE_SCRIPT PLUMELIB_STRATEGY" >&2
@@ -63,7 +63,7 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR/merging/src/main/sh/merge-tool.sh $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR/merging/src/main/sh/merge-tool.sh $VERBOSE $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
