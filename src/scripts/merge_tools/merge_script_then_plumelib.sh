@@ -60,7 +60,11 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh '"$plumelib_strategy"' ${BASE} ${LOCAL} ${REMOTE} ${MERGED}'
+if [ -n "$VERBOSE" ] ; then
+  git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh --verbose '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+else
+  git config --local mergetool.merge-plumelib.cmd 'merge-tool.sh '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+fi
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
