@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-# usage: ./git_hires_merge_plus.sh <clone_dir> <branch-1> <branch-2>
 # usage: ./gitmerge.sh <clone_dir> <branch-1> <branch-2> <git_strategy>
 # Merges branch2 into branch1, in <clone_dir>, using merge strategy <git_strategy>.
 # <clone_dir> must contain a clone of a repository.
@@ -31,18 +30,15 @@ cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git checkout $branch1 in $(pwd)"
-  echo "$0: about to run: git checkout $branch1 in $(pwd)" >&2
 fi
 git checkout "$branch1" --force
 if [ -n "$VERBOSE" ] ; then
   echo "$0: ran: git checkout $branch1 in $(pwd)"
-  echo "$0: ran: git checkout $branch1 in $(pwd)" >&2
 fi
 git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 
 echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)"
-echo "$0: about to run: git merge --no-edit $git_strategy $branch2 in $(pwd)" >&2
 
 # shellcheck disable=SC2086
 git merge --no-edit $git_strategy "$branch2"
@@ -50,7 +46,6 @@ retVal=$?
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)"
-  echo "$0: ran: git merge --no-edit $git_strategy $branch2 in $(pwd)" >&2
 fi
 
 # report conflicts

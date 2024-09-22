@@ -568,13 +568,18 @@ class Repository:
             str(timeout),
             f"src/scripts/merge_tools/{tool.name}.sh {self.local_repo_path.resolve()} {LEFT_BRANCH_NAME} {RIGHT_BRANCH_NAME}",
         ]
+        logger.debug(
+            f"merge: Merging {self.repo_slug} {left_commit} {right_commit} with {tool.name}"
+        )
         p = subprocess.run(
             command,
             capture_output=True,
             check=False,
         )
+        std_streams = stdout_and_stderr(command, p)
+        logger.debug(std_streams)
         if p.returncode == 124:  # Timeout
-            explanation = explanation + "\n" + stdout_and_stderr(command, p)
+            explanation = explanation + "\n" + std_streams
             if use_cache:
                 cache_entry["merge status"] = MERGE_STATE.Merge_timedout.name
                 cache_entry["explanation"] = explanation
@@ -593,7 +598,7 @@ class Repository:
                 -1,
             )
         run_time = time.time() - start_time
-        explanation = explanation + "\n" + stdout_and_stderr(command, p)
+        explanation = explanation + "\n" + std_streams
         merge_status = (
             MERGE_STATE.Merge_success if p.returncode == 0 else MERGE_STATE.Merge_failed
         )
