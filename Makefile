@@ -38,6 +38,9 @@ fix-java-style:
 check-java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
 
+update-small-results:
+	rm -rf test/small-goal-files/
+	rsync -av --exclude='*.pdf' --exclude='*.png' --exclude='*.pgf' results/small/ test/small-goal-files/
 
 # This target deletes files that are not committed to version control.
 clean:

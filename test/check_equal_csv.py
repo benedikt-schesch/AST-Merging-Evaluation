@@ -34,12 +34,31 @@ if __name__ == "__main__":
     goal_folder = Path(args.goal_folder)
     actual_folder = Path(args.actual_folder)
 
+    for goal_file in goal_folder.glob("**/*.tex"):
+        goal_file = goal_file.relative_to(goal_folder)
+        print(f"Checking {goal_file}")
+        actual_file = actual_folder / goal_file
+        assert actual_file.exists(), f"{actual_file} does not exist"
+        with open(goal_folder / goal_file, "r") as goal_f:
+            goal_lines = goal_f.readlines()
+        with open(actual_file, "r") as actual_f:
+            actual_lines = actual_f.readlines()
+        if goal_lines != actual_lines:
+            print(f"{goal_folder/goal_file} and {actual_file} are not equal")
+            raise ValueError(f"{goal_folder/goal_file} and {actual_file} are not equal")
+
     for goal_file in goal_folder.glob("**/*.csv"):
         goal_file = goal_file.relative_to(goal_folder)
         print(f"Checking {goal_file}")
         actual_file = actual_folder / goal_file
         assert actual_file.exists(), f"{actual_file} does not exist"
-        goal_df = pd.read_csv(goal_folder / goal_file, header=0, index_col="idx")
+        try:
+            goal_df = pd.read_csv(goal_folder / goal_file, header=0, index_col="idx")
+        except Exception:
+            goal_df = pd.read_csv(goal_folder / goal_file)
+            actual_df = pd.read_csv(actual_file)
+            assert goal_df.equals(actual_df)
+            continue
         actual_df = pd.read_csv(actual_file, header=0, index_col="idx")
         goal_df = remove_run_time(goal_df)
         actual_df = remove_run_time(actual_df)
