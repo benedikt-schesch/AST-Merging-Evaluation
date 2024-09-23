@@ -6,7 +6,8 @@ set -e
 
 SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 
-# Check for identical content.
+
+## Check for identical content.
 
 cd "$SCRIPTDIR"
 
@@ -20,10 +21,8 @@ diff -q ivn_ignorespace_plus.sh gitmerge_ort_ignorespace_plus.sh
 diff -q ivn_ignorespace_plus.sh imports_ignorespace_plus.sh
 diff -q ivn_ignorespace_plus.sh version_numbers_ignorespace_plus.sh
 
-# 
 
-
-## These have an ignorespace version
+## These have an ignorespace version.
 
 tmpfile=$(mktemp)
 tmpfile2=$(mktemp)
@@ -52,7 +51,7 @@ for base in gitmerge_ort gitmerge_recursive_myers ; do
 done
 
 
-## These do not have an ignorespace version
+## These do not have an ignorespace version.
 
 # "git_hires_merge.sh" has different diffs, so it is not included.
 # TODO: Reinstate  gitmerge_resolve
@@ -65,3 +64,4 @@ for base in gitmerge_recursive_histogram gitmerge_recursive_minimal \
 done
 
 rm -rf "$tmpfile"
+rm -rf "$tmpfile2"
