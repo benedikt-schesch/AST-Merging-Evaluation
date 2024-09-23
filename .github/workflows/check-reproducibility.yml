@@ -47,7 +47,7 @@ jobs:
       uses: jlumbroso/free-disk-space@main
     - name: make check-merges-reproducibility
       run: |
-        head -n 151 results/combined/result.csv > temp.csv && mv temp.csv results/combined/result.csv
+        head -n 151 results/combined/result_raw.csv > temp.csv && mv temp.csv results/combined/result_raw.csv
         make check-merges-reproducibility
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}

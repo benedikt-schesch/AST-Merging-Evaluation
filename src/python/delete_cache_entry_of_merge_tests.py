@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--result",
         type=str,
-        default="results/combined/result.csv",
+        default="results/combined/result_adjusted.csv",
         help="The result csv file.",
     )
     parser.add_argument(

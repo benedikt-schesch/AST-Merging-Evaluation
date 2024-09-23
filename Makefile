@@ -8,9 +8,9 @@ SH_SCRIPTS   = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-di
 BASH_SCRIPTS = $(shell grep --exclude-dir=build --exclude-dir=repos --exclude-dir=cache -r -l '^\#! \?\(/bin/\|/usr/bin/env \)bash' * | grep -v /.git/ | grep -v '~$$' | grep -v '\.tar$$' | grep -v gradlew)
 PYTHON_FILES = $(shell find .  -name '*.py' ! -path './repos/*' -not -path "./.workdir/*" -not -path "./cache*/*" | grep -v '/__pycache__/' | grep -v '/.git/' | grep -v gradlew | grep -v git-hires-merge)
 
-CSV_RESULTS_COMBINED = results/combined/result.csv
-CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result.csv
-CSV_RESULTS_REAPER = results/reaper/result.csv
+CSV_RESULTS_COMBINED = results/combined/result_raw.csv
+CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result_raw.csv
+CSV_RESULTS_REAPER = results/reaper/result_raw.csv
 CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
 NUM_PROCESSES = 0
