@@ -305,6 +305,13 @@ def merge_replay(
             ]
             assert repo.local_repo_path.exists()
 
+            if f"{merge_tool.name}_merge_fingerprint" in merge_data:
+                expected_merge_fingerprint = merge_data[
+                    f"{merge_tool.name}_merge_fingerprint"
+                ]
+            else:
+                expected_merge_fingerprint = "MISSING!"
+
             if (
                 merge_result
                 not in (
@@ -313,8 +320,7 @@ def merge_replay(
                 )
                 and (
                     (not dont_check_fingerprints)
-                    and merge_data[f"{merge_tool.name}_merge_fingerprint"]
-                    != merge_fingerprint
+                    and (expected_merge_fingerprint != merge_fingerprint)
                 )
                 and ("spork" not in merge_tool.name)
                 and ("intellimerge" not in merge_tool.name)
@@ -335,9 +341,8 @@ def merge_replay(
                 print(f"=================== end of {log_path}.")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
-                    + f" {merge_fingerprint} but expected "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']} at log path {log_path}"
-                    + f" and repo path {repo.local_repo_path}",
+                    + f" {merge_fingerprint} but expected {expected_merge_fingerprint}"
+                    + f" at log path {log_path} and repo path {repo.local_repo_path}",
                     merge_result,
                     f"idx {merge_idx}",
                 )
