@@ -312,9 +312,9 @@ def merge_replay(
                     TEST_STATE.Git_checkout_failed,
                 )
                 and (
-                    merge_data[f"{merge_tool.name}_merge_fingerprint"]
+                    (not dont_check_fingerprints)
+                    and merge_data[f"{merge_tool.name}_merge_fingerprint"]
                     != merge_fingerprint
-                    and not dont_check_fingerprints
                 )
                 and ("spork" not in merge_tool.name)
                 and ("intellimerge" not in merge_tool.name)
@@ -497,7 +497,10 @@ if __name__ == "__main__":
             logger.info(f"Merge test result: {row['merge test result']}")
             logger.info(f"Merge test log path: {row['merge test log path']}")
 
-        logger.info(f"merge data test result: {merge_data[idx]}")
+        if idx in merge_data:
+            logger.info(f"merge data test result: {merge_data[idx]}")
+        else:
+            logger.info(f"merge data test result: MISSING!")
         logger.info(f"repo location: {row['repo path']}")
 
     # Create artifacts which means creating a tarball of all the relevant workdirs
