@@ -29,6 +29,7 @@ git_strategy=$4 # e.g., "-Xignore-space-change"
 plumelib_strategy=$5 # e.g., "--only-adjacent"
 
 SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+PLM_SH_DIR="$SCRIPTDIR"/merging/src/main/sh
 
 
 
@@ -63,7 +64,7 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR/merging/src/main/sh/merge-tool.sh $VERBOSE $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$PLM_SH_DIR/merge-tool.sh $VERBOSE $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
@@ -78,11 +79,11 @@ case "$plumelib_strategy" in
 esac
 
 if [ -n "$VERBOSE" ] ; then
-  echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-  git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
-  echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+  echo "$0: about to run: git-mergetool.sh --verbose $all_arg --tool=merge-plumelib in $(pwd)"
+  "$PLM_SH_DIR"/git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
+  echo "$0: ran: git-mergetool.sh --verbose $all_arg --tool=merge-plumelib in $(pwd)"
 else
-  git-mergetool.sh $all_arg --tool=merge-plumelib
+  "$PLM_SH_DIR"/git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
 
 # Check if there are still conflicts
