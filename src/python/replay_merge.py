@@ -505,7 +505,7 @@ if __name__ == "__main__":
         if idx in merge_data:
             logger.info(f"merge data test result: {merge_data[idx]}")
         else:
-            logger.info(f"merge data test result: MISSING!")
+            logger.info("merge data test result: MISSING!")
         logger.info(f"repo location: {row['repo path']}")
 
     # Create artifacts which means creating a tarball of all the relevant workdirs
