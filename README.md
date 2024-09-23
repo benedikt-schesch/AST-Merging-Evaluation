@@ -119,7 +119,10 @@ If you make a change to the mergers that changes merge results, you need to
 update the goal files or else reproducibility checks will fail.
 Copy certain files from `results/small/` to `test/small-goal-files/`.
 
-To update the reproducibility tests, run `make run-all`.
+To update the reproducibility tests, run `make run-all`
+(this takes a long time!) and commit the results.
+This will run merges in parallel.  If the load on your machine becomes very low
+(like no parallelism is happening), then terminate the process and restart it.
 
 ### Load the stored cache
 
