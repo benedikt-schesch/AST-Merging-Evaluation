@@ -67,7 +67,7 @@ git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR/merging/src/main/sh/
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
-    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
+    *"--no-java-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
         all_arg=""
         ;;
