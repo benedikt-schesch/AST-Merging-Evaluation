@@ -1,5 +1,10 @@
-10c10,11
+6a7
+> verbose=
+7a9
+>   verbose="$1"
+15c17,19
 < "$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$git_strategy"
 ---
 > plumelib_strategy=""
-> "$MERGE_SCRIPTS_DIR"/merge_git_then_plumelib.sh "$clone_dir" "$branch1" "$branch2" "$git_strategy" "$plumelib_strategy"
+> # shellcheck disable=SC2086 # '$verbose' should not be quoted
+> "$MERGE_SCRIPTS_DIR"/merge_git_then_plumelib.sh $verbose "$clone_dir" "$branch1" "$branch2" "$git_strategy" "$plumelib_strategy"

@@ -4,7 +4,9 @@
 
 MERGE_SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 
+
 if [ "$1" = "--verbose" ] ; then
+
   shift
 fi
 
