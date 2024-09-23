@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./merge_script_then_plumelib.sh <clone_dir> <branch-1> <branch-2> <merge_script> <plumelib_strategy>
+# usage: ./merge_script_then_plumelib.sh [--verbose] <clone_dir> <branch-1> <branch-2> <merge_script> <plumelib_strategy>
 # First runs a merge script, then runs Plume-lib Merging to improve the result of the merge script.
 # <clone_dir> must contain a clone of a repository.
 # <merge_script> takes arguments <clone_dir> <branch-1> <branch-2>.
@@ -9,22 +9,27 @@
 
 set -o nounset
 
+VERBOSE=
+## Enable for debugging
+# VERBOSE=--verbose
+
+if [ "$1" = "--verbose" ] ; then
+  VERBOSE="$1"
+  shift
+fi
+
 if [ "$#" -ne 5 ]; then
-  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 MERGE_SCRIPT PLUMELIB_STRATEGY" >&2
+  echo "Usage: $0 [--verbose] CLONE_DIR BRANCH1 BRANCH2 MERGE_SCRIPT PLUMELIB_STRATEGY" >&2
   exit 2
 fi
 
 clone_dir=$1
 branch1=$2
 branch2=$3
-merge_script=$4 #"-Xignore-space-change"
-plumelib_strategy=$5 #"--only-adjacent"
+merge_script=$4
+plumelib_strategy=$5 # e.g., "--only-adjacent"
 
 SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
-
-VERBOSE=
-## Enable for debugging
-# VERBOSE=YES
 
 
 ## Perform merge
@@ -58,11 +63,11 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR"/'java-merge-tool.sh '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR/merging/src/main/sh/merge-tool.sh $VERBOSE $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
-    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
+    *"--no-java-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
         all_arg=""
         ;;
@@ -74,10 +79,10 @@ esac
 
 if [ -n "$VERBOSE" ] ; then
   echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-fi
-git-mergetool.sh $all_arg --tool=merge-plumelib
-if [ -n "$VERBOSE" ] ; then
+  git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
   echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+else
+  git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
 
 # Check if there are still conflicts

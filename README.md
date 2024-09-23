@@ -119,7 +119,10 @@ If you make a change to the mergers that changes merge results, you need to
 update the goal files or else reproducibility checks will fail.
 Copy certain files from `results/small/` to `test/small-goal-files/`.
 
-To update the reproducibility tests, run `make run-all`.
+To update the reproducibility tests, run `make run-all`
+(this takes a long time!) and commit the results.
+This will run merges in parallel.  If the load on your machine becomes very low
+(like no parallelism is happening), then terminate the process and restart it.
 
 ### Load the stored cache
 
@@ -245,8 +248,7 @@ To investigate differences between two mergers:
 * Run `src/python/utils/select_from_results.py` to create a .csv database containing only the differences.
 * Set `DELETE_WORKDIRS` to `false` in `src/python/variables.py`.
 * Run `src/python/replay_merge.py --idx INDEX` (maybe add `-test`) for the index of the merge you are interested in.
-
-If the merge is in the small test, you may need to add `--merges_csv ./test/small-goal-files/result.csv`.
+  If the merge is in the small test, you may need to add `--merges_csv ./test/small-goal-files/result.csv`.
 
 ## Overwriting results manually
 

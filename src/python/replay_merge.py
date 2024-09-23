@@ -72,6 +72,7 @@ def merge_replay(
     create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
     testing: bool = False,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
@@ -254,6 +255,7 @@ def merge_replay(
                 _,
             ) = repo.merge(
                 tool=merge_tool,
+                verbose=verbose,
                 left_commit=merge_data["left"],
                 right_commit=merge_data["right"],
                 timeout=TIMEOUT_MERGING,
@@ -407,6 +409,11 @@ if __name__ == "__main__":
         default="1-7",
     )
     parser.add_argument(
+        "--verbose",
+        help="Run verbosely, with diagnostic output",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser.add_argument(
         "-test",
         help="Test the replay of a merge",
         action="store_true",
@@ -440,17 +447,17 @@ if __name__ == "__main__":
 
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
-        logger.info("Deleting workdir after replaying the merge")
+        logger.info("  Will delete workdir after replaying the merge")
     if args.dont_check_fingerprints:
-        logger.info("Not checking the fingerprint of a merge")
+        logger.info("  Will not check the fingerprint of a merge")
     if args.test:
-        logger.info("Testing the replay of a merge")
+        logger.info("  Will test the replay of a merge")
     if args.create_artifacts:
-        logger.info("Creating artifacts after replaying the merges")
+        logger.info("  Will create artifacts after replaying the merges")
     if not args.skip_build:
-        logger.info("Building merge tool")
+        logger.info("  Will build merge tool")
     if args.testing:
-        logger.info("Checking for reproducibility")
+        logger.info("  Will check for reproducibility")
 
     os.environ["PATH"] += os.pathsep + os.path.join(
         os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
@@ -477,6 +484,7 @@ if __name__ == "__main__":
         args.create_artifacts,
         args.dont_check_fingerprints,
         args.testing,
+        args.verbose,
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")
