@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# usage: ./merge_git_then_plumelib.sh <clone_dir> <branch-1> <branch-2> <git_strategy> <plumelib_strategy>
+# usage: ./merge_git_then_plumelib.sh [--verbose] <clone_dir> <branch-1> <branch-2> <git_strategy> <plumelib_strategy>
 # First runs `git merge`, then runs Plume-lib Merging to improve the result of `git merge`.
 # <clone_dir> must contain a clone of a repository.
 # Return code is 0 for merge success, 1 for merge failure, 2 for script failure.
@@ -8,22 +8,29 @@
 
 set -o nounset
 
+VERBOSE=
+## Enable for debugging
+# VERBOSE=--verbose
+
+if [ "$1" = "--verbose" ] ; then
+  VERBOSE="$1"
+  shift
+fi
+
 if [ "$#" -ne 5 ]; then
-  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2 GIT_STRATEGY PLUMELIB_STRATEGY" >&2
+  echo "Usage: $0 [--verbose] CLONE_DIR BRANCH1 BRANCH2 GIT_STRATEGY PLUMELIB_STRATEGY" >&2
   exit 2
 fi
 
 clone_dir=$1
 branch1=$2
 branch2=$3
-git_strategy=$4 #"-Xignore-space-change"
-plumelib_strategy=$5 #"--only-adjacent"
+git_strategy=$4 # e.g., "-Xignore-space-change"
+plumelib_strategy=$5 # e.g., "--only-adjacent"
 
 SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
+PLM_SH_DIR="$SCRIPTDIR"/merging/src/main/sh
 
-VERBOSE=
-## Enable for debugging
-# VERBOSE=YES
 
 
 ## Perform merge
@@ -57,11 +64,11 @@ fi
 
 git config --local merge.tool merge-plumelib
 # shellcheck disable=SC2016
-git config --local mergetool.merge-plumelib.cmd "$SCRIPTDIR"/'java-merge-tool.sh '"$plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
+git config --local mergetool.merge-plumelib.cmd "$PLM_SH_DIR/merge-tool.sh $VERBOSE $plumelib_strategy"' ${LOCAL} ${BASE} ${REMOTE} ${MERGED}'
 git config --local mergetool.merge-plumelib.trustExitCode true
 
 case "$plumelib_strategy" in
-    *"--no-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
+    *"--no-java-imports"* | *"--only-adjacent"* | *"--only-annotations"* | *"--only-version-numbers"*)
         # The "imports" merger is not being used, so don't use the "--all" command-line option.
         all_arg=""
         ;;
@@ -72,11 +79,11 @@ case "$plumelib_strategy" in
 esac
 
 if [ -n "$VERBOSE" ] ; then
-  echo "$0: about to run: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
-fi
-git-mergetool.sh $all_arg --tool=merge-plumelib
-if [ -n "$VERBOSE" ] ; then
-  echo "$0: ran: git-mergetool.sh $all_arg --tool=merge-plumelib in $(pwd)"
+  echo "$0: about to run: git-mergetool.sh --verbose $all_arg --tool=merge-plumelib in $(pwd)"
+  "$PLM_SH_DIR"/git-mergetool.sh --verbose $all_arg --tool=merge-plumelib
+  echo "$0: ran: git-mergetool.sh --verbose $all_arg --tool=merge-plumelib in $(pwd)"
+else
+  "$PLM_SH_DIR"/git-mergetool.sh $all_arg --tool=merge-plumelib
 fi
 
 # Check if there are still conflicts

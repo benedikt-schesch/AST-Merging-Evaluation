@@ -14,6 +14,7 @@ where INDEX is, for example, 38-192 .
 import argparse
 import git
 import os
+import os.path
 import sys
 import tarfile
 from pathlib import Path
@@ -71,6 +72,7 @@ def merge_replay(
     create_artifacts: bool = False,
     dont_check_fingerprints: bool = False,
     testing: bool = False,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
@@ -93,7 +95,22 @@ def merge_replay(
     plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
         "src/scripts/merge_tools/merging"
     )
-    subprocess.run(["./gradlew", "-q", "shadowJar"], cwd=plumelib_merging_dir)
+    print(f"About to compile in {plumelib_merging_dir}")
+    p = subprocess.run(
+        ["./gradlew", "-q", "shadowJar"],
+        cwd=plumelib_merging_dir,
+        capture_output=True,
+        text=True,
+    )
+    if p.returncode != 0:
+        print("Failure in: ./gradlew -q shadowJar")
+        print(p.stdout)
+        print(p.stderr)
+        sys.exit(1)
+    p = subprocess.run(
+        ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=False
+    )
+    print("Finished compiling")
 
     result_df = pd.DataFrame()
     with Progress(
@@ -158,6 +175,7 @@ def merge_replay(
                     ["git", "merge-base", merge_data["left"], merge_data["right"]],
                     cwd=repo.local_repo_path,
                     stdout=subprocess.PIPE,
+                    check=True,
                 )
                 .stdout.decode("utf-8")
                 .strip()
@@ -237,6 +255,7 @@ def merge_replay(
                 _,
             ) = repo.merge(
                 tool=merge_tool,
+                verbose=verbose,
                 left_commit=merge_data["left"],
                 right_commit=merge_data["right"],
                 timeout=TIMEOUT_MERGING,
@@ -286,6 +305,13 @@ def merge_replay(
             ]
             assert repo.local_repo_path.exists()
 
+            if f"{merge_tool.name}_merge_fingerprint" in merge_data:
+                expected_merge_fingerprint = merge_data[
+                    f"{merge_tool.name}_merge_fingerprint"
+                ]
+            else:
+                expected_merge_fingerprint = "MISSING!"
+
             if (
                 merge_result
                 not in (
@@ -293,9 +319,8 @@ def merge_replay(
                     TEST_STATE.Git_checkout_failed,
                 )
                 and (
-                    merge_data[f"{merge_tool.name}_merge_fingerprint"]
-                    != merge_fingerprint
-                    and not dont_check_fingerprints
+                    (not dont_check_fingerprints)
+                    and (expected_merge_fingerprint != merge_fingerprint)
                 )
                 and ("spork" not in merge_tool.name)
                 and ("intellimerge" not in merge_tool.name)
@@ -316,9 +341,8 @@ def merge_replay(
                 print(f"=================== end of {log_path}.")
                 raise Exception(
                     f"fingerprints differ: after merge of {workdir} with {merge_tool}, found"
-                    + f" {merge_fingerprint} but expected "
-                    + f"{merge_data[f'{merge_tool.name}_merge_fingerprint']} at log path {log_path}"
-                    + f" and repo path {repo.local_repo_path}",
+                    + f" {merge_fingerprint} but expected {expected_merge_fingerprint}"
+                    + f" at log path {log_path} and repo path {repo.local_repo_path}",
                     merge_result,
                     f"idx {merge_idx}",
                 )
@@ -390,6 +414,11 @@ if __name__ == "__main__":
         default="1-7",
     )
     parser.add_argument(
+        "--verbose",
+        help="Run verbosely, with diagnostic output",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser.add_argument(
         "-test",
         help="Test the replay of a merge",
         action="store_true",
@@ -423,17 +452,17 @@ if __name__ == "__main__":
 
     logger.info(f"Replaying merge with index {args.idx}")
     if args.delete_workdir:
-        logger.info("Deleting workdir after replaying the merge")
+        logger.info("  Will delete workdir after replaying the merge")
     if args.dont_check_fingerprints:
-        logger.info("Not checking the fingerprint of a merge")
+        logger.info("  Will not check the fingerprint of a merge")
     if args.test:
-        logger.info("Testing the replay of a merge")
+        logger.info("  Will test the replay of a merge")
     if args.create_artifacts:
-        logger.info("Creating artifacts after replaying the merges")
+        logger.info("  Will create artifacts after replaying the merges")
     if not args.skip_build:
-        logger.info("Building merge tool")
+        logger.info("  Will build merge tool")
     if args.testing:
-        logger.info("Checking for reproducibility")
+        logger.info("  Will check for reproducibility")
 
     os.environ["PATH"] += os.pathsep + os.path.join(
         os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
@@ -460,6 +489,7 @@ if __name__ == "__main__":
         args.create_artifacts,
         args.dont_check_fingerprints,
         args.testing,
+        args.verbose,
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")
@@ -472,7 +502,10 @@ if __name__ == "__main__":
             logger.info(f"Merge test result: {row['merge test result']}")
             logger.info(f"Merge test log path: {row['merge test log path']}")
 
-        logger.info(f"merge data test result: {merge_data[idx]}")
+        if idx in merge_data:
+            logger.info(f"merge data test result: {merge_data[idx]}")
+        else:
+            logger.info("merge data test result: MISSING!")
         logger.info(f"repo location: {row['repo path']}")
 
     # Create artifacts which means creating a tarball of all the relevant workdirs

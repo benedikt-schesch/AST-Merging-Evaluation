@@ -1,11 +1,15 @@
 #!/usr/bin/env sh
 
-# usage: <scriptname> <clone_dir> <branch-1> <branch-2>
+# usage: <scriptname> [--verbose] <clone_dir> <branch-1> <branch-2>
 
 set -o nounset
 
+if [ "$1" = "--verbose" ] ; then
+  shift
+fi
+
 if [ "$#" -ne 3 ]; then
-  echo "Usage: $0 CLONE_DIR BRANCH1 BRANCH2" >&2
+  echo "Usage: $0 [--verbose] CLONE_DIR BRANCH1 BRANCH2" >&2
   exit 1
 fi
 

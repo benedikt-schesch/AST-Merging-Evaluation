@@ -3,6 +3,7 @@
 
 """Output a subset of the results, to standard out.
 The arguments are a query and an optional list of columns.
+It is also permitted to pass "--input CSV_FILENAME".
 The query is executed (to select rows), then columns are output that include:
  * idx
  * all the columns that appear in the query

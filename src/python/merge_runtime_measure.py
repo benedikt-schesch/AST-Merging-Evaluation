@@ -65,6 +65,8 @@ def main():
                 merges = merges.iloc[: args.n_sampled_timing]
             for merge_idx, merge_data in merges.iterrows():
                 for merge_tool in MERGE_TOOL:
+                    if "plus" in merge_tool.name:
+                        continue
                     left_hash, right_hash = (
                         merge_data["left"],
                         merge_data["right"],
