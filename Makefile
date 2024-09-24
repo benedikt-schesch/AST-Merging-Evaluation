@@ -146,6 +146,11 @@ run-all:
 	./run_greatest_hits.sh --no_timing
 	./run_reaper.sh --no_timing
 
+run-all-without-small-test:
+	./run_combined.sh
+	./run_greatest_hits.sh --no_timing
+	./run_reaper.sh --no_timing
+
 small-test-diff:
 	python3 test/check_equal_csv.py --actual_folder results/small/ --goal_folder test/small-goal-files/
 	@echo

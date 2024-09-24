@@ -770,6 +770,8 @@ def main():
                 timed_df = pd.concat(timed_df, ignore_index=True)
 
             for merge_tool in merge_tools:
+                if "plus" in merge_tool:
+                    continue
                 table3 += f"    {merge_tool_latex_name(merge_tool):32}"
                 for f in [np.mean, np.median, np.max]:
                     run_time = f(timed_df[merge_tool + "_run_time"])
