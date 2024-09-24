@@ -497,16 +497,18 @@ def main():
     print(f"Rows: {len(filtered_df)}")
 
     result_df.to_csv(args.output_dir / "result_raw.csv", index_label="idx")
-    
+
     for idx, row in result_df.iterrows():
         for merge_tool in MERGE_TOOL:
             if "plus" in merge_tool.name:
                 continue
             result1 = row[merge_tool.name]
             result2 = row[merge_tool.name + "_plus"]
-            if result1.name == MERGE_STATE.Merge_failed.name \
-                and result2.name == TEST_STATE.Tests_failed.name:
-                    result_df.loc[idx, merge_tool.name] = TEST_STATE.Tests_failed.name
+            if (
+                result1 == MERGE_STATE.Merge_failed.name
+                and result2 == TEST_STATE.Tests_failed.name
+            ):
+                result_df.loc[idx, merge_tool.name] = TEST_STATE.Tests_failed.name
     result_df.to_csv(args.output_dir / "result_adjusted.csv", index_label="idx")
 
     main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
