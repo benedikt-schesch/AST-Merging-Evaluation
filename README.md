@@ -71,7 +71,7 @@ make small-test
 This runs the entire code on two small repos.
 The output data appears in `results/small/`.
 
-* `results/small/result.csv`: the final result
+* `results/small/result_adjusted.csv`: the final result
 
 * `results/small/merges/` contains all the merges.
 
@@ -79,7 +79,7 @@ The output data appears in `results/small/`.
 
 * `results/small/merges_tested/` contains all merges that have been tested.
 
-* `results/small/result.csv` contains the final result.
+* `results/small/result_adjusted.csv` contains the final result.
 
 ### Perform full analysis
 
@@ -97,7 +97,7 @@ To run the stack on all repos and also diff the merges' outputs:
 
 This will run the entire code on all the repos and automatically decompress the cache if `cache/` does not exist.
 All the output data can be found in `results/`.
-The final result is found in `results/result.csv`.
+The final result is found in `results/result_adjusted.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_tested` contains all the merges that have been tested.
 

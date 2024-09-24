@@ -63,7 +63,7 @@ def main():
         "--result_csv",
         type=str,
         help="Path to the result CSV file",
-        default="results/combined/result.csv",
+        default="results/combined/result_adjusted.csv",
     )
     parser.add_argument(
         "--output_csv",
