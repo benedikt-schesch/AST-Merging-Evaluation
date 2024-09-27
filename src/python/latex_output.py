@@ -166,6 +166,7 @@ PLOTS = {
         "gitmerge_ort_ignorespace",
         "git_hires_merge",
         "spork",
+        "mergiraf",
         "intellimerge",
         "adjacent",
         "imports",
