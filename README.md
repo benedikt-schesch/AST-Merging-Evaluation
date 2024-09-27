@@ -21,7 +21,7 @@ conda env create -f environment.yml
 conda activate AST
 ```
 
-With mamba (faster https://github.com/mamba-org/mamba):
+With mamba (faster <https://github.com/mamba-org/mamba>):
 
 ```bash
 mamba env create -f environment.yml
@@ -100,12 +100,6 @@ All the output data can be found in `results/`.
 The final result is found in `results/result_adjusted.csv`.
 Directory `results/merges` contains all the merges for each repo.
 Directory `results/merges_tested` contains all the merges that have been tested.
-
-To execute `run_combined.sh` on multiple machines in parallel create a machine address list in `machines.txt` and run:
-
-```bash
-./src/scripts/utils/run_multiple_machines.sh main machines.txt <project_path_on_machine>
-```
 
 #### If `make small-test` fails
 
@@ -188,8 +182,6 @@ To run style checking run `make style`.
 
     * repo.py -> Contains the Repo class which represents a repo.
 
-    * split_repos.py -> Splits the repos for parallel execution.
-
     * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 
     * add_jacoco_gradle.py -> Adds jacoco to gradle projects.
@@ -201,14 +193,6 @@ To run style checking run `make style`.
     * run_repo_tests.sh -> Runs a repo's programmer provided tests.
 
     * merge_tools/ -> Contains all the merge tools scripts.
-
-    * utils/
-
-      * run_remotely.sh -> Runs the full stack on a remote machine.
-
-      * run_multiple_machine.sh -> Runs the full stack on multiple remote machines.
-
-      * diff_statistics.py -> Various diff commands to compare the results of two merges.
 
   * src/main/java/astmergeevaluation/FindMergeCommits.java -> Finds all merge commits in a repo.
 
