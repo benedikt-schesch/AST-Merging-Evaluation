@@ -46,7 +46,6 @@ jobs:
       with:
         python-version: 3.12
         auto-update-conda: true
-        mamba-version: "*"
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
