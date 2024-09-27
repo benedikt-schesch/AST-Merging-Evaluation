@@ -193,16 +193,9 @@ else
         --n_merges "$total_merges"
 fi
 
-echo "run.sh: about to run split_repos.py"
-python3 src/python/split_repos.py \
-    --repos_csv "$OUT_DIR/repos_head_passes.csv" \
-    --machine_id "$machine_id" \
-    --num_machines "$num_machines" \
-    --output_file "$OUT_DIR/local_repos.csv"
-
-echo "run.sh: about to run split_repos.py"
+echo "run.sh: about to run merge_analyzer.py"
 python3 src/python/merge_analyzer.py \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges_sampled/" \
     --output_dir "$OUT_DIR/merges_analyzed/" \
     --n_sampled_merges "$N_MERGES" \
