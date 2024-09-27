@@ -203,7 +203,7 @@ python3 src/python/merge_analyzer.py \
 
 echo "run.sh: about to run merge_tester.py"
 python3 src/python/merge_tester.py \
-    --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+    --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
     --merges_path "$OUT_DIR/merges_analyzed/" \
     --output_dir "$OUT_DIR/merges_tested/" \
     --cache_dir "$CACHE_DIR"
@@ -211,7 +211,7 @@ python3 src/python/merge_tester.py \
 if [ "$no_timing" = false ]; then
     echo "run.sh: about to run merge_runtime_measure.py"
     python3 src/python/merge_runtime_measure.py \
-        --repos_head_passes_csv "$OUT_DIR/local_repos.csv" \
+        --repos_head_passes_csv "$OUT_DIR/repos_head_passes.csv" \
         --merges "$OUT_DIR/merges_tested/" \
         --output_dir "$OUT_DIR/merges_timed/" \
         --n_sampled_timing 1 \
