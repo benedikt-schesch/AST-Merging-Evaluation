@@ -21,7 +21,7 @@ conda env create -f environment.yml
 conda activate AST
 ```
 
-With mamba (faster https://github.com/mamba-org/mamba):
+With mamba (faster <https://github.com/mamba-org/mamba>):
 
 ```bash
 mamba env create -f environment.yml
@@ -181,7 +181,6 @@ To run style checking run `make style`.
     * clean_cache_placeholders.py -> Removes all the cache placeholders.
 
     * repo.py -> Contains the Repo class which represents a repo.
-
 
     * write_head_hashes.py -> Writes the head hashes of all repos to a file.
 
