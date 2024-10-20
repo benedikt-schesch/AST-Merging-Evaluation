@@ -60,7 +60,7 @@ MERGE_TOOL_RENAME = {
     "gitmerge_ort_imports": "Imports+ort",
     "gitmerge_ort_imports_ignorespace": "Imports+ort-ignorespace",
     "intellimerge": "IntelliMerge",
-    "git_hires_merge": "Hires-Merge",
+    "git_hires_merge": "Character Merge",
     "adjacent": "Adjacent",
     "imports": "Imports",
     "version_numbers": "Version Numbers",
@@ -163,15 +163,13 @@ PLOTS = {
     ],
     "tools": [
         "gitmerge_ort",
-        "gitmerge_ort_ignorespace",
-        "git_hires_merge",
         "spork",
         "intellimerge",
+        "git_hires_merge",
         "adjacent",
         "imports",
         "version_numbers",
         "ivn",
-        "ivn_ignorespace",
     ],
 }
 
@@ -513,6 +511,9 @@ def main():
 
     main_df = result_df[result_df["branch_name"].isin(main_branch_names)]
     feature = result_df[~result_df["branch_name"].isin(main_branch_names)]
+    
+    # result_df = feature
+    # result_df = main_df
 
     for plot_category, merge_tools in PLOTS.items():
         plots_output_path = output_dir / "plots" / plot_category
