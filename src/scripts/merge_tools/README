@@ -1,1 +1,7 @@
-git-hires-merge is from https://github.com/paulaltin/git-hires-merge .
+To add a new merging tool to the evaluation:
+ * Add a new script here, `mytool.sh`
+ * Create a `mytool_plus.sh` script that runs the new merging tool and then
+   Plume-lib Merging.  (You can copy from `spork_plus.sh`.)
+ * Update the expected results so that the CI tests pass.
+
+File `git-hires-merge` is from https://github.com/paulaltin/git-hires-merge .
