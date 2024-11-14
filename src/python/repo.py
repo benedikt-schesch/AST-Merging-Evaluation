@@ -139,6 +139,7 @@ MERGE_TOOL = Enum(
         "gitmerge_resolve_plus",
         "git_hires_merge_plus",
         "spork_plus",
+        "mergiraf_plus",
         "intellimerge_plus",
         "adjacent_plus",
         "imports_plus",
