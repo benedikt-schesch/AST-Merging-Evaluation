@@ -57,8 +57,8 @@ branch2=$3
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
 # set up mergiraf driver
-git config merge.mergiraf.name mergiraf
-git config merge.mergiraf.driver "${mergiraf_absolutepath} merge --git %O %A %B -s %S -x %X -y %Y -p %P"
+git config --local merge.mergiraf.name mergiraf
+git config --local merge.mergiraf.driver "${mergiraf_absolutepath} merge --git %O %A %B -s %S -x %X -y %Y -p %P"
 $(mergiraf_absolutepath) languages --gitattributes >> .gitattributes
 
 # perform merge
