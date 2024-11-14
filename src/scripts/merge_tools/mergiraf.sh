@@ -59,7 +59,7 @@ cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 # set up mergiraf driver
 git config --local merge.mergiraf.name mergiraf
 git config --local merge.mergiraf.driver "${mergiraf_absolutepath} merge --git %O %A %B -s %S -x %X -y %Y -p %P"
-$(mergiraf_absolutepath) languages --gitattributes >> .gitattributes
+$mergiraf_absolutepath languages --gitattributes >> .gitattributes
 
 # perform merge
 git checkout "$branch1" --force
