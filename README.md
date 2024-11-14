@@ -56,8 +56,8 @@ brew install gh
 
 You must install Java 8, 11 and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
 
-You should also install [GraalVM](https://www.graalvm.org/downloads/) and set a `GRAALVM_HOME` environment variable to the home of the GraalVM JDK installation. At the time of writing, GraalVM JDK v23 seems to work for the setup.
----
+By default, you should install [GraalVM](https://www.graalvm.org/downloads/) (version 21 or later) and set a `GRAALVM_HOME` environment variable to the home of the GraalVM JDK installation.
+(Todo: the pipeline should be made to work with regular JDK.  The correctness outputs will be reliable, but no timing information should be output.)
 
 ## Run the code
 
