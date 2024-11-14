@@ -4,11 +4,28 @@
 ![check-style](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-style.yml/badge.svg)
 ![check-reproducibility](https://github.com/benedikt-schesch/AST-Merging-Evaluation/actions/workflows/check-reproducibility.yml/badge.svg)
 
+This is an experimental framework for comparing version control merging algorithms.
+It runs each merge tool on 6045 real-world merges.
+It classifies each merge as a conflict, a correct merge, or an incorrect merge.
+It uses each project's test suite to determine whether the merge was correct,
+and it penalizes merge tools for creating incorrect merges.
+
+The paper [Evaluation of Version Control Merge
+Tools](https://homes.cs.washington.edu/~mernst/pubs/merge-evaluation-ase2024-abstract.html)
+evaluates 16 merge algorithms, including
+[Hires-Merge](https://github.com/paulaltin/git-hires-merge),
+[IntelliMerge](https://github.com/Symbolk/IntelliMerge),
+[Plume-lib Merging](https://github.com/plume-lib/merging), and
+[Spork](https://github.com/ASSERT-KTH/spork).
+Since then, the framework has been expanded to evaluate newer algorithms,
+such as
+[Mergiraf](https://mergiraf.org/).
+
 ## Requirements
 
 ### Download the cached data
 
-Download the compressed cached data [here](https://zenodo.org/records/13366866) and put it in the root directory of the project. Be aware the the uncompressed cache size is 84GB as of 09-23-2024.
+Download the compressed cached data [here](https://zenodo.org/records/13366866) and put it in the root directory of the project. Be aware the the uncompressed cache size is 84GB as of 2024-09-23.
 
 ### Python
 
@@ -56,7 +73,8 @@ brew install gh
 
 You must install Java 8, 11 and 17. You must set the `JAVA8_HOME`, `JAVA11_HOME` and `JAVA17_HOME` environment variables to the respective Java installations.
 
----
+By default, you should install [GraalVM](https://www.graalvm.org/downloads/) (version 21 or later) and set a `GRAALVM_HOME` environment variable to the home of the GraalVM JDK installation.
+(Todo: the pipeline should be made to work with regular JDK.  The correctness outputs will be reliable, but no timing information should be output.)
 
 ## Run the code
 
