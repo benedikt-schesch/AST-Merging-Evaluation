@@ -4,20 +4,21 @@
 \caption{Comparison of Merge Tool Results: Incorrect vs Unhandled}
 \label{tab:tool-comparison}
 \small
-\begin{tabular}{lrrrrrrrrrr}
+\begin{tabular}{lrrrrrrrrrrr}
 \toprule
-& Gitmerge-ort & Gitmerge-ort-ignorespace & Hires-Merge & Spork & IntelliMerge & Adjacent & Imports & Version Numbers & IVn & IVn-ignorespace \\
+& Gitmerge-ort & Gitmerge-ort-ignorespace & Hires-Merge & Spork & Mergiraf & IntelliMerge & Adjacent & Imports & Version Numbers & IVn & IVn-ignorespace \\
 \midrule
-Gitmerge-ort & - & 2 & 1 & 5 & 8 & 0 & 0 & 0 & 0 & 2 \\
-Gitmerge-ort-ignorespace & 27 & - & 22 & 20 & 18 & 19 & 27 & 27 & 26 & 0 \\
-Hires-Merge & 66 & 61 & - & 33 & 28 & 43 & 65 & 65 & 62 & 57 \\
-Spork & 289 & 268 & 237 & - & 73 & 233 & 258 & 285 & 250 & 227 \\
-IntelliMerge & 1546 & 1436 & 1293 & 740 & - & 1265 & 1415 & 1545 & 1365 & 1282 \\
-Adjacent & 61 & 56 & 39 & 32 & 23 & - & 55 & 61 & 54 & 49 \\
-Imports & 0 & 1 & 1 & 7 & 12 & 0 & - & 0 & 0 & 1 \\
-Version Numbers & 0 & 2 & 1 & 5 & 8 & 0 & 0 & - & 0 & 2 \\
-IVn & 0 & 1 & 1 & 7 & 12 & 0 & 0 & 0 & - & 1 \\
-IVn-ignorespace & 27 & 0 & 22 & 22 & 22 & 20 & 27 & 27 & 26 & - \\
+Gitmerge-ort & - & 2 & 1 & 5 & 2 & 8 & 0 & 0 & 0 & 0 & 2 \\
+Gitmerge-ort-ignorespace & 27 & - & 22 & 20 & 17 & 18 & 19 & 27 & 27 & 26 & 0 \\
+Hires-Merge & 66 & 61 & - & 33 & 32 & 28 & 43 & 65 & 65 & 62 & 57 \\
+Spork & 289 & 268 & 237 & - & 98 & 73 & 233 & 258 & 285 & 250 & 227 \\
+Mergiraf & 180 & 170 & 145 & 52 & - & 44 & 146 & 164 & 180 & 159 & 146 \\
+IntelliMerge & 1542 & 1432 & 1290 & 739 & 858 & - & 1262 & 1411 & 1541 & 1361 & 1278 \\
+Adjacent & 61 & 56 & 39 & 32 & 27 & 23 & - & 55 & 61 & 54 & 49 \\
+Imports & 0 & 1 & 1 & 7 & 2 & 12 & 0 & - & 0 & 0 & 1 \\
+Version Numbers & 0 & 2 & 1 & 5 & 2 & 8 & 0 & 0 & - & 0 & 2 \\
+IVn & 0 & 1 & 1 & 7 & 2 & 12 & 0 & 0 & 0 & - & 1 \\
+IVn-ignorespace & 27 & 0 & 22 & 22 & 17 & 22 & 20 & 27 & 27 & 26 & - \\
 \bottomrule
 \end{tabular}
 \end{table}
