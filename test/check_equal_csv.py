@@ -77,6 +77,11 @@ if __name__ == "__main__":
             print(f"Goal columns: {goal_df.columns}")
             print(f"Actual columns: {actual_df.columns}")
             print(f"Columns that are not equal: {different_columns}")
+            for col in different_columns:
+                print(f"Goal {col}:")
+                print(goal_df[col])
+                print(f"Actual {col}:")
+                print(actual_df[col])
             print(f"{goal_folder/goal_file} and {actual_file} are not equal")
             raise ValueError("goal_df and actual_df have different columns or values")
 
