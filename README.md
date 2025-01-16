@@ -15,7 +15,7 @@ Tools](https://homes.cs.washington.edu/~mernst/pubs/merge-evaluation-ase2024-abs
 evaluates 16 merge algorithms, including
 [Hires-Merge](https://github.com/paulaltin/git-hires-merge),
 [IntelliMerge](https://github.com/Symbolk/IntelliMerge),
-[Plume-lib Merging](https://github.com/plume-lib/merging), and
+[Plume-lib Merging](https://github.com/plume-lib/merging) (which was best), and
 [Spork](https://github.com/ASSERT-KTH/spork).
 Since then, the framework has been expanded to evaluate newer algorithms,
 such as
