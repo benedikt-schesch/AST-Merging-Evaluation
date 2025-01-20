@@ -159,6 +159,8 @@ gradle-assemble:
 clean-workdir:
 	if [ -d .workdir ]; then chmod -R u+w .workdir; fi
 	rm -rf .workdir
+	if [ -d .workdir-small-test ]; then chmod -R u+w .workdir-small-test; fi
+	rm -rf .workdir-small-test
 
 clean-local:
 	${MAKE} clean-workdir
