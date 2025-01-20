@@ -20,7 +20,7 @@ if [ "$#" -ne 3 ]; then
   exit 2
 fi
 
-MERGIRAF_VERSION="0.3.0"
+MERGIRAF_VERSION="0.4.0"
 
 SCRIPT_PATH="$(dirname "$0")"; SCRIPT_PATH="$(eval "cd \"$SCRIPT_PATH\" && pwd")"
 ROOT_PATH="$(realpath "${SCRIPT_PATH}/../../../")"
