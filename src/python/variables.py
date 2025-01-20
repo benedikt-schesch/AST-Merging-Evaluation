@@ -9,12 +9,12 @@ LEFT_BRANCH_NAME = BRANCH_BASE_NAME + "_LEFT"
 RIGHT_BRANCH_NAME = BRANCH_BASE_NAME + "_RIGHT"
 
 CACHE_BACKOFF_TIME = 2 * 60  # 2 minutes, in seconds
-DELETE_WORKDIRS = True
+DELETE_WORKDIRS = os.getenv("DELETE_WORKDIRS", "True").lower() in ["true", "1", "yes"]
 REPOS_PATH = (
     Path(os.getenv("AST_REPOS_PATH")) if os.getenv("AST_REPOS_PATH") else Path("repos")
 )
 WORKDIR_DIRECTORY = Path(
-    ".workdir"
+    os.getenv("WORKDIR_DIRECTORY", ".workdir")
 )  # Merges and testing will be performed in this directory.
 
 TIMEOUT_MERGING = 60 * 15  # 15 minutes, in seconds

@@ -13,8 +13,6 @@ CSV_RESULTS_GREATEST_HITS = results/greatest_hits/result_raw.csv
 CSV_RESULTS_REAPER = results/reaper/result_raw.csv
 CSV_RESULTS = $(CSV_RESULTS_COMBINED)
 
-NUM_PROCESSES = 0
-
 showvars:
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
@@ -37,10 +35,6 @@ fix-java-style:
 
 check-java-style:
 	./gradlew -q spotlessCheck javadoc requireJavadoc -g ../.gradle/
-
-update-small-results:
-	rm -rf test/small-goal-files/
-	rsync -av --exclude='*.pdf' --exclude='*.png' --exclude='*unhandled_and_failed_merges_without_intellimerge*' --exclude='*.pgf' results/small/ test/small-goal-files/
 
 # This target deletes files that are not committed to version control.
 clean:
@@ -112,16 +106,16 @@ copy-paper:
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
 	rm -rf results/small
-	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
-	AST_REPOS_PATH=repos-small-test ./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 update-figures:
@@ -130,7 +124,11 @@ update-figures:
 	./run_reaper.sh -op --no_timing
 
 update-figures-small:
-	AST_REPOS_PATH=repos-small-test ./run_small.sh -op --no_timing
+	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh -op --no_timing
+
+update-small-results:
+	rm -rf test/small-goal-files/
+	rsync -av --exclude='*.pdf' --exclude='*.png' --exclude='*unhandled_and_failed_merges_without_intellimerge*' --exclude='*.pgf' results/small/ test/small-goal-files/
 
 run-all-without-timing:
 	${MAKE} clean-workdir

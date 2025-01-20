@@ -8,6 +8,7 @@ It also contains the functions that are used to test the repository.
 from pathlib import Path
 from typing import Union, Tuple, List, Dict
 import errno
+import json
 import signal
 import functools
 from enum import Enum
@@ -658,6 +659,45 @@ class Repository:
             .split()[0]
         )
         return result
+
+    def compute_tree_filehash_map(repo_path: Path) -> str:
+        """
+        Computes a SHA256 for every file in the repository (excluding .git) and
+        returns a JSON string mapping each file path to its hash.
+
+        Args:
+            repo_path (Path): Path object pointing to the local repository folder.
+
+        Returns:
+            str: JSON string that maps from file path to its SHA256 hash.
+        """
+        assert repo_path.exists(), f"Repository path {repo_path} does not exist"
+
+        # Construct the shell command very similarly to the original approach
+        # but we won't pipe it to sha256sum's input, we'll parse the output ourselves.
+        command = (
+            "export LC_ALL=C; export LC_COLLATE=C; cd "
+            + str(repo_path)
+            + " ; find . -type f -not -path '*/\\.git*' -exec sha256sum {} \\; | sort"
+        )
+
+        # Run the command and capture the output
+        output = subprocess.check_output(command, shell=True, executable="/bin/bash")
+        lines = output.decode("utf-8").strip().split("\n")
+
+        # Build a dictionary of file -> sha256
+        filehash_map = {}
+        for line in lines:
+            if not line.strip():
+                continue
+            # sha256sum typically outputs "<sha>  <filename>"
+            sha, path = line.split("  ", 1)
+            # Remove leading './' so paths are more consistent
+            cleaned_path = path.lstrip("./")
+            filehash_map[cleaned_path] = sha
+
+        # Return as a pretty-printed JSON string
+        return json.dumps(filehash_map, indent=2)
 
     def get_sha_cache_entry(
         self, commit: str, start_merge: bool = False
