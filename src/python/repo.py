@@ -14,7 +14,6 @@ from enum import Enum
 import uuid
 import subprocess
 import os
-import sys
 import json
 import xml.etree.ElementTree as ET
 import shutil
@@ -654,7 +653,9 @@ class Repository:
         assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         if os.getenv("TESTING") == "True" and os.getenv("CREATING_BRANCH") != "1":
             if not self.check_hash_by_file():
-                sys.exit(1)
+                raise Exception(
+                    f"Tree fingerprint of {self.repo_slug} does not match the stored hash."
+                )
         command = (
             "sha256sum <(export LC_ALL=C; export LC_COLLATE=C; cd "
             + str(self.local_repo_path)
@@ -697,12 +698,12 @@ class Repository:
             current_hash_map[cleaned_path] = sha
 
         # 2) If hash_file does not exist or is empty, create it
-        if not hash_file.exists() or hash_file.stat().st_size == 0:
+        if not hash_file.exists():
             hash_file.parent.mkdir(parents=True, exist_ok=True)
             with hash_file.open("w", encoding="utf-8") as f:
                 json.dump(current_hash_map, f, indent=2)
             print(
-                f"[check_hash_by_file] {hash_file} missing for '{self.repo_slug}' found. Created a new one."
+                f"[check_hash_by_file] {hash_file.absolute()} missing. Created a new one."
             )
             return True
 
