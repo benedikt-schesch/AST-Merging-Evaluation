@@ -702,7 +702,7 @@ class Repository:
             with hash_file.open("w", encoding="utf-8") as f:
                 json.dump(current_hash_map, f, indent=2)
             print(
-                f"[check_hash_by_file] No hash file for '{self.repo_slug}' found. Created a new one."
+                f"[check_hash_by_file] {hash_file} missing for '{self.repo_slug}' found. Created a new one."
             )
             return True
 
