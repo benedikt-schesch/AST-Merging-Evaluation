@@ -737,7 +737,7 @@ class Repository:
                     f"[check_hash_by_file] New file {file} found in '{self.repo_slug}' not in stored hashes."
                 )
                 return False
-
+        print(f"[check_hash_by_file] All hashes match for '{hash_file}'.")
         # If we got here, everything matches
         return True
 
