@@ -107,6 +107,7 @@ copy-paper:
 small-test:
 	${MAKE} clean-test-cache clean
 	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
+	python3 test/check_hashes.py
 	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
 	rm -rf results/small
@@ -116,6 +117,7 @@ small-test:
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
 	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
+	python3 test/check_hashes.py
 	${MAKE} small-test-diff
 
 update-figures:
