@@ -14,6 +14,8 @@ from enum import Enum
 import uuid
 import subprocess
 import os
+import sys
+import json
 import xml.etree.ElementTree as ET
 import shutil
 import time
@@ -482,6 +484,7 @@ class Repository:
                     str is the fingerprint of that commit.
             str: explanation of the result.
         """
+        os.environ["CREATING_BRANCH"] = "1"
         if use_cache:
             cache_entry = self.get_sha_cache_entry(commit)
             if cache_entry is not None and cache_entry["sha"] is None:
@@ -496,9 +499,11 @@ class Repository:
                     self.repo_slug,
                     self.sha_cache_directory,
                 )
+            os.environ["CREATING_BRANCH"] = "0"
             return None, explanation
         tree_fingerprint = self.compute_tree_fingerprint()
         self.repo.git.checkout("-b", branch_name, force=True)
+        os.environ["CREATING_BRANCH"] = "0"
         return tree_fingerprint, explanation
 
     def merge(
@@ -647,6 +652,9 @@ class Repository:
             str: The tree fingerprint.
         """
         assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
+        if os.getenv("TESTING") == "True" and os.getenv("CREATING_BRANCH") != "1":
+            if not self.check_hash_by_file():
+                sys.exit(1)
         command = (
             "sha256sum <(export LC_ALL=C; export LC_COLLATE=C; cd "
             + str(self.local_repo_path)
@@ -658,6 +666,80 @@ class Repository:
             .split()[0]
         )
         return result
+
+    def check_hash_by_file(self) -> bool:
+        """
+        Verifies each file's SHA256 hash in self.local_repo_path against a stored JSON file.
+        If no JSON file exists (or it's empty), one is created. If a mismatch occurs, return False.
+        Returns:
+            bool: True if all checks pass or if a new hash file is created, False on mismatch.
+        """
+        hash_dir = Path("test/small-goal-files/hashes")
+        hash_dir.mkdir(parents=True, exist_ok=True)
+
+        # We'll name the JSON file after the repo slug (e.g. "my_repo.json")
+        hash_file = hash_dir / f"{str(self.local_repo_path)}.json"
+
+        # 1) Compute current (live) hashes
+        command = (
+            f"export LC_ALL=C; export LC_COLLATE=C; cd {self.local_repo_path} ; "
+            "find . -type f -not -path '*/.git*' -exec sha256sum {} \\; | sort"
+        )
+        output = subprocess.check_output(command, shell=True, executable="/bin/bash")
+        lines = output.decode("utf-8").strip().split("\n")
+
+        current_hash_map = {}
+        for line in lines:
+            if not line.strip():
+                continue
+            sha, path = line.split("  ", 1)
+            cleaned_path = path.lstrip("./")
+            current_hash_map[cleaned_path] = sha
+
+        # 2) If hash_file does not exist or is empty, create it
+        if not hash_file.exists() or hash_file.stat().st_size == 0:
+            hash_file.parent.mkdir(parents=True, exist_ok=True)
+            with hash_file.open("w", encoding="utf-8") as f:
+                json.dump(current_hash_map, f, indent=2)
+            print(
+                f"[check_hash_by_file] No hash file for '{self.repo_slug}' found. Created a new one."
+            )
+            return True
+
+        # 3) Otherwise, read the stored hashes
+        with hash_file.open("r", encoding="utf-8") as f:
+            stored_hash_map = json.load(f)
+
+        # 4) Compare stored hashes vs. current hashes
+        #    a) Check for missing or mismatched files
+        for file, stored_hash in stored_hash_map.items():
+            if file not in current_hash_map:
+                print(
+                    f"[check_hash_by_file] File {file} is missing in the current repo for '{self.repo_slug}'."
+                )
+                return False
+            if current_hash_map[file] != stored_hash:
+                print(
+                    f"[check_hash_by_file] Hash mismatch for file {file} in '{self.repo_slug}'."
+                )
+                print(f"  Stored hash:  {stored_hash}")
+                print(f"  Current hash: {current_hash_map[file]}")
+                print(f"  Hash file:    {hash_file}")
+                # Print cotent of the file
+                with open(self.local_repo_path / file, "r", encoding="utf-8") as f:
+                    print(f.read())
+                return False
+
+        #    b) Check for new files that weren't in the stored map
+        for file in current_hash_map:
+            if file not in stored_hash_map:
+                print(
+                    f"[check_hash_by_file] New file {file} found in '{self.repo_slug}' not in stored hashes."
+                )
+                return False
+
+        # If we got here, everything matches
+        return True
 
     def get_sha_cache_entry(
         self, commit: str, start_merge: bool = False

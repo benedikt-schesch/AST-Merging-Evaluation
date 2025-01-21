@@ -106,18 +106,16 @@ copy-paper:
 # As of 2023-07-31, this takes 5-20 minutes to run, depending on your machine.
 small-test:
 	${MAKE} clean-test-cache clean
-	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
-	python3 test/check_hashes.py
+	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
 	rm -rf results/small
-	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
+	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
-	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
-	python3 test/check_hashes.py
+	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
 
 update-figures:
