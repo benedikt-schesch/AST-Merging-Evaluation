@@ -22,6 +22,7 @@ RUN_NAME="$2"
 OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
+MERGIRAF_VERSION="0.4.0"
 
 comparator_flags=""
 no_timing=false
@@ -125,6 +126,14 @@ if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
     git submodule update --init --recursive
 fi
 
+# Check if mergiraf is installed and matches the required version
+if ! mergiraf --version 2>/dev/null | grep -q "mergiraf $MERGIRAF_VERSION"; then
+  echo "Installing mergiraf version $MERGIRAF_VERSION..."
+  cargo install --locked mergiraf --version "$MERGIRAF_VERSION"
+else
+  echo "mergiraf version $MERGIRAF_VERSION is already installed."
+fi
+
 (
   cd ./src/scripts/merge_tools/merging
   export JAVA_HOME=$GRAALVM_HOME
@@ -148,6 +157,10 @@ fi
 REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
     find "$REPOS_PATH/locks" -name "*.lock" -delete
+fi
+MERGIRAF_LOCKFILE="./bin/mergiraf.lock"
+if [ -f "$MERGIRAF_LOCKFILE" ]; then
+    rm -f "$MERGIRAF_LOCKFILE"
 fi
 
 echo "run.sh: about to run delete_cache_placeholders.py"

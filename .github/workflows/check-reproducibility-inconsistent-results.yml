@@ -37,6 +37,9 @@ jobs:
         channels: conda-forge,defaults
         activate-environment: AST
         environment-file: environment.yml
+    - name: Install Rust and Cargo
+      run: rustup update stable && rustup default stable
+    - run: cargo --version
     - name: Clean caches & workspace
       run: make clean
     - run: echo "LOGURU_COLORIZE=NO" >> $GITHUB_ENV
