@@ -679,7 +679,9 @@ class Repository:
         hash_dir.mkdir(parents=True, exist_ok=True)
 
         # We'll name the JSON file after the repo slug (e.g. "my_repo.json")
-        hash_file = hash_dir / f"{str(self.local_repo_path)}.json"
+        hash_file = hash_dir / Path(*self.local_repo_path.parts[1:]).with_suffix(
+            ".json"
+        )
 
         # 1) Compute current (live) hashes
         command = (
