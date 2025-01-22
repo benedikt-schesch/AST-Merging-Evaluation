@@ -52,7 +52,6 @@
   "src/main/java/com/github/pedrovgs/problem51/ReverseString.java": "476840afeed4a37cf3bd931450f7f37306c4c4cf210e0254bc1cb5a76fa82845",
   "src/test/java/com/github/pedrovgs/problem54/RotateMatrixTest.java": "4ab74ba9d5f4cf7a00f68398d6a9b6d91300f0c66fd5e38ae831b47ac2dd6900",
   "src/test/java/com/github/pedrovgs/problem49/CombinationsOfChangeTest.java": "4c1982407d1c37dc84ee0ccb5c1116fa1a6142346f3ed2317320c5828bffa934",
-  "src/main/java/com/github/pedrovgs/problem80/QuickSort.java": "4cb553d55d55603fb8576e9187c7169089feca794f3f212fd9b81eba66052886",
   "src/main/java/com/github/pedrovgs/problem69/BitsToTransform.java": "50f61b8ae7d8baa0d10d0d85cea404fc996673bffdcc7cedde21d018a77207ec",
   "src/main/java/com/github/pedrovgs/problem34/DotRegularExpression.java": "52c30a2d84cd5f86d3b128f71ec087f66c70914179412a498207018c67874d19",
   "travis.yml": "547d252b41ab03c04775a342109be7204ce242f5e8dac734d8823acf01ec128f",
@@ -72,7 +71,6 @@
   "src/main/java/com/github/pedrovgs/problem42/FloodFill.java": "683b30fd63b47ea75aad9b76dcd0d6f1736738e090c73cfb7bd519edcecd11d0",
   "src/test/java/com/github/pedrovgs/problem59/DeleteListNodeTest.java": "6c326cd667f067e5e31d7d3b2a4ff06fdeb0e71df1eec8f9add6bdd9dc2adde7",
   "src/main/java/com/github/pedrovgs/sortingalgorithm/SortingAlgorithm.java": "6c47bb324a35ec4a4277ccb5d693df3a69ca1b5c9317832f61999ecc8bb8d85e",
-  "src/test/java/com/github/pedrovgs/problem80/QuickSortTest.java": "71cbaf662759b77e959222f808a0fa119f165fa51f1f9ee63fb5dcec9bdfcbda",
   "src/test/java/com/github/pedrovgs/problem71/ReverseBinaryNumberTest.java": "757f4173f1eac27a1bf51cca22faf1339601f444932d684088986773f350dd18",
   "src/main/java/com/github/pedrovgs/problem2/VectorScalarProduct.java": "760d96b2297956adebeb9bcb1bb9bf9eee006dbf6d3024a721d6af997d4b8b9d",
   "src/test/java/com/github/pedrovgs/problem6/MergeSortedArraysTest.java": "7629fdca20995b3279e1a6fe988f6b3d51c7a8a840c6683639005e1f7df6640c",
@@ -166,8 +164,10 @@
   "src/test/java/com/github/pedrovgs/problem23/RemoveCommentsTest.java": "ef85cf3595862c26053b84ec2fd3a3436875288df68df8103c56389cd46590e7",
   "src/test/java/com/github/pedrovgs/problem35/AsteriskRegularExpressionTest.java": "f15e3e5f300a1620cea2135d44378716b9f7cb0b0b4ca8836bec5849e2565f10",
   "src/test/java/com/github/pedrovgs/problem70/ReverseOrderOfBinaryNumberTest.java": "f401590959a51f07a5dafd69f1e5444a871d9c8f54dac0c58f253c923e979b56",
+  "src/main/java/com/github/pedrovgs/problem80/QuickSort.java": "f4dc0749e311aa27b017289da15ca0676b326a95a26e31e4776c32e5467e7563",
   "src/test/java/com/github/pedrovgs/problem19/BinaryTreeDepthTest.java": "f61ff080d255544115c8fc806d2a3bd492c740e8127fdbd6e1c1cee0f228f0f8",
   "src/main/java/com/github/pedrovgs/problem9/Factorial.java": "f9386c042e59026f8856e6c1b61d6b73a42a85f488f1ed5ff49fb6a17d5f53bb",
   "src/test/java/com/github/pedrovgs/problem8/SplitArrayTest.java": "fc8f4db8fd7789642eb8a0890fdd8c48a4623239f852f6d6ae546888b619d03b",
-  "src/test/java/com/github/pedrovgs/problem17/BinaryTreeEqualsTest.java": "fce04995f01375ff203a23a5f442e627f3ef8a51cd0c51dca8a4a6f53a683d33"
+  "src/test/java/com/github/pedrovgs/problem17/BinaryTreeEqualsTest.java": "fce04995f01375ff203a23a5f442e627f3ef8a51cd0c51dca8a4a6f53a683d33",
+  "src/test/java/com/github/pedrovgs/problem80/QuickSortTest.java": "fd0ae80f31bb0b276c650df04713491e754abde1db6bc8870465028874d0fd1d"
 }

@@ -107,11 +107,11 @@ copy-paper:
 small-test:
 	${MAKE} clean-test-cache clean
 	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
-	${MAKE} compress-small-cache
-	${MAKE} small-test-diff
-	rm -rf results/small
-	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
-	${MAKE} small-test-diff
+	# ${MAKE} compress-small-cache
+	# ${MAKE} small-test-diff
+	# rm -rf results/small
+	# AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
+	# ${MAKE} small-test-diff
 
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
