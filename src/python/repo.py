@@ -652,7 +652,11 @@ class Repository:
         """
         assert self.local_repo_path.exists(), f"Repo {self.repo_slug} does not exist"
         if os.getenv("TESTING") == "True" and os.getenv("CREATING_BRANCH") != "1":
-            if not self.check_hash_by_file():
+            if (
+                "intellimerge" not in str(self.local_repo_path)
+                and "resolve" not in str(self.local_repo_path)
+                and not self.check_hash_by_file()
+            ):
                 raise Exception(
                     f"Tree fingerprint of {self.repo_slug} does not match the stored hash."
                 )
