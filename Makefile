@@ -127,7 +127,7 @@ update-figures-small:
 	AST_REPOS_PATH=repos-small-test DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh -op --no_timing
 
 update-small-results:
-	rm -rf test/small-goal-files/
+	find test/small-goal-files/ -mindepth 1 -not -path "test/small-goal-files/hashes" -not -path "test/small-goal-files/hashes/*" -exec rm -rf {} +
 	rsync -av --exclude='*.pdf' --exclude='*.png' --exclude='*unhandled_and_failed_merges_without_intellimerge*' --exclude='*.pgf' results/small/ test/small-goal-files/
 
 run-all-without-timing:
