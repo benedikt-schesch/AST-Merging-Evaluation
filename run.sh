@@ -114,6 +114,18 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
     fi
 fi
 
+# Check if git version is sufficient
+MIN_GIT_VERSION="2.44"
+INSTALLED_VERSION=$(git --version | awk '{print $3}')
+
+if [ "$(printf '%s\n' "$MIN_GIT_VERSION" "$INSTALLED_VERSION" | sort -V | head -n1)" = "$MIN_GIT_VERSION" ]; then
+    echo "Git version $INSTALLED_VERSION is sufficient (>= $MIN_GIT_VERSION)."
+else
+    echo "Error: Git version $INSTALLED_VERSION is less than $MIN_GIT_VERSION."
+    exit 1
+fi
+
+
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 2; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 2; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 2; fi
