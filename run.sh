@@ -22,6 +22,7 @@ RUN_NAME="$2"
 OUT_DIR="results/$RUN_NAME"
 N_MERGES=$3
 CACHE_DIR="${4}"
+MERGIRAF_VERSION="0.4.0"
 
 comparator_flags=""
 no_timing=false
@@ -113,6 +114,18 @@ if [ -f cache_without_logs.tar.gz ] && [ ! -d cache_without_logs ]; then
     fi
 fi
 
+# Check if git version is sufficient
+MIN_GIT_VERSION="2.44"
+INSTALLED_VERSION=$(git --version | awk '{print $3}')
+
+if [ "$(printf '%s\n' "$MIN_GIT_VERSION" "$INSTALLED_VERSION" | sort -V | head -n1)" = "$MIN_GIT_VERSION" ]; then
+    echo "Git version $INSTALLED_VERSION is sufficient (>= $MIN_GIT_VERSION)."
+else
+    echo "Error: Git version $INSTALLED_VERSION is less than $MIN_GIT_VERSION."
+    exit 1
+fi
+
+
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 2; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 2; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 2; fi
@@ -123,6 +136,14 @@ if [ -z "${num_machines:+isset}" ] ; then num_machines=1; fi
 
 if [ ! -f ./src/scripts/merge_tools/merging/.git ] ; then
     git submodule update --init --recursive
+fi
+
+# Check if mergiraf is installed and matches the required version
+if ! mergiraf --version 2>/dev/null | grep -q "mergiraf $MERGIRAF_VERSION"; then
+  echo "Installing mergiraf version $MERGIRAF_VERSION..."
+  cargo install --locked mergiraf --version "$MERGIRAF_VERSION"
+else
+  echo "mergiraf version $MERGIRAF_VERSION is already installed."
 fi
 
 (
