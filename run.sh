@@ -170,10 +170,6 @@ REPOS_PATH=${AST_REPOS_PATH:-repos}
 if [ -d "$REPOS_PATH" ]; then
     find "$REPOS_PATH/locks" -name "*.lock" -delete
 fi
-MERGIRAF_LOCKFILE="./bin/mergiraf.lock"
-if [ -f "$MERGIRAF_LOCKFILE" ]; then
-    rm -f "$MERGIRAF_LOCKFILE"
-fi
 
 echo "run.sh: about to run delete_cache_placeholders.py"
 python3 src/python/utils/delete_cache_placeholders.py \

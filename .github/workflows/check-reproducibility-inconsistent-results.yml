@@ -39,6 +39,8 @@ jobs:
         environment-file: environment.yml
     - name: Install Rust and Cargo
       run: rustup update stable && rustup default stable
+    - name: Install Mergiraf
+      run: cargo install --locked mergiraf --version 0.4.0
     - run: cargo --version
     - name: Clean caches & workspace
       run: make clean
