@@ -109,9 +109,11 @@ small-test:
 	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} compress-small-cache
 	${MAKE} small-test-diff
+	mv .workdir-small-test .workdir-small-test-temp
 	rm -rf results/small
 	AST_REPOS_PATH=repos-small-test TESTING=True DELETE_WORKDIRS=False WORKDIR_DIRECTORY=.workdir-small-test ./run_small.sh --include_trivial_merges --no_timing
 	${MAKE} small-test-diff
+	mv .workdir-small-test-temp .workdir-small-test
 
 small-test-without-cleaning:
 	${MAKE} clean-test-cache
