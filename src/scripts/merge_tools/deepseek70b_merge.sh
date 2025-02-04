@@ -13,4 +13,4 @@ clone_dir=$1
 branch1=$2
 branch2=$3
 git_strategy="-s ort"
-"$MERGE_SCRIPTS_DIR"/gitmerge.sh "$clone_dir" "$branch1" "$branch2" "$git_strategy"
+"$MERGE_SCRIPTS_DIR"/ollama_merge.sh "$clone_dir" "$branch1" "$branch2" "$git_strategy" deepseek-r1:70b

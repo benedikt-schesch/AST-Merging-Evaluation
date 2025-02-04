@@ -122,6 +122,7 @@ MERGE_TOOL = Enum(
         "git_hires_merge",
         "spork",
         "mergiraf",
+        "deepseek70b_merge",
         "intellimerge",
         "adjacent",
         "imports",
@@ -141,6 +142,7 @@ MERGE_TOOL = Enum(
         "git_hires_merge_plus",
         "spork_plus",
         "mergiraf_plus",
+        "deepseek70b_merge_plus",
         "intellimerge_plus",
         "adjacent_plus",
         "imports_plus",
@@ -655,6 +657,7 @@ class Repository:
             if (
                 "intellimerge" not in str(self.local_repo_path)
                 and "resolve" not in str(self.local_repo_path)
+                and "deepseek" not in str(self.local_repo_path)
                 and not self.check_hash_by_file()
             ):
                 raise Exception(

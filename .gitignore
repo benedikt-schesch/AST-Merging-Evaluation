@@ -36,6 +36,7 @@ cf/
 cache-machines/
 .old_cache
 wget*
+queries
 
 # Test output
 test/tmp1.txt
