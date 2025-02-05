@@ -35,9 +35,14 @@ branch2=$3
 
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
+# Print the Java version.
+echo "Java version:"
+java -version
+
+
 # set up spork driver
 git config --local merge.spork.name "spork"
-git config --local merge.spork.driver "java -jar $spork_absolutepath --git-mode %A %O %B -o %A"
+git config --local merge.spork.driver "java -jar $spork_absolutepath --logging --git-mode %A %O %B -o %A"
 
 # print git config
 echo "*.java merge=spork" >> .gitattributes
