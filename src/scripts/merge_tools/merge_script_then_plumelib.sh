@@ -36,6 +36,7 @@ SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 
 echo "$0: Merging $branch1 and $branch2 with merge_script=$merge_script and plumelib_strategy=$plumelib_strategy"
 
+current_dir=$(pwd)
 cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
 if [ -n "$VERBOSE" ] ; then
@@ -49,15 +50,19 @@ git config --local merge.conflictstyle diff3
 git config --local mergetool.prompt false
 
 if [ -n "$VERBOSE" ] ; then
-  echo "$0: about to run: $merge_script $clone_dir $branch1 $branch2 in $(pwd)"
+  echo "$0: about to run: $SCRIPTDIR/$merge_script $clone_dir $branch1 $branch2 in $(pwd)"
 fi
+
+cd "$current_dir" || { echo "$0: cannot cd to $current_dir"; exit 2; }
 
 # shellcheck disable=SC2086
-$merge_script "$clone_dir" "$branch1" "$branch2"
+$SCRIPTDIR/$merge_script "$clone_dir" "$branch1" "$branch2"
 
 if [ -n "$VERBOSE" ] ; then
-  echo "$0: ran: $merge_script $clone_dir $branch1 $branch2 in $(pwd)"
+  echo "$0: ran: $SCRIPTDIR/$merge_script $clone_dir $branch1 $branch2 in $(pwd)"
 fi
+
+cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
 
 ## Now, run Plume-lib Merging to improve the result of `$merge_script`.
 

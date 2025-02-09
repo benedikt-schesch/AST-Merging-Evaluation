@@ -7,42 +7,124 @@ Usage:
     ./resolve_conflicts.py <filename> <llm_model>
 
 This script processes a file that contains Git merge conflicts (in diff3 style)
-and attempts to resolve each conflict block using an LLM via the Ollama CLI.
+and attempts to resolve each conflict block using the DeepSeek API via the OpenAI SDK.
 If the LLM is not confident about a resolution, the original snippet (which now
 includes additional context) is retained.
-Additionally, each query sent to the LLM along with its response is logged in a
-directory named "queries" for later inspection.
+
+A caching mechanism is implemented so that if the same prompt is sent for the same model,
+the script will use the cached response rather than making a new API call.
+The cache is stored in the directory structure: cache/queries/<model_name>/<prompt_hash>.cache
+
+Requirements:
+    - pip install openai
+    - Set the environment variable DEEPSEEK_API_KEY with your DeepSeek API key.
 """
 
 import os
 import re
 import sys
-import subprocess
-from datetime import datetime
+import hashlib
+from openai import OpenAI
 from typing import List, Optional
+
+
+def get_cache_filepath(prompt: str, llm_model: str) -> str:
+    """
+    Construct the file path for a cached response given the prompt and model.
+
+    The path is structured as:
+      cache/queries/<llm_model>/<prompt_hash>.cache
+
+    Args:
+        prompt (str): The prompt text.
+        llm_model (str): The LLM model name.
+
+    Returns:
+        str: The full path to the cache file.
+    """
+    prompt_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    cache_dir = os.path.join("queries_cache", llm_model)
+    os.makedirs(cache_dir, exist_ok=True)
+    return os.path.join(cache_dir, f"{prompt_hash}.cache")
 
 
 def call_llm(prompt: str, llm_model: str) -> Optional[str]:
     """
-    Call the LLM using the Ollama CLI with the provided prompt.
+    Call the DeepSeek API (compatible with the OpenAI API) with the provided prompt.
+    Uses a file-based caching mechanism so that if the same prompt is sent to the same model,
+    the cached response is returned.
+
+    The API key must be set in the DEEPSEEK_API_KEY environment variable.
 
     Args:
         prompt (str): The prompt to send to the LLM.
-        llm_model (str): The name of the LLM model to use.
+        llm_model (str): The name of the LLM model to use (e.g., "deepseek-chat" or "deepseek-reasoner").
 
     Returns:
-        Optional[str]: The response from the LLM, or None if an error occurred.
+        Optional[str]: The response content from the LLM, or None if an error occurred.
     """
+    cache_filepath = get_cache_filepath(prompt, llm_model)
+    print(f"Cache file path: {cache_filepath}")
+
+    # Check for cached response.
+    if os.path.exists(cache_filepath):
+        sys.stdout.write("Cache hit for prompt.\n")
+        try:
+            with open(cache_filepath, "r", encoding="utf-8") as cache_file:
+                cached_content = cache_file.read()
+            # The cache file is in plain text and has both the prompt and reply.
+            # We extract the reply between the markers.
+            reply_match = re.search(
+                r"---BEGIN REPLY---\n(.*?)\n---END REPLY---", cached_content, re.DOTALL
+            )
+            if reply_match:
+                print("Using cached response.")
+                return reply_match.group(1)
+            else:
+                sys.stderr.write("Cache file format incorrect. Ignoring cache.\n")
+        except Exception as e:
+            sys.stderr.write(f"Error reading cache file: {e}\n")
+
+    # Ensure the API key is set.
+    api_key = os.environ.get("DEEPSEEK_API_KEY")
+    if api_key is None:
+        sys.stderr.write("Please set the DEEPSEEK_API_KEY environment variable.\n")
+        return None
+
+    # Use the DeepSeek API endpoint (compatible with OpenAI's API)
+    # TODO: The 'openai.api_base' option isn't read in the client API. You will need to pass it when you instantiate the client, e.g. 'OpenAI(base_url="https://api.deepinfra.com/v1/openai")'
+    # openai.api_base = "https://api.deepinfra.com/v1/openai"
+
     try:
-        result = subprocess.run(
-            ["ollama", "run", llm_model, prompt],
-            capture_output=True,
-            text=True,
-            check=True,
+        client = OpenAI(
+            api_key=api_key, base_url="https://api.deepinfra.com/v1/openai"
+        )  # Make sure to install via: pip install openai
+
+        response = client.chat.completions.create(
+            model=llm_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a semantic merge conflict resolution expert.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            stream=False,
         )
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        sys.stderr.write(f"Error calling LLM: {e}\n")
+        llm_response = response.choices[0].message.content
+
+        # Save the prompt and response to the cache file in plain text with markers.
+        with open(cache_filepath, "w", encoding="utf-8") as cache_file:
+            cache_file.write("---BEGIN PROMPT---\n")
+            cache_file.write(prompt)
+            cache_file.write("\n---END PROMPT---\n")
+            cache_file.write("---BEGIN REPLY---\n")
+            cache_file.write(llm_response)
+            cache_file.write("\n---END REPLY---\n")
+
+        return llm_response
+    except Exception as e:
+        sys.stderr.write(f"Error calling DeepSeek API: {e}\n")
         return None
 
 
@@ -68,27 +150,6 @@ def extract_code_from_response(response: str) -> str:
     else:
         print("No code fence found in LLM response. Not modifying any code.")
         sys.exit(1)
-
-
-def log_query_response(query: str, response: str, conflict_id: str) -> None:
-    """
-    Log the query and response to a file in the 'queries' directory.
-
-    Args:
-        query (str): The query sent to the LLM.
-        response (str): The response received from the LLM.
-        conflict_id (str): A unique identifier for the conflict block.
-    """
-    log_dir = "queries"
-    os.makedirs(log_dir, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = os.path.join(log_dir, f"{conflict_id}_{timestamp}.log")
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write("QUERY:\n")
-        f.write(query)
-        f.write("\n\nRESPONSE:\n")
-        f.write(response)
-    sys.stdout.write(f"Logged query/response to {filename}\n")
 
 
 def get_common_indentation(lines: List[str]) -> str:
@@ -160,7 +221,7 @@ def annotate_conflict_markers(text: str) -> str:
 
 def process_file(filename: str, llm_model: str) -> None:
     """
-    Process a file containing merge conflicts, attempt to resolve each conflict using an LLM,
+    Process a file containing merge conflicts, attempt to resolve each conflict using the DeepSeek API,
     and write the modified content back to the file.
 
     For each conflict, the script now extracts a snippet containing the conflict block plus
@@ -171,7 +232,7 @@ def process_file(filename: str, llm_model: str) -> None:
 
     Args:
         filename (str): The path to the file to process.
-        llm_model (str): The LLM model to use for conflict resolution.
+        llm_model (str): The DeepSeek model to use for conflict resolution (e.g., "deepseek-chat" or "deepseek-reasoner").
     """
     with open(filename, "r", encoding="utf-8") as f:
         lines: List[str] = f.readlines()
@@ -225,15 +286,17 @@ def process_file(filename: str, llm_model: str) -> None:
             prompt: str = (
                 "You are a semantic merge conflict resolution expert. Below is a code snippet that includes several lines of context "
                 "before and after a merge conflict. The context is provided to help you understand the semantics of the code. "
-                "Please resolve the merge conflict and output the entire snippet (including the context lines) with the conflict resolved, "
+                "Please resolve the merge conflict and output the entire snippet (including the context lines but nothing more) with the conflict resolved, "
                 "enclosed in markdown code fences. If you are uncertain about the correct resolution, please explain the ambiguity and do not output any code.\n"
+                "```\n"
                 f"{annotated_snippet}"
+                "```\n"
             )
 
             llm_response = call_llm(prompt, llm_model)
             if llm_response is None:
                 sys.stderr.write(
-                    "LLM returned no response. Keeping original snippet.\n"
+                    "DeepSeek API returned no response. Keeping original snippet.\n"
                 )
                 new_lines.extend(snippet_lines)
             else:
@@ -258,12 +321,6 @@ def process_file(filename: str, llm_model: str) -> None:
                     new_lines.append(merged_result)
 
             conflict_count += 1
-            safe_filename = os.path.basename(filename).replace(" ", "_")
-            conflict_id = f"{safe_filename}_conflict_{conflict_count}"
-            log_query_response(
-                prompt, llm_response if llm_response is not None else "", conflict_id
-            )
-
             last_appended_index = snippet_end
         else:
             i += 1
