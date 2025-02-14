@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+93,refs/heads/wildfirechat,f876ae49ad0568f4c42cf22aef65aa787adf0f24,b644d560d8825e9628441c43ab6a203f1b8412ce,8a3fa2956cd12cf07e2f49cb86cb97af36ad6462,,False,True,True,16,45,500,1,False,16,False
+99,refs/heads/wildfirechat,af797943006876a40a9edb9e2d054d3ffdcf9070,fa5b953010083df061f30c09eebc5a61f98323d5,acc1167fe1ded6c4c0a3c42cfc92445efedbdc7d,two initial commits,False,True,True,186,184,15283,Error while retrieving base sha,False,Error while retrieving base sha,False

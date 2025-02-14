@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+14,refs/remotes/origin/hibernate3,0ab8ed60542815272c79ab15ecc75d285b08d8ba,c95065d7909baaf1ae95ffb3b0d2c0012db108d5,b6200a1700f6d2562bde5bcb73bd1ebf2e461c26,,False,True,True,11,17,70,2,False,11,False
+16,refs/remotes/origin/hibernate3,da53551023fd8348a9c1e2f4be17694ccd50e3fb,393c355622cd121e1f1a292f2afad5490603357b,5d921a787382d623ffb8744fb42ded0da7d3e944,,False,True,True,11,18,81,2,False,11,False

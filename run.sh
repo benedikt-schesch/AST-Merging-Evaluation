@@ -193,7 +193,7 @@ JAVA_HOME="${JAVA17_HOME}" "${JAVA17_HOME}"/bin/java -cp build/libs/astmergeeval
     "$OUT_DIR/merges"
 
 # Calculate the number of merges
-total_merges=$((5 * N_MERGES))
+total_merges=$((2 * N_MERGES))
 
 # Ensure comparator_flags is set, but default to an empty array if not
 echo "run.sh: about to run merges_sampler.py"

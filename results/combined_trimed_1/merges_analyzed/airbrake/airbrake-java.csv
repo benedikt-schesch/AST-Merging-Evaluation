@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+4,refs/heads/master,fde307691857a838e48889c558de577d9ef79052,9a77886825c3d6c62fba7350e685e1b9c4bc9b9e,51f830f9a2fdbff246c74b831b5c2b0142fe9d41,,False,False,True,3,2,4,1,False,3,False
+11,refs/heads/master,4583f7fd428f7d06a6046c167cb7a2e47e5ec35b,a208fbd00275cfecb06d78eca9a5c2c324594f60,888f1477b6c86be177119a80d91a44b718a7e2af,,False,False,True,17,24,254,2,False,17,False

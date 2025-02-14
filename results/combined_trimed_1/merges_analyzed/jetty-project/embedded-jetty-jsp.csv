@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+77,refs/heads/jetty-10.0.x,5b13102ddbcbcc18c21f0d173c57539903c69b54,3eb4c04e10511ae4e063f155395ddb7dc5c104ba,46de3867ef122f6be40a54eaaf68e68e1a27c332,,False,False,True,4,5,28,1,False,4,False
+210,refs/remotes/origin/dependabot/maven/jetty-9.4.x/ch.qos.logback-logback-classic-1.5.4,66946e26da08b8e10f0442145e872e12bc4a2d72,fac60aef4c1da17606df00c09538912b5e4cff53,58240e3abfafa21055fa0d03f881f082ef0bc74c,,False,False,True,2,2,4,2,False,2,False

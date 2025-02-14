@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+38,refs/heads/master,0c99a02c96e3ac73a26d5db7cfa656edc0a0a709,ed2421da4dfac1e3f0e0110eb4cb41ac5d1df003,175cd6e58771a77549d5bbd15f3bc8bfd0fa419a,,False,True,True,35,72,332,1,False,35,False
+270,refs/remotes/origin/IEI-175871-support-2GB-elements,62a9f1440d2d2ff850bfae8cf7030cd964a4a871,21d1f90f5c6f577b47d99900faab6809351a4fac,17efe5b51cb070182816ce7402c345c62efe745b,,False,True,True,22,149,1366,1,False,22,False

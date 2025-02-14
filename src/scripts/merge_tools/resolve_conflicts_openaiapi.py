@@ -25,7 +25,7 @@ import re
 import sys
 import hashlib
 from openai import OpenAI
-from typing import List, Optional
+from typing import Optional
 
 
 def get_cache_filepath(prompt: str, llm_model: str) -> str:
@@ -97,7 +97,7 @@ def call_llm(prompt: str, llm_model: str) -> Optional[str]:
 
     try:
         client = OpenAI(
-            api_key=api_key, base_url="https://api.deepinfra.com/v1/openai"
+            api_key=api_key, base_url="https://openrouter.ai/api/v1"
         )  # Make sure to install via: pip install openai
 
         response = client.chat.completions.create(
@@ -152,34 +152,6 @@ def extract_code_from_response(response: str) -> str:
         sys.exit(1)
 
 
-def get_common_indentation(lines: List[str]) -> str:
-    """
-    Compute the common leading whitespace of the first non-empty line in a list.
-    """
-    for line in lines:
-        if line.strip():
-            m = re.match(r"(\s*)", line)
-            if m:
-                return m.group(1)
-    return ""
-
-
-def reindent(text: str, indent: str) -> str:
-    """
-    Reapply the given indentation to every non-empty line in the text.
-
-    Args:
-        text (str): The text to reindent.
-        indent (str): The indentation string (e.g. spaces) to prepend.
-
-    Returns:
-        str: The reindented text.
-    """
-    lines = text.splitlines()
-    reindented_lines = [(indent + line) if line.strip() else line for line in lines]
-    return "\n".join(reindented_lines)
-
-
 def annotate_conflict_markers(text: str) -> str:
     """
     Annotate the conflict markers in the provided text so that they are more explicit.
@@ -203,7 +175,7 @@ def annotate_conflict_markers(text: str) -> str:
         if stripped.startswith("<<<<<<<"):
             line = (
                 line.rstrip("\n")
-                + " (Current Change, these are the current changes in your branch)\n"
+                + " (Left Branch, these are the changes on the left branch)\n"
             )
         elif stripped.startswith("|||||||"):
             line = (
@@ -213,7 +185,7 @@ def annotate_conflict_markers(text: str) -> str:
         elif stripped.startswith(">>>>>>>"):
             line = (
                 line.rstrip("\n")
-                + " (Incoming Change, these are the changes from the branch you are merging)\n"
+                + " (Right Branch, these are the changes on the right branch)\n"
             )
         annotated_lines.append(line)
     return "".join(annotated_lines)
@@ -221,116 +193,48 @@ def annotate_conflict_markers(text: str) -> str:
 
 def process_file(filename: str, llm_model: str) -> None:
     """
-    Process a file containing merge conflicts, attempt to resolve each conflict using the DeepSeek API,
-    and write the modified content back to the file.
-
-    For each conflict, the script now extracts a snippet containing the conflict block plus
-    n (default 5) lines of context before and after. The snippet is passed to the LLM with an
-    instruction to resolve the merge conflict and output the entire snippet (including context)
-    in markdown code fences. The entire snippet (as returned by the LLM) then replaces the original
-    snippet in the file.
-
-    Args:
-        filename (str): The path to the file to process.
-        llm_model (str): The DeepSeek model to use for conflict resolution (e.g., "deepseek-chat" or "deepseek-reasoner").
+    Process the full file containing merge conflicts by sending the entire file content to the LLM.
+    The prompt instructs the LLM to resolve the conflicts, modifying only the conflict sections and
+    minimizing any other changes. The full resolved file (enclosed in markdown code fences) is then written
+    back to the file.
     """
     with open(filename, "r", encoding="utf-8") as f:
-        lines: List[str] = f.readlines()
+        file_content = f.read()
 
-    # Regular expressions for detecting conflict markers.
-    conflict_start_re = re.compile(r"^<<<<<<< ")
-    conflict_end_re = re.compile(r"^>>>>>>> ")
+    # Annotate the conflict markers to help the LLM understand what each section represents.
+    annotated_file = annotate_conflict_markers(file_content)
 
-    new_lines: List[str] = []
-    n = 5  # Number of context lines before and after the conflict block.
-    conflict_count = 0
-    last_appended_index = 0
-    i = 0
+    prompt = (
+        "You are a semantic merge conflict resolution expert. Below is the full content of a file that contains "
+        "Git merge conflicts marked with '<<<<<<<', '|||||||', and '>>>>>>>' "
+        "indicating the different versions of the conflicted sections.\n"
+        "Please resolve these conflicts by choosing the correct changes. Modify only the conflicted sections "
+        "and leave all other parts of the file EXACTLY as they are.\n"
+        "Return the resolved conflict within markdown code fences (``` ... ```).\n"
+        "If you are unsure about how to properly resolve a conflict, you can leave the conflict marker in as-is.\n"
+        "Here is the file content:\n"
+        "```\n"
+        f"{annotated_file}\n"
+        "```\n"
+    )
 
-    while i < len(lines):
-        if conflict_start_re.match(lines[i]):
-            # Found a conflict block. Identify the full block.
-            conflict_block_start_index = i
-            conflict_block: List[str] = []
-            while i < len(lines) and not conflict_end_re.match(lines[i]):
-                conflict_block.append(lines[i])
-                i += 1
-            if i < len(lines):
-                conflict_block.append(lines[i])
-                # Include the conflict end marker line.
-                conflict_block_end_index = i + 1
-                i += 1
-            else:
-                conflict_block_end_index = i
+    if len(prompt) > 30000:
+        sys.stderr.write(
+            "The prompt is too long. The maximum prompt length is 40,000 characters.\n"
+        )
+        return
 
-            # Determine the snippet range including n lines of context before and after.
-            snippet_start = max(last_appended_index, conflict_block_start_index - n)
-            snippet_end = min(len(lines), conflict_block_end_index + n)
+    llm_response = call_llm(prompt, llm_model)
+    if llm_response is None:
+        sys.stderr.write("DeepSeek API returned no response. Keeping original file.\n")
+        return
 
-            # If the snippet's trailing context includes the start of another conflict block,
-            # trim it so that only one conflict is included in the snippet.
-            for j in range(conflict_block_end_index, snippet_end):
-                if conflict_start_re.match(lines[j]):
-                    snippet_end = j
-                    break
+    # Extract the code block from the response.
+    resolved_file = extract_code_from_response(llm_response)
 
-            # Append unchanged lines from the last index up to the snippet start.
-            new_lines.extend(lines[last_appended_index:snippet_start])
-            snippet_lines = lines[snippet_start:snippet_end]
-            snippet = "".join(snippet_lines)
-
-            # Annotate conflict markers in the snippet.
-            annotated_snippet = annotate_conflict_markers(snippet)
-
-            # Build the prompt instructing the LLM to resolve the conflict and output the entire snippet.
-            prompt: str = (
-                "You are a semantic merge conflict resolution expert. Below is a code snippet that includes several lines of context "
-                "before and after a merge conflict. The context is provided to help you understand the semantics of the code. "
-                "Please resolve the merge conflict and output the entire snippet (including the context lines but nothing more) with the conflict resolved, "
-                "enclosed in markdown code fences. If you are uncertain about the correct resolution, please explain the ambiguity and do not output any code.\n"
-                "```\n"
-                f"{annotated_snippet}"
-                "```\n"
-            )
-
-            llm_response = call_llm(prompt, llm_model)
-            if llm_response is None:
-                sys.stderr.write(
-                    "DeepSeek API returned no response. Keeping original snippet.\n"
-                )
-                new_lines.extend(snippet_lines)
-            else:
-                # Extract the code portion from the LLM response.
-                merged_result = extract_code_from_response(llm_response)
-                merged_lines = merged_result.splitlines()
-
-                # Compute common indentation from the original snippet.
-                common_indent = get_common_indentation(snippet_lines)
-                for line in merged_lines:
-                    if line.strip():
-                        if re.match(r"^\S", line):
-                            merged_result = reindent(merged_result, common_indent)
-                        break
-
-                # If the merged result is identical to the original snippet, leave it unchanged.
-                if merged_result.rstrip("\n") == snippet.rstrip("\n"):
-                    new_lines.extend(snippet_lines)
-                else:
-                    if not merged_result.endswith("\n"):
-                        merged_result += "\n"
-                    new_lines.append(merged_result)
-
-            conflict_count += 1
-            last_appended_index = snippet_end
-        else:
-            i += 1
-
-    # Append any remaining lines after the last processed snippet.
-    if last_appended_index < len(lines):
-        new_lines.extend(lines[last_appended_index:])
-
+    # Write the resolved file back.
     with open(filename, "w", encoding="utf-8") as f:
-        f.writelines(new_lines)
+        f.write(resolved_file)
 
 
 def main() -> None:

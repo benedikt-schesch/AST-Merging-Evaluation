@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+3,refs/heads/master,8d0a348abe6de33ef43384c3a0ae1437fbbb3ef4,a0822c99f27c3ee783a1b7d18ae1399b37a1ca79,cf3384a0a3c48529f684cfc5779fc97e44dacfc0,,False,True,True,12,29,472,35,False,46,False
+6,refs/remotes/origin/vagrant-dev,9c30c4059724aa2835b3fac763195f5475f7fc9b,662c046f6f1ea7bc81bd25a330478a08e40acd18,070becb56df9295742b081f78edd8d6d1d14ccf6,,False,False,True,16,23,136,1,False,16,False

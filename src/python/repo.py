@@ -123,6 +123,7 @@ MERGE_TOOL = Enum(
         "spork",
         "mergiraf",
         "deepseekr1_merge",
+        "o3_mini_high_merge",
         "intellimerge",
         "adjacent",
         "imports",
@@ -143,6 +144,7 @@ MERGE_TOOL = Enum(
         "spork_plus",
         "mergiraf_plus",
         "deepseekr1_merge_plus",
+        "o3_mini_high_merge_plus",
         "intellimerge_plus",
         "adjacent_plus",
         "imports_plus",
@@ -658,6 +660,7 @@ class Repository:
                 "intellimerge" not in str(self.local_repo_path)
                 and "resolve" not in str(self.local_repo_path)
                 and "deepseek" not in str(self.local_repo_path)
+                and "o3_mini_high" not in str(self.local_repo_path)
                 and not self.check_hash_by_file()
             ):
                 raise Exception(

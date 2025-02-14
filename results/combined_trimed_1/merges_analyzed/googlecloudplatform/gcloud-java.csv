@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2830,refs/remotes/origin/pull/3823,943caa89159dd6699e43017fdb4acb69d23b31c7,3d1dfac8919b91547e9f67bd3c4e41bbe60c6977,c3aedeac63f5f7b7fb7fa32ad1511c202d61beea,,False,True,True,47,326,3808,1,False,47,False
+3757,refs/remotes/origin/pull/8046,f9c9569c524c6c542c0f0443508446ebc20c55c5,326fb0476667c3ac88f1549c20cd5d2e0b97dd0d,be266e15e95098fd358d7326619c619c07cc1fd8,two initial commits,False,True,True,46033,45789,20626795,Error while retrieving base sha,False,Error while retrieving base sha,False

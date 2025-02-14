@@ -68,6 +68,12 @@ if [ -z "$conflict_files" ]; then
   exit 1
 fi
 
+# If any conflict file is a non java file, exit with 1.
+if echo "$conflict_files" | grep -q -v '\.java$'; then
+  echo "Non-Java conflict files detected. Manual intervention required."
+  exit 1
+fi
+
 # cd to the directory where the script is located
 cd "$current_dir" || { echo "$0: cannot cd to $current_dir"; exit 2; }
 

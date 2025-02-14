@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,left parent test result,left_tree_fingerprint,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,parents pass,right parent test result,right_tree_fingerprint,test merge,union_diff_files,sampled for testing
+1,refs/heads/OpenFlow1.3,5efc5ed55d1019877d711d730109b176f64709a0,fc4ee32e56574db37c57141a92ae9f10ee91d35d,61d6a8d36b23f8bf2e218f77a2bcfe1bef2d2bba,,False,True,,,True,15,63,259,1,,,,False,15,False
+95,refs/remotes/origin/pull/27,d6553fe69d53ab19f48444c54f30495960c5820c,704e39beb1dafa41cfbc3c0b39e850c8f23ef536,20b11f87cce7e9882833894ec25f131a581d57e9,,True,True,Git_checkout_failed,,True,28,247,1919,10,False,Git_checkout_failed,,False,28,False

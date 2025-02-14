@@ -1,0 +1,3 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+2,refs/remotes/origin/dependabot/maven/org.assertj-assertj-core-3.15.0,71468ba0def4ac717154a1688c7bd7066325a0ed,5c48d24cac8e1d8f81e0cfb81a9b27b0aa81a7e8,7cf9802d3fafd48aeac3e6af65a7f2c5373fb1ab,,False,False,True,3,3,8,1,False,3,False
+6,refs/remotes/origin/pull/66,85194ca1af6d8e0843911bab45735f28a389b2b7,8a2a55bdee2722328817c2770f31dff584f5da9f,e11594eb515e125e9fa1c4bbb33e0b00650c9f09,,False,False,True,2,2,6,2,False,2,False

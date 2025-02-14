@@ -1,0 +1,2 @@
+idx,branch_name,merge,left,right,notes,diff contains java file,imports_involved,non_java_involved,num_diff_files,num_diff_hunks,num_diff_lines,num_intersecting_files,test merge,union_diff_files,sampled for testing
+1,refs/heads/master,b956bbe6cf8fe524f794057dc1f11c699fd962dd,946cdc5c6b5ded2353b36c0a74e315252aadf178,cd8dc4b4992e2fc0fedc1d448ba3760de64837e4,two initial commits,False,True,True,13,12,394,Error while retrieving base sha,False,Error while retrieving base sha,False
