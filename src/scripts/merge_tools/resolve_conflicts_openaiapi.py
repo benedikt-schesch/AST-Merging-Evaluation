@@ -7,13 +7,18 @@ Usage:
     ./resolve_conflicts.py <filename> <llm_model>
 
 This script processes a file that contains Git merge conflicts (in diff3 style)
-and attempts to resolve each conflict block using the DeepSeek API via the OpenAI SDK.
-If the LLM is not confident about a resolution, the original snippet (which now
-includes additional context) is retained.
+and attempts to resolve each conflict block individually using the DeepSeek API via the OpenAI SDK.
+For each conflict, context is expanded upward and downward until a stopping condition is met:
+  - The 3rd empty line (only spaces or tabs count as empty)
+  - A line that contains a bracket '{' or '}'
+  - A line that starts with "def " or "class "
+  - Another conflict marker is encountered (e.g., <<<<<<<, |||||||, or >>>>>>>)
+  - The file boundary is reached
 
+If the LLM is not confident about a resolution, the original snippet is retained.
 A caching mechanism is implemented so that if the same prompt is sent for the same model,
 the script will use the cached response rather than making a new API call.
-The cache is stored in the directory structure: cache/queries/<model_name>/<prompt_hash>.cache
+The cache is stored in the directory structure: queries_cache/<llm_model>/<prompt_hash>.cache
 
 Requirements:
     - pip install openai
@@ -25,7 +30,7 @@ import re
 import sys
 import hashlib
 from openai import OpenAI
-from typing import Optional
+from typing import Optional, List, Tuple
 
 
 def get_cache_filepath(prompt: str, llm_model: str) -> str:
@@ -33,7 +38,7 @@ def get_cache_filepath(prompt: str, llm_model: str) -> str:
     Construct the file path for a cached response given the prompt and model.
 
     The path is structured as:
-      cache/queries/<llm_model>/<prompt_hash>.cache
+      queries_cache/<llm_model>/<prompt_hash>.cache
 
     Args:
         prompt (str): The prompt text.
@@ -58,7 +63,7 @@ def call_llm(prompt: str, llm_model: str) -> Optional[str]:
 
     Args:
         prompt (str): The prompt to send to the LLM.
-        llm_model (str): The name of the LLM model to use (e.g., "deepseek-chat" or "deepseek-reasoner").
+        llm_model (str): The name of the LLM model to use.
 
     Returns:
         Optional[str]: The response content from the LLM, or None if an error occurred.
@@ -72,8 +77,7 @@ def call_llm(prompt: str, llm_model: str) -> Optional[str]:
         try:
             with open(cache_filepath, "r", encoding="utf-8") as cache_file:
                 cached_content = cache_file.read()
-            # The cache file is in plain text and has both the prompt and reply.
-            # We extract the reply between the markers.
+            # Extract the reply from the cached file.
             reply_match = re.search(
                 r"---BEGIN REPLY---\n(.*?)\n---END REPLY---", cached_content, re.DOTALL
             )
@@ -91,15 +95,8 @@ def call_llm(prompt: str, llm_model: str) -> Optional[str]:
         sys.stderr.write("Please set the DEEPSEEK_API_KEY environment variable.\n")
         return None
 
-    # Use the DeepSeek API endpoint (compatible with OpenAI's API)
-    # TODO: The 'openai.api_base' option isn't read in the client API. You will need to pass it when you instantiate the client, e.g. 'OpenAI(base_url="https://api.deepinfra.com/v1/openai")'
-    # openai.api_base = "https://api.deepinfra.com/v1/openai"
-
     try:
-        client = OpenAI(
-            api_key=api_key, base_url="https://openrouter.ai/api/v1"
-        )  # Make sure to install via: pip install openai
-
+        client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
         response = client.chat.completions.create(
             model=llm_model,
             messages=[
@@ -113,7 +110,7 @@ def call_llm(prompt: str, llm_model: str) -> Optional[str]:
         )
         llm_response = response.choices[0].message.content
 
-        # Save the prompt and response to the cache file in plain text with markers.
+        # Cache the prompt and response.
         with open(cache_filepath, "w", encoding="utf-8") as cache_file:
             cache_file.write("---BEGIN PROMPT---\n")
             cache_file.write(prompt)
@@ -143,7 +140,6 @@ def extract_code_from_response(response: str) -> str:
     Returns:
         str: The extracted code.
     """
-    # Try to find a markdown code fence block.
     fence_match = re.search(r"```(?:[^\n]*\n)?(.*?)```", response, re.DOTALL)
     if fence_match:
         return fence_match.group(1)
@@ -152,87 +148,145 @@ def extract_code_from_response(response: str) -> str:
         sys.exit(1)
 
 
-def annotate_conflict_markers(text: str) -> str:
+def extract_conflict_with_context(
+    lines: List[str], conflict_start: int, conflict_end: int
+) -> Tuple[int, int]:
     """
-    Annotate the conflict markers in the provided text so that they are more explicit.
-
-    For every line that begins with:
-      - "<<<<<<<" it appends " (Current Change)"
-      - "|||||||" it appends " (base)"
-      - ">>>>>>>" it appends " (Incoming Change)"
-
-    This helps the LLM clearly understand the source of each conflict segment.
+    Expand upward and downward from a conflict block to include context lines.
+    Stop expansion when encountering any of these conditions:
+      1. The 3rd empty line (only spaces or tabs count as empty).
+      2. A line that contains a bracket '{' or '}'.
+      3. A line that starts with "def " or "class ".
+      4. Another conflict marker (e.g., <<<<<<<, |||||||, or >>>>>>>).
+      5. The file boundary is reached.
 
     Args:
-        text (str): The text containing merge conflicts.
+        lines (List[str]): The entire file split into lines.
+        conflict_start (int): The index of the first line of the conflict.
+        conflict_end (int): The index of the last line of the conflict.
 
     Returns:
-        str: The annotated text.
+        Tuple[int, int]: The start and end indices (inclusive) of the context block.
     """
-    annotated_lines = []
-    for line in text.splitlines(keepends=True):
+
+    def is_conflict_marker(line: str) -> bool:
         stripped = line.lstrip()
-        if stripped.startswith("<<<<<<<"):
-            line = (
-                line.rstrip("\n")
-                + " (Left Branch, these are the changes on the left branch)\n"
-            )
-        elif stripped.startswith("|||||||"):
-            line = (
-                line.rstrip("\n")
-                + " (Base Version, this is the most recent common ancestor)\n"
-            )
-        elif stripped.startswith(">>>>>>>"):
-            line = (
-                line.rstrip("\n")
-                + " (Right Branch, these are the changes on the right branch)\n"
-            )
-        annotated_lines.append(line)
-    return "".join(annotated_lines)
+        return (
+            stripped.startswith("<<<<<<<")
+            or stripped.startswith("|||||||")
+            or stripped.startswith(">>>>>>>")
+        )
+
+    # Expand upward.
+    context_start = conflict_start
+    empty_count = 0
+    for i in range(conflict_start - 1, -1, -1):
+        line = lines[i]
+        if is_conflict_marker(line):
+            break
+        if line.strip() == "":
+            empty_count += 1
+            if empty_count >= 3:
+                break
+        if (
+            "{" in line
+            or "}" in line
+            or line.lstrip().startswith("def ")
+            or line.lstrip().startswith("class ")
+        ):
+            break
+        context_start = i
+
+    # Expand downward.
+    context_end = conflict_end
+    empty_count = 0
+    for i in range(conflict_end + 1, len(lines)):
+        line = lines[i]
+        if is_conflict_marker(line):
+            break
+        if line.strip() == "":
+            empty_count += 1
+            if empty_count >= 3:
+                break
+        if (
+            "{" in line
+            or "}" in line
+            or line.lstrip().startswith("def ")
+            or line.lstrip().startswith("class ")
+        ):
+            break
+        context_end = i
+
+    return context_start, context_end
 
 
 def process_file(filename: str, llm_model: str) -> None:
     """
-    Process the full file containing merge conflicts by sending the entire file content to the LLM.
-    The prompt instructs the LLM to resolve the conflicts, modifying only the conflict sections and
-    minimizing any other changes. The full resolved file (enclosed in markdown code fences) is then written
-    back to the file.
+    Process the file containing merge conflicts.
+    For each conflict in the file, extract a block with contextual lines,
+    send it to the LLM for resolution, and replace the original block with the resolved block.
     """
     with open(filename, "r", encoding="utf-8") as f:
         file_content = f.read()
 
-    # Annotate the conflict markers to help the LLM understand what each section represents.
-    annotated_file = annotate_conflict_markers(file_content)
+    lines = file_content.splitlines(keepends=True)
+    conflict_blocks = []
+    i = 0
+    while i < len(lines):
+        if lines[i].lstrip().startswith("<<<<<<<"):
+            conflict_start = i
+            # Find the end of the conflict block.
+            j = i + 1
+            while j < len(lines) and not lines[j].lstrip().startswith(">>>>>>>"):
+                j += 1
+            if j < len(lines):
+                conflict_end = j
+                conflict_blocks.append((conflict_start, conflict_end))
+                i = j + 1
+            else:
+                # No end marker found; break out.
+                break
+        else:
+            i += 1
 
-    prompt = (
-        "You are a semantic merge conflict resolution expert. Below is the full content of a file that contains "
-        "Git merge conflicts marked with '<<<<<<<', '|||||||', and '>>>>>>>' "
-        "indicating the different versions of the conflicted sections.\n"
-        "Please resolve these conflicts by choosing the correct changes. Modify only the conflicted sections "
-        "and leave all other parts of the file EXACTLY as they are.\n"
-        "Return the resolved conflict within markdown code fences (``` ... ```).\n"
-        "If you are unsure about how to properly resolve a conflict, you can leave the conflict marker in as-is.\n"
-        "Here is the file content:\n"
-        "```\n"
-        f"{annotated_file}\n"
-        "```\n"
-    )
-
-    if len(prompt) > 30000:
-        sys.stderr.write(
-            "The prompt is too long. The maximum prompt length is 40,000 characters.\n"
+    # Process conflicts from last to first to avoid index shifting.
+    for conflict_start, conflict_end in reversed(conflict_blocks):
+        context_start, context_end = extract_conflict_with_context(
+            lines, conflict_start, conflict_end
         )
-        return
+        conflict_block_with_context = "".join(lines[context_start : context_end + 1])
 
-    llm_response = call_llm(prompt, llm_model)
-    if llm_response is None:
-        sys.stderr.write("DeepSeek API returned no response. Keeping original file.\n")
-        return
+        prompt = (
+            "You are a semantic merge conflict resolution expert. Below is a snippet of code "
+            "with surrounding context that includes a merge conflict.\n"
+            "Return the entire snippet (including context) in markdown code fences (``` ... ```).\n"
+            "If you are not sure on how to resolve the conflict, please return teh same snippet with the conflict.\n"
+            "Here is the code snippet:\n"
+            "```\n"
+            f"{conflict_block_with_context}\n"
+            "```\n"
+        )
 
-    # Extract the code block from the response.
-    resolved_file = extract_code_from_response(llm_response)
+        # Check prompt length.
+        if len(prompt) > 30000:
+            sys.stderr.write("The prompt is too long. Skipping this conflict.\n")
+            continue
 
-    # Write the resolved file back.
+        llm_response = call_llm(prompt, llm_model)
+        if llm_response is None:
+            sys.stderr.write(
+                "DeepSeek API returned no response. Keeping original block.\n"
+            )
+
+            continue
+
+        resolved_block = extract_code_from_response(llm_response)
+        # Split the resolved block into lines (preserving newlines).
+        resolved_lines = [line + "\n" for line in resolved_block.splitlines()]
+        # Replace the original block in the lines list.
+        lines = lines[:context_start] + resolved_lines + lines[context_end + 1 :]
+
+    resolved_file = "".join(lines)
     with open(filename, "w", encoding="utf-8") as f:
         f.write(resolved_file)
 
