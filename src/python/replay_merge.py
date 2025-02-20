@@ -7,12 +7,11 @@ Command-line arguments are listed just after the line:
   if __name__ == "__main__":
 
 Typical usage:
-  replay_merge.py --idx INDEX
-where INDEX is, for example, 38-192 .
+  replay_merge.py --idx INDEX [--merge_tools tool1,tool2]
+where INDEX is, for example, 38-192 and merge_tools is an optional comma-separated list.
 """
 
 import argparse
-import git
 import os
 import os.path
 import sys
@@ -20,6 +19,8 @@ import tarfile
 from pathlib import Path
 import shutil
 import subprocess
+from typing import List, Optional
+import git
 import pandas as pd
 from repo import Repository, MERGE_TOOL, TEST_STATE, MERGE_STATE
 from variables import TIMEOUT_TESTING_MERGE, N_TESTS, WORKDIR_DIRECTORY, TIMEOUT_MERGING
@@ -73,6 +74,9 @@ def merge_replay(
     dont_check_fingerprints: bool = False,
     testing: bool = False,
     verbose: bool = False,
+    selected_merge_tools: Optional[
+        List[str]
+    ] = None,  # New parameter for filtering merge tools
 ) -> pd.DataFrame:
     """Replay a merge and its test results.
     Args:
@@ -85,33 +89,11 @@ def merge_replay(
         dont_check_fingerprints (bool, optional): Whether to check the fingerprints.
             Defaults to False.
         testing (bool, optional): Whether to check for reproducibility. Defaults to False.
+        verbose (bool, optional): Verbose output. Defaults to False.
+        selected_merge_tools (list, optional): List of merge tool names to run. Defaults to None, meaning all tools.
     Returns:
-        pd.Series: The result of the test.
+        pd.DataFrame: The result of the test.
     """
-
-    ast_merging_evaluation_repo = git.Repo(".", search_parent_directories=True)
-    if ast_merging_evaluation_repo.working_tree_dir is None:
-        raise Exception("Could not find the ast-merging-evaluation repository")
-    plumelib_merging_dir = Path(ast_merging_evaluation_repo.working_tree_dir) / Path(
-        "src/scripts/merge_tools/merging"
-    )
-    print(f"About to compile in {plumelib_merging_dir}")
-    p = subprocess.run(
-        ["./gradlew", "-q", "shadowJar"],
-        cwd=plumelib_merging_dir,
-        capture_output=True,
-        text=True,
-    )
-    if p.returncode != 0:
-        print("Failure in: ./gradlew -q shadowJar")
-        print(p.stdout)
-        print(p.stderr)
-        sys.exit(1)
-    p = subprocess.run(
-        ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=False
-    )
-    print("Finished compiling")
-
     result_df = pd.DataFrame()
     with Progress(
         SpinnerColumn(),
@@ -198,6 +180,12 @@ def merge_replay(
             repo.checkout(merge_data["merge"], use_cache=False)
 
         for merge_tool in MERGE_TOOL:
+            # If the user provided a subset of merge tools, skip those not selected.
+            if (
+                selected_merge_tools is not None
+                and merge_tool.name not in selected_merge_tools
+            ):
+                continue
             if testing:
                 if "spork" in merge_tool.name or "intellimerge" in merge_tool.name:
                     continue
@@ -436,7 +424,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-skip_build",
         help="Don't build the merge tool",
-        action="store_false",
+        action="store_true",
     )
     parser.add_argument(
         "-create_artifacts",
@@ -448,9 +436,16 @@ if __name__ == "__main__":
         help="Run the script to only check for reproducibility",
         action="store_true",
     )
+    # New argument to select merge tools (comma-separated list)
+    parser.add_argument(
+        "--merge_tools",
+        help="Comma-separated list of merge tools to run (e.g. toolA,toolB). If not provided, all merge tools are run.",
+        type=str,
+        default="",
+    )
     args = parser.parse_args()
 
-    logger.info(f"Replaying merge with index {args.idx}")
+    logger.info(f"Replaying merge with index {args.idx} from {args.merges_csv}")
     if args.delete_workdir:
         logger.info("  Will delete workdir after replaying the merge")
     if args.dont_check_fingerprints:
@@ -464,6 +459,12 @@ if __name__ == "__main__":
     if args.testing:
         logger.info("  Will check for reproducibility")
 
+    # Process the merge_tools argument if provided
+    selected_merge_tools = None
+    if args.merge_tools:
+        selected_merge_tools = [tool.strip() for tool in args.merge_tools.split(",")]
+    logger.info(f"Selected merge tools: {selected_merge_tools}")
+
     os.environ["PATH"] += os.pathsep + os.path.join(
         os.getcwd(), "src/scripts/merge_tools/merging/src/main/sh/"
     )
@@ -474,7 +475,29 @@ if __name__ == "__main__":
     os.system("git submodule update --init")
     logger.info("finished git submodule update --init")
     if not args.skip_build:
-        os.system("cd src/scripts/merge_tools/merging && ./gradlew -q shadowJar")
+        logger.info("Building merge tool")
+        ast_merging_evaluation_repo = git.Repo(".", search_parent_directories=True)
+        if ast_merging_evaluation_repo.working_tree_dir is None:
+            raise Exception("Could not find the ast-merging-evaluation repository")
+        plumelib_merging_dir = Path(
+            ast_merging_evaluation_repo.working_tree_dir
+        ) / Path("src/scripts/merge_tools/merging")
+        print(f"About to compile in {plumelib_merging_dir}")
+        p = subprocess.run(
+            ["./gradlew", "-q", "shadowJar"],
+            cwd=plumelib_merging_dir,
+            capture_output=True,
+            text=True,
+        )
+        if p.returncode != 0:
+            print("Failure in: ./gradlew -q shadowJar")
+            print(p.stdout)
+            print(p.stderr)
+            sys.exit(1)
+        p = subprocess.run(
+            ["./gradlew", "-q", "nativeCompile"], cwd=plumelib_merging_dir, check=False
+        )
+        print("Finished compiling")
 
     df = pd.read_csv(args.merges_csv, index_col="idx")
 
@@ -490,6 +513,7 @@ if __name__ == "__main__":
         args.dont_check_fingerprints,
         args.testing,
         args.verbose,
+        selected_merge_tools,  # Pass the selected merge tools
     )
     for idx, row in results_df.iterrows():
         logger.info("=====================================")
@@ -508,7 +532,6 @@ if __name__ == "__main__":
             logger.info("merge data test result: MISSING!")
         logger.info(f"repo location: {row['repo path']}")
 
-    # Create artifacts which means creating a tarball of all the relevant workdirs
     if args.create_artifacts:
         store_artifacts(results_df)
     if args.delete_workdir:

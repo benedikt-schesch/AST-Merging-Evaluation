@@ -6,13 +6,17 @@ from pathlib import Path
 # -------------------------------
 # Parameters – adjust as needed
 # -------------------------------
-n = 50  # Number of samples; change as needed
+n = 10  # Number of samples; change as needed
 random_seed = 42  # Fixed seed for deterministic shuffling
 
 # File and folder paths:
 adjusted_csv_path = Path("results/combined/result_adjusted.csv")
 repos_combined_path = Path("input_data/repos_combined.csv")
+repos_combined_path_with_hashes = Path("input_data/repos_combined_with_hashes.csv")
 sampled_repos_out_path = Path(f"input_data/repos_combined_sampled_{n}.csv")
+sampled_repos_out_path_with_hashes = Path(
+    f"input_data/repos_combined_sampled_{n}_with_hashes.csv"
+)
 merges_base_dir = Path("results/combined/merges")
 merges_sampled_dir = Path(f"results/combined_sampled_{n}/merges")
 
@@ -44,6 +48,18 @@ sampled_repos_df = repos_df[repos_df["repository"].isin(sampled_repos)]
 # Write the filtered repositories to a new CSV.
 sampled_repos_df.to_csv(sampled_repos_out_path, index=False)
 print(f"Wrote {len(sampled_repos_df)} repository rows to {sampled_repos_out_path}")
+
+# Load and filter the full repositories list.
+repos_df_with_hashes = pd.read_csv(repos_combined_path_with_hashes)
+sampled_repos_df_with_hashes = repos_df_with_hashes[
+    repos_df_with_hashes["repository"].isin(sampled_repos)
+]
+
+# Write the filtered repositories to a new CSV.
+sampled_repos_df_with_hashes.to_csv(sampled_repos_out_path_with_hashes, index=False)
+print(
+    f"Wrote {len(sampled_repos_df)} repository rows to {sampled_repos_out_path_with_hashes}"
+)
 
 # -------------------------------
 # STEP 3: Prepare and write merge CSV files for each sampled repository

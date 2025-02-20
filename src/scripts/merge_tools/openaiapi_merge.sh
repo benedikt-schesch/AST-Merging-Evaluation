@@ -89,5 +89,9 @@ for file in $conflict_files; do
   fi
 done
 
+# cd back to the repository directory.
+cd "$clone_dir" || { echo "$0: cannot cd to $clone_dir"; exit 2; }
+git add .
+
 echo "LLM-based conflict resolution completed. Please review the changes and test thoroughly."
 exit 0

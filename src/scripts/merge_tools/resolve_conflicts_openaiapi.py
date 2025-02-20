@@ -155,18 +155,10 @@ def extract_conflict_with_context(
     Expand upward and downward from a conflict block to include context lines.
     Stop expansion when encountering any of these conditions:
       1. The 3rd empty line (only spaces or tabs count as empty).
-      2. A line that contains a bracket '{' or '}'.
+      2. The second occurrence of a bracket ('{' or '}'). (One bracket is allowed.)
       3. A line that starts with "def " or "class ".
       4. Another conflict marker (e.g., <<<<<<<, |||||||, or >>>>>>>).
       5. The file boundary is reached.
-
-    Args:
-        lines (List[str]): The entire file split into lines.
-        conflict_start (int): The index of the first line of the conflict.
-        conflict_end (int): The index of the last line of the conflict.
-
-    Returns:
-        Tuple[int, int]: The start and end indices (inclusive) of the context block.
     """
 
     def is_conflict_marker(line: str) -> bool:
@@ -180,6 +172,7 @@ def extract_conflict_with_context(
     # Expand upward.
     context_start = conflict_start
     empty_count = 0
+    bracket_count = 0  # Count of encountered lines with a bracket.
     for i in range(conflict_start - 1, -1, -1):
         line = lines[i]
         if is_conflict_marker(line):
@@ -188,18 +181,19 @@ def extract_conflict_with_context(
             empty_count += 1
             if empty_count >= 3:
                 break
-        if (
-            "{" in line
-            or "}" in line
-            or line.lstrip().startswith("def ")
-            or line.lstrip().startswith("class ")
-        ):
+        if line.lstrip().startswith("def ") or line.lstrip().startswith("class "):
             break
+        if "{" in line or "}" in line:
+            if bracket_count >= 1:
+                break
+            else:
+                bracket_count += 1
         context_start = i
 
     # Expand downward.
     context_end = conflict_end
     empty_count = 0
+    bracket_count = 0  # Reset for downward expansion.
     for i in range(conflict_end + 1, len(lines)):
         line = lines[i]
         if is_conflict_marker(line):
@@ -208,13 +202,13 @@ def extract_conflict_with_context(
             empty_count += 1
             if empty_count >= 3:
                 break
-        if (
-            "{" in line
-            or "}" in line
-            or line.lstrip().startswith("def ")
-            or line.lstrip().startswith("class ")
-        ):
+        if line.lstrip().startswith("def ") or line.lstrip().startswith("class "):
             break
+        if "{" in line or "}" in line:
+            if bracket_count >= 1:
+                break
+            else:
+                bracket_count += 1
         context_end = i
 
     return context_start, context_end
@@ -261,6 +255,7 @@ def process_file(filename: str, llm_model: str) -> None:
             "with surrounding context that includes a merge conflict.\n"
             "Return the entire snippet (including context) in markdown code fences (``` ... ```).\n"
             "If you are not sure on how to resolve the conflict, please return teh same snippet with the conflict.\n"
+            "Think in terms of intent and semantics that both sides of the merge are trying to achieve.\n"
             "Here is the code snippet:\n"
             "```\n"
             f"{conflict_block_with_context}\n"
@@ -277,10 +272,21 @@ def process_file(filename: str, llm_model: str) -> None:
             sys.stderr.write(
                 "DeepSeek API returned no response. Keeping original block.\n"
             )
-
             continue
 
         resolved_block = extract_code_from_response(llm_response)
+
+        # If the resolved block still contains conflict markers, exit with code 1.
+        if (
+            "<<<<<<<" in resolved_block
+            or "|||||||" in resolved_block
+            or ">>>>>>>" in resolved_block
+        ):
+            sys.stderr.write(
+                "Conflict markers detected in the resolved block. Exiting with code 1.\n"
+            )
+            sys.exit(1)
+
         # Split the resolved block into lines (preserving newlines).
         resolved_lines = [line + "\n" for line in resolved_block.splitlines()]
         # Replace the original block in the lines list.

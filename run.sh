@@ -125,7 +125,13 @@ else
     exit 1
 fi
 
+# Check if DEEPSEEK_API_KEY is set
+if [ -z "${DEEPSEEK_API_KEY:+isset}" ]; then
+    echo "DEEPSEEK_API_KEY is not set."
+    exit 2
+fi
 
+# Check if the required tools are installed
 mvn -v | head -n 1 | cut -c 14-18 | grep -q 3.9. || { echo "Maven 3.9.* is required"; mvn -v; echo "PATH=$PATH"; exit 2; }
 if [ -z "${JAVA8_HOME:+isset}" ] ; then echo "JAVA8_HOME is not set"; exit 2; fi
 if [ -z "${JAVA11_HOME:+isset}" ] ; then echo "JAVA11_HOME is not set"; exit 2; fi

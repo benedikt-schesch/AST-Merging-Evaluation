@@ -37,6 +37,7 @@ cache-machines/
 .old_cache
 wget*
 queries_cache*
+.ruff_cache
 
 # Test output
 test/tmp1.txt
