@@ -148,68 +148,117 @@ def extract_code_from_response(response: str) -> str:
         sys.exit(1)
 
 
+def contains_conflict_marker(line: str) -> bool:
+    return "<<<<<<<" in line or "|||||||" in line or ">>>>>>>" in line
+
+
 def extract_conflict_with_context(
     lines: List[str], conflict_start: int, conflict_end: int
 ) -> Tuple[int, int]:
     """
-    Expand upward and downward from a conflict block to include context lines.
-    Stop expansion when encountering any of these conditions:
+    Expand upward and downward from a conflict block to include context lines,
+    then compress away extraneous blank/brace-only lines.
+
+    Stop expansion for each direction when encountering:
       1. The 3rd empty line (only spaces or tabs count as empty).
       2. The second occurrence of a bracket ('{' or '}'). (One bracket is allowed.)
       3. A line that starts with "def " or "class ".
       4. Another conflict marker (e.g., <<<<<<<, |||||||, or >>>>>>>).
       5. The file boundary is reached.
+
+    After expansion:
+      - Compress downward from the top boundary if the line is empty or just '{'.
+      - Compress upward from the bottom boundary if the line is empty or just '{'.
+      - Finally, remove the trailing newline from the bottom line.
     """
 
-    def is_conflict_marker(line: str) -> bool:
-        stripped = line.lstrip()
-        return (
-            stripped.startswith("<<<<<<<")
-            or stripped.startswith("|||||||")
-            or stripped.startswith(">>>>>>>")
-        )
-
-    # Expand upward.
+    # -----------------------
+    # 1) Expand upward
+    # -----------------------
     context_start = conflict_start
     empty_count = 0
     bracket_count = 0  # Count of encountered lines with a bracket.
     for i in range(conflict_start - 1, -1, -1):
         line = lines[i]
-        if is_conflict_marker(line):
+        # If we hit another conflict marker, stop
+        if contains_conflict_marker(line):
             break
+        # If line is empty
         if line.strip() == "":
             empty_count += 1
             if empty_count >= 3:
                 break
+        # If starts with def/class, stop
         if line.lstrip().startswith("def ") or line.lstrip().startswith("class "):
             break
+        # If we see '{' or '}', and we've already encountered one, stop
         if "{" in line or "}" in line:
             if bracket_count >= 1:
                 break
             else:
                 bracket_count += 1
-        context_start = i
 
-    # Expand downward.
+        context_start = i  # Expand the window
+
+    # -----------------------
+    # 2) Compress downward from the top boundary
+    #    i.e., remove consecutive lines (up to conflict_start)
+    #    that are empty or just '{'
+    # -----------------------
+    while context_start < conflict_start:
+        top_line = lines[context_start].strip()
+        if top_line == "" or top_line == "{":
+            context_start += 1
+        else:
+            break
+
+    # -----------------------
+    # 3) Expand downward
+    # -----------------------
     context_end = conflict_end
     empty_count = 0
     bracket_count = 0  # Reset for downward expansion.
     for i in range(conflict_end + 1, len(lines)):
         line = lines[i]
-        if is_conflict_marker(line):
+        # If we hit another conflict marker, stop
+        if contains_conflict_marker(line):
             break
+        # If line is empty
         if line.strip() == "":
             empty_count += 1
             if empty_count >= 3:
                 break
+        # If starts with def/class, stop
         if line.lstrip().startswith("def ") or line.lstrip().startswith("class "):
             break
+        # If we see '{' or '}', and we've already encountered one, stop
         if "{" in line or "}" in line:
             if bracket_count >= 1:
                 break
             else:
                 bracket_count += 1
-        context_end = i
+
+        context_end = i  # Expand the window
+
+    # -----------------------
+    # 4) Compress upward from the bottom boundary
+    #    i.e., remove consecutive lines (down to conflict_end)
+    #    that are empty or just '{'
+    # -----------------------
+    while context_end > conflict_end:
+        bottom_line = lines[context_end].strip()
+        if bottom_line == "" or bottom_line == "{":
+            context_end -= 1
+        else:
+            break
+
+    # -----------------------
+    # 5) Strip trailing newline from the bottom line
+    #    (so the final line in the snippet has no extra "\n")
+    # -----------------------
+    # We only do this if context_end is within bounds
+    if 0 <= context_end < len(lines):
+        lines[context_end] = lines[context_end].rstrip("\n")
 
     return context_start, context_end
 
@@ -253,11 +302,11 @@ def process_file(filename: str, llm_model: str) -> None:
         prompt = (
             "You are a semantic merge conflict resolution expert. Below is a snippet of code "
             "with surrounding context that includes a merge conflict.\n"
-            "Return the entire snippet (including context) in markdown code fences (``` ... ```).\n"
-            "If you are not sure on how to resolve the conflict, please return teh same snippet with the conflict.\n"
+            "Return the entire snippet (including full context) in markdown code fences as provided, make sure you do not modify the context at all and preserve the spacing as is.\n"
             "Think in terms of intent and semantics that both sides of the merge are trying to achieve.\n"
+            "If you are not sure on how to resolve the conflict or if the intent is ambiguous, please return the same snippet with the conflict.\n"
             "Here is the code snippet:\n"
-            "```\n"
+            "```java\n"
             f"{conflict_block_with_context}\n"
             "```\n"
         )
@@ -277,11 +326,7 @@ def process_file(filename: str, llm_model: str) -> None:
         resolved_block = extract_code_from_response(llm_response)
 
         # If the resolved block still contains conflict markers, exit with code 1.
-        if (
-            "<<<<<<<" in resolved_block
-            or "|||||||" in resolved_block
-            or ">>>>>>>" in resolved_block
-        ):
+        if contains_conflict_marker(resolved_block):
             sys.stderr.write(
                 "Conflict markers detected in the resolved block. Exiting with code 1.\n"
             )
