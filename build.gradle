@@ -35,7 +35,7 @@ dependencies {
   implementation group: 'org.pacesys.openstack4j.connectors', name: 'openstack4j-okhttp', version: '3.2.0'
 
   // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-  implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+  implementation 'org.slf4j:slf4j-log4j12:1.7.36'
 
   // https://mvnrepository.com/artifact/org.kohsuke/github-api
   implementation group: 'org.kohsuke', name: 'github-api', version: '1.314'
